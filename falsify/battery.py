@@ -20,7 +20,8 @@ from . import data as data_mod
 from .engine import Costs, run, summarize, with_override
 from .spec import ClaimSpec, Direction
 
-ALPHA = 0.05            # significance level for the random-entry null
+ALPHA = 0.05            # SURVIVES needs p below this against random timing
+WORSE_THAN_RANDOM = 0.5 # DIES when random timing does at least as well this often (worse than the median coin flip)
 MIN_TRADES = 30         # below this, a win rate is noise
 MIN_OOS_TRADES = 10     # post-claim window needs this many trades to count
 NULL_SIMS = 2000
@@ -283,9 +284,9 @@ def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = Tr
                            f"{primary['total_net_pct']:+.1f}% total "
                            f"(before costs {primary['total_gross_pct']:+.1f}%)")
     p = rep.null_test.get("p_value")
-    if p is not None and p >= ALPHA:
-        rep.reasons.append(f"random entries with the same holding times did as well {rep.null_test['beat_by_random_pct']:.0f}% "
-                           f"of the time (p = {p:.3f})")
+    if p is not None and p >= WORSE_THAN_RANDOM:
+        rep.reasons.append(f"no better than random timing: random entries with the same holding times did as well "
+                           f"{rep.null_test['beat_by_random_pct']:.0f}% of the time (p = {p:.3f})")
     oos = rep.out_of_sample
     if oos.get("available") and oos.get("counts"):
         after = oos["after_window"]
@@ -314,6 +315,16 @@ def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = Tr
     if rep.reasons:
         rep.verdict = Verdict.DIES
         rep.headline = rep.reasons[0][0].upper() + rep.reasons[0][1:] + "."
+    elif p is None or p >= ALPHA:
+        # Makes money after costs, but the data cannot tell it from luck. Not refuted, not supported.
+        rep.verdict = Verdict.INCONCLUSIVE
+        beat = rep.null_test.get("beat_by_random_pct")
+        rep.reasons.append(f"makes money after costs ({primary['avg_net_pct']:+.2f}% per trade), but random timing did as "
+                           f"well {beat:.0f}% of the time (p = {p:.3f}); needs p < {ALPHA} to count as an edge"
+                           if p is not None else "the random-timing test could not be run")
+        rep.headline = (f"Makes money ({primary['avg_net_pct']:+.2f}% per trade after costs, {primary['trades']} trades) "
+                        f"but can't be told from luck: random timing did as well {beat:.0f}% of the time."
+                        if p is not None else "Could not run the random-timing test.")
     else:
         rep.headline = (f"Holds up: {primary['avg_net_pct']:+.2f}% per trade after costs over {primary['trades']} "
                         f"trades, beats random timing (p = {p:.3f}).")

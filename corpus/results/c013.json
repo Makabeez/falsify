@@ -1,0 +1,261 @@
+{
+  "id": "c013",
+  "record": {
+    "id": "c013",
+    "url": "https://bestinterest.blog/buy-the-dip-for-bitcoin/",
+    "source": "blog",
+    "posted": "2021-05-25",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "backtest_claim",
+    "excerpt": "Rule 2: Don't Buy Until There's a Dip Greater Than 5% from the Most Recent High Price \u2026 The DCA case assumed our investor spent $1 on Bitcoin every day from May 1, 2013 until May 23, 2021 \u2026 $1/Day \u2013 >5% Dips (Rule 2) | $2943 | 4.639 \u2026 $1/Day \u2013 >10% Dips (Rule 3) | $2943 | 4.42 \u2026 the data is clear: dollar cost averaging works better than buying the dip.",
+    "performance_claim": "dollar cost averaging works better than buying the dip",
+    "verbatim_confidence": "high",
+    "notes": "Accumulation rule (save $1/day, deploy on >5%/>10% dip from recent high) vs daily DCA; a negative claim, nice contrast. Bold markers removed from table cells."
+  },
+  "spec": {
+    "claim_summary": "Waiting to buy bitcoin only when price is more than 5% below the most recent high underperforms daily dollar-cost averaging.",
+    "source_type": "text",
+    "testable": false,
+    "untestable_reason": "Rule 2 requires buying on every day price is more than 5% below the recent high and holding all lots, which is a DCA/pyramiding accumulation the single-position engine cannot express.",
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "lt",
+        "right": {
+          "kind": "highest_high",
+          "period": 90,
+          "value": null,
+          "multiplier": 0.95,
+          "param": null
+        }
+      }
+    ],
+    "exit": [],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [
+      {
+        "name": "recent high lookback (bars)",
+        "target": "entry[0].right.period",
+        "candidates": [
+          30.0,
+          90.0,
+          180.0,
+          365.0
+        ]
+      }
+    ],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": "2013-05-01",
+      "period_end": "2021-05-23",
+      "other": "$1/Day \u2013 >5% Dips (Rule 2) | $2943 | 4.639"
+    },
+    "assumptions": [
+      "Asset is Bitcoin mapped to BTCUSDT.",
+      "Timeframe 1d chosen as most natural reading for daily purchase cadence; claim states no bar timeframe.",
+      "Most Recent High Price has no lookback stated; approximated as 90-day highest_high for closest testable core.",
+      "Dip Greater Than 5% encoded as close < 0.95 * highest_high for closest testable core.",
+      "No exit stated; Rule 2 holds all lots with no sale, so closest core has no exit.",
+      "NOT EXPRESSIBLE: repeated $1 purchases on every dip day and holding all lots as a DCA ladder / pyramiding / position sizing accumulation; single-position engine holds one position at a time so repeated dip buying cannot be tested."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "Don't Buy Until There's a Dip Greater Than 5% from the Most Recent High Price",
+        "assumed": false
+      },
+      {
+        "field": "assets",
+        "quote": "spent $1 on Bitcoin every day",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "direction",
+        "quote": "Don't Buy Until There's a Dip Greater Than 5% from the Most Recent High Price",
+        "assumed": false
+      },
+      {
+        "field": "claimed.period_start",
+        "quote": "May 1, 2013",
+        "assumed": false
+      },
+      {
+        "field": "claimed.period_end",
+        "quote": "May 23, 2021",
+        "assumed": false
+      },
+      {
+        "field": "claimed.other",
+        "quote": "$1/Day \u2013 >5% Dips (Rule 2) | $2943 | 4.639",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 4500,
+          "prompt_tokens": 1907,
+          "total_tokens": 6407,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 3883,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 1053,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 0,
+      "quoted": 0,
+      "assumed": 0,
+      "quoted_fields": [],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 7934,
+            "prompt_tokens": 1168,
+            "total_tokens": 9102,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 7326,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            }
+          },
+          "error": "1 validation error for ClaimSpec\n  Value error, testable claim needs an exit rule (condition, stop, target or time exit) [type=value_error, input_value={'assets': ['BTCUSDT'], '...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+        },
+        {
+          "usage": {
+            "completion_tokens": 3164,
+            "prompt_tokens": 1864,
+            "total_tokens": 5028,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 2525,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            }
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 5,
+        "quoted": 3,
+        "assumed": 2,
+        "quoted_fields": [
+          "entry[0]",
+          "assets",
+          "direction"
+        ],
+        "assumed_fields": [
+          "max_hold_bars",
+          "timeframe"
+        ],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "exit",
+            "problem": "Spec holds a single position to end (empty exit + max_hold_bars 5000) after first >5% dip. Claim's Rule 2 buys on every dip day ('Don't Buy Until There's a Dip Greater Than 5% from the Most Recent High Price' with same $2943 total) and holds all lots. Single-entry encoding prevents repeated dip purchases and tests a one-time timing trade, not the accumulation rule.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "UNTESTABLE",
+    "headline": "This claim can't be turned into rules anyone could check.",
+    "reasons": [
+      "Rule 2 requires buying on every day price is more than 5% below the recent high and holding all lots, which is a DCA/pyramiding accumulation the single-position engine cannot express."
+    ],
+    "warnings": [],
+    "asset": null,
+    "timeframe": null,
+    "primary": {},
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {},
+    "sweep": {},
+    "claimed_vs_measured": [],
+    "costs": {},
+    "grounding": {},
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: repeated $1 purchases on every dip day and holding all lots as a DCA ladder / pyramiding / position sizing accumulation; single-position engine holds one position at a time so repeated dip buying cannot be tested."
+      ],
+      "audit_majors": []
+    }
+  },
+  "seconds": 87.8
+}

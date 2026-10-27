@@ -1,0 +1,467 @@
+{
+  "id": "c002",
+  "record": {
+    "id": "c002",
+    "url": "https://www.tradingview.com/chart/BTCUSD/VZbyvzJF-8-and-21-day-moving-averages-FTW/",
+    "source": "tradingview_idea",
+    "posted": "2018-08-11",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "backtest_claim",
+    "excerpt": "The 8 day and 21 day EMAs cross. \u2026 Wait for the cross, then monitor for a maximum of 6 days. \u2026 Set stop loss just the other side of the 21 day EMA and adjust daily. \u2026 If price crosses the 21 day EMA , your setup has failed. \u2026 You can see that the above rules produced much more profit than loss. \u2026 6 positions were taken in 10 months (304 days), an average of one every 51 days.",
+    "performance_claim": "produced much more profit than loss",
+    "verbatim_confidence": "high",
+    "notes": "8/21 EMA cross on BTC daily with stop at 21 EMA; qualitative backtest result over 304 days."
+  },
+  "spec": {
+    "claim_summary": "Enter when the 8-day EMA crosses the 21-day EMA and exit if price crosses the 21-day EMA or after 6 days.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "ema",
+          "period": 8,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "ema",
+          "period": 21,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "ema",
+          "period": 21,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": 6,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": "produced much more profit than loss"
+    },
+    "assumptions": [
+      "Asset not named in claim text; BTCUSDT chosen as most natural reading because the page is about BTC.",
+      "Timeframe 1d chosen because the claim uses 8 day and 21 day EMAs and the page chart timeframe is 1d.",
+      "Direction set to long as closest testable core; the claim states a generic cross with no long/short qualifier.",
+      "Entry assumed on the close of the cross bar (fill next open); monitor for a maximum of 6 days interpreted as maximum holding period of 6 bars.",
+      "Exit uses close crosses_below 21-day EMA to represent the failure condition price crosses the 21 day EMA on the long side.",
+      "NOT EXPRESSIBLE: trailing stop-loss just the other side of the 21 day EMA and adjust daily cannot be expressed as a fixed stop_loss_pct; approximated by exit on close below the 21-day EMA with no fixed stop.",
+      "NOT EXPRESSIBLE: claim implies bidirectional trading with generic EMA cross covering both crosses_above for longs and crosses_below for shorts with symmetric stop on the other side of the 21-day EMA, but the schema allows only a single direction; this spec tests the long side only and short-side entries are not tested."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "The 8 day and 21 day EMAs cross.",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": "If price crosses the 21 day EMA , your setup has failed.",
+        "assumed": false
+      },
+      {
+        "field": "max_hold_bars",
+        "quote": "then monitor for a maximum of 6 days.",
+        "assumed": false
+      },
+      {
+        "field": "assets",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "timeframe",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "direction",
+        "quote": null,
+        "assumed": true
+      }
+    ]
+  },
+  "audit": {
+    "faithful": false,
+    "issues": [
+      {
+        "field": "direction",
+        "problem": "Claim says 'The 8 day and 21 day EMAs cross' with no long-only qualifier and symmetric stop/failure language. Spec restricts to long only and omits the short side, which changes trade set and verdict.",
+        "severity": "major"
+      },
+      {
+        "field": "entry",
+        "problem": "Missing short entry leg: 8-day EMA crosses_below 21-day EMA. Spec encodes only crosses_above, so bearish crosses implied by generic cross rule are never traded.",
+        "severity": "major"
+      },
+      {
+        "field": "exit",
+        "problem": "Missing short-side failure exit for shorts: price crosses the 21-day EMA from below. Spec encodes only long-side close crosses_below 21-day EMA.",
+        "severity": "major"
+      }
+    ]
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 2865,
+          "prompt_tokens": 1911,
+          "total_tokens": 4776,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 2239,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 3,
+      "assumed": 3,
+      "quoted_fields": [
+        "entry[0]",
+        "exit[0]",
+        "max_hold_bars"
+      ],
+      "assumed_fields": [
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 4769,
+            "prompt_tokens": 1154,
+            "total_tokens": 5923,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 4179,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            }
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 6,
+        "quoted": 3,
+        "assumed": 3,
+        "quoted_fields": [
+          "entry[0]",
+          "exit[0]",
+          "max_hold_bars"
+        ],
+        "assumed_fields": [
+          "assets",
+          "timeframe",
+          "direction"
+        ],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "direction",
+            "problem": "Claim says 'The 8 day and 21 day EMAs cross.' with no long/short qualifier, with symmetric stop 'just the other side of the 21 day EMA' and failure rule 'If price crosses the 21 day EMA , your setup has failed.' Spec restricts to direction=long only, omitting the short side implied by generic cross.",
+            "severity": "major"
+          },
+          {
+            "field": "entry[0].op",
+            "problem": "Claim's generic 'cross' covers both bullish and bearish EMA crosses. Spec encodes only crosses_above, so crosses_below short entries are never tested.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "direction",
+            "problem": "Claim says 'The 8 day and 21 day EMAs cross' with no long-only qualifier and symmetric stop/failure language. Spec restricts to long only and omits the short side, which changes trade set and verdict.",
+            "severity": "major"
+          },
+          {
+            "field": "entry",
+            "problem": "Missing short entry leg: 8-day EMA crosses_below 21-day EMA. Spec encodes only crosses_above, so bearish crosses implied by generic cross rule are never traded.",
+            "severity": "major"
+          },
+          {
+            "field": "exit",
+            "problem": "Missing short-side failure exit for shorts: price crosses the 21-day EMA from below. Spec encodes only long-side close crosses_below 21-day EMA.",
+            "severity": "major"
+          }
+        ]
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "INCONCLUSIVE",
+    "headline": "Tested an approximation of the claim. Makes money (+0.91% per trade after costs, 72 trades) but can't be told from luck: random timing did as well 28% of the time.",
+    "reasons": [
+      "makes money after costs (+0.91% per trade), but random timing did as well 28% of the time (p = 0.285); needs p < 0.05 to count as an edge"
+    ],
+    "warnings": [
+      "just holding did better: +60% vs buy-and-hold +1781%",
+      "left out: trailing stop-loss just the other side of the 21 day EMA and adjust daily cannot be expressed as a fixed stop_loss_pct; approximated by exit on close below the 21-day EMA with no fixed stop.",
+      "left out: claim implies bidirectional trading with generic EMA cross covering both crosses_above for longs and crosses_below for shorts with symmetric stop on the other side of the 21-day EMA, but the schema allows only a single direction; this spec tests the long side only and short-side entries are not tested.",
+      "audit: direction: Claim says 'The 8 day and 21 day EMAs cross' with no long-only qualifier and symmetric stop/failure language. Spec restricts to long only and omits the short side, which changes trade set and verdict.",
+      "audit: entry: Missing short entry leg: 8-day EMA crosses_below 21-day EMA. Spec encodes only crosses_above, so bearish crosses implied by generic cross rule are never traded.",
+      "audit: exit: Missing short-side failure exit for shorts: price crosses the 21-day EMA from below. Spec encodes only long-side close crosses_below 21-day EMA."
+    ],
+    "asset": "BTCUSDT",
+    "timeframe": "1d",
+    "primary": {
+      "trades": 72,
+      "win_rate_pct": 47.22222222222222,
+      "avg_net_pct": 0.9078017617978962,
+      "total_net_pct": 60.16109205747098,
+      "total_gross_pct": 90.37203127981009,
+      "max_drawdown_pct": -39.577825549026336,
+      "avg_bars": 4.5,
+      "open_at_end": 0,
+      "buy_hold_pct": 1780.815115875236,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 9.64860035735557
+    },
+    "null_test": {
+      "p_value": 0.28535732133933034,
+      "strategy_mean_log_pct": 0.6541804834669807,
+      "null_median_log_pct": 0.19043917093338109,
+      "null_p95_log_pct": 1.555304874578641,
+      "beat_by_random_pct": 28.499999999999996,
+      "sims": 2000
+    },
+    "out_of_sample": {
+      "available": true,
+      "boundary": "2018-08-11",
+      "boundary_source": "post date",
+      "claim_window": [
+        null,
+        null
+      ],
+      "in_window": {
+        "trades": 6,
+        "win_rate_pct": 50.0,
+        "avg_net_pct": -2.6178338656623334,
+        "total_net_pct": -16.363322471091703,
+        "total_gross_pct": -15.15024050422843,
+        "max_drawdown_pct": -23.015246131458543,
+        "avg_bars": 4.833333333333333,
+        "open_at_end": 0
+      },
+      "after_window": {
+        "trades": 66,
+        "win_rate_pct": 46.96969696969697,
+        "avg_net_pct": 1.228314091567008,
+        "total_net_pct": 91.49623919734586,
+        "total_gross_pct": 124.3636663334292,
+        "max_drawdown_pct": -29.304906658523823,
+        "avg_bars": 4.46969696969697,
+        "open_at_end": 0
+      },
+      "counts": true
+    },
+    "halves": {
+      "split": "2022-03-23",
+      "first": {
+        "trades": 35,
+        "win_rate_pct": 40.0,
+        "avg_net_pct": 0.4365757258457283,
+        "total_net_pct": 2.946236694115578,
+        "total_gross_pct": 11.967306051928283,
+        "max_drawdown_pct": -39.577825549026336,
+        "avg_bars": 4.314285714285714,
+        "open_at_end": 0
+      },
+      "second": {
+        "trades": 37,
+        "win_rate_pct": 54.054054054054056,
+        "avg_net_pct": 1.353556120131028,
+        "total_net_pct": 55.577413221386585,
+        "total_gross_pct": 70.02465986947945,
+        "max_drawdown_pct": -14.34375383940656,
+        "avg_bars": 4.675675675675675,
+        "open_at_end": 0
+      },
+      "consistent": true
+    },
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "ETHUSDT",
+          "trades": 62,
+          "total_net_pct": -3.1479281387438496,
+          "avg_net_pct": 0.15032411249910724
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 51,
+          "total_net_pct": 15.380234631677414,
+          "avg_net_pct": 1.1047854624102804
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 68,
+          "total_net_pct": 15.010752688243922,
+          "avg_net_pct": 0.5019962934076007
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 68,
+          "total_net_pct": 17.35109156441372,
+          "avg_net_pct": 0.6251794113021127
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 50,
+          "total_net_pct": 8.914064365431628,
+          "avg_net_pct": 1.1984039233801584
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 64,
+          "total_net_pct": -75.64239934457288,
+          "avg_net_pct": -1.6048932537191092
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 49,
+          "total_net_pct": 12.94426683521619,
+          "avg_net_pct": 0.9728334457106047
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 65,
+          "total_net_pct": 114.02211015179442,
+          "avg_net_pct": 1.8524938164272415
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 73,
+          "total_net_pct": -4.737509413648622,
+          "avg_net_pct": 0.3753513605054981
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 43,
+          "total_net_pct": -16.273951553270237,
+          "avg_net_pct": 0.37893894906822634
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 75,
+          "total_net_pct": -23.576809509855824,
+          "avg_net_pct": -0.12533514006280422
+        }
+      ],
+      "tested": 11,
+      "positive": 9,
+      "positive_share_pct": 81.81818181818183
+    },
+    "sweep": {
+      "readings": 1,
+      "note": "claim fixes every parameter"
+    },
+    "claimed_vs_measured": [],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 3,
+      "assumed": 3,
+      "quoted_fields": [
+        "entry[0]",
+        "exit[0]",
+        "max_hold_bars"
+      ],
+      "assumed_fields": [
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: trailing stop-loss just the other side of the 21 day EMA and adjust daily cannot be expressed as a fixed stop_loss_pct; approximated by exit on close below the 21-day EMA with no fixed stop.",
+        "NOT EXPRESSIBLE: claim implies bidirectional trading with generic EMA cross covering both crosses_above for longs and crosses_below for shorts with symmetric stop on the other side of the 21-day EMA, but the schema allows only a single direction; this spec tests the long side only and short-side entries are not tested."
+      ],
+      "audit_majors": [
+        "direction: Claim says 'The 8 day and 21 day EMAs cross' with no long-only qualifier and symmetric stop/failure language. Spec restricts to long only and omits the short side, which changes trade set and verdict.",
+        "entry: Missing short entry leg: 8-day EMA crosses_below 21-day EMA. Spec encodes only crosses_above, so bearish crosses implied by generic cross rule are never traded.",
+        "exit: Missing short-side failure exit for shorts: price crosses the 21-day EMA from below. Spec encodes only long-side close crosses_below 21-day EMA."
+      ]
+    }
+  },
+  "seconds": 74.4
+}

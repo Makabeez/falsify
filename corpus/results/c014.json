@@ -1,0 +1,18 @@
+{
+  "id": "c014",
+  "record": {
+    "id": "c014",
+    "url": "https://www.tradingview.com/script/gPAcpcHK-Sundays-Suck-for-Bitcoin-Daily-Strategy/",
+    "source": "tradingview_script",
+    "posted": "2018-04-28",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "rule",
+    "excerpt": "Bitcoin tends to have bad Sundays, so this strategy just sells on Saturday, and buys back the next Wednesday if the price is kinda going up! \u2026 (The strategy works best if you set your chart time period to 1 day.)",
+    "performance_claim": null,
+    "verbatim_confidence": "high",
+    "notes": "Day-of-week rule (exit Saturday, re-enter Wednesday); re-entry condition \"kinda going up\" is fuzzy, compiler must flag it."
+  },
+  "error": "RuntimeError: model ran out of output budget before finishing the JSON",
+  "seconds": 27.4
+}

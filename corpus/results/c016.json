@@ -1,0 +1,219 @@
+{
+  "id": "c016",
+  "record": {
+    "id": "c016",
+    "url": "https://www.tradingview.com/script/i90KnZdf-ETH-RSI-Strategy-3Commas/",
+    "source": "tradingview_script",
+    "posted": "2026-06-28",
+    "asset_hint": "ETH",
+    "timeframe_hint": "4h",
+    "category": "backtest_claim",
+    "excerpt": "A base order fires when 4h RSI(14) drops below 28 \u2026 Five averaging orders at fixed deviations (\u22122%, \u22125%, \u22129.5%, \u221216%, \u221225%) with 1.8\u00d7 size scaling per rung. \u2026 Take Profit: 3% above average entry. \u2026 Stop Loss: None \u2014 ladder allocation is the structural risk cap. \u2026 Net Profit: +5,790.33 USDT (+5.79%) \u2026 Percent Profitable: 68.82% (64 / 93) \u2026 Profit Factor: 5.019 \u2026 Test Period: January 1, 2024 \u2014 June 28, 2026 (~30 months).",
+    "performance_claim": "Percent Profitable: 68.82% (64 / 93)",
+    "verbatim_confidence": "high",
+    "notes": "ETH twin of c003 (same template, different asset/results); page shows Jun 28 without year, inferred 2026 from test period."
+  },
+  "spec": {
+    "claim_summary": "A strategy opens a base position when 4-hour RSI(14) drops below 28 and averages down across five fixed deviation levels to target 3% above average entry with no stop loss.",
+    "source_type": "text",
+    "testable": false,
+    "untestable_reason": "The heart of the strategy is a five-rung averaging ladder with 1.8x size scaling and take-profit above the DCA-blended average entry, which cannot be expressed as single-position entry/exit rules.",
+    "assets": [
+      "ETHUSDT"
+    ],
+    "timeframe": "4h",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "rsi",
+          "period": 14,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 28.0,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": 68.82,
+      "total_return_pct": 5.79,
+      "avg_return_per_trade_pct": null,
+      "period_start": "2024-01-01",
+      "period_end": "2026-06-28",
+      "other": "Net Profit: +5,790.33 USDT; Profit Factor: 5.019"
+    },
+    "assumptions": [
+      "Asset ETHUSDT inferred from page context about ETH; the claim itself names no asset.",
+      "Timeframe 4h taken from '4h RSI(14)' in the claim.",
+      "Direction inferred as long from buying at negative deviations and targeting profit above average entry; claim never states long/short.",
+      "Base entry interpreted as crosses_below 28 as closest testable core of 'drops below 28'.",
+      "NOT EXPRESSIBLE: Five averaging orders at fixed deviations (-2%, -5%, -9.5%, -16%, -25%) with 1.8x size scaling per rung, including average-entry calculation and ladder allocation as structural risk cap.",
+      "NOT EXPRESSIBLE: Take Profit '3% above average entry' requires the DCA-blended average entry; without the ladder it cannot be encoded as a fixed take_profit_pct above base entry, so take_profit_pct is left unset."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "4h RSI(14) drops below 28",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": "4h RSI(14) drops below 28",
+        "assumed": false
+      },
+      {
+        "field": "assets",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "direction",
+        "quote": null,
+        "assumed": true
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 4733,
+          "prompt_tokens": 1888,
+          "total_tokens": 6621,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 4156,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 0,
+      "quoted": 0,
+      "assumed": 0,
+      "quoted_fields": [],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 4515,
+            "prompt_tokens": 1193,
+            "total_tokens": 5708,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 3851,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            }
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 5,
+        "quoted": 3,
+        "assumed": 2,
+        "quoted_fields": [
+          "entry[0]",
+          "take_profit_pct",
+          "timeframe"
+        ],
+        "assumed_fields": [
+          "assets",
+          "direction"
+        ],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "entry",
+            "problem": "Omits core claim element: five averaging orders at -2%, -5%, -9.5%, -16%, -25% with 1.8x size scaling. Spec tests only single base entry, which changes sizing, average entry and risk.",
+            "severity": "major"
+          },
+          {
+            "field": "take_profit_pct",
+            "problem": "Claim requires 3% above average (DCA-blended) entry; spec encodes fixed 3% above base entry. Without the ladder the exit level is different and could change verdict.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "UNTESTABLE",
+    "headline": "This claim can't be turned into rules anyone could check.",
+    "reasons": [
+      "The heart of the strategy is a five-rung averaging ladder with 1.8x size scaling and take-profit above the DCA-blended average entry, which cannot be expressed as single-position entry/exit rules."
+    ],
+    "warnings": [],
+    "asset": null,
+    "timeframe": null,
+    "primary": {},
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {},
+    "sweep": {},
+    "claimed_vs_measured": [],
+    "costs": {},
+    "grounding": {},
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: Five averaging orders at fixed deviations (-2%, -5%, -9.5%, -16%, -25%) with 1.8x size scaling per rung, including average-entry calculation and ladder allocation as structural risk cap.",
+        "NOT EXPRESSIBLE: Take Profit '3% above average entry' requires the DCA-blended average entry; without the ladder it cannot be encoded as a fixed take_profit_pct above base entry, so take_profit_pct is left unset."
+      ],
+      "audit_majors": []
+    }
+  },
+  "seconds": 54.2
+}

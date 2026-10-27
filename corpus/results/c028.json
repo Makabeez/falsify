@@ -1,0 +1,18 @@
+{
+  "id": "c028",
+  "record": {
+    "id": "c028",
+    "url": "https://www.cryptodatadownload.com/blog/posts/turtle-soup-trading-strategy-python-cryptocurrency/",
+    "source": "blog",
+    "posted": "2023-12-17",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "rule",
+    "excerpt": "The market makes a new 20day high or low and the previous high/low marker must have been at least 3 trading sessions prior. \u2026 The close of the new high/low must be greater than (beyond) the previous high/low price marker. \u2026 Buy entry is placed on the next day at the previous 20 day high/low watermark \u2026 Stop entries for failed trades are placed below the latest high/low that triggered the signal \u2026 Profits/exits should be taken within 2-6 candlestick intervals \u2026 OHLCV historical data for Bitcoin (BTC) from Binance exchange.",
+    "performance_claim": null,
+    "verbatim_confidence": "high",
+    "notes": "Turtle Soup 20-day false-breakout rule on Binance BTC daily; exit window 2-6 bars is a range (compiler must pick)."
+  },
+  "error": "RuntimeError: model ran out of output budget before finishing the JSON",
+  "seconds": 64.1
+}

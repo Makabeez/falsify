@@ -14,7 +14,7 @@
     "notes": "WMA 7/25 cross on SOL, timeframe not stated by author (a reply suggests 8h); striking 85x vs 48x HODL claim, very falsifiable."
   },
   "spec": {
-    "claim_summary": "Buying Solana and repeatedly selling on WMA7 crossing below WMA25 and rebuying on WMA7 crossing above WMA25 turned initial capital into 85 times over four years.",
+    "claim_summary": "Buying Solana when WMA7 crosses above WMA25 and selling everything when WMA7 crosses below WMA25 would have turned an initial investment into 85 times its value over four years.",
     "source_type": "text",
     "testable": true,
     "untestable_reason": null,
@@ -74,21 +74,18 @@
       "other": "36 risk-free deals spread over 4 years"
     },
     "assumptions": [
-      "Asset Solana mapped to SOLUSDT Binance spot.",
-      "Timeframe not stated; 1d used as most natural reading for a 4-year WMA system with 36 round trips.",
-      "Direction is long-only: buy, sell everything to cash, reinvest all proceeds; no shorting.",
-      "Initial 'bought 4 years ago' treated as system start date for the claimed period.",
-      "NOT EXPRESSIBLE: Claim starts fully invested at period start ('bought Solana 4 years ago') and holds until the first WMA7 crossed down over WMA25; the engine starts flat and can only enter on WMA7 crossed up over WMA25, so the initial hold from period start to first cross-down is omitted from the testable core.",
-      "Rules evaluated on bar closes with next-bar open fills per engine.",
-      "No stop-loss, take-profit or time exit stated; exit is only the cross-down.",
-      "Period 2020-08-14 to 2024-08-14 inferred from '4 years ago' to 'today' using forum post date 2024-08-14.",
-      "85 times interpreted as 85x final equity, encoded as 8400% total return.",
-      "36 risk-free deals treated as trade-count description, not encoded as win rate."
+      "Timeframe not stated; assumed 1d as the most natural reading for a multi-year WMA7/WMA25 swing system.",
+      "Direction interpreted as long-only spot from 'bought Solana', 'sold everything' and reinvesting proceeds.",
+      "'crossed down over' compiled as crosses_below and 'crossed up over' compiled as crosses_above, evaluated on bar closes with next-bar open fill.",
+      "Full reinvestment of all proceeds compiled as the engine's one-position-at-a-time compounding; no separate sizing rule.",
+      "'36 risk-free deals' interpreted as trade count, not a guarantee of no risk.",
+      "'85 times your money' interpreted as 85x multiple = 8400% total return gain.",
+      "4-year period interpreted as 2020-08-14 to 2024-08-14 using posted date 2024-08-14; 48-times buy-and-hold is a benchmark, not the claimed strategy performance."
     ],
     "evidence": [
       {
         "field": "assets",
-        "quote": "Solana",
+        "quote": "bought Solana",
         "assumed": false
       },
       {
@@ -110,48 +107,32 @@
         "field": "exit[0]",
         "quote": "each time WMA7 crossed down over WMA25",
         "assumed": false
-      },
-      {
-        "field": "claimed.total_return_pct",
-        "quote": "you would have made 85 times your money",
-        "assumed": false
-      },
-      {
-        "field": "claimed.other",
-        "quote": "36 risk-free deals spread over 4 years",
-        "assumed": false
       }
     ]
   },
   "audit": {
-    "faithful": false,
-    "issues": [
-      {
-        "field": "entry",
-        "problem": "Claim starts fully invested at 'bought Solana 4 years ago' and holds until the first 'WMA7 crossed down over WMA25'. Spec starts flat and only enters on 'WMA7 crossed up over WMA25', omitting the initial period-start to first cross-down hold admitted in assumptions. This changes the equity path and 85x total.",
-        "severity": "major"
-      }
-    ]
+    "faithful": true,
+    "issues": []
   },
   "trace": {
     "model": "muse-spark-1.3",
     "attempts": [
       {
         "usage": {
-          "completion_tokens": 3392,
-          "prompt_tokens": 1825,
-          "total_tokens": 5217,
+          "completion_tokens": 5136,
+          "prompt_tokens": 1132,
+          "total_tokens": 6268,
           "completion_tokens_details": {
             "accepted_prediction_tokens": null,
             "audio_tokens": null,
-            "reasoning_tokens": 2708,
+            "reasoning_tokens": 4545,
             "rejected_prediction_tokens": null,
             "text_tokens": null
           },
           "prompt_tokens_details": {
             "audio_tokens": null,
             "cache_write_tokens": null,
-            "cached_tokens": 1053,
+            "cached_tokens": 0,
             "image_tokens": null,
             "text_tokens": null
           }
@@ -174,81 +155,20 @@
       ],
       "problems": []
     },
-    "first_pass": {
-      "attempts": [
-        {
-          "usage": {
-            "completion_tokens": 7081,
-            "prompt_tokens": 1074,
-            "total_tokens": 8155,
-            "completion_tokens_details": {
-              "accepted_prediction_tokens": null,
-              "audio_tokens": null,
-              "reasoning_tokens": 6354,
-              "rejected_prediction_tokens": null,
-              "text_tokens": null
-            },
-            "prompt_tokens_details": {
-              "audio_tokens": null,
-              "cache_write_tokens": null,
-              "cached_tokens": 0,
-              "image_tokens": null,
-              "text_tokens": null
-            }
-          },
-          "grounding_problems": []
-        }
-      ],
-      "grounding": {
-        "rule_elements": 5,
-        "quoted": 4,
-        "assumed": 1,
-        "quoted_fields": [
-          "entry[0]",
-          "exit[0]",
-          "assets",
-          "direction"
-        ],
-        "assumed_fields": [
-          "timeframe"
-        ],
-        "problems": []
-      }
-    },
     "audits": [
       {
-        "faithful": false,
-        "issues": [
-          {
-            "field": "entry",
-            "problem": "Claim starts invested ('bought Solana 4 years ago') and then sells on first cross-down. Spec starts flat with first entry on first WMA7 cross-up, omitting the initial hold from period start to first cross-down, which changes equity curve, trade count and total return.",
-            "severity": "major"
-          }
-        ]
-      },
-      {
-        "faithful": false,
-        "issues": [
-          {
-            "field": "entry",
-            "problem": "Claim starts fully invested at 'bought Solana 4 years ago' and holds until the first 'WMA7 crossed down over WMA25'. Spec starts flat and only enters on 'WMA7 crossed up over WMA25', omitting the initial period-start to first cross-down hold admitted in assumptions. This changes the equity path and 85x total.",
-            "severity": "major"
-          }
-        ]
+        "faithful": true,
+        "issues": []
       }
-    ],
-    "audit_repair": true
+    ]
   },
   "report": {
-    "verdict": "DIES",
-    "headline": "Tested an approximation of the claim. Random entries with the same holding times did as well 10% of the time (p = 0.098).",
+    "verdict": "INCONCLUSIVE",
+    "headline": "Makes money (+22.50% per trade after costs, 64 trades) but can't be told from luck: random timing did as well 10% of the time.",
     "reasons": [
-      "random entries with the same holding times did as well 10% of the time (p = 0.098)"
+      "makes money after costs (+22.50% per trade), but random timing did as well 10% of the time (p = 0.098); needs p < 0.05 to count as an edge"
     ],
-    "warnings": [
-      "left out: Claim starts fully invested at period start ('bought Solana 4 years ago') and holds until the first WMA7 crossed down over WMA25; the engine starts flat and can only enter on WMA7 crossed up over WMA25, so the initial hold from period start to first cross-down is omitted from the testable core.",
-      "audit: entry: Claim starts fully invested at 'bought Solana 4 years ago' and holds until the first 'WMA7 crossed down over WMA25'. Spec starts flat and only enters on 'WMA7 crossed up over WMA25', omitting the initial period-start to first cross-down hold admitted in assumptions. This changes the equity path and 85x total."
-    ],
+    "warnings": [],
     "asset": "SOLUSDT",
     "timeframe": "1d",
     "primary": {
@@ -427,14 +347,10 @@
       "problems": []
     },
     "fidelity": {
-      "level": "approximation",
-      "gaps": [
-        "NOT EXPRESSIBLE: Claim starts fully invested at period start ('bought Solana 4 years ago') and holds until the first WMA7 crossed down over WMA25; the engine starts flat and can only enter on WMA7 crossed up over WMA25, so the initial hold from period start to first cross-down is omitted from the testable core."
-      ],
-      "audit_majors": [
-        "entry: Claim starts fully invested at 'bought Solana 4 years ago' and holds until the first 'WMA7 crossed down over WMA25'. Spec starts flat and only enters on 'WMA7 crossed up over WMA25', omitting the initial period-start to first cross-down hold admitted in assumptions. This changes the equity path and 85x total."
-      ]
+      "level": "exact",
+      "gaps": [],
+      "audit_majors": []
     }
   },
-  "seconds": 78.4
+  "seconds": 25.1
 }

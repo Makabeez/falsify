@@ -14,7 +14,7 @@
     "notes": "Clean 20/200 MA cross long-only rule with full stats; backtest from 2011 predates Binance data (2017+), good test of period mismatch. No publish date shown (backtest ends 2026-05-13)."
   },
   "spec": {
-    "claim_summary": "Bitcoin is bought when its 20-period moving average closes above its 200-period moving average and sold when it closes below.",
+    "claim_summary": "Buy Bitcoin when its 20-period moving average is above its 200-period moving average and sell when it is below.",
     "source_type": "text",
     "testable": true,
     "untestable_reason": null,
@@ -71,15 +71,15 @@
       "avg_return_per_trade_pct": null,
       "period_start": "2011-01-01",
       "period_end": "2026-05-13",
-      "other": "Annualized Return: 69.10%, Profit Factor: 7.183"
+      "other": "Annualized Return: 69.10% Profit Factor: 7.183"
     },
     "assumptions": [
-      "Asset 'Bitcoin' mapped to BTCUSDT.",
-      "Timeframe not stated in claim; using 1d as most natural reading from page chart.",
-      "'20ma' and '200ma' interpreted as simple moving averages (sma) on close with periods 20 and 200.",
-      "Direction is long from 'Buy market on close' to enter and 'Sell' to exit.",
-      "Entry uses close > logic (sma20 gt sma200) and exit uses close < logic (sma20 lt sma200) evaluated on bar closes, per literal wording.",
-      "No stop-loss, take-profit or max hold stated, so none used; position held until exit condition."
+      "Interpreted '20ma' and '200ma' as simple moving averages (SMA 20 and SMA 200) on close; claim does not specify MA type.",
+      "Interpreted 'Bitcoin' as BTCUSDT spot.",
+      "Timeframe 1d taken from page chart context, not stated in claimant words.",
+      "Entry evaluated on bar closes with fill at next open per engine; 'research-style entry' treated as consistent with this.",
+      "Exit is to hold until opposite MA condition; no stop-loss, take-profit or max hold was stated.",
+      "Claimant's dates are recorded in claimed only; engine tests over all available history starting flat."
     ],
     "evidence": [
       {
@@ -106,6 +106,31 @@
         "field": "exit[0]",
         "quote": "Sell if Bitcoin\u2019s 20ma closes < its 200ma",
         "assumed": false
+      },
+      {
+        "field": "claimed.win_rate_pct",
+        "quote": "Hit Rate: 53.33%",
+        "assumed": false
+      },
+      {
+        "field": "claimed.total_return_pct",
+        "quote": "Total Return: 321,940%",
+        "assumed": false
+      },
+      {
+        "field": "claimed.other",
+        "quote": "Annualized Return: 69.10% \u2026 Profit Factor: 7.183",
+        "assumed": false
+      },
+      {
+        "field": "claimed.period_start",
+        "quote": "2011-01-01 to 2026-05-13",
+        "assumed": false
+      },
+      {
+        "field": "claimed.period_end",
+        "quote": "2011-01-01 to 2026-05-13",
+        "assumed": false
       }
     ]
   },
@@ -118,13 +143,13 @@
     "attempts": [
       {
         "usage": {
-          "completion_tokens": 5794,
-          "prompt_tokens": 1085,
-          "total_tokens": 6879,
+          "completion_tokens": 4996,
+          "prompt_tokens": 1143,
+          "total_tokens": 6139,
           "completion_tokens_details": {
             "accepted_prediction_tokens": null,
             "audio_tokens": null,
-            "reasoning_tokens": 5138,
+            "reasoning_tokens": 4299,
             "rejected_prediction_tokens": null,
             "text_tokens": null
           },
@@ -303,5 +328,5 @@
       "audit_majors": []
     }
   },
-  "seconds": 35.4
+  "seconds": 27.2
 }

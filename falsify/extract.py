@@ -67,6 +67,9 @@ Rules:
   out is the heart of the strategy, set testable=false instead.
 - Every exit must be expressible: a condition, stop_loss_pct, take_profit_pct or max_hold_bars. If the claim
   gives no exit at all, use the most common reading for that setup and say so in assumptions.
+- The engine always tests the rule over ALL available history, starting flat, one position at a time. The test
+  window and the starting position are not part of the rule: do not mark them NOT EXPRESSIBLE, and put any
+  period the claimant cites in `claimed`.
 - Record any performance the claimant states (win rate, returns, period) in `claimed`. Dates as YYYY-MM-DD.
 - testable=false only when no mechanical rule can be recovered (e.g. "buy strong projects", "follow smart
   money", discretionary chart reading with no stated trigger, or rules that need data we don't have such as
@@ -93,7 +96,9 @@ AUDIT_PROMPT = """You audit a compiled trading rule against its source.
 You get the original claim (text, image or video) and a JSON ClaimSpec that another pass compiled from it.
 List every place where the spec departs from what the claimant actually said or showed: wrong asset,
 wrong timeframe, wrong threshold, missing condition, invented condition, wrong exit, wrong direction,
-misread chart annotation, one indicator swapped for another. Interpretation choices that the spec already
+misread chart annotation, one indicator swapped for another. The engine always tests the rule over all
+available history starting flat; the test window, the starting position, compounding and position size are
+NOT issues (other checks cover the claimant's period). Interpretation choices that the spec already
 lists in `assumptions` are not issues unless the choice is clearly not what the claimant meant. A part of the
 claim marked "NOT EXPRESSIBLE" is still an issue if leaving it out changes what is being tested. severity is
 "major" when the difference could change the verdict, else "minor". faithful=true only if a neutral reader

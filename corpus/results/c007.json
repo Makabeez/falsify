@@ -1,0 +1,389 @@
+{
+  "id": "c007",
+  "record": {
+    "id": "c007",
+    "url": "https://quantifiedstrategies.substack.com/p/how-chatgpt-helped-us-make-a-bitcoin",
+    "source": "substack",
+    "posted": "2025-08-29",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "backtest_claim",
+    "excerpt": "Buying when the price breaks above the highest high of the last N days \u2026 Exiting when the price drops below the lowest low of the last M days \u2026 We used a 15-day high for entry and a 15-day low for exit, rather than the typical 20-day period. \u2026 we chose to only allow trades when the ADX(14) was below 25 \u2026 Backtest results on daily BTC/USD data from 2015 showed a strong Compound Annual Growth Rate (CAGR) of 90%",
+    "performance_claim": "Compound Annual Growth Rate (CAGR) of 90%",
+    "verbatim_confidence": "high",
+    "notes": "Donchian 15/15 breakout with ADX(14)<25 filter on BTC daily; full rules partly paywalled but visible text is mechanical."
+  },
+  "spec": {
+    "claim_summary": "Buy BTC when price breaks above the 15-day highest high while 14-period ADX is below 25, and exit when price drops below the 15-day lowest low.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "highest_high",
+          "period": 15,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      },
+      {
+        "left": {
+          "kind": "adx",
+          "period": 14,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "lt",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 25.0,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "lowest_low",
+          "period": 15,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": "2015-01-01",
+      "period_end": null,
+      "other": "Compound Annual Growth Rate (CAGR) of 90%"
+    },
+    "assumptions": [
+      "Mapped BTC/USD to Binance spot BTCUSDT; price series assumed equivalent.",
+      "Timeframe 'daily' compiled as 1d.",
+      "'Breaks above' compiled as close crosses_above previous 15-bar highest_high on bar close; 'drops below' as close crosses_below previous 15-bar lowest_low.",
+      "highest_high/lowest_low look at the PREVIOUS N bars excluding the current bar.",
+      "ADX(14) below 25 filter applies to entry only; exit does not require ADX condition.",
+      "No stop-loss, take-profit or max hold stated; exit is only via the 15-day low rule.",
+      "Period start 'from 2015' interpreted as 2015-01-01; no end date stated so engine tests all available history."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "We used a 15-day high for entry",
+        "assumed": false
+      },
+      {
+        "field": "entry[1]",
+        "quote": "we chose to only allow trades when the ADX(14) was below 25",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": "a 15-day low for exit",
+        "assumed": false
+      },
+      {
+        "field": "assets",
+        "quote": "daily BTC/USD data from 2015",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": "daily BTC/USD data",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": "Buying when the price breaks above the highest high of the last N days",
+        "assumed": false
+      },
+      {
+        "field": "claimed.other",
+        "quote": "Compound Annual Growth Rate (CAGR) of 90%",
+        "assumed": false
+      },
+      {
+        "field": "claimed.period_start",
+        "quote": "from 2015",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 6920,
+          "prompt_tokens": 1157,
+          "total_tokens": 8077,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 6272,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 6,
+      "assumed": 0,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "exit[0]",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "audits": [
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ]
+  },
+  "report": {
+    "verdict": "SURVIVES",
+    "headline": "Holds up: +24.29% per trade after costs over 32 trades, beats random timing (p = 0.038).",
+    "reasons": [],
+    "warnings": [
+      "the claim's results start 2015-01-01; Binance history for BTCUSDT starts 2017-08-17, so the test covers less history than the claim",
+      "too few trades after the claim's period to judge it out-of-sample"
+    ],
+    "asset": "BTCUSDT",
+    "timeframe": "1d",
+    "primary": {
+      "trades": 32,
+      "win_rate_pct": 50.0,
+      "avg_net_pct": 24.289779242835515,
+      "total_net_pct": 6072.724245213387,
+      "total_gross_pct": 6565.46892946027,
+      "max_drawdown_pct": -39.88308287093019,
+      "avg_bars": 50.75,
+      "open_at_end": 0,
+      "buy_hold_pct": 1780.815115875236,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 48.36212030970816
+    },
+    "null_test": {
+      "p_value": 0.0384807596201899,
+      "strategy_mean_log_pct": 12.88351676341887,
+      "null_median_log_pct": 3.8306109998005935,
+      "null_p95_log_pct": 12.178434604080378,
+      "beat_by_random_pct": 3.8,
+      "sims": 2000
+    },
+    "out_of_sample": {
+      "available": true,
+      "boundary": "2025-08-29",
+      "boundary_source": "post date",
+      "claim_window": [
+        "2015-01-01",
+        null
+      ],
+      "in_window": {
+        "trades": 27,
+        "win_rate_pct": 51.85185185185185,
+        "avg_net_pct": 28.898094189671212,
+        "total_net_pct": 6426.285311805388,
+        "total_gross_pct": 6863.191705211594,
+        "max_drawdown_pct": -39.88308287093019,
+        "avg_bars": 54.148148148148145,
+        "open_at_end": 0
+      },
+      "after_window": {
+        "trades": 5,
+        "win_rate_pct": 40.0,
+        "avg_net_pct": -0.5951214700772867,
+        "total_net_pct": -5.4174932553507364,
+        "total_gross_pct": -4.275665360878889,
+        "max_drawdown_pct": -21.48747722502322,
+        "avg_bars": 32.4,
+        "open_at_end": 0
+      },
+      "counts": false
+    },
+    "halves": {
+      "split": "2022-03-23",
+      "first": {
+        "trades": 12,
+        "win_rate_pct": 50.0,
+        "avg_net_pct": 52.907645831741334,
+        "total_net_pct": 2063.3091510530217,
+        "total_gross_pct": 2126.518328133708,
+        "max_drawdown_pct": -31.727669071737928,
+        "avg_bars": 67.33333333333333,
+        "open_at_end": 0
+      },
+      "second": {
+        "trades": 20,
+        "win_rate_pct": 50.0,
+        "avg_net_pct": 7.119059289492012,
+        "total_net_pct": 185.33713002641,
+        "total_gross_pct": 199.36735059564228,
+        "max_drawdown_pct": -32.66372830089585,
+        "avg_bars": 40.8,
+        "open_at_end": 0
+      },
+      "consistent": true
+    },
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "ETHUSDT",
+          "trades": 29,
+          "total_net_pct": 2618.067108876273,
+          "avg_net_pct": 21.728367196746902
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 27,
+          "total_net_pct": 1393.3167961561878,
+          "avg_net_pct": 37.79678978731428
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 33,
+          "total_net_pct": 7438.470930631847,
+          "avg_net_pct": 35.19492458211004
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 25,
+          "total_net_pct": 375.2016546682367,
+          "avg_net_pct": 18.362422345288383
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 23,
+          "total_net_pct": 3465.64377982305,
+          "avg_net_pct": 34.94321381152007
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 26,
+          "total_net_pct": 3268.0628058962147,
+          "avg_net_pct": 46.847552501569496
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 27,
+          "total_net_pct": 33.27016190955989,
+          "avg_net_pct": 11.09751912782352
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 28,
+          "total_net_pct": 723.4952152858956,
+          "avg_net_pct": 14.959722311830475
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 38,
+          "total_net_pct": 44.949366970528516,
+          "avg_net_pct": 4.418968594442354
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 23,
+          "total_net_pct": 89.35194046586012,
+          "avg_net_pct": 22.966099818598988
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 30,
+          "total_net_pct": 802.5798209309655,
+          "avg_net_pct": 10.956717921735644
+        }
+      ],
+      "tested": 3,
+      "positive": 3,
+      "positive_share_pct": 100.0
+    },
+    "sweep": {
+      "readings": 1,
+      "note": "claim fixes every parameter"
+    },
+    "claimed_vs_measured": [],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 6,
+      "assumed": 0,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "exit[0]",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "exact",
+      "gaps": [],
+      "audit_majors": []
+    }
+  },
+  "seconds": 26.0
+}

@@ -1,0 +1,18 @@
+{
+  "id": "c001",
+  "record": {
+    "id": "c001",
+    "url": "https://www.tradingview.com/chart/BTCUSD/y4z6Xvkd-This-Bitcoin-signal-has-a-71-winrate/",
+    "source": "tradingview_idea",
+    "posted": "2024-07-10",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "backtest_claim",
+    "excerpt": "This Bitcoin signal has a 71% winrate. \u2026 RSI is at the 50 days lowest and is rising for 3 bars, and is lower than the 160 days RSI with 5 (as RSI value) added \u2026 and RSI is below 37.5 \u2026 Total Winners * 100 / Total Trades = 5 * 100 / 7 = 71.4% Winrate \u2026 Average winning trade: +105.8% \u2026 The rarity of the signal (only 7 times) induces that a small amount of backtest data, and should not be used as sole indicator in your trading.",
+    "performance_claim": "71.4% Winrate",
+    "verbatim_confidence": "high",
+    "notes": "Fully mechanical RSI rule on BTC daily with explicit win rate on only 7 trades; no exit stated (compiler must choose holding period)."
+  },
+  "error": "RuntimeError: model ran out of output budget before finishing the JSON",
+  "seconds": 36.2
+}

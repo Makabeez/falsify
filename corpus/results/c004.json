@@ -1,0 +1,206 @@
+{
+  "id": "c004",
+  "record": {
+    "id": "c004",
+    "url": "https://backtrex.com/en/backtests/ema-8-21-crossover-gold",
+    "source": "blog",
+    "posted": "2026-10-02",
+    "asset_hint": "XAU",
+    "timeframe_hint": "1h",
+    "category": "other_asset",
+    "excerpt": "gold against the US dollar (XAU/USD), 1-hour candles. \u2026 buy when EMA(8) crosses above EMA(21). There is no short side. \u2026 1.5% below the entry price. \u2026 4.5% above the entry price, so three times the risk. \u2026 Over ten years of hourly XAU/USD data, the long-only 8/21 EMA crossover with a 1:3 stop and target took 251 trades, \u2026 won 34% of them and returned +119%, while buying and holding gold returned +218%.",
+    "performance_claim": "won 34% of them and returned +119%",
+    "verbatim_confidence": "high",
+    "notes": "Fully mechanical 8/21 EMA rule on gold (not in asset list); date is the stated backtest run date, no publish date shown."
+  },
+  "spec": {
+    "claim_summary": "A long-only 8/21 EMA crossover on 1-hour XAU/USD with a 1.5% stop-loss and 4.5% take-profit.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "XAUUSD"
+    ],
+    "timeframe": "1h",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "ema",
+          "period": 8,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "ema",
+          "period": 21,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [],
+    "stop_loss_pct": 1.5,
+    "take_profit_pct": 4.5,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": 34.0,
+      "total_return_pct": 119.0,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": "took 251 trades"
+    },
+    "assumptions": [
+      "Asset is XAU/USD as named in the claim.",
+      "Timeframe is 1-hour as named in the claim.",
+      "Entry uses EMA(8) crossing above EMA(21) evaluated on bar closes.",
+      "No indicator exit condition is stated; position exits only via the 1.5% stop-loss or 4.5% take-profit.",
+      "Stop-loss is 1.5% below entry and take-profit is 4.5% above entry, giving 1:3 risk-reward.",
+      "Direction is long-only with no short side.",
+      "The cited ten-year window is performance context recorded in claimed, not a rule; the engine tests all available history."
+    ],
+    "evidence": [
+      {
+        "field": "assets",
+        "quote": "gold against the US dollar (XAU/USD)",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": "1-hour candles",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": "There is no short side.",
+        "assumed": false
+      },
+      {
+        "field": "entry[0]",
+        "quote": "buy when EMA(8) crosses above EMA(21)",
+        "assumed": false
+      },
+      {
+        "field": "stop_loss_pct",
+        "quote": "1.5% below the entry price.",
+        "assumed": false
+      },
+      {
+        "field": "take_profit_pct",
+        "quote": "4.5% above the entry price",
+        "assumed": false
+      },
+      {
+        "field": "claimed.total_return_pct",
+        "quote": "returned +119%",
+        "assumed": false
+      },
+      {
+        "field": "claimed.win_rate_pct",
+        "quote": "won 34% of them",
+        "assumed": false
+      },
+      {
+        "field": "claimed.other",
+        "quote": "took 251 trades",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 6230,
+          "prompt_tokens": 1170,
+          "total_tokens": 7400,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 5636,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 6,
+      "assumed": 0,
+      "quoted_fields": [
+        "entry[0]",
+        "stop_loss_pct",
+        "take_profit_pct",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "audits": [
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ]
+  },
+  "report": {
+    "verdict": "UNTESTABLE",
+    "headline": "No bundled history for the asset/timeframe this claim needs.",
+    "reasons": [
+      "wanted ['XAUUSD'] on 1h; bundled universe is ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'LINKUSDT', 'LTCUSDT', 'DOTUSDT', 'TRXUSDT']"
+    ],
+    "warnings": [],
+    "asset": null,
+    "timeframe": "1h",
+    "primary": {},
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {},
+    "sweep": {},
+    "claimed_vs_measured": [],
+    "costs": {},
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 6,
+      "assumed": 0,
+      "quoted_fields": [
+        "entry[0]",
+        "stop_loss_pct",
+        "take_profit_pct",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "exact",
+      "gaps": [],
+      "audit_majors": []
+    }
+  },
+  "seconds": 30.4
+}

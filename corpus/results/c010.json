@@ -1,0 +1,1334 @@
+{
+  "id": "c010",
+  "record": {
+    "id": "c010",
+    "url": "https://www.tradingview.com/script/N0nYQBlh/",
+    "source": "tradingview_script",
+    "posted": "2023-01-06",
+    "asset_hint": "BTC",
+    "timeframe_hint": "4h",
+    "category": "rule",
+    "excerpt": "This strategy was designed for BTCUSD in 4H timeframe \u2026 Backtesting context: 2020-01-02 to 2023-01-05 (The strategy has also worked in previous years) \u2026 Once Supertrend changes from a downtrend to a uptrend, you enter into a long position. \u2026 The stop loss will be defined by the atr stop loss \u2026 The first profit will be of 0.75 risk/reward ratio where half position will be closed. \u2026 When this happens, you move the stop loss to break even. \u2026 Once Supertrend changes from a uptrend to a downtrend, you close the other half of the initial long position.",
+    "performance_claim": "The strategy has also worked in previous years",
+    "verbatim_confidence": "high",
+    "notes": "Supertrend flip on BTC 4h with 0.75R partial and breakeven stop; Supertrend/ATR periods not stated (compiler must default). Long side only used for spot."
+  },
+  "spec": {
+    "claim_summary": "Enter long on BTC 4-hour Supertrend flip from downtrend to uptrend and exit on opposite flip, using an ATR-based stop with 0.75R partial profit and breakeven move.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "4h",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "supertrend",
+          "period": 10,
+          "value": null,
+          "multiplier": 1.0,
+          "param": 3.0
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "supertrend",
+          "period": 10,
+          "value": null,
+          "multiplier": 1.0,
+          "param": 3.0
+        }
+      }
+    ],
+    "stop_loss_pct": 2.0,
+    "take_profit_pct": 1.5,
+    "max_hold_bars": null,
+    "free_parameters": [
+      {
+        "name": "Supertrend ATR length",
+        "target": "entry[0].right.period",
+        "candidates": [
+          7.0,
+          10.0,
+          14.0,
+          22.0
+        ]
+      },
+      {
+        "name": "Supertrend multiplier",
+        "target": "entry[0].right.param",
+        "candidates": [
+          2.0,
+          3.0,
+          4.0,
+          5.0
+        ]
+      },
+      {
+        "name": "ATR stop proxy",
+        "target": "stop_loss_pct",
+        "candidates": [
+          1.0,
+          2.0,
+          3.0,
+          5.0
+        ]
+      },
+      {
+        "name": "0.75R profit proxy",
+        "target": "take_profit_pct",
+        "candidates": [
+          0.75,
+          1.5,
+          2.25,
+          3.75
+        ]
+      }
+    ],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": "2020-01-02",
+      "period_end": "2023-01-05",
+      "other": null
+    },
+    "assumptions": [
+      "Asset BTCUSD mapped to Binance spot equivalent BTCUSDT.",
+      "Timeframe is 4h as stated.",
+      "Entry interpreted as close crossing above Supertrend on bar close to represent change from downtrend to uptrend, using default Supertrend settings ATR length 10 and multiplier 3 since claim gives none; exit uses same settings.",
+      "Exit interpreted as close crossing below the same Supertrend on bar close to represent change from uptrend to downtrend.",
+      "Stop-loss value 2% is a fixed proxy; claim gives no numeric ATR length or multiplier so dynamic ATR distance cannot be expressed as fixed stop_loss_pct.",
+      "Take-profit value 1.5% is a fixed proxy for 0.75 x 2% stop to represent 0.75 risk/reward ratio in fixed terms.",
+      "NOT EXPRESSIBLE: ATR-based dynamic stop-loss distance varying per trade cannot be expressed as fixed stop_loss_pct; fixed 2% proxy used.",
+      "NOT EXPRESSIBLE: partial exit closing half position at 0.75R and position sizing cannot be expressed; test holds full position.",
+      "NOT EXPRESSIBLE: moving stop loss to break even after first profit, a trailing/breakeven move, cannot be expressed and is omitted.",
+      "Backtest period 2020-01-02 to 2023-01-05 recorded in claimed only; engine tests all available history starting flat, one position at a time, fills at next bar open."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "Once Supertrend changes from a downtrend to a uptrend, you enter into a long position.",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": "Once Supertrend changes from a uptrend to a downtrend, you close the other half of the initial long position.",
+        "assumed": false
+      },
+      {
+        "field": "stop_loss_pct",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "take_profit_pct",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "assets",
+        "quote": "for BTCUSD",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": "in 4H timeframe",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": "you enter into a long position.",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": false,
+    "issues": [
+      {
+        "field": "stop_loss_pct",
+        "problem": "Claim defines stop as ATR stop loss with no fixed percent; spec invents fixed 2% proxy, losing per-trade dynamic ATR distance.",
+        "severity": "major"
+      },
+      {
+        "field": "take_profit_pct",
+        "problem": "Claim requires closing half the position at 0.75 risk/reward; spec encodes fixed 1.5% full-position take profit, inventing threshold and converting partial exit to full exit.",
+        "severity": "major"
+      },
+      {
+        "field": "exit",
+        "problem": "Claim requires moving stop to breakeven after first profit for remaining half to opposite Supertrend flip; spec omits breakeven move and tests full position to flip/stop/take.",
+        "severity": "major"
+      }
+    ]
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 4357,
+          "prompt_tokens": 2065,
+          "total_tokens": 6422,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 4281,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "error": "1 validation error for ClaimSpec\n  Value error, testable claim needs at least one asset [type=value_error, input_value={'claim_summary': 'Enter ...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+      },
+      {
+        "usage": {
+          "completion_tokens": 6442,
+          "prompt_tokens": 2217,
+          "total_tokens": 8659,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 5513,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 7,
+      "quoted": 5,
+      "assumed": 2,
+      "quoted_fields": [
+        "entry[0]",
+        "exit[0]",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [
+        "stop_loss_pct",
+        "take_profit_pct"
+      ],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 5231,
+            "prompt_tokens": 1190,
+            "total_tokens": 6421,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 4522,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            }
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 5,
+        "quoted": 5,
+        "assumed": 0,
+        "quoted_fields": [
+          "entry[0]",
+          "exit[0]",
+          "assets",
+          "timeframe",
+          "direction"
+        ],
+        "assumed_fields": [],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "stop_loss_pct",
+            "problem": "Claim requires 'The stop loss will be defined by the atr stop loss' but spec sets stop_loss_pct to null and tests with no stop loss.",
+            "severity": "major"
+          },
+          {
+            "field": "take_profit_pct",
+            "problem": "Claim requires 'The first profit will be of 0.75 risk/reward ratio where half position will be closed' but spec sets take_profit_pct to null and holds full position until opposite Supertrend flip.",
+            "severity": "major"
+          },
+          {
+            "field": "exit",
+            "problem": "Claim requires 'When this happens, you move the stop loss to break even' but spec omits any breakeven move after first profit.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "stop_loss_pct",
+            "problem": "Claim defines stop as ATR stop loss with no fixed percent; spec invents fixed 2% proxy, losing per-trade dynamic ATR distance.",
+            "severity": "major"
+          },
+          {
+            "field": "take_profit_pct",
+            "problem": "Claim requires closing half the position at 0.75 risk/reward; spec encodes fixed 1.5% full-position take profit, inventing threshold and converting partial exit to full exit.",
+            "severity": "major"
+          },
+          {
+            "field": "exit",
+            "problem": "Claim requires moving stop to breakeven after first profit for remaining half to opposite Supertrend flip; spec omits breakeven move and tests full position to flip/stop/take.",
+            "severity": "major"
+          }
+        ]
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "DIES",
+    "headline": "Tested an approximation of the claim. Loses money after costs: -0.23% per trade, -42.8% total (before costs -1.9%).",
+    "reasons": [
+      "loses money after costs: -0.23% per trade, -42.8% total (before costs -1.9%)",
+      "no better than random timing: random entries with the same holding times did as well 63% of the time (p = 0.632)",
+      "after 2023-01-06 (post date), it lost -0.18% per trade over 97 trades"
+    ],
+    "warnings": [
+      "not consistent over time: edge is not positive in both halves (split 2022-03-24)",
+      "only works on 0/11 other assets",
+      "fragile: only 0% of reasonable readings of the vague parameters make money",
+      "just holding did better: -43% vs buy-and-hold +1781%",
+      "left out: ATR-based dynamic stop-loss distance varying per trade cannot be expressed as fixed stop_loss_pct; fixed 2% proxy used.",
+      "left out: partial exit closing half position at 0.75R and position sizing cannot be expressed; test holds full position.",
+      "left out: moving stop loss to break even after first profit, a trailing/breakeven move, cannot be expressed and is omitted.",
+      "audit: stop_loss_pct: Claim defines stop as ATR stop loss with no fixed percent; spec invents fixed 2% proxy, losing per-trade dynamic ATR distance.",
+      "audit: take_profit_pct: Claim requires closing half the position at 0.75 risk/reward; spec encodes fixed 1.5% full-position take profit, inventing threshold and converting partial exit to full exit.",
+      "audit: exit: Claim requires moving stop to breakeven after first profit for remaining half to opposite Supertrend flip; spec omits breakeven move and tests full position to flip/stop/take."
+    ],
+    "asset": "BTCUSDT",
+    "timeframe": "4h",
+    "primary": {
+      "trades": 225,
+      "win_rate_pct": 57.333333333333336,
+      "avg_net_pct": -0.23306165934213183,
+      "total_net_pct": -42.812174432690256,
+      "total_gross_pct": -1.8652734565253848,
+      "max_drawdown_pct": -46.58954479311351,
+      "avg_bars": 3.391111111111111,
+      "open_at_end": 0,
+      "buy_hold_pct": 1780.815115875236,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 3.790174357955392
+    },
+    "null_test": {
+      "p_value": 0.632183908045977,
+      "strategy_mean_log_pct": -0.24836851110590072,
+      "null_median_log_pct": -0.18439687621230647,
+      "null_p95_log_pct": 0.1129996058481756,
+      "beat_by_random_pct": 63.2,
+      "sims": 2000
+    },
+    "out_of_sample": {
+      "available": true,
+      "boundary": "2023-01-06",
+      "boundary_source": "post date",
+      "claim_window": [
+        "2020-01-02",
+        "2023-01-05"
+      ],
+      "in_window": {
+        "trades": 73,
+        "win_rate_pct": 63.013698630136986,
+        "avg_net_pct": -0.03472545274438687,
+        "total_net_pct": -3.516387137197796,
+        "total_gross_pct": 14.958737902108421,
+        "max_drawdown_pct": -14.483469140216599,
+        "avg_bars": 3.493150684931507,
+        "open_at_end": 0
+      },
+      "after_window": {
+        "trades": 97,
+        "win_rate_pct": 58.76288659793815,
+        "avg_net_pct": -0.1831472336289328,
+        "total_net_pct": -17.49056143154778,
+        "total_gross_pct": 4.137569160867738,
+        "max_drawdown_pct": -26.869229497077118,
+        "avg_bars": 3.9381443298969074,
+        "open_at_end": 0
+      },
+      "counts": true
+    },
+    "halves": {
+      "split": "2022-03-24",
+      "first": {
+        "trades": 107,
+        "win_rate_pct": 56.074766355140184,
+        "avg_net_pct": -0.2770059106642215,
+        "total_net_pct": -26.875785148154318,
+        "total_gross_pct": -5.465987376067227,
+        "max_drawdown_pct": -33.47247669031839,
+        "avg_bars": 2.5700934579439254,
+        "open_at_end": 0
+      },
+      "second": {
+        "trades": 118,
+        "win_rate_pct": 58.47457627118644,
+        "avg_net_pct": -0.1932139060246438,
+        "total_net_pct": -21.79358686698244,
+        "total_gross_pct": 3.808908370224273,
+        "max_drawdown_pct": -28.377807234091414,
+        "avg_bars": 4.135593220338983,
+        "open_at_end": 0
+      },
+      "consistent": false
+    },
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "ETHUSDT",
+          "trades": 226,
+          "total_net_pct": -44.09027549630801,
+          "avg_net_pct": -0.24191943119584794
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 155,
+          "total_net_pct": -53.52691543304488,
+          "avg_net_pct": -0.4778498060392131
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 218,
+          "total_net_pct": -64.37968081408738,
+          "avg_net_pct": -0.45707994443366096
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 189,
+          "total_net_pct": -54.97135032809211,
+          "avg_net_pct": -0.40597949127714317
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 147,
+          "total_net_pct": -51.608232465030525,
+          "avg_net_pct": -0.47723683960201
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 205,
+          "total_net_pct": -46.90804510390622,
+          "avg_net_pct": -0.2932422556347104
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 140,
+          "total_net_pct": -41.28824360393659,
+          "avg_net_pct": -0.36441270475430404
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 196,
+          "total_net_pct": -64.16599339659732,
+          "avg_net_pct": -0.5069274014040386
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 202,
+          "total_net_pct": -19.299341770466437,
+          "avg_net_pct": -0.09155350213408232
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 145,
+          "total_net_pct": -25.519329014346837,
+          "avg_net_pct": -0.18811219639881305
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 232,
+          "total_net_pct": -42.8331253670721,
+          "avg_net_pct": -0.2258731467672298
+        }
+      ],
+      "tested": 11,
+      "positive": 0,
+      "positive_share_pct": 0.0
+    },
+    "sweep": {
+      "readings": 64,
+      "truncated": true,
+      "positive_share_pct": 0.0,
+      "best": {
+        "params": {
+          "Supertrend ATR length": 22.0,
+          "Supertrend multiplier": 2.0,
+          "ATR stop proxy": 3.0,
+          "0.75R profit proxy": 0.75
+        },
+        "trades": 384,
+        "avg_net_pct": -0.1648067566169876,
+        "total_net_pct": -49.00186388839749,
+        "p_value": 0.38922155688622756
+      },
+      "best_p_bonferroni": 1.0,
+      "results": [
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 382,
+          "avg_net_pct": -0.3141408320486636,
+          "total_net_pct": -70.37388340513118,
+          "p_value": 0.8582834331337326
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 382,
+          "avg_net_pct": -0.23687381068146263,
+          "total_net_pct": -60.72926894372452,
+          "p_value": 0.592814371257485
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 381,
+          "avg_net_pct": -0.19781437292878865,
+          "total_net_pct": -54.86541744894827,
+          "p_value": 0.5469061876247505
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 371,
+          "avg_net_pct": -0.28183373114529775,
+          "total_net_pct": -67.2826064302907,
+          "p_value": 0.7684630738522954
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 227,
+          "avg_net_pct": -0.2682780663204166,
+          "total_net_pct": -46.11997190618595,
+          "p_value": 0.6646706586826348
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 227,
+          "avg_net_pct": -0.2891530163803436,
+          "total_net_pct": -49.093753830383434,
+          "p_value": 0.7385229540918163
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 227,
+          "avg_net_pct": -0.3078484622824305,
+          "total_net_pct": -51.67834962251261,
+          "p_value": 0.7664670658682635
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 226,
+          "avg_net_pct": -0.29531715540186826,
+          "total_net_pct": -50.89119876882603,
+          "p_value": 0.716566866267465
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 152,
+          "avg_net_pct": -0.36441270475429655,
+          "total_net_pct": -42.92206505137543,
+          "p_value": 0.844311377245509
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 152,
+          "avg_net_pct": -0.2495571104148697,
+          "total_net_pct": -32.38851021734065,
+          "p_value": 0.6107784431137725
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 152,
+          "avg_net_pct": -0.20417927764433694,
+          "total_net_pct": -27.918302931249094,
+          "p_value": 0.5189620758483033
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 152,
+          "avg_net_pct": -0.24652764882384134,
+          "total_net_pct": -33.11080434549112,
+          "p_value": 0.6347305389221557
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 106,
+          "avg_net_pct": -0.3314729871324236,
+          "total_net_pct": -29.953188694981502,
+          "p_value": 0.7385229540918163
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 106,
+          "avg_net_pct": -0.25968834317859296,
+          "total_net_pct": -24.70032936183626,
+          "p_value": 0.6047904191616766
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 106,
+          "avg_net_pct": -0.21344093914062423,
+          "total_net_pct": -21.18466416390631,
+          "p_value": 0.5588822355289421
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 7.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 106,
+          "avg_net_pct": -0.13327804224538578,
+          "total_net_pct": -14.543477006159833,
+          "p_value": 0.4231536926147705
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 377,
+          "avg_net_pct": -0.32505105279500285,
+          "total_net_pct": -71.11575700688002,
+          "p_value": 0.8702594810379242
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 377,
+          "avg_net_pct": -0.24675926987120797,
+          "total_net_pct": -61.71265529470773,
+          "p_value": 0.6407185628742516
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 375,
+          "avg_net_pct": -0.18096587426920333,
+          "total_net_pct": -51.277498717097245,
+          "p_value": 0.5169660678642715
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 367,
+          "avg_net_pct": -0.3017095928657946,
+          "total_net_pct": -69.29228384508863,
+          "p_value": 0.8143712574850299
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 225,
+          "avg_net_pct": -0.20535046832689755,
+          "total_net_pct": -37.553074634985805,
+          "p_value": 0.4590818363273453
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 225,
+          "avg_net_pct": -0.2108927065299416,
+          "total_net_pct": -38.83564053000035,
+          "p_value": 0.5029940119760479
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 225,
+          "avg_net_pct": -0.1820910856271912,
+          "total_net_pct": -35.20778485951035,
+          "p_value": 0.45708582834331335
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 225,
+          "avg_net_pct": -0.19185107954281813,
+          "total_net_pct": -37.51334446224938,
+          "p_value": 0.500998003992016
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 143,
+          "avg_net_pct": -0.3705169181597483,
+          "total_net_pct": -41.50981903793728,
+          "p_value": 0.8383233532934131
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 143,
+          "avg_net_pct": -0.31645102799717245,
+          "total_net_pct": -37.168591080899404,
+          "p_value": 0.7245508982035929
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 143,
+          "avg_net_pct": -0.22287166241196973,
+          "total_net_pct": -28.472409498625893,
+          "p_value": 0.5469061876247505
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 143,
+          "avg_net_pct": -0.2418782898408855,
+          "total_net_pct": -31.088506296963548,
+          "p_value": 0.5888223552894212
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 105,
+          "avg_net_pct": -0.38935277666799994,
+          "total_net_pct": -33.87646825400045,
+          "p_value": 0.8323353293413174
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 105,
+          "avg_net_pct": -0.2698660312264612,
+          "total_net_pct": -25.309501251339096,
+          "p_value": 0.5868263473053892
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 105,
+          "avg_net_pct": -0.15347902896251003,
+          "total_net_pct": -15.803122803030911,
+          "p_value": 0.4431137724550898
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 10.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 105,
+          "avg_net_pct": -0.212560916363215,
+          "total_net_pct": -21.429776925722145,
+          "p_value": 0.5389221556886228
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 380,
+          "avg_net_pct": -0.33225313833925746,
+          "total_net_pct": -72.17471303652859,
+          "p_value": 0.8922155688622755
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 380,
+          "avg_net_pct": -0.22635778811514354,
+          "total_net_pct": -58.91328219513723,
+          "p_value": 0.5608782435129741
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 378,
+          "avg_net_pct": -0.17549400374146884,
+          "total_net_pct": -50.5304661108061,
+          "p_value": 0.41916167664670656
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 368,
+          "avg_net_pct": -0.22157023931728817,
+          "total_net_pct": -58.594549639690044,
+          "p_value": 0.6706586826347305
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 223,
+          "avg_net_pct": -0.2508962339363179,
+          "total_net_pct": -43.36873482337117,
+          "p_value": 0.5788423153692615
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 223,
+          "avg_net_pct": -0.21734456768469748,
+          "total_net_pct": -39.45295713492413,
+          "p_value": 0.5389221556886228
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 223,
+          "avg_net_pct": -0.22256998488385973,
+          "total_net_pct": -40.64777266724352,
+          "p_value": 0.6027944111776448
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 222,
+          "avg_net_pct": -0.1901258314318386,
+          "total_net_pct": -36.91341962521656,
+          "p_value": 0.5469061876247505
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 145,
+          "avg_net_pct": -0.3704327221127766,
+          "total_net_pct": -41.93979031986049,
+          "p_value": 0.8562874251497006
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 145,
+          "avg_net_pct": -0.2861524790940526,
+          "total_net_pct": -34.74688138031695,
+          "p_value": 0.6347305389221557
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 145,
+          "avg_net_pct": -0.2655124195792627,
+          "total_net_pct": -33.135010729655434,
+          "p_value": 0.6207584830339321
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 145,
+          "avg_net_pct": -0.23242573476299286,
+          "total_net_pct": -30.479355327146575,
+          "p_value": 0.5968063872255489
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 99,
+          "avg_net_pct": -0.33796111333067097,
+          "total_net_pct": -28.747727901243113,
+          "p_value": 0.7744510978043913
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 99,
+          "avg_net_pct": -0.2616167306173295,
+          "total_net_pct": -23.425030522566704,
+          "p_value": 0.5988023952095808
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 99,
+          "avg_net_pct": -0.269174328166936,
+          "total_net_pct": -24.29355421668218,
+          "p_value": 0.6107784431137725
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 14.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 99,
+          "avg_net_pct": -0.15452756776220777,
+          "total_net_pct": -15.527462782428792,
+          "p_value": 0.5109780439121756
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 385,
+          "avg_net_pct": -0.32133439872153585,
+          "total_net_pct": -71.46003805390215,
+          "p_value": 0.872255489021956
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 385,
+          "avg_net_pct": -0.16693416895863908,
+          "total_net_pct": -48.84971700484753,
+          "p_value": 0.4031936127744511
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 384,
+          "avg_net_pct": -0.1648067566169876,
+          "total_net_pct": -49.00186388839749,
+          "p_value": 0.38922155688622756
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 2.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 374,
+          "avg_net_pct": -0.12240765872913531,
+          "total_net_pct": -40.34695464802785,
+          "p_value": 0.39520958083832336
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 223,
+          "avg_net_pct": -0.3291834551900965,
+          "total_net_pct": -52.47111107535656,
+          "p_value": 0.8063872255489022
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 223,
+          "avg_net_pct": -0.2665536781870723,
+          "total_net_pct": -45.797786760971924,
+          "p_value": 0.6227544910179641
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 223,
+          "avg_net_pct": -0.17452433106951964,
+          "total_net_pct": -33.84247795286021,
+          "p_value": 0.4491017964071856
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 3.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 222,
+          "avg_net_pct": -0.19673669676766514,
+          "total_net_pct": -37.87329025452383,
+          "p_value": 0.5349301397205589
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 141,
+          "avg_net_pct": -0.3706035027470595,
+          "total_net_pct": -41.07666355629623,
+          "p_value": 0.8403193612774451
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 141,
+          "avg_net_pct": -0.2697819354363416,
+          "total_net_pct": -32.41843562127805,
+          "p_value": 0.6307385229540918
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 141,
+          "avg_net_pct": -0.2609379383038216,
+          "total_net_pct": -31.94483213193542,
+          "p_value": 0.6347305389221557
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 4.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 141,
+          "avg_net_pct": -0.2614992418394081,
+          "total_net_pct": -32.682283694456146,
+          "p_value": 0.6447105788423154
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 1.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 96,
+          "avg_net_pct": -0.4371545811692649,
+          "total_net_pct": -34.57389983662643,
+          "p_value": 0.9001996007984032
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 2.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 96,
+          "avg_net_pct": -0.29167082833932595,
+          "total_net_pct": -25.022259246125454,
+          "p_value": 0.6287425149700598
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 3.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 96,
+          "avg_net_pct": -0.30303220608420783,
+          "total_net_pct": -26.132349427493974,
+          "p_value": 0.6367265469061876
+        },
+        {
+          "params": {
+            "Supertrend ATR length": 22.0,
+            "Supertrend multiplier": 5.0,
+            "ATR stop proxy": 5.0,
+            "0.75R profit proxy": 0.75
+          },
+          "trades": 96,
+          "avg_net_pct": -0.244884022083732,
+          "total_net_pct": -22.3021262833354,
+          "p_value": 0.5608782435129741
+        }
+      ]
+    },
+    "claimed_vs_measured": [],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 7,
+      "quoted": 5,
+      "assumed": 2,
+      "quoted_fields": [
+        "entry[0]",
+        "exit[0]",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [
+        "stop_loss_pct",
+        "take_profit_pct"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: ATR-based dynamic stop-loss distance varying per trade cannot be expressed as fixed stop_loss_pct; fixed 2% proxy used.",
+        "NOT EXPRESSIBLE: partial exit closing half position at 0.75R and position sizing cannot be expressed; test holds full position.",
+        "NOT EXPRESSIBLE: moving stop loss to break even after first profit, a trailing/breakeven move, cannot be expressed and is omitted."
+      ],
+      "audit_majors": [
+        "stop_loss_pct: Claim defines stop as ATR stop loss with no fixed percent; spec invents fixed 2% proxy, losing per-trade dynamic ATR distance.",
+        "take_profit_pct: Claim requires closing half the position at 0.75 risk/reward; spec encodes fixed 1.5% full-position take profit, inventing threshold and converting partial exit to full exit.",
+        "exit: Claim requires moving stop to breakeven after first profit for remaining half to opposite Supertrend flip; spec omits breakeven move and tests full position to flip/stop/take."
+      ]
+    }
+  },
+  "seconds": 87.1
+}

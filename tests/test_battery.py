@@ -111,3 +111,20 @@ def test_calibration_small_run_controls_false_positives_and_has_power():
     r = calibrate.run_setup(calibrate.Setup("BTCUSDT", "4h", 6, 200), reps=60, sims=400, edges_bps=[0, 800])
     assert r["false_positive_pct"] <= 12  # nominal 5%, loose bound for 60 reps
     assert r["power_pct"]["800"] >= 95
+
+
+def test_verdict_split_refuted_vs_cannot_tell():
+    """DIES = evidence against; INCONCLUSIVE = profitable but indistinguishable from luck."""
+    import pytest
+    from pathlib import Path
+    from falsify import data as data_mod
+    from falsify.battery import falsify
+    from falsify.extract import load_spec
+    if ("SOLUSDT", "1d") not in data_mod.available():
+        pytest.skip("bundled data missing")
+    claims = Path(__file__).parent.parent / "claims"
+    rsi = falsify(load_spec(claims / "02_rsi_oversold_eth.json")[0], with_cross_asset=False)
+    weekend = falsify(load_spec(claims / "04_weekend_sol.json")[0], with_cross_asset=False)
+    assert rsi.verdict.value == "DIES"
+    assert weekend.verdict.value == "INCONCLUSIVE" and 0.05 <= weekend.null_test["p_value"] < 0.5
+    assert weekend.headline.startswith("Makes money")

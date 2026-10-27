@@ -1,0 +1,364 @@
+{
+  "id": "c008",
+  "record": {
+    "id": "c008",
+    "url": "https://ecoinometrics.substack.com/p/ecoinometrics-trading-momentum",
+    "source": "substack",
+    "posted": "2021-06-16",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "backtest_claim",
+    "excerpt": "Buy when the daily close is crossing above the 200 days moving average. \u2026 Liquidate the position when the daily close falls back down below the 200 DMA. \u2026 For this strategy you basically only need to check the price once a day and you are set. \u2026 The most recent trade that started after the crash of March 2020 returned 388%\u2026 not too bad.",
+    "performance_claim": "returned 388%",
+    "verbatim_confidence": "high",
+    "notes": "Classic close vs 200 DMA trend rule on BTC daily; single-trade performance claim checkable on Binance data."
+  },
+  "spec": {
+    "claim_summary": "Buy when the daily close crosses above the 200-day moving average and liquidate when it falls back below.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "sma",
+          "period": 200,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "sma",
+          "period": 200,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": "The most recent trade that started after the crash of March 2020 returned 388%"
+    },
+    "assumptions": [
+      "Asset not named in claim text; assumed BTCUSDT as the most natural reading.",
+      "Timeframe assumed 1d from daily closes and once-a-day check.",
+      "'moving average' / 'DMA' interpreted as simple moving average (SMA) with length 200 bars.",
+      "Entry 'crossing above' compiled as close crosses_above SMA(200) on bar close.",
+      "Exit 'falls back down below' compiled as close crosses_below SMA(200) on bar close.",
+      "No stop-loss, take-profit or max hold stated; none used, exit is by opposite cross only.",
+      "The 388% figure refers to a single trade starting after March 2020 crash, recorded in claimed.other, not a strategy total return."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "Buy when the daily close is crossing above the 200 days moving average.",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": "Liquidate the position when the daily close falls back down below the 200 DMA.",
+        "assumed": false
+      },
+      {
+        "field": "assets",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "timeframe",
+        "quote": "check the price once a day",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": "Buy when the daily close is crossing above the 200 days moving average.",
+        "assumed": false
+      },
+      {
+        "field": "claimed.other",
+        "quote": "The most recent trade that started after the crash of March 2020 returned 388%",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 4219,
+          "prompt_tokens": 1130,
+          "total_tokens": 5349,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 3524,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 4,
+      "assumed": 1,
+      "quoted_fields": [
+        "entry[0]",
+        "exit[0]",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [
+        "assets"
+      ],
+      "problems": []
+    },
+    "audits": [
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ]
+  },
+  "report": {
+    "verdict": "INCONCLUSIVE",
+    "headline": "Makes money (+14.37% per trade after costs, 32 trades) but can't be told from luck: random timing did as well 23% of the time.",
+    "reasons": [
+      "makes money after costs (+14.37% per trade), but random timing did as well 23% of the time (p = 0.233); needs p < 0.05 to count as an edge"
+    ],
+    "warnings": [
+      "the last trade is still open at the end of the data; it is marked at the last close",
+      "just holding did better: +873% vs buy-and-hold +1781%"
+    ],
+    "asset": "BTCUSDT",
+    "timeframe": "1d",
+    "primary": {
+      "trades": 32,
+      "win_rate_pct": 25.0,
+      "avg_net_pct": 14.36621003120903,
+      "total_net_pct": 873.0478723612622,
+      "total_gross_pct": 950.7225177166827,
+      "max_drawdown_pct": -37.800087019650775,
+      "avg_bars": 51.75,
+      "open_at_end": 1,
+      "buy_hold_pct": 1780.815115875236,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 49.31506849315068
+    },
+    "null_test": {
+      "p_value": 0.23338330834582707,
+      "strategy_mean_log_pct": 7.110197174281193,
+      "null_median_log_pct": 3.6410264238537167,
+      "null_p95_log_pct": 11.484685889499268,
+      "beat_by_random_pct": 23.3,
+      "sims": 2000
+    },
+    "out_of_sample": {
+      "available": true,
+      "boundary": "2021-06-16",
+      "boundary_source": "post date",
+      "claim_window": [
+        null,
+        null
+      ],
+      "in_window": {
+        "trades": 7,
+        "win_rate_pct": 28.57142857142857,
+        "avg_net_pct": 48.138571112595926,
+        "total_net_pct": 327.66310019995205,
+        "total_gross_pct": 334.9085350015482,
+        "max_drawdown_pct": -21.12006221446959,
+        "avg_bars": 88.0,
+        "open_at_end": 0
+      },
+      "after_window": {
+        "trades": 25,
+        "win_rate_pct": 24.0,
+        "avg_net_pct": 4.909948928420699,
+        "total_net_pct": 127.52673118310139,
+        "total_gross_pct": 141.5962054441957,
+        "max_drawdown_pct": -32.19255323210791,
+        "avg_bars": 41.6,
+        "open_at_end": 1
+      },
+      "counts": true
+    },
+    "halves": {
+      "split": "2022-03-23",
+      "first": {
+        "trades": 15,
+        "win_rate_pct": 13.333333333333334,
+        "avg_net_pct": 19.94778134631449,
+        "total_net_pct": 189.9874290139994,
+        "total_gross_pct": 200.6171688909038,
+        "max_drawdown_pct": -37.800087019650775,
+        "avg_bars": 49.0,
+        "open_at_end": 0
+      },
+      "second": {
+        "trades": 17,
+        "win_rate_pct": 35.294117647058826,
+        "avg_net_pct": 9.441294164939503,
+        "total_net_pct": 235.54829451392786,
+        "total_gross_pct": 249.5217926485088,
+        "max_drawdown_pct": -10.215013615022661,
+        "avg_bars": 54.1764705882353,
+        "open_at_end": 1
+      },
+      "consistent": true
+    },
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "ETHUSDT",
+          "trades": 27,
+          "total_net_pct": 1404.4060418746194,
+          "avg_net_pct": 36.16527409429407
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 21,
+          "total_net_pct": 210.7968349831825,
+          "avg_net_pct": 21.02179812655067
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 54,
+          "total_net_pct": 2228.72208639668,
+          "avg_net_pct": 29.802511769927293
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 48,
+          "total_net_pct": -29.953258710977536,
+          "avg_net_pct": 1.9887779977228472
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 35,
+          "total_net_pct": 2631.460273939919,
+          "avg_net_pct": 165.66290922595016
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 35,
+          "total_net_pct": 873.3349632374269,
+          "avg_net_pct": 32.28187392033331
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 29,
+          "total_net_pct": 66.67606794734884,
+          "avg_net_pct": 6.084388277477014
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 45,
+          "total_net_pct": 49.39600284470955,
+          "avg_net_pct": 13.843451008282212
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 44,
+          "total_net_pct": -30.635922294598107,
+          "avg_net_pct": 2.252311959609109
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 41,
+          "total_net_pct": -93.61307024989635,
+          "avg_net_pct": -6.195464593318669
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 39,
+          "total_net_pct": 129.55858259616141,
+          "avg_net_pct": 7.108032998967275
+        }
+      ],
+      "tested": 8,
+      "positive": 7,
+      "positive_share_pct": 87.5
+    },
+    "sweep": {
+      "readings": 1,
+      "note": "claim fixes every parameter"
+    },
+    "claimed_vs_measured": [],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 4,
+      "assumed": 1,
+      "quoted_fields": [
+        "entry[0]",
+        "exit[0]",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [
+        "assets"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "exact",
+      "gaps": [],
+      "audit_majors": []
+    }
+  },
+  "seconds": 20.3
+}

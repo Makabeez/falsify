@@ -1,0 +1,400 @@
+{
+  "id": "c006",
+  "record": {
+    "id": "c006",
+    "url": "https://abouttrading.substack.com/p/i-backtested-a-powerful-strategy",
+    "source": "substack",
+    "posted": "2025-11-10",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "rule",
+    "excerpt": "A bullish trade is generated whenever the current short-term SMA is above the current long-term SMA and the previous RSI is below the oversold level and below the current RSI. \u2026 We will tweak the following parameters and back-test on the daily values of BTCUSD: \u2026 short_len = 200, long_len = 300, rsi_ov = 65, rsi_us = 35, initial_capital = 100000, holding_period = 20 \u2026 holding_period = this is the number of periods to hold before liquidating \u2026 The results were... surprising.",
+    "performance_claim": null,
+    "verbatim_confidence": "high",
+    "notes": "SMA 200/300 trend filter + RSI 35 hook, 20-bar hold, BTC daily 2019-2025; parameter lines were code-formatted on page (backticks dropped), results only in images."
+  },
+  "spec": {
+    "claim_summary": "Buy when short-term SMA is above long-term SMA while RSI was oversold and rising, holding for 20 bars.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "sma",
+          "period": 200,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "gt",
+        "right": {
+          "kind": "sma",
+          "period": 300,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      },
+      {
+        "left": {
+          "kind": "rsi",
+          "period": 14,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "lt",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 35.0,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": 20,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": null
+    },
+    "assumptions": [
+      "Asset BTCUSD mapped to Binance spot BTCUSDT.",
+      "Timeframe 1d from daily values.",
+      "Direction long from bullish trade.",
+      "SMAs on close with short_len = 200 and long_len = 300.",
+      "RSI length not stated, fixed at conventional 14 without sweep.",
+      "Oversold level 35 from rsi_us = 35; rsi_ov = 65 not used for entry.",
+      "Exit is time-only hold of 20 bars from holding_period; no other exit stated.",
+      "initial_capital = 100000 is position sizing and not part of the rule.",
+      "NOT EXPRESSIBLE: claim requires previous-bar RSI below the oversold level but schema has no bar offset, so tested as current-bar RSI < 35 which shifts entry timing by one bar.",
+      "NOT EXPRESSIBLE: claim requires previous RSI below current RSI (rising RSI) but schema has no cross-bar indicator comparison, so this rising filter is omitted which widens entries."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "current short-term SMA is above the current long-term SMA",
+        "assumed": false
+      },
+      {
+        "field": "entry[1]",
+        "quote": "previous RSI is below the oversold level",
+        "assumed": false
+      },
+      {
+        "field": "assets",
+        "quote": "BTCUSD",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": "daily values",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": "bullish trade",
+        "assumed": false
+      },
+      {
+        "field": "max_hold_bars",
+        "quote": "holding_period = 20",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": false,
+    "issues": [
+      {
+        "field": "entry[1]",
+        "problem": "Claim requires previous-bar RSI below oversold level (35); spec tests current-bar RSI < 35, shifting entry timing by one bar.",
+        "severity": "major"
+      },
+      {
+        "field": "entry",
+        "problem": "Claim requires previous RSI below current RSI (rising RSI filter); spec omits this condition entirely, widening entries.",
+        "severity": "major"
+      }
+    ]
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 3518,
+          "prompt_tokens": 1913,
+          "total_tokens": 5431,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 2964,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 6,
+      "assumed": 0,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "max_hold_bars",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 5814,
+            "prompt_tokens": 1168,
+            "total_tokens": 6982,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 5219,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            }
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 6,
+        "quoted": 6,
+        "assumed": 0,
+        "quoted_fields": [
+          "entry[0]",
+          "entry[1]",
+          "max_hold_bars",
+          "assets",
+          "timeframe",
+          "direction"
+        ],
+        "assumed_fields": [],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "entry[1]",
+            "problem": "Claim requires 'previous RSI is below the oversold level' but spec tests current-bar RSI < 35 as proxy. Using current instead of previous shifts entry timing by one bar.",
+            "severity": "major"
+          },
+          {
+            "field": "entry",
+            "problem": "Missing second part of RSI condition that previous RSI is 'below the current RSI' (rising). Spec omits this filter entirely, which widens entries.",
+            "severity": "major"
+          },
+          {
+            "field": "free_parameters",
+            "problem": "Claim never states RSI length or candidates 7,14,21; spec invents optimization over entry[1].left.period.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "entry[1]",
+            "problem": "Claim requires previous-bar RSI below oversold level (35); spec tests current-bar RSI < 35, shifting entry timing by one bar.",
+            "severity": "major"
+          },
+          {
+            "field": "entry",
+            "problem": "Claim requires previous RSI below current RSI (rising RSI filter); spec omits this condition entirely, widening entries.",
+            "severity": "major"
+          }
+        ]
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "INCONCLUSIVE",
+    "headline": "Tested an approximation of the claim. Only 24 trades from 2017-08-17 to 2026-10-26 -- too few to tell skill from luck.",
+    "reasons": [
+      "24 trades < 30 minimum"
+    ],
+    "warnings": [
+      "just holding did better: +117% vs buy-and-hold +1781%",
+      "left out: claim requires previous-bar RSI below the oversold level but schema has no bar offset, so tested as current-bar RSI < 35 which shifts entry timing by one bar.",
+      "left out: claim requires previous RSI below current RSI (rising RSI) but schema has no cross-bar indicator comparison, so this rising filter is omitted which widens entries.",
+      "audit: entry[1]: Claim requires previous-bar RSI below oversold level (35); spec tests current-bar RSI < 35, shifting entry timing by one bar.",
+      "audit: entry: Claim requires previous RSI below current RSI (rising RSI filter); spec omits this condition entirely, widening entries."
+    ],
+    "asset": "BTCUSDT",
+    "timeframe": "1d",
+    "primary": {
+      "trades": 24,
+      "win_rate_pct": 54.166666666666664,
+      "avg_net_pct": 4.695082291912684,
+      "total_net_pct": 116.58656768737336,
+      "total_gross_pct": 129.42825033666446,
+      "max_drawdown_pct": -32.91406034216513,
+      "avg_bars": 20.0,
+      "open_at_end": 0,
+      "buy_hold_pct": 1780.815115875236,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 14.29422275163788
+    },
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "ETHUSDT",
+          "trades": 24,
+          "total_net_pct": -37.8330924765481,
+          "avg_net_pct": -0.6287886529465149
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 22,
+          "total_net_pct": -50.62935318370818,
+          "avg_net_pct": -0.22412146798668664
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 29,
+          "total_net_pct": 79.0175940140548,
+          "avg_net_pct": 3.085644680305546
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 23,
+          "total_net_pct": 195.56396140263678,
+          "avg_net_pct": 5.748214459117746
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 20,
+          "total_net_pct": 71.5412338033629,
+          "avg_net_pct": 3.76297097367088
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 26,
+          "total_net_pct": 40.24892922209,
+          "avg_net_pct": 2.403799200443565
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 15,
+          "total_net_pct": -40.93288496302684,
+          "avg_net_pct": 1.7332063734690526
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 18,
+          "total_net_pct": 93.49018205119816,
+          "avg_net_pct": 5.236001848612464
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 24,
+          "total_net_pct": 19.453681206630424,
+          "avg_net_pct": 1.8686161944444408
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 12,
+          "total_net_pct": -15.718137578543923,
+          "avg_net_pct": 0.26980622944366617
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 25,
+          "total_net_pct": 298.8450471973078,
+          "avg_net_pct": 6.45419111363551
+        }
+      ],
+      "tested": 0,
+      "positive": 0,
+      "positive_share_pct": null
+    },
+    "sweep": {
+      "readings": 1,
+      "note": "claim fixes every parameter"
+    },
+    "claimed_vs_measured": [],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 6,
+      "assumed": 0,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "max_hold_bars",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: claim requires previous-bar RSI below the oversold level but schema has no bar offset, so tested as current-bar RSI < 35 which shifts entry timing by one bar.",
+        "NOT EXPRESSIBLE: claim requires previous RSI below current RSI (rising RSI) but schema has no cross-bar indicator comparison, so this rising filter is omitted which widens entries."
+      ],
+      "audit_majors": [
+        "entry[1]: Claim requires previous-bar RSI below oversold level (35); spec tests current-bar RSI < 35, shifting entry timing by one bar.",
+        "entry: Claim requires previous RSI below current RSI (rising RSI filter); spec omits this condition entirely, widening entries."
+      ]
+    }
+  },
+  "seconds": 63.2
+}

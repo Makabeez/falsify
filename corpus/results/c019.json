@@ -1,0 +1,18 @@
+{
+  "id": "c019",
+  "record": {
+    "id": "c019",
+    "url": "https://cryptohike.substack.com/p/this-bitcoin-trading-strategy-made",
+    "source": "substack",
+    "posted": "2023-03-15",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1h",
+    "category": "backtest_claim",
+    "excerpt": "This Bitcoin trading strategy made 494.47% in the last 2 years \u2026 I have backtested this strategy since January 2021 over a sample size of almost 300 trades \u2026 The strategy is based on the 1H EMA and only works on the Bybit BTC/USDT chart. \u2026 add the ATR indicator to the chart (make sure the value of ATR is 14). \u2026 Every time the price moves above the 20 EMA on the 1H chart of BTC/USDT on Bybit \u2026 If the next candle closed above the previous candle's high, you long. \u2026 SL will be at the current price - (2 * ATR indicator) \u2026 TP will be at the current price + 1.8 * (current price - SL price ).",
+    "performance_claim": "made 494.47% in the last 2 years",
+    "verbatim_confidence": "high",
+    "notes": "Fully mechanical 1h EMA20 cross + breakout confirm, 2xATR14 stop, 1.8R target; big return claim with 3% risk sizing; author says Bybit-only (we test Binance)."
+  },
+  "error": "RuntimeError: model ran out of output budget before finishing the JSON",
+  "seconds": 24.6
+}

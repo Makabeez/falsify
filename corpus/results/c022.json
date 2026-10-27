@@ -1,0 +1,1047 @@
+{
+  "id": "c022",
+  "record": {
+    "id": "c022",
+    "url": "https://community.gainium.io/t/classic-20-50-rsi-bot/2442",
+    "source": "forum",
+    "posted": "2025-01-26",
+    "asset_hint": "ETH",
+    "timeframe_hint": "1h",
+    "category": "rule",
+    "excerpt": "This bot is the classic crossing of the 20 EMA above the 50 EMA while the RSI is below 70 (oversold). \u2026 I tested it on 1H and 15m and it works very well in the backtests with ETH and other currencies. \u2026 the RR is 2:1 and it also has a Move SL as protection along with the reverse crossover of the EMAs as more protection. \u2026 The Winrate seems a bit marginal but we will see how the live test develops.",
+    "performance_claim": "it works very well in the backtests with ETH",
+    "verbatim_confidence": "high",
+    "notes": "EMA 20/50 cross + RSI<70 filter, 2:1 RR, exit on reverse cross; author mislabels RSI<70 as oversold; stop distance unstated. Use 1h (15m variant excluded)."
+  },
+  "spec": {
+    "claim_summary": "A long strategy that buys when the 20-period EMA crosses above the 50-period EMA while RSI is below 70, exiting on the reverse EMA crossover with 2:1 reward-to-risk.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "ETHUSDT"
+    ],
+    "timeframe": "1h",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "ema",
+          "period": 20,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "ema",
+          "period": 50,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      },
+      {
+        "left": {
+          "kind": "rsi",
+          "period": 14,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "lt",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 70.0,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "ema",
+          "period": 20,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "ema",
+          "period": 50,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "stop_loss_pct": 2.0,
+    "take_profit_pct": 4.0,
+    "max_hold_bars": null,
+    "free_parameters": [
+      {
+        "name": "RSI length",
+        "target": "entry[1].left.period",
+        "candidates": [
+          7.0,
+          14.0,
+          21.0
+        ]
+      },
+      {
+        "name": "stop-loss %",
+        "target": "stop_loss_pct",
+        "candidates": [
+          1.0,
+          2.0,
+          3.0,
+          4.0
+        ]
+      },
+      {
+        "name": "take-profit %",
+        "target": "take_profit_pct",
+        "candidates": [
+          2.0,
+          4.0,
+          6.0,
+          8.0
+        ]
+      }
+    ],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": null
+    },
+    "assumptions": [
+      "Long direction inferred from bullish EMA crossover; claim does not explicitly say long or buy.",
+      "Timeframe 1h chosen from claim's 1H and 15m because schema allows only 1h/4h/1d; 15m cannot be expressed.",
+      "Asset ETH mapped to ETHUSDT; 'other currencies' unspecified so test uses ETHUSDT only.",
+      "RSI length 14 assumed as usual default; claim gives no RSI length.",
+      "RSI condition interpreted as RSI below 70 as stated, despite calling it oversold.",
+      "Stop-loss 2% and take-profit 4% chosen to enforce stated 2:1 RR; claim gives ratio only with no absolute levels.",
+      "Entry requires EMA crossover and RSI filter true on same bar close; rules evaluated on bar closes with fill at next open.",
+      "NOT EXPRESSIBLE: 'Move SL as protection' (trailing/moving stop) cannot be expressed in schema and is omitted; tested with fixed stop-loss, fixed take-profit at 2:1 RR plus reverse-crossover exit only."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "crossing of the 20 EMA above the 50 EMA",
+        "assumed": false
+      },
+      {
+        "field": "entry[1]",
+        "quote": "RSI is below 70",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": "reverse crossover of the EMAs",
+        "assumed": false
+      },
+      {
+        "field": "stop_loss_pct",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "take_profit_pct",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "assets",
+        "quote": "with ETH and other currencies",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": "I tested it on 1H and 15m",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": null,
+        "assumed": true
+      }
+    ]
+  },
+  "audit": {
+    "faithful": false,
+    "issues": [
+      {
+        "field": "exit",
+        "problem": "Claim states strategy 'also has a Move SL as protection along with the reverse crossover' in addition to 2:1 RR. Spec omits the moving/trailing stop and tests only fixed stop-loss/take-profit plus reverse-crossover exit. Omission is disclosed as NOT EXPRESSIBLE but leaving it out changes exits and can change verdict.",
+        "severity": "major"
+      }
+    ]
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 3240,
+          "prompt_tokens": 2039,
+          "total_tokens": 5279,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 2458,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 1053,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 8,
+      "quoted": 5,
+      "assumed": 3,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "exit[0]",
+        "assets",
+        "timeframe"
+      ],
+      "assumed_fields": [
+        "stop_loss_pct",
+        "take_profit_pct",
+        "direction"
+      ],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 7912,
+            "prompt_tokens": 1154,
+            "total_tokens": 9066,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 6946,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            }
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 8,
+        "quoted": 5,
+        "assumed": 3,
+        "quoted_fields": [
+          "entry[0]",
+          "entry[1]",
+          "exit[0]",
+          "assets",
+          "timeframe"
+        ],
+        "assumed_fields": [
+          "stop_loss_pct",
+          "take_profit_pct",
+          "direction"
+        ],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "exit",
+            "problem": "Claim requires a 'Move SL as protection along with the reverse crossover'; spec tests only fixed stop-loss/take-profit plus reverse-crossover exit and omits the trailing/move SL. Leaving it out changes exits and results.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "exit",
+            "problem": "Claim states strategy 'also has a Move SL as protection along with the reverse crossover' in addition to 2:1 RR. Spec omits the moving/trailing stop and tests only fixed stop-loss/take-profit plus reverse-crossover exit. Omission is disclosed as NOT EXPRESSIBLE but leaving it out changes exits and can change verdict.",
+            "severity": "major"
+          }
+        ]
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "DIES",
+    "headline": "Tested an approximation of the claim. Loses money after costs: -0.11% per trade, -60.7% total (before costs +92.1%).",
+    "reasons": [
+      "loses money after costs: -0.11% per trade, -60.7% total (before costs +92.1%)",
+      "after 2025-01-26 (post date), it lost -0.35% per trade over 143 trades"
+    ],
+    "warnings": [
+      "not consistent over time: edge is not positive in both halves (split 2022-03-25)",
+      "only works on 1/11 other assets",
+      "fragile: only 12% of reasonable readings of the vague parameters make money",
+      "just holding did better: -61% vs buy-and-hold +672%",
+      "left out: 'Move SL as protection' (trailing/moving stop) cannot be expressed in schema and is omitted; tested with fixed stop-loss, fixed take-profit at 2:1 RR plus reverse-crossover exit only.",
+      "audit: exit: Claim states strategy 'also has a Move SL as protection along with the reverse crossover' in addition to 2:1 RR. Spec omits the moving/trailing stop and tests only fixed stop-loss/take-profit plus reverse-crossover exit. Omission is disclosed as NOT EXPRESSIBLE but leaving it out changes exits and can change verdict."
+    ],
+    "asset": "ETHUSDT",
+    "timeframe": "1h",
+    "primary": {
+      "trades": 661,
+      "win_rate_pct": 30.862329803328294,
+      "avg_net_pct": -0.10821038313496502,
+      "total_net_pct": -60.689167200267825,
+      "total_gross_pct": 92.0778744950558,
+      "max_drawdown_pct": -70.02096170579932,
+      "avg_bars": 18.007564296520425,
+      "open_at_end": 0,
+      "buy_hold_pct": 671.9423504798593,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 14.793686303753418
+    },
+    "null_test": {
+      "p_value": 0.3588205897051474,
+      "strategy_mean_log_pct": -0.14125114392383487,
+      "null_median_log_pct": -0.19667994714771728,
+      "null_p95_log_pct": 0.06000291680371558,
+      "beat_by_random_pct": 35.85,
+      "sims": 2000
+    },
+    "out_of_sample": {
+      "available": true,
+      "boundary": "2025-01-26",
+      "boundary_source": "post date",
+      "claim_window": [
+        null,
+        null
+      ],
+      "in_window": {
+        "trades": 518,
+        "win_rate_pct": 32.04633204633205,
+        "avg_net_pct": -0.04214544844047703,
+        "total_net_pct": -32.57410080287928,
+        "total_gross_pct": 133.74477195021814,
+        "max_drawdown_pct": -70.02096170579932,
+        "avg_bars": 17.43822393822394,
+        "open_at_end": 0
+      },
+      "after_window": {
+        "trades": 143,
+        "win_rate_pct": 26.573426573426573,
+        "avg_net_pct": -0.3475225241961173,
+        "total_net_pct": -41.69772555082088,
+        "total_gross_pct": -17.825809367850308,
+        "max_drawdown_pct": -47.77639127380532,
+        "avg_bars": 20.06993006993007,
+        "open_at_end": 0
+      },
+      "counts": true
+    },
+    "halves": {
+      "split": "2022-03-25",
+      "first": {
+        "trades": 313,
+        "win_rate_pct": 30.35143769968051,
+        "avg_net_pct": -0.23050377434408528,
+        "total_net_pct": -56.3867325588433,
+        "total_gross_pct": -7.559817121639279,
+        "max_drawdown_pct": -70.02096170579932,
+        "avg_bars": 14.792332268370608,
+        "open_at_end": 0
+      },
+      "second": {
+        "trades": 348,
+        "win_rate_pct": 31.321839080459768,
+        "avg_net_pct": 0.0017833853950770552,
+        "total_net_pct": -9.864967460255992,
+        "total_gross_pct": 107.78612559411039,
+        "max_drawdown_pct": -48.030755579432906,
+        "avg_bars": 20.899425287356323,
+        "open_at_end": 0
+      },
+      "consistent": false
+    },
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "BTCUSDT",
+          "trades": 625,
+          "total_net_pct": -62.83437882120513,
+          "avg_net_pct": -0.12957368645057568
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 433,
+          "total_net_pct": -43.05700369304252,
+          "avg_net_pct": -0.09186364235191785
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 690,
+          "total_net_pct": -88.068574861406,
+          "avg_net_pct": -0.27858839797054435
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 640,
+          "total_net_pct": -80.53659318979317,
+          "avg_net_pct": -0.22451881546052566
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 575,
+          "total_net_pct": -73.40354035692238,
+          "avg_net_pct": -0.19735829747397285
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 615,
+          "total_net_pct": -80.19901663490663,
+          "avg_net_pct": -0.22779036139857545
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 425,
+          "total_net_pct": -47.069453709174326,
+          "avg_net_pct": -0.11161301021137048
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 581,
+          "total_net_pct": -69.76795775974402,
+          "avg_net_pct": -0.1688823044407693
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 679,
+          "total_net_pct": -94.12717727311033,
+          "avg_net_pct": -0.38414038887506824
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 452,
+          "total_net_pct": -60.345206770508874,
+          "avg_net_pct": -0.16810646793959774
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 618,
+          "total_net_pct": 176.08275085832054,
+          "avg_net_pct": 0.19426218453221278
+        }
+      ],
+      "tested": 11,
+      "positive": 1,
+      "positive_share_pct": 9.090909090909092
+    },
+    "sweep": {
+      "readings": 48,
+      "truncated": false,
+      "positive_share_pct": 12.5,
+      "best": {
+        "params": {
+          "RSI length": 21.0,
+          "stop-loss %": 4.0,
+          "take-profit %": 8.0
+        },
+        "trades": 732,
+        "avg_net_pct": 0.08768799505616084,
+        "total_net_pct": 2.5517070360527194,
+        "p_value": 0.18562874251497005
+      },
+      "best_p_bonferroni": 1.0,
+      "results": [
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 1.0,
+            "take-profit %": 2.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.22794918537177825,
+          "total_net_pct": -59.93348266156784,
+          "p_value": 0.5129740518962076
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 1.0,
+            "take-profit %": 4.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.13815843604693942,
+          "total_net_pct": -45.47880237018981,
+          "p_value": 0.36726546906187624
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 1.0,
+            "take-profit %": 6.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.1589464700130327,
+          "total_net_pct": -51.198661552009426,
+          "p_value": 0.4550898203592814
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 1.0,
+            "take-profit %": 8.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.1676026133889601,
+          "total_net_pct": -53.85229182940945,
+          "p_value": 0.4930139720558882
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 2.0,
+            "take-profit %": 2.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.23433299224574564,
+          "total_net_pct": -61.820709227636804,
+          "p_value": 0.5528942115768463
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 2.0,
+            "take-profit %": 4.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.18024864750065028,
+          "total_net_pct": -55.444553283357976,
+          "p_value": 0.530938123752495
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 2.0,
+            "take-profit %": 6.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.19986831935420285,
+          "total_net_pct": -60.520551722610016,
+          "p_value": 0.5868263473053892
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 2.0,
+            "take-profit %": 8.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.18890775012709948,
+          "total_net_pct": -60.24806122283957,
+          "p_value": 0.5888223552894212
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 3.0,
+            "take-profit %": 2.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.21541977034309126,
+          "total_net_pct": -59.438260648882704,
+          "p_value": 0.5189620758483033
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 3.0,
+            "take-profit %": 4.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.08053224354297603,
+          "total_net_pct": -36.063304595320986,
+          "p_value": 0.34331337325349304
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 3.0,
+            "take-profit %": 6.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.04537784153960794,
+          "total_net_pct": -31.17555206895768,
+          "p_value": 0.35129740518962077
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 3.0,
+            "take-profit %": 8.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.06754566193071111,
+          "total_net_pct": -39.43200580757391,
+          "p_value": 0.4251497005988024
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 4.0,
+            "take-profit %": 2.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.20043601926724242,
+          "total_net_pct": -57.2947185949509,
+          "p_value": 0.47904191616766467
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 4.0,
+            "take-profit %": 4.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.04207165572379702,
+          "total_net_pct": -26.581723885787277,
+          "p_value": 0.2874251497005988
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 4.0,
+            "take-profit %": 6.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.018279199140227343,
+          "total_net_pct": -24.796389639053128,
+          "p_value": 0.3073852295409182
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "stop-loss %": 4.0,
+            "take-profit %": 8.0
+          },
+          "trades": 385,
+          "avg_net_pct": -0.017107842149208654,
+          "total_net_pct": -27.988814165248787,
+          "p_value": 0.3652694610778443
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 1.0,
+            "take-profit %": 2.0
+          },
+          "trades": 661,
+          "avg_net_pct": -0.2392434864816106,
+          "total_net_pct": -80.72466692615606,
+          "p_value": 0.5848303393213573
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 1.0,
+            "take-profit %": 4.0
+          },
+          "trades": 661,
+          "avg_net_pct": -0.1507020770221948,
+          "total_net_pct": -67.59887766903039,
+          "p_value": 0.36127744510978044
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 1.0,
+            "take-profit %": 6.0
+          },
+          "trades": 661,
+          "avg_net_pct": -0.14536791617138614,
+          "total_net_pct": -68.3043011754684,
+          "p_value": 0.4151696606786427
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 1.0,
+            "take-profit %": 8.0
+          },
+          "trades": 661,
+          "avg_net_pct": -0.10200796972147617,
+          "total_net_pct": -60.04878901733455,
+          "p_value": 0.36327345309381237
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 2.0,
+            "take-profit %": 2.0
+          },
+          "trades": 661,
+          "avg_net_pct": -0.21819863987910856,
+          "total_net_pct": -78.88597543150438,
+          "p_value": 0.5568862275449101
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 2.0,
+            "take-profit %": 4.0
+          },
+          "trades": 661,
+          "avg_net_pct": -0.10821038313496502,
+          "total_net_pct": -60.689167200267825,
+          "p_value": 0.3532934131736527
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 2.0,
+            "take-profit %": 6.0
+          },
+          "trades": 661,
+          "avg_net_pct": -0.09199207886133559,
+          "total_net_pct": -60.120091369408655,
+          "p_value": 0.40718562874251496
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 2.0,
+            "take-profit %": 8.0
+          },
+          "trades": 661,
+          "avg_net_pct": -0.0071289023611419014,
+          "total_net_pct": -36.1064690456202,
+          "p_value": 0.2934131736526946
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 3.0,
+            "take-profit %": 2.0
+          },
+          "trades": 661,
+          "avg_net_pct": -0.23609443272726688,
+          "total_net_pct": -81.83700975879621,
+          "p_value": 0.6646706586826348
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 3.0,
+            "take-profit %": 4.0
+          },
+          "trades": 661,
+          "avg_net_pct": -0.08505192280804072,
+          "total_net_pct": -56.64546922567286,
+          "p_value": 0.34331337325349304
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 3.0,
+            "take-profit %": 6.0
+          },
+          "trades": 661,
+          "avg_net_pct": -0.024557918469626246,
+          "total_net_pct": -42.53773004249051,
+          "p_value": 0.3333333333333333
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 3.0,
+            "take-profit %": 8.0
+          },
+          "trades": 661,
+          "avg_net_pct": 0.05480093948933949,
+          "total_net_pct": -12.45223721788683,
+          "p_value": 0.25349301397205587
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 4.0,
+            "take-profit %": 2.0
+          },
+          "trades": 661,
+          "avg_net_pct": -0.23395589862073404,
+          "total_net_pct": -81.93285936984759,
+          "p_value": 0.6686626746506986
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 4.0,
+            "take-profit %": 4.0
+          },
+          "trades": 661,
+          "avg_net_pct": -0.05747435592992239,
+          "total_net_pct": -49.513298318862944,
+          "p_value": 0.3013972055888224
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 4.0,
+            "take-profit %": 6.0
+          },
+          "trades": 661,
+          "avg_net_pct": 0.009347826161689282,
+          "total_net_pct": -31.217468119609173,
+          "p_value": 0.2894211576846307
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "stop-loss %": 4.0,
+            "take-profit %": 8.0
+          },
+          "trades": 661,
+          "avg_net_pct": 0.0942121254074609,
+          "total_net_pct": 7.652397651705667,
+          "p_value": 0.2155688622754491
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 1.0,
+            "take-profit %": 2.0
+          },
+          "trades": 732,
+          "avg_net_pct": -0.22974904499548937,
+          "total_net_pct": -82.69441444410525,
+          "p_value": 0.530938123752495
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 1.0,
+            "take-profit %": 4.0
+          },
+          "trades": 732,
+          "avg_net_pct": -0.14706997750126788,
+          "total_net_pct": -70.55406356449015,
+          "p_value": 0.3393213572854291
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 1.0,
+            "take-profit %": 6.0
+          },
+          "trades": 732,
+          "avg_net_pct": -0.1398787515686914,
+          "total_net_pct": -70.88906516421349,
+          "p_value": 0.3532934131736527
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 1.0,
+            "take-profit %": 8.0
+          },
+          "trades": 732,
+          "avg_net_pct": -0.08941790586613214,
+          "total_net_pct": -60.48563405865139,
+          "p_value": 0.2994011976047904
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 2.0,
+            "take-profit %": 2.0
+          },
+          "trades": 732,
+          "avg_net_pct": -0.19173596180813676,
+          "total_net_pct": -78.34357673268917,
+          "p_value": 0.45109780439121755
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 2.0,
+            "take-profit %": 4.0
+          },
+          "trades": 732,
+          "avg_net_pct": -0.08824920435407467,
+          "total_net_pct": -59.02621802901221,
+          "p_value": 0.3073852295409182
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 2.0,
+            "take-profit %": 6.0
+          },
+          "trades": 732,
+          "avg_net_pct": -0.09723266439403168,
+          "total_net_pct": -65.2912870845517,
+          "p_value": 0.36127744510978044
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 2.0,
+            "take-profit %": 8.0
+          },
+          "trades": 732,
+          "avg_net_pct": -0.016930328181651137,
+          "total_net_pct": -43.38843413673643,
+          "p_value": 0.26746506986027946
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 3.0,
+            "take-profit %": 2.0
+          },
+          "trades": 732,
+          "avg_net_pct": -0.20647476998924977,
+          "total_net_pct": -81.25003844917194,
+          "p_value": 0.5249500998003992
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 3.0,
+            "take-profit %": 4.0
+          },
+          "trades": 732,
+          "avg_net_pct": -0.05714331316737114,
+          "total_net_pct": -51.73163078198746,
+          "p_value": 0.2894211576846307
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 3.0,
+            "take-profit %": 6.0
+          },
+          "trades": 732,
+          "avg_net_pct": -0.025961468343835434,
+          "total_net_pct": -46.71775456226598,
+          "p_value": 0.26147704590818366
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 3.0,
+            "take-profit %": 8.0
+          },
+          "trades": 732,
+          "avg_net_pct": 0.04817664745441463,
+          "total_net_pct": -18.277702180287157,
+          "p_value": 0.20359281437125748
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 4.0,
+            "take-profit %": 2.0
+          },
+          "trades": 732,
+          "avg_net_pct": -0.20632140995256887,
+          "total_net_pct": -81.65740678025013,
+          "p_value": 0.5209580838323353
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 4.0,
+            "take-profit %": 4.0
+          },
+          "trades": 732,
+          "avg_net_pct": -0.04251997761218382,
+          "total_net_pct": -48.18608285020003,
+          "p_value": 0.25748502994011974
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 4.0,
+            "take-profit %": 6.0
+          },
+          "trades": 732,
+          "avg_net_pct": 0.002355325935787178,
+          "total_net_pct": -37.763779759791774,
+          "p_value": 0.23952095808383234
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "stop-loss %": 4.0,
+            "take-profit %": 8.0
+          },
+          "trades": 732,
+          "avg_net_pct": 0.08768799505616084,
+          "total_net_pct": 2.5517070360527194,
+          "p_value": 0.18562874251497005
+        }
+      ]
+    },
+    "claimed_vs_measured": [],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 8,
+      "quoted": 5,
+      "assumed": 3,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "exit[0]",
+        "assets",
+        "timeframe"
+      ],
+      "assumed_fields": [
+        "stop_loss_pct",
+        "take_profit_pct",
+        "direction"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: 'Move SL as protection' (trailing/moving stop) cannot be expressed in schema and is omitted; tested with fixed stop-loss, fixed take-profit at 2:1 RR plus reverse-crossover exit only."
+      ],
+      "audit_majors": [
+        "exit: Claim states strategy 'also has a Move SL as protection along with the reverse crossover' in addition to 2:1 RR. Spec omits the moving/trailing stop and tests only fixed stop-loss/take-profit plus reverse-crossover exit. Omission is disclosed as NOT EXPRESSIBLE but leaving it out changes exits and can change verdict."
+      ]
+    }
+  },
+  "seconds": 70.8
+}

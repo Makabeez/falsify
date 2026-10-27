@@ -1,0 +1,136 @@
+{
+  "id": "c034",
+  "record": {
+    "id": "c034",
+    "url": "https://www.elitetrader.com/et/threads/anyone-use-moving-average-indicators.319028/post-4625502",
+    "source": "forum",
+    "posted": "2018-03-17",
+    "asset_hint": null,
+    "timeframe_hint": null,
+    "category": "vague",
+    "excerpt": "I run this system on 10 different time frames \u2026 the more time frames that align the higher the chance of success and the more money I make. \u2026 Except I use the lowest Moving average against Price \u2026 I determined the average price moves against its slowest tracking average by back testing.",
+    "performance_claim": "the more time frames that align the higher the chance of success and the more money I make.",
+    "verbatim_confidence": "high",
+    "notes": "MA system with no periods, asset or entry/exit; claims backtested edge. Compiler should refuse (no parameters)."
+  },
+  "spec": {
+    "claim_summary": "A system compares price to its slowest moving average across ten timeframes, with more aligned timeframes claimed to increase success.",
+    "source_type": "text",
+    "testable": false,
+    "untestable_reason": "No mechanical rule can be recovered because the moving-average lengths, trade direction, entry trigger and exit are unspecified and the core ten-timeframe alignment rule has no single-timeframe equivalent.",
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [],
+    "exit": [],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": null
+    },
+    "assumptions": [
+      "No asset is named, so BTCUSDT is assumed as the default test asset.",
+      "No single timeframe is named, so 1d is assumed for a single-timeframe test.",
+      "No moving-average length, price-versus-average trigger direction, trade direction, or exit is specified.",
+      "NOT EXPRESSIBLE: alignment across 10 different time frames is the heart of the claimed edge and cannot be expressed in a single-timeframe rule."
+    ],
+    "evidence": [
+      {
+        "field": "assets",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "timeframe",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "direction",
+        "quote": null,
+        "assumed": true
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 2801,
+          "prompt_tokens": 1092,
+          "total_tokens": 3893,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 2482,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 0,
+      "quoted": 0,
+      "assumed": 0,
+      "quoted_fields": [],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "audits": [
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ]
+  },
+  "report": {
+    "verdict": "UNTESTABLE",
+    "headline": "This claim can't be turned into rules anyone could check.",
+    "reasons": [
+      "No mechanical rule can be recovered because the moving-average lengths, trade direction, entry trigger and exit are unspecified and the core ten-timeframe alignment rule has no single-timeframe equivalent."
+    ],
+    "warnings": [],
+    "asset": null,
+    "timeframe": null,
+    "primary": {},
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {},
+    "sweep": {},
+    "claimed_vs_measured": [],
+    "costs": {},
+    "grounding": {},
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: alignment across 10 different time frames is the heart of the claimed edge and cannot be expressed in a single-timeframe rule."
+      ],
+      "audit_majors": []
+    }
+  },
+  "seconds": 18.6
+}

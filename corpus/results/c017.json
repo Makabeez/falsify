@@ -1,0 +1,18 @@
+{
+  "id": "c017",
+  "record": {
+    "id": "c017",
+    "url": "https://www.tradingview.com/script/VQqkfWR5-BTC-and-ETH-Long-strategy-version-2/",
+    "source": "tradingview_script",
+    "posted": "2020-11-23",
+    "asset_hint": "ETH",
+    "timeframe_hint": "4h",
+    "category": "backtest_claim",
+    "excerpt": "(4H candles instead of 2H candles). \u2026 Entry in position is based on MACD, EMA (20), SMA (100), SMA (200) moving up AND EMA (20) > SMA (100) AND SMA (100) > SMA (200) \u2026 Exit the position if: Stoploss is reached OR EMA (20) crossUnder SMA (100) \u2026 Here are some results for 2020 (from 01/01/2020 until now (22/11/2020). \u2026 I managed to get a wining rate close to 60%. \u2026 ETH/USD: +144% in 8 trades. \u2026 BTC/USD: +120% in 7 trades.",
+    "performance_claim": "ETH/USD: +144% in 8 trades.",
+    "verbatim_confidence": "high",
+    "notes": "MA stack (EMA20>SMA100>SMA200, all rising) + MACD on 4h, exit on EMA20 x SMA100; covers BTC too; stop distance unstated."
+  },
+  "error": "RuntimeError: model ran out of output budget before finishing the JSON",
+  "seconds": 23.2
+}

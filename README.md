@@ -82,7 +82,7 @@ The model's job is translation, which it is good at. It never gets the last word
 | Test | Question it asks | Effect on verdict |
 |---|---|---|
 | Costs | Does it make money after 10 bps fee + 2 bps slippage per side? | Fatal if not |
-| Random-entry null | Do random entries with the same number of trades, holding times and side do as well? Strips out market drift: a long-only rule in a bull market beats zero but not random longs. 2,000 simulations. | Fatal if p ≥ 0.05 |
+| Random-entry null | Do random entries with the same number of trades, holding times and side do as well? Strips out market drift: a long-only rule in a bull market beats zero but not random longs. 2,000 simulations. | SURVIVES needs p < 0.05. Fatal if p ≥ 0.5 (worse than the median coin flip). In between: INCONCLUSIVE |
 | Post-claim window | If the claim shows a period, what happened after it? The only truly out-of-sample data. | Fatal if it loses (≥ 10 trades) |
 | Sample size | At least 30 trades? | INCONCLUSIVE below |
 | Halves | Is the edge positive in both halves of history? | Warning |
@@ -93,7 +93,9 @@ The model's job is translation, which it is good at. It never gets the last word
 | Open at the end | A no-stop rule's last position is often a loser that never closed. It is marked at the last close and counted, never dropped. | Counted |
 | History coverage | Does the claim's period start before our data? | Warning |
 
-Thresholds are fixed statistical conventions (p < 0.05, n ≥ 30), stated before any claim is run, never tuned per claim.
+**Verdicts.** **DIES** means evidence against the claim: it loses money after costs, loses after the post date, or random timing does at least as well more often than not. **INCONCLUSIVE** means the data can't tell it from luck: it makes money, but not convincingly enough (0.05 ≤ p < 0.5), or there are fewer than 30 trades. **SURVIVES** needs p < 0.05 and no fatal test. **UNTESTABLE** means no mechanical rule could be recovered, or the asset isn't in the data.
+
+Thresholds are fixed statistical conventions (p < 0.05, n ≥ 30, the median at p = 0.5), stated before any claim is run and never tuned per claim. One change is on the record: until 27 Oct, any p ≥ 0.05 was DIES. A forum claim that beat buy-and-hold after costs came back DIES at p = 0.098, and "can't tell from luck" isn't "refuted". So the split above was made before the full corpus run, and `git log` shows when.
 
 ## Is it rigged to kill everything?
 
@@ -116,8 +118,8 @@ From `make judge-demo` (Binance spot, Aug 2017 to Oct 2026, including the 2018 a
 |---|---|---|
 | ETH 4h: buy RSI oversold, sell overbought, "80% win rate" | **DIES** | 75 trades, 56% win rate, −3.19% per trade, −98% total: no stop, so the 2018 and 2022 bear markets were held all the way down; random timing beat it 99% of the time |
 | Buy BTC after a 10% weekly drop, hold 7 days | **DIES** | 58% win rate, but −24% total after costs; random 7-day longs did as well 75% of the time |
-| Buy SOL Friday close, sell Monday open | **DIES** | +0.77% per trade over 324 weekends, but random 2-day holds did as well 15% of the time |
-| BTC 4h breakout above 20-bar high on 2× volume, 3% stop / 6% target | **DIES** | 39% win rate, +0.27% per trade, indistinguishable from random entries (p = 0.33) |
+| Buy SOL Friday close, sell Monday open | **INCONCLUSIVE** | +0.77% per trade over 324 weekends, but random 2-day holds did as well 15% of the time |
+| BTC 4h breakout above 20-bar high on 2× volume, 3% stop / 6% target | **INCONCLUSIVE** | 39% win rate, +0.27% per trade, random entries did as well 33% of the time |
 | BTC daily golden cross / death cross | **INCONCLUSIVE** | 9 trades since 2017; buy-and-hold made +1781% vs +635% |
 | "Accumulate strong projects when smart money buys" | **UNTESTABLE** | No mechanical trigger |
 

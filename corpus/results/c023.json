@@ -1,0 +1,18 @@
+{
+  "id": "c023",
+  "record": {
+    "id": "c023",
+    "url": "https://community.gainium.io/t/strategy-quant-bot-ii/1204",
+    "source": "forum",
+    "posted": "2024-09-15",
+    "asset_hint": "BTC",
+    "timeframe_hint": "4h",
+    "category": "rule",
+    "excerpt": "This bot is designed for Spot, \u2026 opens operations when the 4H RSI is above 55% and below 70%. \u2026 and the price action above the 200 EMA. \u2026 The TP is an ATR but it could be by % or by SAR. \u2026 This bot does not use SL but it could be an RSI above 70%. \u2026 In BTC it has a very good performance, but if you want it can work with other currencies as well",
+    "performance_claim": "In BTC it has a very good performance",
+    "verbatim_confidence": "high",
+    "notes": "Spot momentum entry RSI 55-70 on 4h above EMA200; ATR take-profit multiple unstated, no stop."
+  },
+  "error": "RuntimeError: model ran out of output budget before finishing the JSON",
+  "seconds": 56.0
+}

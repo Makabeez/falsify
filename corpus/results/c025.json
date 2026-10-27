@@ -1,0 +1,278 @@
+{
+  "id": "c025",
+  "record": {
+    "id": "c025",
+    "url": "https://quantpedia.com/how-to-design-a-simple-multi-timeframe-trend-strategy-on-bitcoin/",
+    "source": "blog",
+    "posted": "2025-11-13",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1h",
+    "category": "backtest_claim",
+    "excerpt": "If the D1 MACD line is above its signal line, the market is in an uptrend. \u2026 On the Hourly (H1) timeframe, take trades only in the direction of the D1 trend. \u2026 If D1 shows an uptrend, execute long entries only when the H1 MACD crosses upward. \u2026 Ignore short signals entirely. \u2026 The analysis begins in December 2018 \u2026 Annual return rises to 6.6% (from 4.6%) \u2026 maximum drawdown improves from \u201323.9% to \u201312.4% \u2026 the Sharpe ratio increases from 0.33 to 0.80.",
+    "performance_claim": "Annual return rises to 6.6% (from 4.6%)",
+    "verbatim_confidence": "high",
+    "notes": "MACD(12,26,9) 1h entries filtered by daily MACD trend, BTC Dec 2018-Nov 2025; multi-timeframe test of compiler; base exit is H1 MACD cross down."
+  },
+  "spec": {
+    "claim_summary": "Long-only hourly MACD upward-cross entries filtered to take trades only when the daily MACD line is above its signal line.",
+    "source_type": "text",
+    "testable": false,
+    "untestable_reason": "The strategy requires filtering hourly MACD entries by the daily MACD line-versus-signal position, which needs synchronized two-timeframe evaluation the single-timeframe spec cannot express.",
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1h",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "macd_line",
+          "period": 12,
+          "value": null,
+          "multiplier": 1.0,
+          "param": 26.0
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "macd_signal",
+          "period": 12,
+          "value": null,
+          "multiplier": 1.0,
+          "param": 26.0
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "macd_line",
+          "period": 12,
+          "value": null,
+          "multiplier": 1.0,
+          "param": 26.0
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "macd_signal",
+          "period": 12,
+          "value": null,
+          "multiplier": 1.0,
+          "param": 26.0
+        }
+      }
+    ],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [
+      {
+        "name": "MACD fast length",
+        "target": "entry[0].left.period",
+        "candidates": [
+          8.0,
+          12.0,
+          21.0
+        ]
+      },
+      {
+        "name": "MACD slow length",
+        "target": "entry[0].left.param",
+        "candidates": [
+          20.0,
+          26.0,
+          30.0
+        ]
+      }
+    ],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": "2018-12-01",
+      "period_end": null,
+      "other": "Annual return rises to 6.6% (from 4.6%); maximum drawdown improves from \u201323.9% to \u201312.4%; Sharpe ratio increases from 0.33 to 0.80"
+    },
+    "assumptions": [
+      "Asset not named in claim; assumed BTCUSDT from page context as most natural reading.",
+      "MACD lengths not stated; used standard 12, 26, 9 for both H1 and D1 legs.",
+      "No exit stated; assumed opposite bearish cross as most common reading for MACD-cross setup.",
+      "Claim period beginning December 2018 recorded in claimed.period_start; test window is not part of the rule.",
+      "NOT EXPRESSIBLE: D1 MACD line-above-signal trend filter requiring synchronized D1 plus H1 multi-timeframe evaluation cannot be expressed in the single-timeframe 1h spec, and it is the heart of the claimed filtered strategy."
+    ],
+    "evidence": [
+      {
+        "field": "assets",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "timeframe",
+        "quote": "On the Hourly (H1) timeframe",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": "Ignore short signals entirely.",
+        "assumed": false
+      },
+      {
+        "field": "entry[0]",
+        "quote": "when the H1 MACD crosses upward",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "claimed.period_start",
+        "quote": "The analysis begins in December 2018",
+        "assumed": false
+      },
+      {
+        "field": "claimed.other",
+        "quote": "Annual return rises to 6.6% (from 4.6%)",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": false,
+    "issues": [
+      {
+        "field": "entry",
+        "problem": "Omits the core D1 trend filter: claim requires H1 long crosses only when D1 MACD line is above its signal line / only in direction of D1 trend, but spec encodes only unfiltered H1 MACD line crosses_above signal. Leaving out the D1 filter changes what is being tested.",
+        "severity": "major"
+      }
+    ]
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 5371,
+          "prompt_tokens": 1984,
+          "total_tokens": 7355,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 4695,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 0,
+      "quoted": 0,
+      "assumed": 0,
+      "quoted_fields": [],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 6928,
+            "prompt_tokens": 1182,
+            "total_tokens": 8110,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 6240,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            }
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 5,
+        "quoted": 3,
+        "assumed": 2,
+        "quoted_fields": [
+          "entry[0]",
+          "timeframe",
+          "direction"
+        ],
+        "assumed_fields": [
+          "exit[0]",
+          "assets"
+        ],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "entry",
+            "problem": "Omits core D1 trend filter: claim requires H1 long entries only when D1 MACD line is above its signal line; spec tests H1 MACD upward crosses unconditionally. Marked NOT EXPRESSIBLE in assumptions but leaving it out tests the unfiltered baseline, not the claimed filtered strategy.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "entry",
+            "problem": "Omits the core D1 trend filter: claim requires H1 long crosses only when D1 MACD line is above its signal line / only in direction of D1 trend, but spec encodes only unfiltered H1 MACD line crosses_above signal. Leaving out the D1 filter changes what is being tested.",
+            "severity": "major"
+          }
+        ]
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "UNTESTABLE",
+    "headline": "This claim can't be turned into rules anyone could check.",
+    "reasons": [
+      "The strategy requires filtering hourly MACD entries by the daily MACD line-versus-signal position, which needs synchronized two-timeframe evaluation the single-timeframe spec cannot express."
+    ],
+    "warnings": [],
+    "asset": null,
+    "timeframe": null,
+    "primary": {},
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {},
+    "sweep": {},
+    "claimed_vs_measured": [],
+    "costs": {},
+    "grounding": {},
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: D1 MACD line-above-signal trend filter requiring synchronized D1 plus H1 multi-timeframe evaluation cannot be expressed in the single-timeframe 1h spec, and it is the heart of the claimed filtered strategy."
+      ],
+      "audit_majors": [
+        "entry: Omits the core D1 trend filter: claim requires H1 long crosses only when D1 MACD line is above its signal line / only in direction of D1 trend, but spec encodes only unfiltered H1 MACD line crosses_above signal. Leaving out the D1 filter changes what is being tested."
+      ]
+    }
+  },
+  "seconds": 63.9
+}

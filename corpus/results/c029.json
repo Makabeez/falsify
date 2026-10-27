@@ -1,0 +1,248 @@
+{
+  "id": "c029",
+  "record": {
+    "id": "c029",
+    "url": "https://backtrex.com/en/backtests/connors-rsi-2-sp-500",
+    "source": "blog",
+    "posted": "2026-10-02",
+    "asset_hint": "SPX",
+    "timeframe_hint": "1d",
+    "category": "other_asset",
+    "excerpt": "Long entry: RSI(2) below 5 and the close above the 200-day simple moving average (SMA). \u2026 Long exit: the close is back above the 5-day SMA, or below the 200-day SMA. \u2026 Market and period: S&P 500 (SPX500/USD), daily candles, October 2016 to October 2026. \u2026 At the end of the period the strategy is at +18.1%, against +255.4% for buying and holding SPX500/USD over the same days.",
+    "performance_claim": "the strategy is at +18.1%, against +255.4% for buying and holding",
+    "verbatim_confidence": "high",
+    "notes": "Connors RSI(2)<5 above SMA200 on S&P 500; mechanical but index, out of universe. Date is stated backtest run date."
+  },
+  "spec": {
+    "claim_summary": "Buy when 2-period RSI is below 5 while close is above the 200-day SMA and exit when close is back above the 5-day SMA or below the 200-day SMA on S&P 500 daily.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "SPX500USDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "rsi",
+          "period": 2,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "lt",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 5.0,
+          "multiplier": 1.0,
+          "param": null
+        }
+      },
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "gt",
+        "right": {
+          "kind": "sma",
+          "period": 200,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "gt",
+        "right": {
+          "kind": "sma",
+          "period": 5,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      },
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "lt",
+        "right": {
+          "kind": "sma",
+          "period": 200,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": 18.1,
+      "avg_return_per_trade_pct": null,
+      "period_start": "2016-10-01",
+      "period_end": "2026-10-01",
+      "other": "against +255.4% for buying and holding SPX500/USD over the same days"
+    },
+    "assumptions": [
+      "Asset SPX500/USD mapped to SPX500USDT with no substitution; engine has no Binance spot data for it.",
+      "SMA and RSI(2) calculated on daily closes using standard definitions.",
+      "Exit 'below the 200-day SMA' interpreted as close < 200-day SMA on bar close.",
+      "No stop-loss, take-profit or max hold stated, so none used; position held until an exit condition occurs.",
+      "Month-precision claim period October 2016 to October 2026 recorded as 2016-10-01 to 2026-10-01 in `claimed` only; test window is not part of the rule."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "RSI(2) below 5",
+        "assumed": false
+      },
+      {
+        "field": "entry[1]",
+        "quote": "the close above the 200-day simple moving average (SMA)",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": "the close is back above the 5-day SMA",
+        "assumed": false
+      },
+      {
+        "field": "exit[1]",
+        "quote": "below the 200-day SMA",
+        "assumed": false
+      },
+      {
+        "field": "assets",
+        "quote": "S&P 500 (SPX500/USD)",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": "daily candles",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": "Long entry:",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 4485,
+          "prompt_tokens": 1164,
+          "total_tokens": 5649,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 3820,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 925,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 7,
+      "quoted": 7,
+      "assumed": 0,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "exit[0]",
+        "exit[1]",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "audits": [
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ]
+  },
+  "report": {
+    "verdict": "UNTESTABLE",
+    "headline": "No bundled history for the asset/timeframe this claim needs.",
+    "reasons": [
+      "wanted ['SPX500USDT'] on 1d; bundled universe is ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'LINKUSDT', 'LTCUSDT', 'DOTUSDT', 'TRXUSDT']"
+    ],
+    "warnings": [],
+    "asset": null,
+    "timeframe": "1d",
+    "primary": {},
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {},
+    "sweep": {},
+    "claimed_vs_measured": [],
+    "costs": {},
+    "grounding": {
+      "rule_elements": 7,
+      "quoted": 7,
+      "assumed": 0,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "exit[0]",
+        "exit[1]",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "exact",
+      "gaps": [],
+      "audit_majors": []
+    }
+  },
+  "seconds": 21.0
+}
