@@ -14,7 +14,7 @@
     "notes": "WMA 7/25 cross on SOL, timeframe not stated by author (a reply suggests 8h); striking 85x vs 48x HODL claim, very falsifiable."
   },
   "spec": {
-    "claim_summary": "Buying Solana when WMA7 crosses above WMA25 and selling when it crosses below returned 85 times over 4 years versus 48 times for buy-and-hold.",
+    "claim_summary": "Buying Solana and repeatedly selling on WMA7 crossing below WMA25 and rebuying on WMA7 crossing above WMA25 turned initial capital into 85 times over four years.",
     "source_type": "text",
     "testable": true,
     "untestable_reason": null,
@@ -26,34 +26,38 @@
     "entry": [
       {
         "left": {
-          "kind": "sma",
+          "kind": "wma",
           "period": 7,
           "value": null,
-          "multiplier": 1.0
+          "multiplier": 1.0,
+          "param": null
         },
         "op": "crosses_above",
         "right": {
-          "kind": "sma",
+          "kind": "wma",
           "period": 25,
           "value": null,
-          "multiplier": 1.0
+          "multiplier": 1.0,
+          "param": null
         }
       }
     ],
     "exit": [
       {
         "left": {
-          "kind": "sma",
+          "kind": "wma",
           "period": 7,
           "value": null,
-          "multiplier": 1.0
+          "multiplier": 1.0,
+          "param": null
         },
         "op": "crosses_below",
         "right": {
-          "kind": "sma",
+          "kind": "wma",
           "period": 25,
           "value": null,
-          "multiplier": 1.0
+          "multiplier": 1.0,
+          "param": null
         }
       }
     ],
@@ -63,20 +67,23 @@
     "free_parameters": [],
     "claimed": {
       "win_rate_pct": null,
-      "total_return_pct": 8500.0,
+      "total_return_pct": 8400.0,
       "avg_return_per_trade_pct": null,
       "period_start": "2020-08-14",
       "period_end": "2024-08-14",
       "other": "36 risk-free deals spread over 4 years"
     },
     "assumptions": [
-      "Asset 'Solana' mapped to SOLUSDT.",
-      "Timeframe not stated; assumed 1d as most natural reading for WMA 7/25 crosses producing 36 trades over 4 years.",
-      "Schema has no WMA operand; WMA7 and WMA25 approximated as SMA 7 and SMA 25 with same lengths and cross logic.",
-      "Direction is long-only: buy on cross-up with full reinvestment, fully exit on cross-down.",
-      "No stop-loss, take-profit or max hold stated, so none used; position held until opposite cross.",
-      "Claim period '4 years ago' to 'until today' interpreted as 2020-08-14 to 2024-08-14 using forum post date 2024-08-14 for claimed period only.",
-      "85 times your money interpreted as 8500% total return."
+      "Asset Solana mapped to SOLUSDT Binance spot.",
+      "Timeframe not stated; 1d used as most natural reading for a 4-year WMA system with 36 round trips.",
+      "Direction is long-only: buy, sell everything to cash, reinvest all proceeds; no shorting.",
+      "Initial 'bought 4 years ago' treated as system start date for the claimed period.",
+      "NOT EXPRESSIBLE: Claim starts fully invested at period start ('bought Solana 4 years ago') and holds until the first WMA7 crossed down over WMA25; the engine starts flat and can only enter on WMA7 crossed up over WMA25, so the initial hold from period start to first cross-down is omitted from the testable core.",
+      "Rules evaluated on bar closes with next-bar open fills per engine.",
+      "No stop-loss, take-profit or time exit stated; exit is only the cross-down.",
+      "Period 2020-08-14 to 2024-08-14 inferred from '4 years ago' to 'today' using forum post date 2024-08-14.",
+      "85 times interpreted as 85x final equity, encoded as 8400% total return.",
+      "36 risk-free deals treated as trade-count description, not encoded as win rate."
     ],
     "evidence": [
       {
@@ -101,7 +108,7 @@
       },
       {
         "field": "exit[0]",
-        "quote": "sold everything each time WMA7 crossed down over WMA25",
+        "quote": "each time WMA7 crossed down over WMA25",
         "assumed": false
       },
       {
@@ -111,17 +118,7 @@
       },
       {
         "field": "claimed.other",
-        "quote": "in 36 risk-free deals spread over 4 years",
-        "assumed": false
-      },
-      {
-        "field": "claimed.period_start",
-        "quote": "4 years ago",
-        "assumed": false
-      },
-      {
-        "field": "claimed.period_end",
-        "quote": "until today",
+        "quote": "36 risk-free deals spread over 4 years",
         "assumed": false
       }
     ]
@@ -130,23 +127,8 @@
     "faithful": false,
     "issues": [
       {
-        "field": "entry[0].left.kind",
-        "problem": "Claim says 'WMA7'; spec encodes SMA 7. WMA and SMA are different indicators.",
-        "severity": "major"
-      },
-      {
-        "field": "entry[0].right.kind",
-        "problem": "Claim says 'WMA25'; spec encodes SMA 25. WMA and SMA are different indicators.",
-        "severity": "major"
-      },
-      {
-        "field": "exit[0].left.kind",
-        "problem": "Claim says 'WMA7 crossed down'; spec encodes SMA 7. WMA and SMA are different indicators.",
-        "severity": "major"
-      },
-      {
-        "field": "exit[0].right.kind",
-        "problem": "Claim says 'WMA25'; spec encodes SMA 25. WMA and SMA are different indicators.",
+        "field": "entry",
+        "problem": "Claim starts fully invested at 'bought Solana 4 years ago' and holds until the first 'WMA7 crossed down over WMA25'. Spec starts flat and only enters on 'WMA7 crossed up over WMA25', omitting the initial period-start to first cross-down hold admitted in assumptions. This changes the equity path and 85x total.",
         "severity": "major"
       }
     ]
@@ -156,20 +138,20 @@
     "attempts": [
       {
         "usage": {
-          "completion_tokens": 6121,
-          "prompt_tokens": 848,
-          "total_tokens": 6969,
+          "completion_tokens": 3392,
+          "prompt_tokens": 1825,
+          "total_tokens": 5217,
           "completion_tokens_details": {
             "accepted_prediction_tokens": null,
             "audio_tokens": null,
-            "reasoning_tokens": 5407,
+            "reasoning_tokens": 2708,
             "rejected_prediction_tokens": null,
             "text_tokens": null
           },
           "prompt_tokens_details": {
             "audio_tokens": null,
             "cache_write_tokens": null,
-            "cached_tokens": 0,
+            "cached_tokens": 1053,
             "image_tokens": null,
             "text_tokens": null
           }
@@ -191,40 +173,106 @@
         "timeframe"
       ],
       "problems": []
-    }
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 7081,
+            "prompt_tokens": 1074,
+            "total_tokens": 8155,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 6354,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            }
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 5,
+        "quoted": 4,
+        "assumed": 1,
+        "quoted_fields": [
+          "entry[0]",
+          "exit[0]",
+          "assets",
+          "direction"
+        ],
+        "assumed_fields": [
+          "timeframe"
+        ],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "entry",
+            "problem": "Claim starts invested ('bought Solana 4 years ago') and then sells on first cross-down. Spec starts flat with first entry on first WMA7 cross-up, omitting the initial hold from period start to first cross-down, which changes equity curve, trade count and total return.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "entry",
+            "problem": "Claim starts fully invested at 'bought Solana 4 years ago' and holds until the first 'WMA7 crossed down over WMA25'. Spec starts flat and only enters on 'WMA7 crossed up over WMA25', omitting the initial period-start to first cross-down hold admitted in assumptions. This changes the equity path and 85x total.",
+            "severity": "major"
+          }
+        ]
+      }
+    ],
+    "audit_repair": true
   },
   "report": {
     "verdict": "DIES",
-    "headline": "Random entries with the same holding times did as well 21% of the time (p = 0.215).",
+    "headline": "Tested an approximation of the claim. Random entries with the same holding times did as well 10% of the time (p = 0.098).",
     "reasons": [
-      "random entries with the same holding times did as well 21% of the time (p = 0.215)"
+      "random entries with the same holding times did as well 10% of the time (p = 0.098)"
     ],
     "warnings": [
-      "just holding did better: +3325% vs buy-and-hold +3458%"
+      "left out: Claim starts fully invested at period start ('bought Solana 4 years ago') and holds until the first WMA7 crossed down over WMA25; the engine starts flat and can only enter on WMA7 crossed up over WMA25, so the initial hold from period start to first cross-down is omitted from the testable core.",
+      "audit: entry: Claim starts fully invested at 'bought Solana 4 years ago' and holds until the first 'WMA7 crossed down over WMA25'. Spec starts flat and only enters on 'WMA7 crossed up over WMA25', omitting the initial period-start to first cross-down hold admitted in assumptions. This changes the equity path and 85x total."
     ],
     "asset": "SOLUSDT",
     "timeframe": "1d",
     "primary": {
-      "trades": 55,
-      "win_rate_pct": 30.909090909090907,
-      "avg_net_pct": 26.721123720826633,
-      "total_net_pct": 3324.7018594205606,
-      "total_gross_pct": 3807.9560304030847,
-      "max_drawdown_pct": -86.7748675512052,
-      "avg_bars": 20.490909090909092,
-      "buy_hold_pct": 3457.8947368421054,
+      "trades": 64,
+      "win_rate_pct": 31.25,
+      "avg_net_pct": 22.50067910440496,
+      "total_net_pct": 9742.53696884432,
+      "total_gross_pct": 11376.638949592327,
+      "max_drawdown_pct": -82.97726121220734,
+      "avg_bars": 17.328125,
+      "open_at_end": 0,
+      "buy_hold_pct": 3442.1052631578946,
       "window": [
         "2020-08-11",
-        "2026-10-25"
+        "2026-10-26"
       ],
-      "exposure_pct": 49.71327745919717
+      "exposure_pct": 48.89770723104056
     },
     "null_test": {
-      "p_value": 0.21489255372313842,
-      "strategy_mean_log_pct": 6.4247263864999,
-      "null_median_log_pct": 2.9515105296078787,
-      "null_p95_log_pct": 10.162220792755598,
-      "beat_by_random_pct": 21.45,
+      "p_value": 0.09795102448775612,
+      "strategy_mean_log_pct": 7.170779051351317,
+      "null_median_log_pct": 2.4543213708486213,
+      "null_p95_log_pct": 8.500387721881934,
+      "beat_by_random_pct": 9.75,
       "sims": 2000
     },
     "out_of_sample": {
@@ -236,44 +284,48 @@
         "2024-08-14"
       ],
       "in_window": {
-        "trades": 37,
-        "win_rate_pct": 29.72972972972973,
-        "avg_net_pct": 39.32693881189383,
-        "total_net_pct": 3590.5084888685574,
-        "total_gross_pct": 3933.21688908918,
-        "max_drawdown_pct": -86.7748675512052,
-        "avg_bars": 20.18918918918919
+        "trades": 42,
+        "win_rate_pct": 28.57142857142857,
+        "avg_net_pct": 33.912262805810435,
+        "total_net_pct": 9820.067568694441,
+        "total_gross_pct": 10872.144918503243,
+        "max_drawdown_pct": -82.97726121220734,
+        "avg_bars": 17.238095238095237,
+        "open_at_end": 0
       },
       "after_window": {
-        "trades": 18,
-        "win_rate_pct": 33.33333333333333,
-        "avg_net_pct": 0.8091704780773805,
-        "total_net_pct": -7.202439182831655,
-        "total_gross_pct": -3.1057307883678553,
-        "max_drawdown_pct": -45.04061513968235,
-        "avg_bars": 21.11111111111111
+        "trades": 22,
+        "win_rate_pct": 36.36363636363637,
+        "avg_net_pct": 0.7149284017217771,
+        "total_net_pct": -0.7815531427909805,
+        "total_gross_pct": 4.597952677769657,
+        "max_drawdown_pct": -36.89863148849084,
+        "avg_bars": 17.5,
+        "open_at_end": 0
       },
       "counts": true
     },
     "halves": {
-      "split": "2023-09-18",
+      "split": "2023-09-19",
       "first": {
-        "trades": 31,
-        "win_rate_pct": 22.58064516129032,
-        "avg_net_pct": 32.06395962199437,
-        "total_net_pct": 426.48500733151377,
-        "total_gross_pct": 467.1494735557751,
-        "max_drawdown_pct": -86.7748675512052,
-        "avg_bars": 16.548387096774192
+        "trades": 34,
+        "win_rate_pct": 20.588235294117645,
+        "avg_net_pct": 31.634258681176387,
+        "total_net_pct": 1465.0087875448025,
+        "total_gross_pct": 1598.0685841141785,
+        "max_drawdown_pct": -82.97726121220734,
+        "avg_bars": 14.823529411764707,
+        "open_at_end": 0
       },
       "second": {
-        "trades": 24,
-        "win_rate_pct": 41.66666666666667,
-        "avg_net_pct": 19.819960681818323,
-        "total_net_pct": 550.4842135540839,
-        "total_gross_pct": 589.0522186156568,
-        "max_drawdown_pct": -45.04061513968235,
-        "avg_bars": 25.583333333333332
+        "trades": 30,
+        "win_rate_pct": 43.333333333333336,
+        "avg_net_pct": 12.149288917397344,
+        "total_net_pct": 528.9125688735182,
+        "total_gross_pct": 575.8642764467183,
+        "max_drawdown_pct": -36.89863148849085,
+        "avg_bars": 20.166666666666668,
+        "open_at_end": 0
       },
       "consistent": true
     },
@@ -281,69 +333,69 @@
       "assets": [
         {
           "asset": "BTCUSDT",
-          "trades": 66,
-          "total_net_pct": 950.7807215339376,
-          "avg_net_pct": 5.6976906245946
+          "trades": 88,
+          "total_net_pct": 1551.143734172031,
+          "avg_net_pct": 4.9152107968269165
         },
         {
           "asset": "ETHUSDT",
-          "trades": 61,
-          "total_net_pct": 3787.433637743281,
-          "avg_net_pct": 8.642238009138884
+          "trades": 97,
+          "total_net_pct": 1786.6244420806095,
+          "avg_net_pct": 5.759411136953287
         },
         {
           "asset": "BNBUSDT",
-          "trades": 65,
-          "total_net_pct": 3343.3985924438575,
-          "avg_net_pct": 10.760189787113744
+          "trades": 90,
+          "total_net_pct": 11414.591648945772,
+          "avg_net_pct": 11.180296016419755
         },
         {
           "asset": "XRPUSDT",
-          "trades": 66,
-          "total_net_pct": 227.55679249879012,
-          "avg_net_pct": 6.920356324172526
+          "trades": 87,
+          "total_net_pct": 430.1090485104271,
+          "avg_net_pct": 6.093486579964189
         },
         {
           "asset": "DOGEUSDT",
-          "trades": 57,
-          "total_net_pct": 5477.519296443284,
-          "avg_net_pct": 16.85220591536307
+          "trades": 68,
+          "total_net_pct": 5906.0771176310645,
+          "avg_net_pct": 13.568015709819715
         },
         {
           "asset": "ADAUSDT",
-          "trades": 62,
-          "total_net_pct": 2493.2010985001334,
-          "avg_net_pct": 14.65918355437613
+          "trades": 81,
+          "total_net_pct": 568.5225439576694,
+          "avg_net_pct": 10.957890184334653
         },
         {
           "asset": "AVAXUSDT",
-          "trades": 48,
-          "total_net_pct": 2665.577129746976,
-          "avg_net_pct": 25.184625592508297
+          "trades": 54,
+          "total_net_pct": 2608.6949604212846,
+          "avg_net_pct": 20.256518270178194
         },
         {
           "asset": "LINKUSDT",
-          "trades": 72,
-          "total_net_pct": 1096.1145468069278,
-          "avg_net_pct": 7.6174913131533835
+          "trades": 87,
+          "total_net_pct": 2672.0033526317766,
+          "avg_net_pct": 7.13285817232924
         },
         {
           "asset": "LTCUSDT",
-          "trades": 67,
-          "total_net_pct": 115.65578166425085,
-          "avg_net_pct": 3.3108944994138847
+          "trades": 92,
+          "total_net_pct": 112.39993953426159,
+          "avg_net_pct": 2.62800854472941
         },
         {
           "asset": "DOTUSDT",
-          "trades": 49,
-          "total_net_pct": 226.63703579566317,
-          "avg_net_pct": 8.86982587529797
+          "trades": 67,
+          "total_net_pct": -3.8409641803475947,
+          "avg_net_pct": 7.224166153649121
         },
         {
           "asset": "TRXUSDT",
-          "trades": 70,
-          "total_net_pct": 722.8393257596533,
-          "avg_net_pct": 4.554664647551373
+          "trades": 88,
+          "total_net_pct": 594.2992489560421,
+          "avg_net_pct": 3.5140504660965792
         }
       ],
       "tested": 11,
@@ -373,7 +425,16 @@
         "timeframe"
       ],
       "problems": []
+    },
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: Claim starts fully invested at period start ('bought Solana 4 years ago') and holds until the first WMA7 crossed down over WMA25; the engine starts flat and can only enter on WMA7 crossed up over WMA25, so the initial hold from period start to first cross-down is omitted from the testable core."
+      ],
+      "audit_majors": [
+        "entry: Claim starts fully invested at 'bought Solana 4 years ago' and holds until the first 'WMA7 crossed down over WMA25'. Spec starts flat and only enters on 'WMA7 crossed up over WMA25', omitting the initial period-start to first cross-down hold admitted in assumptions. This changes the equity path and 85x total."
+      ]
     }
   },
-  "seconds": 36.3
+  "seconds": 78.4
 }

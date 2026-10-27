@@ -49,9 +49,61 @@ def _atr(df: pd.DataFrame, period: int) -> pd.Series:
     return tr.ewm(alpha=1 / period, adjust=False, min_periods=period).mean()
 
 
+def _wma(close: pd.Series, period: int) -> pd.Series:
+    w = np.arange(1, period + 1, dtype=float)
+    return close.rolling(period, min_periods=period).apply(lambda x: float(np.dot(x, w) / w.sum()), raw=True)
+
+
+def _macd(close: pd.Series, fast: int, slow: int, signal: int = 9) -> tuple[pd.Series, pd.Series]:
+    line = (close.ewm(span=fast, adjust=False, min_periods=fast).mean()
+            - close.ewm(span=slow, adjust=False, min_periods=slow).mean())
+    sig = line.ewm(span=signal, adjust=False, min_periods=signal).mean()
+    return line, sig
+
+
+def _supertrend(df: pd.DataFrame, period: int, mult: float) -> pd.Series:
+    """Standard supertrend line (ATR with Wilder smoothing). Uses only data up to each close."""
+    h, l, c = (df[x].to_numpy(dtype=float) for x in ("high", "low", "close"))
+    atr = _atr(df, period).to_numpy()
+    mid = (h + l) / 2
+    upper, lower = mid + mult * atr, mid - mult * atr
+    n = len(c)
+    line = np.full(n, np.nan)
+    fu, fl = np.nan, np.nan
+    up = True
+    for t in range(n):
+        if np.isnan(atr[t]):
+            continue
+        if np.isnan(fu):
+            fu, fl = upper[t], lower[t]
+            up = c[t] >= mid[t]
+        else:
+            fu = upper[t] if (upper[t] < fu or c[t - 1] > fu) else fu
+            fl = lower[t] if (lower[t] > fl or c[t - 1] < fl) else fl
+            if up and c[t] < fl:
+                up = False
+            elif not up and c[t] > fu:
+                up = True
+        line[t] = fl if up else fu
+    return pd.Series(line, index=df.index)
+
+
+def _adx(df: pd.DataFrame, period: int) -> pd.Series:
+    h, l = df["high"], df["low"]
+    up, down = h.diff(), -l.diff()
+    plus_dm = up.where((up > down) & (up > 0), 0.0)
+    minus_dm = down.where((down > up) & (down > 0), 0.0)
+    atr = _atr(df, period)
+    a = 1 / period
+    plus_di = 100 * plus_dm.ewm(alpha=a, adjust=False, min_periods=period).mean() / atr
+    minus_di = 100 * minus_dm.ewm(alpha=a, adjust=False, min_periods=period).mean() / atr
+    dx = 100 * (plus_di - minus_di).abs() / (plus_di + minus_di)
+    return dx.ewm(alpha=a, adjust=False, min_periods=period).mean()
+
+
 def operand_series(op: Operand, df: pd.DataFrame, cache: dict | None = None) -> pd.Series:
     cache = {} if cache is None else cache
-    key = (op.kind, op.period, op.value)
+    key = (op.kind, op.period, op.value, op.param)
     if key not in cache:
         k, p = op.kind, op.period
         c = df["close"]
@@ -79,6 +131,19 @@ def operand_series(op: Operand, df: pd.DataFrame, cache: dict | None = None) -> 
             s = pd.Series(df.index.dayofweek, index=df.index, dtype=float)
         elif k == OperandKind.HOUR_UTC:
             s = pd.Series(df.index.hour, index=df.index, dtype=float)
+        elif k == OperandKind.WMA:
+            s = _wma(c, p)
+        elif k in (OperandKind.BB_UPPER, OperandKind.BB_LOWER):
+            mid = c.rolling(p, min_periods=p).mean()
+            sd = c.rolling(p, min_periods=p).std(ddof=0)  # population std, as TradingView
+            s = mid + op.param * sd if k == OperandKind.BB_UPPER else mid - op.param * sd
+        elif k in (OperandKind.MACD_LINE, OperandKind.MACD_SIGNAL, OperandKind.MACD_HIST):
+            line, sig = _macd(c, p, int(op.param))
+            s = line if k == OperandKind.MACD_LINE else sig if k == OperandKind.MACD_SIGNAL else line - sig
+        elif k == OperandKind.SUPERTREND:
+            s = _supertrend(df, p, op.param)
+        elif k == OperandKind.ADX:
+            s = _adx(df, p)
         else:  # pragma: no cover - enum is closed
             raise ValueError(k)
         cache[key] = s
@@ -173,7 +238,10 @@ def run(spec: ClaimSpec, df: pd.DataFrame, costs: Costs = Costs()) -> pd.DataFra
             if tp is not None:
                 tp_px = entry_px * (1 + tp) if long else entry_px * (1 - tp)
             in_pos = True
-    # a position still open at the end of data is not a closed trade; it is dropped
+    # A position still open at the end of the data is marked at the last close and kept,
+    # flagged reason="open". Dropping it would hide exactly the losers a no-stop rule creates.
+    if in_pos:
+        close_trade(n - 1, c[n - 1], "open")
     return pd.DataFrame(trades, columns=TRADE_COLUMNS)
 
 
@@ -197,6 +265,7 @@ def summarize(trades: pd.DataFrame, df: pd.DataFrame | None = None) -> dict:
             total_gross_pct=float((np.prod(1 + gross) - 1) * 100),
             max_drawdown_pct=float(((equity / peak) - 1).min() * 100),
             avg_bars=float(trades["bars"].mean()),
+            open_at_end=int((trades["reason"] == "open").sum()),
         )
     if df is not None and len(df) > 1:
         out["buy_hold_pct"] = float((df["close"].iloc[-1] / df["open"].iloc[0] - 1) * 100)

@@ -11,7 +11,7 @@
 </p>
 <p align="center">
   <img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square" alt="Python 3.10+"/>
-  <img src="https://img.shields.io/badge/data-Binance%20spot%202019--2026-F0B90B?style=flat-square" alt="Binance spot data"/>
+  <img src="https://img.shields.io/badge/data-Binance%20spot%202017--2026-F0B90B?style=flat-square" alt="Binance spot data"/>
   <img src="https://img.shields.io/badge/judge%20demo-offline%2C%20no%20key-2ea44f?style=flat-square" alt="Offline judge demo"/>
 </p>
 
@@ -54,6 +54,8 @@ So Falsify splits the job:
   ┌────────────────────────┐
   │ Muse Spark: AUDIT      │── source + spec → every place the spec departs from what was said
   └────────────────────────┘
+        │  major issue? → findings go back to the compiler for one repair, then re-audit
+        ▼  still unresolved, or a part of the claim the DSL can't express → verdict is labelled an approximation
         │
         ▼
   ┌────────────────────────┐   deterministic, no model in the P&L path
@@ -66,12 +68,13 @@ So Falsify splits the job:
   └────────────────────────┘
         │
         ▼
-     SURVIVES | DIES | INCONCLUSIVE | UNTESTABLE   + "7/9 rule elements quoted from the claim, 2 assumed"
+     SURVIVES | DIES | INCONCLUSIVE | UNTESTABLE   + exact / approximation  + "4/5 rule elements quoted, 1 assumed"
 ```
 
 The model's job is translation, which it is good at. It never gets the last word on either side of it:
 
 - **What the claimant said** is checked by `falsify/grounding.py`. Every entry and exit condition, stop, target, time exit, asset, timeframe and direction needs an evidence row with the claimant's exact words, or an explicit `assumed: true`. A quote that isn't literally in the post (or in the transcript of the screenshot or clip) is refused and sent back. The verdict then tells you how much of what was tested is the claimant's rule and how much is our reading.
+- **Whether we tested their rule or a cousin of it** is decided by the audit. Muse Spark re-reads the source next to the compiled spec and lists every departure (it caught WMA silently compiled as SMA, and a DCA ladder quietly dropped). Major findings go back to the compiler once. If something still can't be expressed, the verdict leads with "Tested an approximation of the claim", in the headline, not a footnote.
 - **What the rule does** is computed by code whose timing contract is pinned by tests (`tests/test_engine.py`), including a check that truncating future data never changes a past trade.
 
 ## The battery
@@ -87,6 +90,8 @@ The model's job is translation, which it is good at. It never gets the last word
 | Vague parameters | "Oversold" could mean 20, 25, 30 or 35. Every reading is run; picking the best one pays a Bonferroni penalty. | Warning |
 | Claimed vs measured | Claimed 80% win rate, measured 61%. | Warning |
 | Buy-and-hold | Would just holding have done better? | Warning |
+| Open at the end | A no-stop rule's last position is often a loser that never closed. It is marked at the last close and counted, never dropped. | Counted |
+| History coverage | Does the claim's period start before our data? | Warning |
 
 Thresholds are fixed statistical conventions (p < 0.05, n ≥ 30), stated before any claim is run, never tuned per claim.
 
@@ -96,24 +101,24 @@ No. That's measured, not asserted. `falsify calibrate` runs 300 coin-flip strate
 
 | Setup (bundled data, costs included) | Coin flips a naive backtest calls profitable | Coin flips that pass Falsify | Edge caught 80% of the time |
 |---|---|---|---|
-| BTC daily, 7-day holds, 30 trades | 64% | 4.3% | 3.8% per trade |
-| BTC daily, 7-day holds, 100 trades | 76% | 2.7% | 2.1% per trade |
-| BTC 4h, 24h holds, 300 trades | 21% | 3.0% | 0.46% per trade |
-| ETH 1h, 12h holds, 1000 trades | 1% | 1.3% | 0.31% per trade |
+| BTC daily, 7-day holds, 30 trades | 58% | 5.3% | 4.5% per trade |
+| BTC daily, 7-day holds, 100 trades | 69% | 3.3% | 2.6% per trade |
+| BTC 4h, 24h holds, 300 trades | 22% | 6.0% | 0.50% per trade |
+| ETH 1h, 12h holds, 1000 trades | 1% | 1.0% | 0.34% per trade |
 
-**On BTC daily, three out of four strategies that pick entries by coin flip "make money" in a naive backtest, because BTC went up. Falsify passes about 3%, under the 5% its threshold promises.** Plant a real edge and it gets through: how big it has to be depends on how many trades the claim has. That's why a 30-trade daily setup usually can't prove what it claims, however confident the post sounds.
+**On BTC daily, a naive backtest calls most strategies that pick entries by coin flip profitable, because BTC went up. Falsify passes about 5%, exactly what a p < 0.05 threshold promises (300 runs per setup, so ±1.3 points of simulation noise).** Plant a real edge and it gets through: how big it has to be depends on how many trades the claim has. That's why a 30-trade daily setup usually can't prove what it claims, however confident the post sounds.
 
 ## What it says about some classic setups
 
-From `make judge-demo` (Binance spot, 2019-01-01 to 2026-10-26, costs included):
+From `make judge-demo` (Binance spot, Aug 2017 to Oct 2026, including the 2018 and 2022 bear markets, costs included):
 
 | Claim (hand-compiled, generic) | Verdict | Why |
 |---|---|---|
-| ETH 4h: buy RSI oversold, sell overbought, "80% win rate" | **DIES** | 64 trades, 61% win rate, −1.72% per trade, −85% total; random timing beat it 97% of the time |
-| Buy BTC after a 10% weekly drop, hold 7 days | **DIES** | +1.16% per trade, but random 7-day longs did as well 46% of the time |
-| Buy SOL Friday close, sell Monday open | **DIES** | +0.78% per trade over 323 weekends, but random 2-day holds did as well 14% of the time |
-| BTC 4h breakout above 20-bar high on 2× volume, 3% stop / 6% target | **DIES** | 38% win rate, +0.20% per trade, indistinguishable from random entries (p = 0.45) |
-| BTC daily golden cross / death cross | **INCONCLUSIVE** | 7 trades since 2019; buy-and-hold made +2066% vs +324% |
+| ETH 4h: buy RSI oversold, sell overbought, "80% win rate" | **DIES** | 75 trades, 56% win rate, −3.19% per trade, −98% total: no stop, so the 2018 and 2022 bear markets were held all the way down; random timing beat it 99% of the time |
+| Buy BTC after a 10% weekly drop, hold 7 days | **DIES** | 58% win rate, but −24% total after costs; random 7-day longs did as well 75% of the time |
+| Buy SOL Friday close, sell Monday open | **DIES** | +0.77% per trade over 324 weekends, but random 2-day holds did as well 15% of the time |
+| BTC 4h breakout above 20-bar high on 2× volume, 3% stop / 6% target | **DIES** | 39% win rate, +0.27% per trade, indistinguishable from random entries (p = 0.33) |
+| BTC daily golden cross / death cross | **INCONCLUSIVE** | 9 trades since 2017; buy-and-hold made +1781% vs +635% |
 | "Accumulate strong projects when smart money buys" | **UNTESTABLE** | No mechanical trigger |
 
 ## With Muse Spark
@@ -137,16 +142,17 @@ set -a; . ./.env; set +a
 
 | Component | Status |
 |---|---|
-| Price history | **Real.** Binance spot klines from the public market-data API, 12 assets × 1h/4h/1d, pinned snapshot + SHA-256 manifest |
+| Price history | **Real.** Binance spot klines from the public market-data API, 12 assets × 1h/4h/1d from each asset's listing (BTC/ETH from Aug 2017), pinned snapshot + SHA-256 manifest |
 | Costs | **Modeled.** 10 bps fee + 2 bps slippage per side (Binance spot taker), configurable |
 | Shorts | **Modeled.** Priced as spot short with no borrow or funding cost |
 | Example claims in `claims/` | **Hand-compiled** paraphrases of common retail setups. No real posts, no authors |
 | Battery calibration | **Measured** on the bundled data with coin-flip strategies and planted edges (`falsify calibrate`) |
-| Muse Spark transcribe/compile/audit | Wired to Meta Model API; repair loop and quote check tested against a mock client (`tests/test_grounding.py`). Live runs and the extraction-accuracy measurement land in the next commits |
+| Muse Spark transcribe/compile/audit | **Live** on Meta Model API (`muse-spark-1.3`). Repair loops (schema, quote check, audit) also pinned against a mock client in `tests/`. Corpus results: `corpus/results/scoreboard.md` |
 
 ## Known limits
 
-- **Power.** Measured in [docs/calibration.md](docs/calibration.md): a daily rule with ~30 trades needs about 4% per trade of real edge to be caught 80% of the time. Low-frequency claims will mostly come back INCONCLUSIVE or DIES on the null, and that's the honest answer for that sample size, not a verdict that the idea can never work.
+- **Power.** Measured in [docs/calibration.md](docs/calibration.md): a daily rule with ~30 trades needs about 4.5% per trade of real edge to be caught 80% of the time. Low-frequency claims will mostly come back INCONCLUSIVE or DIES on the null, and that's the honest answer for that sample size, not a verdict that the idea can never work.
+- **Indicators.** sma, ema, wma, rsi, atr, adx, Bollinger, MACD, Supertrend, breakouts, % change, volume, day-of-week, hour. Ichimoku, VWAP, DCA ladders, sizing and trailing stops are not expressible yet; claims that need them are tested on their core and labelled approximations, or come back UNTESTABLE.
 - **Bar-close logic only.** Intrabar claims ("buy the wick") are approximated at the next open.
 - **Spot data.** No funding rates, order flow, sentiment or news; claims that need them are reported UNTESTABLE rather than approximated.
 - Not financial advice. A claim that SURVIVES has passed tests, not earned your money.

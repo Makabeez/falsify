@@ -20,7 +20,7 @@ import time
 from pathlib import Path
 
 from . import data as data_mod
-from .battery import Report, Verdict, attach_grounding, falsify
+from .battery import Report, Verdict, attach_fidelity, attach_grounding, falsify
 from .engine import Costs
 from .spec import model_json_schema
 
@@ -79,6 +79,10 @@ def print_report(rep: Report, summary: str, audit: dict | None = None) -> None:
         print(f"  x {r}")
     for w in rep.warnings:
         print(f"  ! {w}")
+    fid = rep.fidelity
+    if fid:
+        print(f"fidelity {fid['level']}" + ("" if fid["level"] == "exact" else
+              f"  ({len(fid.get('gaps', []))} gap(s) disclosed, {len(fid.get('audit_majors', []))} major audit issue(s))"))
     g = rep.grounding
     if g:
         print(f"grounding {g['quoted']}/{g['rule_elements']} rule elements quoted from the source, "
@@ -102,10 +106,12 @@ def _source(args):
 
 
 def cmd_extract(args) -> int:
-    from .extract import audit_claim, compile_claim, save
+    from .extract import compile_and_audit, compile_claim, save
     src = _source(args)
-    spec, trace = compile_claim(src, model=args.model)
-    audit = None if args.no_audit else audit_claim(src, spec, model=args.model)
+    if args.no_audit:
+        (spec, trace), audit = compile_claim(src, model=args.model), None
+    else:
+        spec, audit, trace = compile_and_audit(src, model=args.model)
     out = args.out or "spec.json"
     save(spec, out, audit, trace)
     print(f"wrote {out}  ({spec.claim_summary})")
@@ -123,6 +129,9 @@ def cmd_run(args) -> int:
     spec, raw = load_spec(args.spec)
     rep = falsify(spec, _costs(args), with_cross_asset=not args.fast, posted=args.posted or raw.get("posted"))
     attach_grounding(rep, (raw.get("trace") or {}).get("grounding"))
+    if raw.get("audit"):
+        from .extract import fidelity
+        attach_fidelity(rep, fidelity(spec, raw["audit"]))
     print_report(rep, spec.claim_summary, raw.get("audit"))
     if args.json:
         Path(args.json).write_text(json.dumps({"spec": spec.model_dump(mode="json"), "report": rep.to_dict()},
@@ -131,12 +140,15 @@ def cmd_run(args) -> int:
 
 
 def cmd_check(args) -> int:
-    from .extract import audit_claim, compile_claim
+    from .extract import compile_and_audit, compile_claim, fidelity
     src = _source(args)
-    spec, trace = compile_claim(src, model=args.model)
-    audit = None if args.no_audit else audit_claim(src, spec, model=args.model)
+    if args.no_audit:
+        (spec, trace), audit = compile_claim(src, model=args.model), None
+    else:
+        spec, audit, trace = compile_and_audit(src, model=args.model)
     rep = falsify(spec, _costs(args), with_cross_asset=not args.fast, posted=args.posted)
     attach_grounding(rep, trace.get("grounding"))
+    attach_fidelity(rep, fidelity(spec, audit))
     print_report(rep, spec.claim_summary, audit.model_dump() if audit else None)
     if args.json:
         Path(args.json).write_text(json.dumps({"spec": spec.model_dump(mode="json"),
@@ -220,11 +232,12 @@ detectable edge.
 CALIBRATION_FOOTER = """
 ## Reading it
 
-- **False positives stay at or under the 5% the threshold promises** on every setup, while a
-  naive backtest calls most coin-flip strategies on BTC daily profitable, because BTC went up.
-  That gap is the drift the random-entry null removes.
+- **False positives sit at the 5% the threshold promises**, within simulation error (with 300
+  runs per setup, one standard error is about 1.3 points), while a naive backtest calls most
+  coin-flip strategies on BTC daily profitable, because BTC went up. That gap is the drift the
+  random-entry null removes.
 - **Power depends on trade count and holding period, not on the claim's confidence.** A daily
-  rule with 30 trades needs an edge of almost 4% per trade before the data can tell it from luck.
+  rule with 30 trades needs an edge of about 4.5% per trade before the data can tell it from luck.
   An hourly rule with hundreds of trades is caught at well under 1%. This is why many claims come
   back INCONCLUSIVE or DIES on the null: their sample cannot prove what they assert.
 - Coin-flip strategies are simulated with the engine's own semantics (flat-only, fill at the next

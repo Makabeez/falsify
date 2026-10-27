@@ -37,13 +37,25 @@ class OperandKind(str, Enum):
     ATR = "atr"
     DAY_OF_WEEK = "day_of_week"    # 0=Mon .. 6=Sun (UTC)
     HOUR_UTC = "hour_utc"
+    WMA = "wma"                    # linearly weighted moving average of close, `period`
+    BB_UPPER = "bb_upper"          # Bollinger: sma(period) + param * stdev(period); param default 2
+    BB_LOWER = "bb_lower"
+    MACD_LINE = "macd_line"        # ema(period, default 12) - ema(param, default 26)
+    MACD_SIGNAL = "macd_signal"    # ema(9) of macd_line
+    MACD_HIST = "macd_hist"        # macd_line - macd_signal
+    SUPERTREND = "supertrend"      # supertrend line, ATR `period` (default 10) x `param` (default 3); close > line = uptrend
+    ADX = "adx"                    # Wilder ADX, `period`
 
 
 PERIOD_KINDS = {
     OperandKind.SMA, OperandKind.EMA, OperandKind.RSI, OperandKind.PCT_CHANGE,
     OperandKind.HIGHEST_HIGH, OperandKind.LOWEST_LOW, OperandKind.VOLUME_SMA,
-    OperandKind.ATR,
+    OperandKind.ATR, OperandKind.WMA, OperandKind.BB_UPPER, OperandKind.BB_LOWER, OperandKind.ADX,
 }
+DEFAULT_PERIOD = {OperandKind.MACD_LINE: 12, OperandKind.MACD_SIGNAL: 12, OperandKind.MACD_HIST: 12,
+                  OperandKind.SUPERTREND: 10}
+DEFAULT_PARAM = {OperandKind.BB_UPPER: 2.0, OperandKind.BB_LOWER: 2.0, OperandKind.MACD_LINE: 26.0,
+                 OperandKind.MACD_SIGNAL: 26.0, OperandKind.MACD_HIST: 26.0, OperandKind.SUPERTREND: 3.0}
 
 
 class Operand(BaseModel):
@@ -59,6 +71,11 @@ class Operand(BaseModel):
     multiplier: float = Field(
         default=1.0, description="Scales the operand, e.g. 1.5 x volume_sma for 'volume 50% above average'."
     )
+    param: Optional[float] = Field(
+        default=None, description="Second setting: Bollinger std-dev width (default 2), MACD slow length "
+                                  "(default 26, fast = period default 12, signal fixed 9), Supertrend ATR "
+                                  "multiplier (default 3, ATR length = period default 10). Null otherwise."
+    )
 
     @model_validator(mode="after")
     def _check(self) -> "Operand":
@@ -66,6 +83,15 @@ class Operand(BaseModel):
             raise ValueError("const operand needs value")
         if self.kind in PERIOD_KINDS and (self.period is None or self.period < 1):
             raise ValueError(f"{self.kind.value} operand needs period >= 1")
+        if self.kind in DEFAULT_PERIOD and self.period is None:
+            self.period = DEFAULT_PERIOD[self.kind]
+        if self.kind in DEFAULT_PARAM and self.param is None:
+            self.param = DEFAULT_PARAM[self.kind]
+        if self.kind in (OperandKind.MACD_LINE, OperandKind.MACD_SIGNAL, OperandKind.MACD_HIST) \
+                and self.param is not None and self.param <= self.period:
+            raise ValueError("MACD slow length (param) must exceed fast length (period)")
+        if self.period is not None and self.period > 2000:
+            raise ValueError("period above 2000 bars is not supported")
         return self
 
     def label(self) -> str:
@@ -73,7 +99,7 @@ class Operand(BaseModel):
         if self.kind == OperandKind.CONST:
             base = f"{self.value:g}"
         elif self.period is not None:
-            base = f"{base}({self.period})"
+            base = f"{base}({self.period}{f',{self.param:g}' if self.param is not None else ''})"
         if self.multiplier != 1.0:
             base = f"{self.multiplier:g}*{base}"
         return base

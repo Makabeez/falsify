@@ -6,3 +6,4 @@ __pycache__/
 spec.json
 out/
 corpus/raw/
+out*.json

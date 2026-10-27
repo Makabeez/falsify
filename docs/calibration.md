@@ -12,21 +12,22 @@ Bundled Binance spot data, costs 10+2 bps per side, 300 coin-flip strategies per
 
 | Setup | Trades | Coin flips that pass Falsify | Coin flips a naive backtest calls profitable | +25 bps | +50 bps | +100 bps | +200 bps | +400 bps | +800 bps | Min. detectable edge (80% power) |
 |---|---|---|---|---|---|---|---|---|---|---|
-| BTCUSDT 1d, hold 7d, ~30 trades, long | 30 | 4.3% | 64% | 6% | 8% | 17% | 37% | 84% | 100% | 384 bps |
-| BTCUSDT 1d, hold 7d, ~100 trades, long | 99 | 2.7% | 76% | 6% | 13% | 31% | 79% | 100% | 100% | 213 bps |
-| BTCUSDT 4h, hold 6x4h, ~100 trades, long | 99 | 2.7% | 27% | 15% | 43% | 92% | 100% | 100% | 100% | 88 bps |
-| BTCUSDT 4h, hold 6x4h, ~300 trades, long | 300 | 3.0% | 21% | 35% | 88% | 100% | 100% | 100% | 100% | 46 bps |
-| ETHUSDT 1h, hold 12h, ~300 trades, long | 298 | 5.0% | 11% | 44% | 94% | 100% | 100% | 100% | 100% | 43 bps |
-| ETHUSDT 1h, hold 12h, ~1000 trades, long | 998 | 1.3% | 1% | 74% | 100% | 100% | 100% | 100% | 100% | 31 bps |
-| SOLUSDT 1d, hold 2d, ~300 trades, short | 300 | 1.3% | 9% | 9% | 26% | 66% | 100% | 100% | 100% | 141 bps |
+| BTCUSDT 1d, hold 7d, ~30 trades, long | 30 | 5.3% | 58% | 7% | 9% | 14% | 30% | 77% | 100% | 448 bps |
+| BTCUSDT 1d, hold 7d, ~100 trades, long | 100 | 3.3% | 69% | 7% | 12% | 27% | 72% | 99% | 100% | 258 bps |
+| BTCUSDT 4h, hold 6x4h, ~100 trades, long | 99 | 5.7% | 30% | 17% | 38% | 87% | 100% | 100% | 100% | 93 bps |
+| BTCUSDT 4h, hold 6x4h, ~300 trades, long | 300 | 6.0% | 22% | 33% | 81% | 100% | 100% | 100% | 100% | 50 bps |
+| ETHUSDT 1h, hold 12h, ~300 trades, long | 298 | 4.7% | 11% | 39% | 88% | 100% | 100% | 100% | 100% | 46 bps |
+| ETHUSDT 1h, hold 12h, ~1000 trades, long | 996 | 1.0% | 1% | 68% | 100% | 100% | 100% | 100% | 100% | 34 bps |
+| SOLUSDT 1d, hold 2d, ~300 trades, short | 300 | 4.0% | 9% | 10% | 24% | 72% | 100% | 100% | 100% | 128 bps |
 
 ## Reading it
 
-- **False positives stay at or under the 5% the threshold promises** on every setup, while a
-  naive backtest calls most coin-flip strategies on BTC daily profitable, because BTC went up.
-  That gap is the drift the random-entry null removes.
+- **False positives sit at the 5% the threshold promises**, within simulation error (with 300
+  runs per setup, one standard error is about 1.3 points), while a naive backtest calls most
+  coin-flip strategies on BTC daily profitable, because BTC went up. That gap is the drift the
+  random-entry null removes.
 - **Power depends on trade count and holding period, not on the claim's confidence.** A daily
-  rule with 30 trades needs an edge of almost 4% per trade before the data can tell it from luck.
+  rule with 30 trades needs an edge of about 4.5% per trade before the data can tell it from luck.
   An hourly rule with hundreds of trades is caught at well under 1%. This is why many claims come
   back INCONCLUSIVE or DIES on the null: their sample cannot prove what they assert.
 - Coin-flip strategies are simulated with the engine's own semantics (flat-only, fill at the next

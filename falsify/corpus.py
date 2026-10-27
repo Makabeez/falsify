@@ -20,7 +20,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-from .battery import attach_grounding, falsify
+from .battery import attach_fidelity, attach_grounding, falsify
 from .engine import Costs
 
 
@@ -40,15 +40,15 @@ def _note(rec: dict) -> str:
 
 
 def run_one(rec: dict, costs: Costs, model: str | None = None) -> dict:
-    from .extract import Source, audit_claim, compile_claim
+    from .extract import Source, compile_and_audit, fidelity
     t0 = time.time()
     src = Source.from_text(rec["excerpt"], note=_note(rec))
     out: dict = {"id": rec["id"], "record": rec}
     try:
-        spec, trace = compile_claim(src, model=model)
-        audit = audit_claim(src, spec, model=model)
+        spec, audit, trace = compile_and_audit(src, model=model)
         rep = falsify(spec, costs, posted=rec.get("posted"))
         attach_grounding(rep, trace.get("grounding"))
+        attach_fidelity(rep, fidelity(spec, audit))
         out.update(spec=spec.model_dump(mode="json"), audit=audit.model_dump(mode="json"), trace=trace,
                    report=rep.to_dict())
     except Exception as e:  # one bad claim must not stop the corpus
@@ -121,6 +121,9 @@ def report(out_dir: str | Path) -> str:
     first_pass = sum(1 for r in ok if len(r["trace"]["attempts"]) == 1 and not r["trace"]["attempts"][0].get("error")
                      and not r["trace"]["attempts"][0].get("grounding_problems"))
     unfaithful = [r for r in ok if not r["audit"]["faithful"]]
+    approx = [r for r in ok if (r["report"].get("fidelity") or {}).get("level") == "approximation"
+              and r["report"]["verdict"] != "UNTESTABLE"]
+    repaired = [r for r in ok if r["trace"].get("audit_repair")]
 
     lines = ["# Corpus scoreboard", "",
              f"{len(results)} real public claims run through Muse Spark (compile, quote check, audit) and the "
@@ -139,7 +142,9 @@ def report(out_dir: str | Path) -> str:
     if n:
         lines.append(f"| Rule elements quoted verbatim from the claim (tested claims) | {q}/{n} ({q / n * 100:.0f}%) |")
     lines.append(f"| Compiled valid and quote-clean on the first attempt | {first_pass}/{len(ok)} |")
-    lines.append(f"| Audit pass flagged the spec as unfaithful | {len(unfaithful)}/{len(ok)} |")
+    lines.append(f"| Audit found major issues and sent the spec back for one repair | {len(repaired)}/{len(ok)} |")
+    lines.append(f"| Still flagged unfaithful after repair | {len(unfaithful)}/{len(ok)} |")
+    lines.append(f"| Verdicts on an approximation (disclosed gap or unresolved audit issue) | {len(approx)}/{len(tested)} |")
     tok = sum(_tokens(r) for r in ok)
     if ok:
         lines.append(f"| Mean tokens per claim (transcribe + compile, excl. audit) | {tok // len(ok):,} |")
@@ -160,8 +165,9 @@ def report(out_dir: str | Path) -> str:
             measured = f"{p['trades']} trades, win {p['win_rate_pct']:.0f}%, {p['avg_net_pct']:+.2f}%/trade"
         g = rp.get("grounding") or {}
         quoted = f"{g['quoted']}/{g['rule_elements']}" if g else ""
-        flag = "" if r["audit"]["faithful"] else " (audit flag)"
-        why = rp["headline"].replace("|", "/")
+        flag = " (approx.)" if (rp.get("fidelity") or {}).get("level") == "approximation" \
+            and rp["verdict"] != "UNTESTABLE" else ""
+        why = rp["headline"].replace("Tested an approximation of the claim. ", "").replace("|", "/")
         lines.append(f"| [{rec['id']}]({rec['url']}) | {rec['category']} | {sp['claim_summary'].replace('|', '/')} | "
                      f"{claimed.replace('|', '/')} | {measured} | **{rp['verdict']}**{flag} | {why} | {quoted} |")
     md = "\n".join(lines) + "\n"

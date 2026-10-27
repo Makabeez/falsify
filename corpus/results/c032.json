@@ -14,16 +14,34 @@
     "notes": "Looks mechanical but relies on proprietary undefined Trend Score indicators; only the 10-day-high leg is computable. Good trap: compiler should flag unresolvable inputs."
   },
   "spec": {
-    "claim_summary": "A Bitcoin strategy buys when Trend Score exceeds 7 and Relative Trend Score exceeds 7 with a close at a 10-day high and exits when Trend Score falls below 5, reported to have 70% success since 2011.",
+    "claim_summary": "A Bitcoin long strategy enters when Trend Score and Relative Trend Score both exceed 7 with price at a 10-day high and exits when Trend Score falls below 5.",
     "source_type": "text",
     "testable": false,
-    "untestable_reason": "Entry and exit depend on proprietary Bitcoin Trend Score and Bitcoin Relative Trend Score values that cannot be expressed with available price-volume indicators.",
+    "untestable_reason": "The entry and exit depend on the proprietary Bitcoin Trend Score and Relative Trend Score which cannot be expressed with the available indicators.",
     "assets": [
       "BTCUSDT"
     ],
     "timeframe": "1d",
     "direction": "long",
-    "entry": [],
+    "entry": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "gt",
+        "right": {
+          "kind": "highest_high",
+          "period": 10,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
     "exit": [],
     "stop_loss_pct": null,
     "take_profit_pct": null,
@@ -38,11 +56,12 @@
       "other": "average gain of 1436.28% per win, while losses averaged -18.78%"
     },
     "assumptions": [
-      "Asset Bitcoin mapped to Binance spot symbol BTCUSDT.",
-      "Timeframe 1d chosen as most natural reading based on page chart timeframe; claim itself states no timeframe.",
+      "Asset is Bitcoin mapped to BTCUSDT.",
+      "Timeframe 1d chosen from page chart timeframe; not stated by claimant.",
       "Direction long inferred from buy signals.",
-      "Period start Since 2011 interpreted as 2011-01-01.",
-      "Bitcoin Trend Score and Bitcoin Relative Trend Score are proprietary values that cannot be expressed with available operands (close/open/high/low/volume/sma/ema/rsi/pct_change/highest_high/lowest_low/volume_sma/atr/day_of_week/hour_utc), so no mechanical entry/exit can be compiled."
+      "NOT EXPRESSIBLE: Bitcoin Trend Score and Bitcoin Relative Trend Score are proprietary scores with no definition in available indicators; entry requires both >7 and exit requires Trend Score <5, which is the heart of the strategy.",
+      "Entry 10-day high compiled as close > previous 10-bar highest_high.",
+      "Exit has no expressible core because the only stated exit uses the proprietary Trend Score."
     ],
     "evidence": [
       {
@@ -58,6 +77,11 @@
       {
         "field": "direction",
         "quote": "buy signals",
+        "assumed": false
+      },
+      {
+        "field": "entry[0]",
+        "quote": "Bitcoin closed at a 10-day high",
         "assumed": false
       },
       {
@@ -86,13 +110,13 @@
     "attempts": [
       {
         "usage": {
-          "completion_tokens": 4531,
-          "prompt_tokens": 868,
-          "total_tokens": 5399,
+          "completion_tokens": 5257,
+          "prompt_tokens": 1094,
+          "total_tokens": 6351,
           "completion_tokens_details": {
             "accepted_prediction_tokens": null,
             "audio_tokens": null,
-            "reasoning_tokens": 3948,
+            "reasoning_tokens": 4741,
             "rejected_prediction_tokens": null,
             "text_tokens": null
           },
@@ -114,13 +138,19 @@
       "quoted_fields": [],
       "assumed_fields": [],
       "problems": []
-    }
+    },
+    "audits": [
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ]
   },
   "report": {
     "verdict": "UNTESTABLE",
     "headline": "This claim can't be turned into rules anyone could check.",
     "reasons": [
-      "Entry and exit depend on proprietary Bitcoin Trend Score and Bitcoin Relative Trend Score values that cannot be expressed with available price-volume indicators."
+      "The entry and exit depend on the proprietary Bitcoin Trend Score and Relative Trend Score which cannot be expressed with the available indicators."
     ],
     "warnings": [],
     "asset": null,
@@ -133,7 +163,14 @@
     "sweep": {},
     "claimed_vs_measured": [],
     "costs": {},
-    "grounding": {}
+    "grounding": {},
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: Bitcoin Trend Score and Bitcoin Relative Trend Score are proprietary scores with no definition in available indicators; entry requires both >7 and exit requires Trend Score <5, which is the heart of the strategy."
+      ],
+      "audit_majors": []
+    }
   },
-  "seconds": 28.3
+  "seconds": 43.0
 }

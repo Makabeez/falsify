@@ -56,6 +56,15 @@ Rules:
 - Percentages are plain numbers: 3 means 3%. pct_change is in percent.
 - day_of_week: 0=Monday ... 6=Sunday, UTC. Express "on Friday" as day_of_week gt 3.5 AND day_of_week lt 4.5.
 - "Price above X" uses close. Breakouts use highest_high / lowest_low, which look at the PREVIOUS N bars.
+- Indicators available: sma, ema, wma, rsi, atr, adx, pct_change, highest_high, lowest_low, volume_sma,
+  bb_upper / bb_lower (period, param = std width), macd_line / macd_signal / macd_hist (period = fast,
+  param = slow, signal 9), supertrend (period = ATR length, param = multiplier; close above it = uptrend),
+  day_of_week, hour_utc. Use the claim's settings; when it gives none, use the indicator's usual default and
+  list that setting in free_parameters. Never swap one indicator for another (WMA is not SMA).
+- If the claim uses something the schema cannot express (an averaging / DCA ladder, position sizing, trailing
+  stops, pyramiding, an indicator not listed above, a proprietary score), compile the closest testable core
+  and add an assumption that starts with "NOT EXPRESSIBLE:" naming exactly what was left out. If what is left
+  out is the heart of the strategy, set testable=false instead.
 - Every exit must be expressible: a condition, stop_loss_pct, take_profit_pct or max_hold_bars. If the claim
   gives no exit at all, use the most common reading for that setup and say so in assumptions.
 - Record any performance the claimant states (win rate, returns, period) in `claimed`. Dates as YYYY-MM-DD.
@@ -84,8 +93,10 @@ AUDIT_PROMPT = """You audit a compiled trading rule against its source.
 You get the original claim (text, image or video) and a JSON ClaimSpec that another pass compiled from it.
 List every place where the spec departs from what the claimant actually said or showed: wrong asset,
 wrong timeframe, wrong threshold, missing condition, invented condition, wrong exit, wrong direction,
-misread chart annotation. Interpretation choices that the spec already lists in `assumptions` are not
-issues unless the choice is clearly not what the claimant meant. faithful=true only if a neutral reader
+misread chart annotation, one indicator swapped for another. Interpretation choices that the spec already
+lists in `assumptions` are not issues unless the choice is clearly not what the claimant meant. A part of the
+claim marked "NOT EXPRESSIBLE" is still an issue if leaving it out changes what is being tested. severity is
+"major" when the difference could change the verdict, else "minor". faithful=true only if a neutral reader
 would accept the spec as a fair encoding of the claim."""
 
 
@@ -122,6 +133,7 @@ class Source:
     data_url: str | None = None   # image/video as a data URL
     name: str = "claim"
     note: str | None = None       # operator context ("posted on X, Oct 2026"); never quotable
+    transcript: "Transcript | None" = None  # filled by the first compile of a media source
 
     @classmethod
     def from_text(cls, text: str, note: str | None = None) -> "Source":
@@ -192,7 +204,8 @@ def transcribe(source: Source, model: str | None = None, client=None) -> Transcr
     return Transcript.model_validate_json(raw)
 
 
-def compile_claim(source: Source, model: str | None = None, client=None) -> tuple[ClaimSpec, dict]:
+def compile_claim(source: Source, model: str | None = None, client=None,
+                  prior: tuple[str, str] | None = None) -> tuple[ClaimSpec, dict]:
     """Source -> validated, quote-checked ClaimSpec. Returns (spec, trace).
 
     Each attempt is checked twice outside the model: pydantic validation, then the
@@ -207,11 +220,14 @@ def compile_claim(source: Source, model: str | None = None, client=None) -> tupl
     if source.kind == SourceType.TEXT:
         ground_text = source.text or ""
     else:
-        tr = transcribe(source, model=model, client=client)
-        trace["transcript"] = tr.model_dump()
-        transcript_text = tr.as_text()
+        if source.transcript is None:
+            source.transcript = transcribe(source, model=model, client=client)
+        trace["transcript"] = source.transcript.model_dump()
+        transcript_text = source.transcript.as_text()
         ground_text = transcript_text
     messages: list[dict] = [{"role": "user", "content": source.content(COMPILE_PROMPT, transcript_text)}]
+    if prior is not None:  # (previous ClaimSpec JSON, feedback on it)
+        messages += [{"role": "assistant", "content": prior[0]}, {"role": "user", "content": prior[1]}]
     last_spec: ClaimSpec | None = None
     last_grounding = None
     for attempt in range(MAX_REPAIRS + 1):
@@ -249,6 +265,47 @@ def audit_claim(source: Source, spec: ClaimSpec, model: str | None = None, clien
     content.append({"type": "text", "text": "COMPILED SPEC:\n" + spec.model_dump_json(indent=2)})
     raw, _ = _structured(client, model, [{"role": "user", "content": content}], "Audit", Audit.model_json_schema())
     return Audit.model_validate_json(raw)
+
+
+def major_issues(audit: Audit) -> list[AuditIssue]:
+    return [i for i in audit.issues if i.severity.strip().lower() == "major"]
+
+
+def compile_and_audit(source: Source, model: str | None = None, client=None) -> tuple[ClaimSpec, Audit, dict]:
+    """Compile, audit, and give the compiler one chance to fix what the auditor found.
+
+    The verifier runs outside the compiler's control. If the audit still finds major
+    issues after one repair round, the spec is kept but reported as an approximation.
+    """
+    client = client or _client()
+    spec, trace = compile_claim(source, model=model, client=client)
+    audit = audit_claim(source, spec, model=model, client=client)
+    trace["audits"] = [audit.model_dump()]
+    majors = major_issues(audit)
+    if majors:
+        feedback = ("An independent audit compared your ClaimSpec with the source and found these major issues:\n- "
+                    + "\n- ".join(f"{i.field}: {i.problem}" for i in majors)
+                    + "\nFix every issue the schema can express. For anything it cannot express, keep the closest "
+                      "testable core and say so in an assumption starting with \"NOT EXPRESSIBLE:\" -- or set "
+                      "testable=false if that part is the heart of the strategy. Return the full corrected ClaimSpec.")
+        spec2, trace2 = compile_claim(source, model=model, client=client, prior=(spec.model_dump_json(), feedback))
+        audit2 = audit_claim(source, spec2, model=model, client=client)
+        trace2["first_pass"] = {"attempts": trace["attempts"], "grounding": trace.get("grounding")}
+        trace2["audits"] = trace["audits"] + [audit2.model_dump()]
+        trace2["audit_repair"] = True
+        spec, audit, trace = spec2, audit2, trace2
+    return spec, audit, trace
+
+
+def fidelity(spec: ClaimSpec, audit: Audit | dict | None) -> dict:
+    """exact | approximation | unknown, with the reasons."""
+    gaps = [a for a in spec.assumptions if a.strip().upper().startswith("NOT EXPRESSIBLE")]
+    if audit is None:
+        return {"level": "unknown" if not gaps else "approximation", "gaps": gaps, "audit_majors": []}
+    issues = audit.issues if isinstance(audit, Audit) else [AuditIssue(**i) for i in audit.get("issues", [])]
+    majors = [f"{i.field}: {i.problem}" for i in issues if i.severity.strip().lower() == "major"]
+    level = "approximation" if (gaps or majors) else "exact"
+    return {"level": level, "gaps": gaps, "audit_majors": majors}
 
 
 def save(spec: ClaimSpec, path: str | Path, audit: Audit | None = None, trace: dict | None = None) -> None:

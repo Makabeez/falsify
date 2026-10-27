@@ -51,6 +51,7 @@ class Report:
     claimed_vs_measured: list[dict] = field(default_factory=list)
     costs: dict = field(default_factory=dict)
     grounding: dict = field(default_factory=dict)
+    fidelity: dict = field(default_factory=dict)
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -247,9 +248,15 @@ def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = Tr
     df = data_mod.load(primary_asset, tf)
     trades = run(spec, df, costs)
     primary = summarize(trades, df)
+    claim_start = _parse_date(spec.claimed.period_start)
     rep = Report(Verdict.SURVIVES, "", asset=primary_asset, timeframe=tf, primary=primary,
                  costs={"fee_bps_per_side": costs.fee_bps, "slippage_bps_per_side": costs.slippage_bps})
     rep.claimed_vs_measured = compare_claim(spec, primary)
+    if claim_start is not None and claim_start < df.index[0]:
+        rep.warnings.append(f"the claim's results start {claim_start.date()}; Binance history for {primary_asset} "
+                            f"starts {df.index[0].date()}, so the test covers less history than the claim")
+    if primary.get("open_at_end"):
+        rep.warnings.append("the last trade is still open at the end of the data; it is marked at the last close")
 
     if primary["trades"] < MIN_TRADES:
         w = primary.get("window", ["?", "?"])
@@ -324,4 +331,18 @@ def attach_grounding(rep: Report, summary: dict | None) -> Report:
                             f"verdict tests our reading, review the evidence")
     if q * 2 < n:
         rep.warnings.append(f"mostly our reading: only {q}/{n} rule elements are quoted from the claim")
+    return rep
+
+
+def attach_fidelity(rep: Report, fid: dict | None) -> Report:
+    """If what we tested is not exactly what was claimed, say so in the headline, not in a footnote."""
+    if not fid:
+        return rep
+    rep.fidelity = fid
+    if fid.get("level") == "approximation" and rep.verdict != Verdict.UNTESTABLE:
+        rep.headline = "Tested an approximation of the claim. " + rep.headline
+        for g in fid.get("gaps", []):
+            rep.warnings.append(f"left out: {g.split(':', 1)[-1].strip()}")
+        for m in fid.get("audit_majors", []):
+            rep.warnings.append(f"audit: {m}")
     return rep
