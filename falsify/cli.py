@@ -5,6 +5,7 @@
   falsify check <file|--text>     Muse Spark compiles + audits the claim, then the battery runs it
   falsify extract <file|--text>   compile only, write the spec JSON
   falsify data fetch|verify       rebuild or verify bundled history
+  falsify ping                    check MODEL_API_KEY, list models, one structured-output call
   falsify schema                  print the ClaimSpec JSON schema sent to Muse Spark
 """
 
@@ -17,7 +18,7 @@ import time
 from pathlib import Path
 
 from . import data as data_mod
-from .battery import Report, Verdict, falsify
+from .battery import Report, Verdict, attach_grounding, falsify
 from .engine import Costs
 from .spec import model_json_schema
 
@@ -76,6 +77,12 @@ def print_report(rep: Report, summary: str, audit: dict | None = None) -> None:
         print(f"  x {r}")
     for w in rep.warnings:
         print(f"  ! {w}")
+    g = rep.grounding
+    if g:
+        print(f"grounding {g['quoted']}/{g['rule_elements']} rule elements quoted from the source, "
+              f"{g['assumed']} assumed ({', '.join(g['assumed_fields']) or 'none'})")
+        for pr in g.get("problems", []):
+            print(f"  ? {pr}")
     if audit:
         tag = "faithful" if audit.get("faithful") else "NOT faithful"
         print(f"audit    Muse Spark audit: spec is {tag} to the source")
@@ -86,7 +93,7 @@ def print_report(rep: Report, summary: str, audit: dict | None = None) -> None:
 def _source(args):
     from .extract import Source
     if args.text:
-        return Source.from_text(args.text)
+        return Source.from_text(args.text, note=args.note)
     if not args.input:
         sys.exit("give a file (text, image, .mp4) or --text")
     return Source.from_path(args.input, note=args.note)
@@ -113,6 +120,7 @@ def cmd_run(args) -> int:
     from .extract import load_spec
     spec, raw = load_spec(args.spec)
     rep = falsify(spec, _costs(args), with_cross_asset=not args.fast)
+    attach_grounding(rep, (raw.get("trace") or {}).get("grounding"))
     print_report(rep, spec.claim_summary, raw.get("audit"))
     if args.json:
         Path(args.json).write_text(json.dumps({"spec": spec.model_dump(mode="json"), "report": rep.to_dict()},
@@ -123,14 +131,16 @@ def cmd_run(args) -> int:
 def cmd_check(args) -> int:
     from .extract import audit_claim, compile_claim
     src = _source(args)
-    spec, _ = compile_claim(src, model=args.model)
+    spec, trace = compile_claim(src, model=args.model)
     audit = None if args.no_audit else audit_claim(src, spec, model=args.model)
     rep = falsify(spec, _costs(args), with_cross_asset=not args.fast)
+    attach_grounding(rep, trace.get("grounding"))
     print_report(rep, spec.claim_summary, audit.model_dump() if audit else None)
     if args.json:
         Path(args.json).write_text(json.dumps({"spec": spec.model_dump(mode="json"),
                                                "audit": audit.model_dump() if audit else None,
-                                               "report": rep.to_dict()}, indent=2, default=str) + "\n")
+                                               "trace": trace, "report": rep.to_dict()},
+                                              indent=2, default=str) + "\n")
     return 0
 
 
@@ -150,6 +160,7 @@ def cmd_judge_demo(args) -> int:
     for f in files:
         spec, raw = load_spec(f)
         rep = falsify(spec, _costs(args), with_cross_asset=not args.fast)
+        attach_grounding(rep, (raw.get("trace") or {}).get("grounding"))
         print_report(rep, f"[{f.stem}] {spec.claim_summary}", raw.get("audit"))
         rows.append((f.stem, rep.verdict.value, rep.headline))
     print(f"\n{'=' * 78}\nSUMMARY  ({time.time() - t0:.1f}s, no API key, no network)")
@@ -157,6 +168,21 @@ def cmd_judge_demo(args) -> int:
         print(f"  {v:<13} {stem:<28} {head[:70]}")
     counts = {v.value: sum(1 for r in rows if r[1] == v.value) for v in Verdict}
     print("  " + "  ".join(f"{k}={n}" for k, n in counts.items()))
+    return 0
+
+
+def cmd_ping(args) -> int:
+    """Check the key, list Meta models, and make one tiny structured-output call."""
+    from .extract import MODEL, VIDEO_MODEL, _client, _structured
+    client = _client()
+    ids = sorted(m.id for m in client.models.list().data)
+    print("models   " + ", ".join(ids))
+    for want in {MODEL, VIDEO_MODEL}:
+        print(f"         {want}: {'available' if want in ids else 'NOT LISTED'}")
+    schema = {"type": "object", "properties": {"ok": {"type": "boolean"}}, "required": ["ok"]}
+    t0 = time.time()
+    raw, usage = _structured(client, MODEL, [{"role": "user", "content": "Return ok=true."}], "Ping", schema)
+    print(f"call     {MODEL} structured output -> {raw.strip()}  ({time.time() - t0:.1f}s, {usage})")
     return 0
 
 
@@ -181,7 +207,7 @@ def main(argv: list[str] | None = None) -> int:
     def add_source(p):
         p.add_argument("input", nargs="?", help="claim file: .txt/.md, image, or .mp4")
         p.add_argument("--text", help="claim as text instead of a file")
-        p.add_argument("--note", help="extra context sent with an image/video")
+        p.add_argument("--note", help="your context (where/when posted); sent to the model, never quotable")
         p.add_argument("--model", help="override the Muse Spark model id")
         p.add_argument("--no-audit", action="store_true", help="skip the audit pass")
 
@@ -205,6 +231,9 @@ def main(argv: list[str] | None = None) -> int:
     add_source(p)
     p.add_argument("-o", "--out", help="output path (default spec.json)")
     p.set_defaults(fn=cmd_extract)
+
+    p = sub.add_parser("ping", help="check MODEL_API_KEY and Muse Spark access")
+    p.set_defaults(fn=cmd_ping)
 
     p = sub.add_parser("data", help="bundled price history")
     p.add_argument("action", choices=["fetch", "verify"])

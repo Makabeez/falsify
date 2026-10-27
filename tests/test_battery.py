@@ -89,7 +89,12 @@ def test_compile_repairs_invalid_output_once():
     from falsify.extract import compile_claim
     bad = {"claim_summary": "x", "source_type": "text", "testable": True, "assets": ["BTCUSDT"],
            "entry": [{"left": {"kind": "rsi", "period": 14}, "op": "lt", "right": {"kind": "const", "value": 30}}]}
-    good = dict(bad, max_hold_bars=5)
+    good = dict(bad, max_hold_bars=5, evidence=[
+        {"field": "entry[0]", "quote": "rsi<30", "assumed": False},
+        {"field": "assets", "quote": "btc", "assumed": False},
+        {"field": "max_hold_bars", "quote": None, "assumed": True},
+        {"field": "timeframe", "quote": None, "assumed": True},
+        {"field": "direction", "quote": "buy", "assumed": False}])
     client = _FakeClient([json.dumps(bad), json.dumps(good)])
     spec, trace = compile_claim(Source.from_text("buy btc rsi<30"), client=client)
     assert spec.max_hold_bars == 5 and len(trace["attempts"]) == 2

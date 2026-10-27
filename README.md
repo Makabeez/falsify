@@ -36,31 +36,43 @@ So Falsify splits the job:
   claim (text | screenshot | .mp4)
         │
         ▼
-  ┌───────────────────────┐   structured output, constrained decoding
-  │ Muse Spark: COMPILE   │── ClaimSpec JSON (typed DSL, no code) ──┐
-  └───────────────────────┘                                          │ validation error?
-        ▲                                                            │ sent back, max 2 repairs
-        └────────────────────────────────────────────────────────────┘
-        │
-  ┌───────────────────────┐
-  │ Muse Spark: AUDIT     │── source + spec → every place the spec departs from what was said
-  └───────────────────────┘
+  ┌────────────────────────┐   screenshots and clips only
+  │ Muse Spark: TRANSCRIBE │── verbatim visible text + speech: the record quotes are checked against
+  └────────────────────────┘
         │
         ▼
-  ┌───────────────────────┐   deterministic, no model in the P&L path
-  │ Engine                │── signal at close t → fill at open t+1, pessimistic stops, real costs
-  └───────────────────────┘
+  ┌────────────────────────┐   structured output, constrained decoding
+  │ Muse Spark: COMPILE    │── ClaimSpec JSON (typed DSL, no code) + one evidence row per rule element
+  └────────────────────────┘
+        │                    ▲
+        ▼                    │ schema error or failed quote → sent back, max 2 repairs
+  ┌────────────────────────┐ │
+  │ Validate + QUOTE CHECK │─┘ deterministic: every rule element quoted verbatim from the source,
+  └────────────────────────┘   or declared assumed. Paraphrases are refused.
         │
         ▼
-  ┌───────────────────────┐
-  │ Falsification battery │── costs · random-entry null · post-claim window · halves · 11 other assets · every reading of vague params
-  └───────────────────────┘
+  ┌────────────────────────┐
+  │ Muse Spark: AUDIT      │── source + spec → every place the spec departs from what was said
+  └────────────────────────┘
         │
         ▼
-     SURVIVES | DIES | INCONCLUSIVE | UNTESTABLE
+  ┌────────────────────────┐   deterministic, no model in the P&L path
+  │ Engine                 │── signal at close t → fill at open t+1, pessimistic stops, real costs
+  └────────────────────────┘
+        │
+        ▼
+  ┌────────────────────────┐
+  │ Falsification battery  │── costs · random-entry null · post-claim window · halves · 11 other assets · every reading of vague params
+  └────────────────────────┘
+        │
+        ▼
+     SURVIVES | DIES | INCONCLUSIVE | UNTESTABLE   + "7/9 rule elements quoted from the claim, 2 assumed"
 ```
 
-The model's job is translation, which it is good at. The arithmetic is done by code whose timing contract is pinned by tests (`tests/test_engine.py`), including a check that truncating future data never changes a past trade.
+The model's job is translation, which it is good at. It never gets the last word on either side of it:
+
+- **What the claimant said** is checked by `falsify/grounding.py`. Every entry and exit condition, stop, target, time exit, asset, timeframe and direction needs an evidence row with the claimant's exact words, or an explicit `assumed: true`. A quote that isn't literally in the post (or in the transcript of the screenshot or clip) is refused and sent back. The verdict then tells you how much of what was tested is the claimant's rule and how much is our reading.
+- **What the rule does** is computed by code whose timing contract is pinned by tests (`tests/test_engine.py`), including a check that truncating future data never changes a past trade.
 
 ## The battery
 
@@ -95,7 +107,8 @@ From `make judge-demo` (Binance spot, 2019-01-01 to 2026-10-26, costs included):
 
 ```bash
 cp .env.example .env          # add MODEL_API_KEY from dev.meta.ai
-export $(grep -v '^#' .env | xargs)
+set -a; . ./.env; set +a
+.venv/bin/falsify ping                  # key works, models listed, one structured call
 .venv/bin/falsify check --text "Buy ETH when RSI drops under 30 on the 4h, sell above 70. 80% win rate."
 .venv/bin/falsify check screenshot.png --note "posted on X, Oct 2026"
 .venv/bin/falsify check clip.mp4
@@ -104,8 +117,8 @@ export $(grep -v '^#' .env | xargs)
 
 | Meta model | Role |
 |---|---|
-| `muse-spark-1.3` | Compiles text and screenshots into a `ClaimSpec` with structured output; audits the spec against the source |
-| `muse-spark-1.2` | Same for video clips (the 1.3 docs flag audio understanding as degraded; pitches live in the speech) |
+| `muse-spark-1.3` | Transcribes screenshots; compiles text and screenshots into a quote-backed `ClaimSpec` with structured output; audits the spec against the source |
+| `muse-spark-1.2` | Same three passes for video clips (the 1.3 docs flag audio understanding as degraded; pitches live in the speech) |
 
 ## Real vs. simulated
 
@@ -115,7 +128,7 @@ export $(grep -v '^#' .env | xargs)
 | Costs | **Modeled.** 10 bps fee + 2 bps slippage per side (Binance spot taker), configurable |
 | Shorts | **Modeled.** Priced as spot short with no borrow or funding cost |
 | Example claims in `claims/` | **Hand-compiled** paraphrases of common retail setups. No real posts, no authors |
-| Muse Spark compile/audit | Wired to Meta Model API and tested against a mock client (repair loop included). Live runs and the extraction-accuracy measurement land in the next commits |
+| Muse Spark transcribe/compile/audit | Wired to Meta Model API; repair loop and quote check tested against a mock client (`tests/test_grounding.py`). Live runs and the extraction-accuracy measurement land in the next commits |
 
 ## Known limits
 

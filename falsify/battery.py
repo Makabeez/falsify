@@ -50,6 +50,7 @@ class Report:
     sweep: dict = field(default_factory=dict)
     claimed_vs_measured: list[dict] = field(default_factory=list)
     costs: dict = field(default_factory=dict)
+    grounding: dict = field(default_factory=dict)
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -291,4 +292,18 @@ def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = Tr
     else:
         rep.headline = (f"Holds up: {primary['avg_net_pct']:+.2f}% per trade after costs over {primary['trades']} "
                         f"trades, beats random timing (p = {p:.3f}).")
+    return rep
+
+
+def attach_grounding(rep: Report, summary: dict | None) -> Report:
+    """Record how much of the tested rule is the claimant's words vs. our reading."""
+    if not summary or not summary.get("rule_elements"):
+        return rep
+    rep.grounding = summary
+    n, q = summary["rule_elements"], summary["quoted"]
+    if summary.get("problems"):
+        rep.warnings.append(f"quote check failed on {len(summary['problems'])} item(s) after repairs -- "
+                            f"verdict tests our reading, review the evidence")
+    if q * 2 < n:
+        rep.warnings.append(f"mostly our reading: only {q}/{n} rule elements are quoted from the claim")
     return rep

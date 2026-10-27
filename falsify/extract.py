@@ -24,6 +24,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
+from . import grounding
 from .data import UNIVERSE
 from .spec import ClaimSpec, SourceType, model_json_schema
 
@@ -63,7 +64,20 @@ Rules:
   funding rates, order flow, sentiment or news). Give the reason in one sentence.
 - claim_summary: one neutral sentence. Never include usernames, handles or names of the author.
 - assumptions: list every interpretation you made. The test is only as honest as this list.
+- evidence: one row for EVERY rule element: each entry[i], each exit[i], each of stop_loss_pct / take_profit_pct /
+  max_hold_bars that you set, plus assets, timeframe and direction. If the claimant states it, copy their exact
+  words into quote (short: only the words that state it, copied verbatim from the CLAIM or TRANSCRIPT, never from
+  CONTEXT) and set assumed=false. If you chose it, set quote=null and assumed=true. Quotes are checked
+  mechanically against the source; a paraphrase is rejected.
 """
+
+TRANSCRIBE_PROMPT = """Transcribe this media exactly, for an audit trail. Do not interpret or summarize.
+visible_text: every piece of text visible in the image or video frames (post text, chart labels, annotations,
+indicator names and settings, numbers, captions), verbatim, in reading order. Leave out usernames, handles,
+profile names and avatars.
+speech: every spoken word in the video, verbatim. Empty for images or silent clips.
+chart: one or two neutral sentences on what any chart shows (asset, timeframe, indicators, marked levels or
+arrows), only what is literally visible."""
 
 AUDIT_PROMPT = """You audit a compiled trading rule against its source.
 
@@ -73,6 +87,19 @@ wrong timeframe, wrong threshold, missing condition, invented condition, wrong e
 misread chart annotation. Interpretation choices that the spec already lists in `assumptions` are not
 issues unless the choice is clearly not what the claimant meant. faithful=true only if a neutral reader
 would accept the spec as a fair encoding of the claim."""
+
+
+class Transcript(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    visible_text: str
+    speech: str
+    chart: str
+
+    def as_text(self) -> str:
+        parts = [self.visible_text.strip()]
+        if self.speech.strip():
+            parts.append(self.speech.strip())
+        return "\n".join(p for p in parts if p)
 
 
 class AuditIssue(BaseModel):
@@ -91,20 +118,21 @@ class Audit(BaseModel):
 @dataclass
 class Source:
     kind: SourceType
-    text: str | None = None
-    data_url: str | None = None
+    text: str | None = None       # the claimant's words (text sources only)
+    data_url: str | None = None   # image/video as a data URL
     name: str = "claim"
+    note: str | None = None       # operator context ("posted on X, Oct 2026"); never quotable
 
     @classmethod
-    def from_text(cls, text: str) -> "Source":
-        return cls(SourceType.TEXT, text=text)
+    def from_text(cls, text: str, note: str | None = None) -> "Source":
+        return cls(SourceType.TEXT, text=text, note=note)
 
     @classmethod
     def from_path(cls, path: str | Path, note: str | None = None) -> "Source":
         p = Path(path)
         ext = p.suffix.lower()
         if ext in {".txt", ".md"}:
-            return cls(SourceType.TEXT, text=p.read_text(encoding="utf-8"), name=p.name)
+            return cls(SourceType.TEXT, text=p.read_text(encoding="utf-8"), name=p.name, note=note)
         if ext in IMAGE_EXT:
             kind = SourceType.IMAGE
         elif ext in VIDEO_EXT:
@@ -113,12 +141,16 @@ class Source:
             raise ValueError(f"unsupported file type {ext}: use text, {sorted(IMAGE_EXT)} or .mp4")
         mime = mimetypes.guess_type(p.name)[0] or ("video/mp4" if kind == SourceType.VIDEO else "image/png")
         b64 = base64.b64encode(p.read_bytes()).decode()
-        return cls(kind, text=note, data_url=f"data:{mime};base64,{b64}", name=p.name)
+        return cls(kind, data_url=f"data:{mime};base64,{b64}", name=p.name, note=note)
 
-    def content(self, instruction: str) -> list[dict]:
+    def content(self, instruction: str, transcript: str | None = None) -> list[dict]:
         parts: list[dict] = [{"type": "text", "text": instruction}]
         if self.text:
             parts.append({"type": "text", "text": f"CLAIM:\n{self.text}"})
+        if self.note:
+            parts.append({"type": "text", "text": f"CONTEXT FROM THE USER (not the claimant's words, never quote it):\n{self.note}"})
+        if transcript:
+            parts.append({"type": "text", "text": f"TRANSCRIPT OF THE MEDIA (quote evidence from this, verbatim):\n{transcript}"})
         if self.kind == SourceType.IMAGE:
             parts.append({"type": "image_url", "image_url": {"url": self.data_url}})
         elif self.kind == SourceType.VIDEO:
@@ -151,28 +183,63 @@ def _structured(client, model: str, messages: list[dict], name: str, schema: dic
     return choice.message.content or "", usage
 
 
-def compile_claim(source: Source, model: str | None = None, client=None) -> tuple[ClaimSpec, dict]:
-    """Source -> validated ClaimSpec. Returns (spec, trace)."""
+def transcribe(source: Source, model: str | None = None, client=None) -> Transcript:
+    """Media -> verbatim transcript. The quotes in a compiled spec are checked against this."""
     client = client or _client()
     model = model or (VIDEO_MODEL if source.kind == SourceType.VIDEO else MODEL)
-    messages: list[dict] = [{"role": "user", "content": source.content(COMPILE_PROMPT)}]
-    trace = {"model": model, "attempts": []}
+    raw, _ = _structured(client, model, [{"role": "user", "content": source.content(TRANSCRIBE_PROMPT)}],
+                         "Transcript", Transcript.model_json_schema())
+    return Transcript.model_validate_json(raw)
+
+
+def compile_claim(source: Source, model: str | None = None, client=None) -> tuple[ClaimSpec, dict]:
+    """Source -> validated, quote-checked ClaimSpec. Returns (spec, trace).
+
+    Each attempt is checked twice outside the model: pydantic validation, then the
+    deterministic quote check in falsify.grounding. Either failure goes back to the model
+    as a repair request. Grounding problems that survive the last repair are not fatal:
+    they ship in trace["grounding"] and are printed with the verdict.
+    """
+    client = client or _client()
+    model = model or (VIDEO_MODEL if source.kind == SourceType.VIDEO else MODEL)
+    trace: dict = {"model": model, "attempts": []}
+    transcript_text = None
+    if source.kind == SourceType.TEXT:
+        ground_text = source.text or ""
+    else:
+        tr = transcribe(source, model=model, client=client)
+        trace["transcript"] = tr.model_dump()
+        transcript_text = tr.as_text()
+        ground_text = transcript_text
+    messages: list[dict] = [{"role": "user", "content": source.content(COMPILE_PROMPT, transcript_text)}]
+    last_spec: ClaimSpec | None = None
+    last_grounding = None
     for attempt in range(MAX_REPAIRS + 1):
         raw, usage = _structured(client, model, messages, "ClaimSpec", model_json_schema())
         trace["attempts"].append({"usage": usage})
         try:
             spec = ClaimSpec.model_validate_json(raw)
-            spec.source_type = source.kind
-            return spec, trace
         except ValidationError as e:
             trace["attempts"][-1]["error"] = str(e)
             if attempt == MAX_REPAIRS:
+                if last_spec is not None:
+                    break
                 raise RuntimeError(f"model output failed validation {MAX_REPAIRS + 1} times: {e}") from e
-            messages += [
-                {"role": "assistant", "content": raw},
-                {"role": "user", "content": f"That ClaimSpec failed validation:\n{e}\nReturn a corrected ClaimSpec."},
-            ]
-    raise AssertionError("unreachable")
+            feedback = f"That ClaimSpec failed validation:\n{e}\nReturn a corrected ClaimSpec."
+        else:
+            spec.source_type = source.kind
+            g = grounding.check(spec, ground_text)
+            last_spec, last_grounding = spec, g
+            trace["attempts"][-1]["grounding_problems"] = g.problems
+            if g.ok or attempt == MAX_REPAIRS:
+                break
+            feedback = ("The ClaimSpec is valid but its evidence failed the quote check:\n- "
+                        + "\n- ".join(g.problems) + "\nReturn a corrected ClaimSpec. Change only what these "
+                        "problems require.")
+        messages += [{"role": "assistant", "content": raw}, {"role": "user", "content": feedback}]
+    assert last_spec is not None and last_grounding is not None
+    trace["grounding"] = last_grounding.summary()
+    return last_spec, trace
 
 
 def audit_claim(source: Source, spec: ClaimSpec, model: str | None = None, client=None) -> Audit:

@@ -142,6 +142,17 @@ class FreeParameter(BaseModel):
     candidates: list[float] = Field(description="2-6 plausible values a reader could reasonably have meant")
 
 
+class Evidence(BaseModel):
+    """Where a rule element comes from. Checked against the source by falsify.grounding."""
+    model_config = ConfigDict(extra="forbid")
+
+    field: str = Field(description="entry[i], exit[i], stop_loss_pct, take_profit_pct, max_hold_bars, assets, "
+                                   "timeframe, direction, or claimed.<name>")
+    quote: Optional[str] = Field(default=None, description="The claimant's exact words that state this, copied "
+                                                           "verbatim from the source or transcript. Null if assumed.")
+    assumed: bool = Field(description="True if the claim never states this and you chose it")
+
+
 class ClaimSpec(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -165,6 +176,11 @@ class ClaimSpec(BaseModel):
     assumptions: list[str] = Field(
         default_factory=list,
         description="Every interpretation choice made while compiling the claim. Be explicit.",
+    )
+    evidence: list[Evidence] = Field(
+        default_factory=list,
+        description="One row per rule element: every entry[i], every exit[i], each of stop_loss_pct / "
+                    "take_profit_pct / max_hold_bars that is set, plus assets, timeframe and direction.",
     )
 
     @model_validator(mode="after")
