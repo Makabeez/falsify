@@ -1,0 +1,224 @@
+{
+  "source": "https://data-api.binance.vision/api/v3/klines",
+  "start": "2019-01-01",
+  "end_exclusive": "2026-10-27",
+  "built_at": "2026-10-26T23:07:30+00:00",
+  "files": {
+    "BTCUSDT_1h.parquet": {
+      "sha256": "60cb654a4863e57df30448d235b7980d406ed8768fa84bb341820cd72d130d8b",
+      "rows": 68483,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-26T22:00:00+00:00"
+    },
+    "BTCUSDT_4h.parquet": {
+      "sha256": "894bcc72e304819f6c6a30ef38fc442309413eef4e2ba5a34e7c4b63bafa31bc",
+      "rows": 17130,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-26T16:00:00+00:00"
+    },
+    "BTCUSDT_1d.parquet": {
+      "sha256": "e450aef700fd00997afa121ec163057d2b92d9d99f860ff0bcc51ce5bc303444",
+      "rows": 2855,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-25T00:00:00+00:00"
+    },
+    "ETHUSDT_1h.parquet": {
+      "sha256": "715edcd3061155097a3ba40e303fc13beeaebef1c5b92bf2690e4f49db348460",
+      "rows": 68483,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-26T22:00:00+00:00"
+    },
+    "ETHUSDT_4h.parquet": {
+      "sha256": "90e92f45b9623cbaa112797f6e52f1b5125eb2d37f54cdcff5fb8f3b4257898b",
+      "rows": 17130,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-26T16:00:00+00:00"
+    },
+    "ETHUSDT_1d.parquet": {
+      "sha256": "dfbcbde4806d8c5d2c5a3fb73aa52d307a31b3f209313e7ffd88a1bc1185abe6",
+      "rows": 2855,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-25T00:00:00+00:00"
+    },
+    "SOLUSDT_1h.parquet": {
+      "sha256": "c4cbe8a742ff9ff703b0ea78f47812af2ccd9a1a6e8315b010eedcb81b95c4bc",
+      "rows": 54405,
+      "first": "2020-08-11T06:00:00+00:00",
+      "last": "2026-10-26T22:00:00+00:00"
+    },
+    "SOLUSDT_4h.parquet": {
+      "sha256": "db81cc17fcbd04d6e3b744ba38f9540ffa167e6eeff12ecb24c1df11bf7beff2",
+      "rows": 13606,
+      "first": "2020-08-11T04:00:00+00:00",
+      "last": "2026-10-26T16:00:00+00:00"
+    },
+    "SOLUSDT_1d.parquet": {
+      "sha256": "9419fbc137ccb3b649909240e56c8625578ae788f14960cd925ec9bf5b06e40b",
+      "rows": 2267,
+      "first": "2020-08-11T00:00:00+00:00",
+      "last": "2026-10-25T00:00:00+00:00"
+    },
+    "BNBUSDT_1h.parquet": {
+      "sha256": "d85ceec28c813959291d821f4d00f0a8de6cc617043342482104e31ca5584ad5",
+      "rows": 68483,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-26T22:00:00+00:00"
+    },
+    "BNBUSDT_4h.parquet": {
+      "sha256": "57758454fda67d739caebf559c049bf98534fe0bbc3d9d682a5886f58dc7e917",
+      "rows": 17130,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-26T16:00:00+00:00"
+    },
+    "BNBUSDT_1d.parquet": {
+      "sha256": "e10a98f35643a35029966f0a4f376a3c76ab278eea5e1d686f0d9a03afa37c3c",
+      "rows": 2855,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-25T00:00:00+00:00"
+    },
+    "XRPUSDT_1h.parquet": {
+      "sha256": "31c5d0305c77fc35f6e6d9330ca9e59c0df373d72d67df2706434ea1b30b9207",
+      "rows": 68483,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-26T22:00:00+00:00"
+    },
+    "XRPUSDT_4h.parquet": {
+      "sha256": "6bfe4da312195d52ececbeef56593dce3feb014e2fcec8e0a129673d663f02f3",
+      "rows": 17130,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-26T16:00:00+00:00"
+    },
+    "XRPUSDT_1d.parquet": {
+      "sha256": "b4d32271f62ecb1fbae5120b0e93426af5da7c7a6a93b116e1bb03f9736144a4",
+      "rows": 2855,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-25T00:00:00+00:00"
+    },
+    "DOGEUSDT_1h.parquet": {
+      "sha256": "79417580325c1fa7c3ba77d8e0fb9947b962a77a7495c28a7a09c016e5e2efb8",
+      "rows": 64047,
+      "first": "2019-07-05T12:00:00+00:00",
+      "last": "2026-10-26T22:00:00+00:00"
+    },
+    "DOGEUSDT_4h.parquet": {
+      "sha256": "b8e6bee880fba0ae17061a3fa55cfd7cec11a36f53e74d1166c2c58884eb744a",
+      "rows": 16020,
+      "first": "2019-07-05T12:00:00+00:00",
+      "last": "2026-10-26T16:00:00+00:00"
+    },
+    "DOGEUSDT_1d.parquet": {
+      "sha256": "a896a8655011d985a465eee70c1752854562978d6463ebbf4500e216f1df83e7",
+      "rows": 2670,
+      "first": "2019-07-05T00:00:00+00:00",
+      "last": "2026-10-25T00:00:00+00:00"
+    },
+    "ADAUSDT_1h.parquet": {
+      "sha256": "b7e3b0bc8aca0513343c8cb992e00864270ef996402c3836299f40dcd7659637",
+      "rows": 68483,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-26T22:00:00+00:00"
+    },
+    "ADAUSDT_4h.parquet": {
+      "sha256": "eb3aea66c6b12b6bba8e3ecbe0703065c586e9f2c27eaf1b204fea3b7d6688f3",
+      "rows": 17130,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-26T16:00:00+00:00"
+    },
+    "ADAUSDT_1d.parquet": {
+      "sha256": "44fee7d9795127b48d94f50f3418a45af7a462d86fddcc47e407f10831466ea5",
+      "rows": 2855,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-25T00:00:00+00:00"
+    },
+    "AVAXUSDT_1h.parquet": {
+      "sha256": "7790ea041b729f822273721c76fae861062ec26a63a6ade684efd0169e63a877",
+      "rows": 53397,
+      "first": "2020-09-22T06:00:00+00:00",
+      "last": "2026-10-26T22:00:00+00:00"
+    },
+    "AVAXUSDT_4h.parquet": {
+      "sha256": "c59d2df93d80bbbeea4fe473aea54006c73550d460a3a28cfbf66d364c04c3e0",
+      "rows": 13354,
+      "first": "2020-09-22T04:00:00+00:00",
+      "last": "2026-10-26T16:00:00+00:00"
+    },
+    "AVAXUSDT_1d.parquet": {
+      "sha256": "7632bf4523895a89bb2dab6527830b3a487abfb52d459a4b5b4c0efdacdc213b",
+      "rows": 2225,
+      "first": "2020-09-22T00:00:00+00:00",
+      "last": "2026-10-25T00:00:00+00:00"
+    },
+    "LINKUSDT_1h.parquet": {
+      "sha256": "1bdd6417b71317d6aa1f7b7c0b465ca4c238099dc09addd5dba05d6015958804",
+      "rows": 68113,
+      "first": "2019-01-16T10:00:00+00:00",
+      "last": "2026-10-26T22:00:00+00:00"
+    },
+    "LINKUSDT_4h.parquet": {
+      "sha256": "02db1b6eac314b26255dcbc8fb3341f1e8b36d2ee017b7c7ba2d5f0649eea316",
+      "rows": 17038,
+      "first": "2019-01-16T08:00:00+00:00",
+      "last": "2026-10-26T16:00:00+00:00"
+    },
+    "LINKUSDT_1d.parquet": {
+      "sha256": "e5cba692adcf0d67cb2daf6714bc7d3828e276451e19e2d12ca35869392c8ce6",
+      "rows": 2840,
+      "first": "2019-01-16T00:00:00+00:00",
+      "last": "2026-10-25T00:00:00+00:00"
+    },
+    "LTCUSDT_1h.parquet": {
+      "sha256": "f6f009f6e4e6b5b2b7150600530fd20548d25e05ec81e8e3d5bc1f528edf5fe0",
+      "rows": 68483,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-26T22:00:00+00:00"
+    },
+    "LTCUSDT_4h.parquet": {
+      "sha256": "5253eadc236b14b5569ebae635926b2eac7f7b4e46fd45342f66f8975072bc16",
+      "rows": 17130,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-26T16:00:00+00:00"
+    },
+    "LTCUSDT_1d.parquet": {
+      "sha256": "a9bd37e6a71bccb7862ff84e058d3fbb7238e16b63c4679ecaab293537c315dd",
+      "rows": 2855,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-25T00:00:00+00:00"
+    },
+    "DOTUSDT_1h.parquet": {
+      "sha256": "7a7bd4db8de0129baa41f904b4d39819fcda8b5a2d6080859ccb154246cd319d",
+      "rows": 54220,
+      "first": "2020-08-18T23:00:00+00:00",
+      "last": "2026-10-26T22:00:00+00:00"
+    },
+    "DOTUSDT_4h.parquet": {
+      "sha256": "38442572997839a0f229de5ce4425a6b649d6069feea51f0478359dde26d1086",
+      "rows": 13560,
+      "first": "2020-08-18T20:00:00+00:00",
+      "last": "2026-10-26T16:00:00+00:00"
+    },
+    "DOTUSDT_1d.parquet": {
+      "sha256": "00ff7f4c2f6549351b86efec65f1fd0e8c011e98b067b38e3ba97e3ab9bdd1ab",
+      "rows": 2260,
+      "first": "2020-08-18T00:00:00+00:00",
+      "last": "2026-10-25T00:00:00+00:00"
+    },
+    "TRXUSDT_1h.parquet": {
+      "sha256": "9e3980340b8b5c5e8d749522676709a53b7bd9788afc6b1a5753382985861f71",
+      "rows": 68483,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-26T22:00:00+00:00"
+    },
+    "TRXUSDT_4h.parquet": {
+      "sha256": "b5eeb6e0632b3bfe6ba719f30bd2bb7407bd6991098d3be9f684e3c66ddee743",
+      "rows": 17130,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-26T16:00:00+00:00"
+    },
+    "TRXUSDT_1d.parquet": {
+      "sha256": "e96456d9dedde154a69f97ac2aff5c08e23f5c9c4fb5dea743c0e970c0937458",
+      "rows": 2855,
+      "first": "2019-01-01T00:00:00+00:00",
+      "last": "2026-10-25T00:00:00+00:00"
+    }
+  }
+}

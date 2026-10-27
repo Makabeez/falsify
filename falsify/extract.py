@@ -1,0 +1,200 @@
+"""Muse Spark: compile a trading claim (text, chart screenshot, video clip) into a ClaimSpec.
+
+Two model passes, both schema-constrained:
+  1. compile  -- source -> ClaimSpec (structured output). If the result fails
+                 our own validators, the error goes back to the model and it
+                 retries (max 2 repairs). The model never writes code.
+  2. audit    -- the source and the compiled spec go back to Muse Spark,
+                 which lists every place the spec departs from what the
+                 claimant actually said. Findings ship with the verdict.
+
+Meta Model API is OpenAI-compatible; we use the OpenAI SDK with a different
+base_url. Key: MODEL_API_KEY. Nothing else in the product path calls a
+non-Meta model.
+"""
+
+from __future__ import annotations
+
+import base64
+import json
+import mimetypes
+import os
+from dataclasses import dataclass
+from pathlib import Path
+
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
+
+from .data import UNIVERSE
+from .spec import ClaimSpec, SourceType, model_json_schema
+
+BASE_URL = os.environ.get("MODEL_API_BASE", "https://api.meta.ai/v1")
+MODEL = os.environ.get("FALSIFY_MODEL", "muse-spark-1.3")
+# Docs flag audio understanding as degraded on 1.3; clips carry the pitch in speech.
+VIDEO_MODEL = os.environ.get("FALSIFY_VIDEO_MODEL", "muse-spark-1.2")
+MAX_REPAIRS = 2
+
+IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
+VIDEO_EXT = {".mp4"}
+
+COMPILE_PROMPT = f"""You compile trading claims into mechanical rules so they can be tested.
+
+You receive a claim as text, a screenshot (tweet, chart with annotations, Discord post) or a short video.
+Return a ClaimSpec. You are a compiler, not a critic: represent what the claimant said, as faithfully as
+the schema allows. A separate engine runs the test.
+
+Rules:
+- Rules are evaluated on bar CLOSES; trades fill at the next bar's open. Do not try to encode intrabar logic.
+- Assets: Binance spot USDT symbols. Bundled universe: {", ".join(UNIVERSE)}. If the claim is about another
+  asset (stocks, indices, forex, a small-cap token), still name it as SYMBOLUSDT or the ticker; the engine
+  will report it as untestable for lack of data. Never substitute a different asset.
+- If the claim names no asset or timeframe, choose the most natural reading and record it in assumptions.
+- Vague numbers ("oversold", "a short moving average", "a big drop", "tight stop") must still get a concrete
+  value in the rules, AND be listed in free_parameters with 3-5 candidates a reasonable reader might mean,
+  including the value you used. target paths look like entry[0].right.value, entry[1].left.period,
+  exit[0].right.period, stop_loss_pct, take_profit_pct, max_hold_bars.
+- Percentages are plain numbers: 3 means 3%. pct_change is in percent.
+- day_of_week: 0=Monday ... 6=Sunday, UTC. Express "on Friday" as day_of_week gt 3.5 AND day_of_week lt 4.5.
+- "Price above X" uses close. Breakouts use highest_high / lowest_low, which look at the PREVIOUS N bars.
+- Every exit must be expressible: a condition, stop_loss_pct, take_profit_pct or max_hold_bars. If the claim
+  gives no exit at all, use the most common reading for that setup and say so in assumptions.
+- Record any performance the claimant states (win rate, returns, period) in `claimed`. Dates as YYYY-MM-DD.
+- testable=false only when no mechanical rule can be recovered (e.g. "buy strong projects", "follow smart
+  money", discretionary chart reading with no stated trigger, or rules that need data we don't have such as
+  funding rates, order flow, sentiment or news). Give the reason in one sentence.
+- claim_summary: one neutral sentence. Never include usernames, handles or names of the author.
+- assumptions: list every interpretation you made. The test is only as honest as this list.
+"""
+
+AUDIT_PROMPT = """You audit a compiled trading rule against its source.
+
+You get the original claim (text, image or video) and a JSON ClaimSpec that another pass compiled from it.
+List every place where the spec departs from what the claimant actually said or showed: wrong asset,
+wrong timeframe, wrong threshold, missing condition, invented condition, wrong exit, wrong direction,
+misread chart annotation. Interpretation choices that the spec already lists in `assumptions` are not
+issues unless the choice is clearly not what the claimant meant. faithful=true only if a neutral reader
+would accept the spec as a fair encoding of the claim."""
+
+
+class AuditIssue(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    field: str = Field(description="Spec field, e.g. entry[0].right.value")
+    problem: str
+    severity: str = Field(description="'major' if it could flip the verdict, else 'minor'")
+
+
+class Audit(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    faithful: bool
+    issues: list[AuditIssue] = Field(default_factory=list)
+
+
+@dataclass
+class Source:
+    kind: SourceType
+    text: str | None = None
+    data_url: str | None = None
+    name: str = "claim"
+
+    @classmethod
+    def from_text(cls, text: str) -> "Source":
+        return cls(SourceType.TEXT, text=text)
+
+    @classmethod
+    def from_path(cls, path: str | Path, note: str | None = None) -> "Source":
+        p = Path(path)
+        ext = p.suffix.lower()
+        if ext in {".txt", ".md"}:
+            return cls(SourceType.TEXT, text=p.read_text(encoding="utf-8"), name=p.name)
+        if ext in IMAGE_EXT:
+            kind = SourceType.IMAGE
+        elif ext in VIDEO_EXT:
+            kind = SourceType.VIDEO
+        else:
+            raise ValueError(f"unsupported file type {ext}: use text, {sorted(IMAGE_EXT)} or .mp4")
+        mime = mimetypes.guess_type(p.name)[0] or ("video/mp4" if kind == SourceType.VIDEO else "image/png")
+        b64 = base64.b64encode(p.read_bytes()).decode()
+        return cls(kind, text=note, data_url=f"data:{mime};base64,{b64}", name=p.name)
+
+    def content(self, instruction: str) -> list[dict]:
+        parts: list[dict] = [{"type": "text", "text": instruction}]
+        if self.text:
+            parts.append({"type": "text", "text": f"CLAIM:\n{self.text}"})
+        if self.kind == SourceType.IMAGE:
+            parts.append({"type": "image_url", "image_url": {"url": self.data_url}})
+        elif self.kind == SourceType.VIDEO:
+            parts.append({"type": "video_url", "video_url": {"url": self.data_url}})
+        return parts
+
+
+def _client():
+    try:
+        from openai import OpenAI
+    except ImportError as e:  # pragma: no cover
+        raise RuntimeError("pip install openai") from e
+    key = os.environ.get("MODEL_API_KEY")
+    if not key:
+        raise RuntimeError("MODEL_API_KEY is not set (Meta Model API key, see .env.example)")
+    return OpenAI(base_url=BASE_URL, api_key=key)
+
+
+def _structured(client, model: str, messages: list[dict], name: str, schema: dict) -> tuple[str, dict]:
+    resp = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        max_tokens=8000,  # reasoning shares the output budget
+        response_format={"type": "json_schema", "json_schema": {"name": name, "schema": schema}},
+    )
+    choice = resp.choices[0]
+    if choice.finish_reason == "length":
+        raise RuntimeError("model ran out of output budget before finishing the JSON")
+    usage = resp.usage.model_dump() if resp.usage else {}
+    return choice.message.content or "", usage
+
+
+def compile_claim(source: Source, model: str | None = None, client=None) -> tuple[ClaimSpec, dict]:
+    """Source -> validated ClaimSpec. Returns (spec, trace)."""
+    client = client or _client()
+    model = model or (VIDEO_MODEL if source.kind == SourceType.VIDEO else MODEL)
+    messages: list[dict] = [{"role": "user", "content": source.content(COMPILE_PROMPT)}]
+    trace = {"model": model, "attempts": []}
+    for attempt in range(MAX_REPAIRS + 1):
+        raw, usage = _structured(client, model, messages, "ClaimSpec", model_json_schema())
+        trace["attempts"].append({"usage": usage})
+        try:
+            spec = ClaimSpec.model_validate_json(raw)
+            spec.source_type = source.kind
+            return spec, trace
+        except ValidationError as e:
+            trace["attempts"][-1]["error"] = str(e)
+            if attempt == MAX_REPAIRS:
+                raise RuntimeError(f"model output failed validation {MAX_REPAIRS + 1} times: {e}") from e
+            messages += [
+                {"role": "assistant", "content": raw},
+                {"role": "user", "content": f"That ClaimSpec failed validation:\n{e}\nReturn a corrected ClaimSpec."},
+            ]
+    raise AssertionError("unreachable")
+
+
+def audit_claim(source: Source, spec: ClaimSpec, model: str | None = None, client=None) -> Audit:
+    client = client or _client()
+    model = model or (VIDEO_MODEL if source.kind == SourceType.VIDEO else MODEL)
+    content = source.content(AUDIT_PROMPT)
+    content.append({"type": "text", "text": "COMPILED SPEC:\n" + spec.model_dump_json(indent=2)})
+    raw, _ = _structured(client, model, [{"role": "user", "content": content}], "Audit", Audit.model_json_schema())
+    return Audit.model_validate_json(raw)
+
+
+def save(spec: ClaimSpec, path: str | Path, audit: Audit | None = None, trace: dict | None = None) -> None:
+    out = {"spec": spec.model_dump(mode="json")}
+    if audit is not None:
+        out["audit"] = audit.model_dump(mode="json")
+    if trace is not None:
+        out["trace"] = trace
+    Path(path).write_text(json.dumps(out, indent=2) + "\n", encoding="utf-8")
+
+
+def load_spec(path: str | Path) -> tuple[ClaimSpec, dict]:
+    d = json.loads(Path(path).read_text(encoding="utf-8"))
+    if "spec" in d:
+        return ClaimSpec.model_validate(d["spec"]), d
+    return ClaimSpec.model_validate(d), {"spec": d}

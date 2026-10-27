@@ -1,0 +1,44 @@
+{
+  "spec": {
+    "claim_summary": "Buy SOL at the Friday close and sell at the Monday open to catch the weekend pump.",
+    "source_type": "text",
+    "testable": true,
+    "assets": [
+      "SOLUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "day_of_week",
+          "period": null,
+          "multiplier": 1.0
+        },
+        "op": "gt",
+        "right": {
+          "kind": "const",
+          "value": 3.5
+        }
+      },
+      {
+        "left": {
+          "kind": "day_of_week",
+          "period": null,
+          "multiplier": 1.0
+        },
+        "op": "lt",
+        "right": {
+          "kind": "const",
+          "value": 4.5
+        }
+      }
+    ],
+    "exit": [],
+    "max_hold_bars": 2,
+    "assumptions": [
+      "Daily bars are UTC days: signal on the Friday bar close fills at the Saturday open; exit after 2 bars fills at the Monday open."
+    ]
+  },
+  "note": "Hand-compiled example claim (paraphrased generic retail setups, no real author). Used by `falsify judge-demo` offline."
+}

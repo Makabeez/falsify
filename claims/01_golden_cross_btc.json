@@ -1,0 +1,49 @@
+{
+  "spec": {
+    "claim_summary": "Buy BTC on the daily golden cross (50-day SMA crosses above the 200-day) and sell on the death cross.",
+    "source_type": "text",
+    "testable": true,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "sma",
+          "period": 50,
+          "multiplier": 1.0
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "sma",
+          "period": 200,
+          "multiplier": 1.0
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "sma",
+          "period": 50,
+          "multiplier": 1.0
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "sma",
+          "period": 200,
+          "multiplier": 1.0
+        }
+      }
+    ],
+    "claimed": {
+      "other": "'never miss a bull run'"
+    },
+    "assumptions": [
+      "Simple moving averages of daily closes."
+    ]
+  },
+  "note": "Hand-compiled example claim (paraphrased generic retail setups, no real author). Used by `falsify judge-demo` offline."
+}

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-label="Falsify: test trading claims before you trade them">
+  <style>
+    .bg { fill: #0b0d10; }
+    .grid { stroke: #1b2027; stroke-width: 1; }
+    .claim { fill: none; stroke: #3ddc97; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+             stroke-dasharray: 1400; stroke-dashoffset: 1400; animation: draw 3.2s ease-out forwards; }
+    .real { fill: none; stroke: #ff5c5c; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+            stroke-dasharray: 1400; stroke-dashoffset: 1400; animation: draw 3.2s ease-out 1.6s forwards; }
+    .title { fill: #f2f4f7; font: 700 76px ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; letter-spacing: -2px; }
+    .sub { fill: #9aa4b2; font: 400 22px ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .tag { font: 600 15px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .stamp { fill: none; stroke: #ff5c5c; stroke-width: 4; opacity: 0; transform-origin: 760px 78px;
+             animation: stamp 0.35s ease-out 3.6s forwards; }
+    .stamptext { fill: #ff5c5c; font: 800 34px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 4px;
+                 opacity: 0; transform-origin: 760px 78px; animation: stamp 0.35s ease-out 3.6s forwards; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes stamp { from { opacity: 0; transform: rotate(-12deg) scale(1.6); } to { opacity: 1; transform: rotate(-12deg) scale(1); } }
+  </style>
+  <rect class="bg" width="1200" height="300"/>
+  <g class="grid">
+    <line x1="0" y1="60" x2="1200" y2="60"/><line x1="0" y1="120" x2="1200" y2="120"/>
+    <line x1="0" y1="180" x2="1200" y2="180"/><line x1="0" y1="240" x2="1200" y2="240"/>
+  </g>
+  <text class="title" x="60" y="140">Falsify</text>
+  <text class="sub" x="62" y="182">Test trading claims before you trade them.</text>
+  <text class="sub" x="62" y="214" style="font-size:17px">Muse Spark compiles the claim. A deterministic engine tries to break it.</text>
+  <path class="claim" d="M760 250 L795 230 L829 215 L864 190 L898 170 L933 140 L967 115 L1002 90 L1036 70 L1071 50 L1105 35 L1140 20"/>
+  <path class="real" d="M760 250 L795 238 L829 246 L864 228 L898 242 L933 236 L967 255 L1002 248 L1036 262 L1071 255 L1105 268 L1140 272"/>
+  <text class="tag" x="975" y="30" fill="#3ddc97">claimed</text>
+  <text class="tag" x="1090" y="290" fill="#ff5c5c">tested</text>
+  <rect class="stamp" x="665" y="48" width="190" height="60" rx="8"/>
+  <text class="stamptext" x="760" y="90" text-anchor="middle">DIES</text>
+</svg>

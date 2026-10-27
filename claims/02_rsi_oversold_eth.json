@@ -1,0 +1,70 @@
+{
+  "spec": {
+    "claim_summary": "Buy ETH on the 4h chart when RSI(14) is oversold and sell when it is overbought; claimed ~80% win rate.",
+    "source_type": "text",
+    "testable": true,
+    "assets": [
+      "ETHUSDT"
+    ],
+    "timeframe": "4h",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "rsi",
+          "period": 14,
+          "multiplier": 1.0
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "const",
+          "value": 30
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "rsi",
+          "period": 14,
+          "multiplier": 1.0
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "const",
+          "value": 70
+        }
+      }
+    ],
+    "free_parameters": [
+      {
+        "name": "oversold level",
+        "target": "entry[0].right.value",
+        "candidates": [
+          20,
+          25,
+          30,
+          35
+        ]
+      },
+      {
+        "name": "overbought level",
+        "target": "exit[0].right.value",
+        "candidates": [
+          65,
+          70,
+          75,
+          80
+        ]
+      }
+    ],
+    "claimed": {
+      "win_rate_pct": 80
+    },
+    "assumptions": [
+      "'Oversold' read as RSI(14) crossing below 30, 'overbought' as crossing above 70.",
+      "Entry on the cross, not on every bar below the level."
+    ]
+  },
+  "note": "Hand-compiled example claim (paraphrased generic retail setups, no real author). Used by `falsify judge-demo` offline."
+}

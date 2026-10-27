@@ -1,0 +1,44 @@
+{
+  "spec": {
+    "claim_summary": "When BTC drops more than 10% in a week, buy and hold for 7 days.",
+    "source_type": "text",
+    "testable": true,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "pct_change",
+          "period": 7,
+          "multiplier": 1.0
+        },
+        "op": "lt",
+        "right": {
+          "kind": "const",
+          "value": -10
+        }
+      }
+    ],
+    "exit": [],
+    "max_hold_bars": 7,
+    "free_parameters": [
+      {
+        "name": "drop size %",
+        "target": "entry[0].right.value",
+        "candidates": [
+          -8,
+          -10,
+          -12,
+          -15
+        ]
+      }
+    ],
+    "assumptions": [
+      "'In a week' read as the 7-day % change of daily closes."
+    ]
+  },
+  "note": "Hand-compiled example claim (paraphrased generic retail setups, no real author). Used by `falsify judge-demo` offline."
+}

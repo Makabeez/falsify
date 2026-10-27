@@ -1,0 +1,9 @@
+{
+  "spec": {
+    "claim_summary": "Accumulate fundamentally strong projects when smart money is buying and the chart looks ready.",
+    "source_type": "text",
+    "testable": false,
+    "untestable_reason": "No mechanical trigger: 'strong projects', 'smart money buying' and 'chart looks ready' are discretionary and need data the claim never defines."
+  },
+  "note": "Hand-compiled example claim (paraphrased generic retail setups, no real author). Used by `falsify judge-demo` offline."
+}

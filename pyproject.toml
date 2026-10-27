@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "falsify"
+version = "0.1.0"
+description = "Test trading claims before you trade them. Muse Spark compiles the claim; a deterministic engine tries to break it."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Makabeez" }]
+dependencies = [
+  "numpy>=1.26,<3",
+  "pandas>=2.1,<4",
+  "pyarrow>=14",
+  "requests>=2.31,<3",
+  "pydantic>=2.6,<3",
+  "openai>=1.40,<4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+falsify = "falsify.cli:main"
+
+[tool.setuptools]
+packages = ["falsify"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,70 @@
+{
+  "spec": {
+    "claim_summary": "Long BTC on the 4h chart when price closes above the 20-bar high on volume at least 2x the 20-bar average; 3% stop, 6% target.",
+    "source_type": "image",
+    "testable": true,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "4h",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "multiplier": 1.0
+        },
+        "op": "gt",
+        "right": {
+          "kind": "highest_high",
+          "period": 20,
+          "multiplier": 1.0
+        }
+      },
+      {
+        "left": {
+          "kind": "volume",
+          "period": null,
+          "multiplier": 1.0
+        },
+        "op": "gt",
+        "right": {
+          "kind": "volume_sma",
+          "period": 20,
+          "multiplier": 2.0
+        }
+      }
+    ],
+    "exit": [],
+    "stop_loss_pct": 3,
+    "take_profit_pct": 6,
+    "free_parameters": [
+      {
+        "name": "breakout lookback",
+        "target": "entry[0].right.period",
+        "candidates": [
+          10,
+          20,
+          50
+        ]
+      },
+      {
+        "name": "volume multiple",
+        "target": "entry[1].right.multiplier",
+        "candidates": [
+          1.5,
+          2,
+          3
+        ]
+      }
+    ],
+    "claimed": {
+      "other": "'1:2 R:R, works every time'"
+    },
+    "assumptions": [
+      "Hand-compiled stand-in for an annotated chart screenshot."
+    ]
+  },
+  "note": "Hand-compiled example claim (paraphrased generic retail setups, no real author). Used by `falsify judge-demo` offline."
+}
