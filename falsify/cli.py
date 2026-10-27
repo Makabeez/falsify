@@ -5,6 +5,7 @@
   falsify check <file|--text>     Muse Spark compiles + audits the claim, then the battery runs it
   falsify extract <file|--text>   compile only, write the spec JSON
   falsify data fetch|verify       rebuild or verify bundled history
+  falsify corpus run|report       run real claims end to end, build corpus/results/scoreboard.md
   falsify calibrate               false-positive rate + power of the battery on bundled data
   falsify ping                    check MODEL_API_KEY, list models, one structured-output call
   falsify schema                  print the ClaimSpec JSON schema sent to Muse Spark
@@ -58,7 +59,7 @@ def print_report(rep: Report, summary: str, audit: dict | None = None) -> None:
     oos = rep.out_of_sample
     if oos.get("available"):
         a = oos["after_window"]
-        print(f"OOS      after claimed window {oos['claim_window'][1]}: {a['trades']} trades, "
+        print(f"OOS      after {oos['boundary']} ({oos['boundary_source']}): {a['trades']} trades, "
               f"avg {_fmt(a.get('avg_net_pct'), '+.2f', '%')}")
     h = rep.halves
     if h:
@@ -120,7 +121,7 @@ def _costs(args) -> Costs:
 def cmd_run(args) -> int:
     from .extract import load_spec
     spec, raw = load_spec(args.spec)
-    rep = falsify(spec, _costs(args), with_cross_asset=not args.fast)
+    rep = falsify(spec, _costs(args), with_cross_asset=not args.fast, posted=args.posted or raw.get("posted"))
     attach_grounding(rep, (raw.get("trace") or {}).get("grounding"))
     print_report(rep, spec.claim_summary, raw.get("audit"))
     if args.json:
@@ -134,7 +135,7 @@ def cmd_check(args) -> int:
     src = _source(args)
     spec, trace = compile_claim(src, model=args.model)
     audit = None if args.no_audit else audit_claim(src, spec, model=args.model)
-    rep = falsify(spec, _costs(args), with_cross_asset=not args.fast)
+    rep = falsify(spec, _costs(args), with_cross_asset=not args.fast, posted=args.posted)
     attach_grounding(rep, trace.get("grounding"))
     print_report(rep, spec.claim_summary, audit.model_dump() if audit else None)
     if args.json:
@@ -232,6 +233,17 @@ CALIBRATION_FOOTER = """
 """
 
 
+def cmd_corpus(args) -> int:
+    from . import corpus
+    if args.action == "run":
+        ids = args.ids.split(",") if args.ids else None
+        corpus.run(args.path, args.out, _costs(args), ids=ids, limit=args.limit, workers=args.workers,
+                   model=args.model, retry_errors=args.retry_errors)
+    else:
+        corpus.report(args.out)
+    return 0
+
+
 def cmd_data(args) -> int:
     if args.action == "fetch":
         data_mod.build(end=args.end)
@@ -263,12 +275,14 @@ def main(argv: list[str] | None = None) -> int:
 
     p = sub.add_parser("run", help="run the battery on a spec JSON")
     p.add_argument("spec")
+    p.add_argument("--posted", help="post date YYYY-MM-DD; trades after it are out-of-sample")
     p.add_argument("--json", help="write the full report here")
     add_costs(p)
     p.set_defaults(fn=cmd_run)
 
     p = sub.add_parser("check", help="compile with Muse Spark, audit, then run")
     add_source(p)
+    p.add_argument("--posted", help="post date YYYY-MM-DD; trades after it are out-of-sample")
     p.add_argument("--json", help="write spec + audit + report here")
     add_costs(p)
     p.set_defaults(fn=cmd_check)
@@ -277,6 +291,18 @@ def main(argv: list[str] | None = None) -> int:
     add_source(p)
     p.add_argument("-o", "--out", help="output path (default spec.json)")
     p.set_defaults(fn=cmd_extract)
+
+    p = sub.add_parser("corpus", help="run a corpus of real claims end to end and build the scoreboard")
+    p.add_argument("action", choices=["run", "report"])
+    p.add_argument("path", nargs="?", default="corpus/claims.jsonl")
+    p.add_argument("--out", default="corpus/results")
+    p.add_argument("--ids", help="comma-separated ids to run, e.g. c003,c005")
+    p.add_argument("--limit", type=int, help="run at most this many new claims")
+    p.add_argument("--workers", type=int, default=4)
+    p.add_argument("--model", help="override the Muse Spark model id")
+    p.add_argument("--retry-errors", action="store_true", help="re-run claims that errored last time")
+    add_costs(p)
+    p.set_defaults(fn=cmd_corpus)
 
     p = sub.add_parser("calibrate", help="measure false-positive rate and power on the bundled data")
     p.add_argument("--reps", type=int, default=300, help="coin-flip strategies per setup")

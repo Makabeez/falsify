@@ -119,16 +119,23 @@ def _parse_date(s: str | None) -> pd.Timestamp | None:
         return None
 
 
-def out_of_sample(spec: ClaimSpec, trades: pd.DataFrame) -> dict:
-    """Trades after the period the claimant showed are the only true out-of-sample."""
-    end = _parse_date(spec.claimed.period_end)
-    if end is None:
-        return {"available": False, "note": "claim names no period; nothing is strictly out-of-sample"}
+def out_of_sample(spec: ClaimSpec, trades: pd.DataFrame, posted: str | None = None) -> dict:
+    """Trades the claimant could not have seen are the only true out-of-sample.
+
+    The boundary is the later of the claim's stated period end and the post date: the
+    author can have fitted the rule to anything up to the day they posted it.
+    """
+    candidates = [d for d in (_parse_date(spec.claimed.period_end), _parse_date(posted)) if d is not None]
+    if not candidates:
+        return {"available": False, "note": "claim names no period and has no post date; nothing is strictly out-of-sample"}
+    end = max(candidates)
     start = _parse_date(spec.claimed.period_start)
     after = trades[trades["entry_time"] > end]
     during = trades[(trades["entry_time"] <= end) & ((trades["entry_time"] >= start) if start is not None else True)]
     return {
         "available": True,
+        "boundary": end.date().isoformat(),
+        "boundary_source": "post date" if posted and _parse_date(posted) == end else "claimed period end",
         "claim_window": [spec.claimed.period_start, spec.claimed.period_end],
         "in_window": summarize(during),
         "after_window": summarize(after),
@@ -223,7 +230,8 @@ def _buy_hold_warning(spec: ClaimSpec, rep: Report) -> None:
 
 # ---------------------------------------------------------------- verdict
 
-def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = True) -> Report:
+def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = True,
+            posted: str | None = None) -> Report:
     if not spec.testable:
         return Report(Verdict.UNTESTABLE, "This claim can't be turned into rules anyone could check.",
                       reasons=[spec.untestable_reason or "no mechanical rules"])
@@ -256,7 +264,7 @@ def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = Tr
         return rep
 
     rep.null_test = random_entry_null(trades, df, spec.direction, costs)
-    rep.out_of_sample = out_of_sample(spec, trades)
+    rep.out_of_sample = out_of_sample(spec, trades, posted)
     rep.halves = halves(trades, df)
     rep.sweep = sweep(spec, df, costs)
     if with_cross_asset:
@@ -275,8 +283,8 @@ def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = Tr
     if oos.get("available") and oos.get("counts"):
         after = oos["after_window"]
         if after["avg_net_pct"] is not None and after["avg_net_pct"] <= 0:
-            rep.reasons.append(f"after the period the claim showed, it lost {after['avg_net_pct']:+.2f}% per trade "
-                               f"over {after['trades']} trades")
+            rep.reasons.append(f"after {oos['boundary']} ({oos['boundary_source']}), it lost "
+                               f"{after['avg_net_pct']:+.2f}% per trade over {after['trades']} trades")
 
     # --- warnings: reported, not fatal
     if not rep.halves["consistent"]:

@@ -91,3 +91,27 @@ def test_image_quotes_are_checked_against_transcript_and_note_is_not_quotable(tm
     assert len(fake.calls) == 4  # transcribe + compile + 2 repairs
     first_compile = json.dumps(fake.calls[1]["messages"][0]["content"])
     assert "TRANSCRIPT OF THE MEDIA" in first_compile and "never quote it" in first_compile
+
+
+def test_corpus_run_with_fake_model(tmp_path, monkeypatch):
+    from falsify import corpus, extract
+    rec = {"id": "c900", "url": "https://example.com/x", "source": "blog", "posted": "2023-06-01",
+           "asset_hint": "ETH", "timeframe_hint": "4h", "category": "backtest_claim", "excerpt": TEXT,
+           "performance_claim": "80% win rate", "verbatim_confidence": "high", "notes": ""}
+    path = tmp_path / "claims.jsonl"
+    path.write_text(json.dumps(rec) + "\n")
+    audit = {"faithful": True, "issues": []}
+    good = json.dumps(dict(BASE, evidence=GOOD_EVIDENCE, claimed={"win_rate_pct": 80}))
+    fake = _Fake([good, json.dumps(audit)])
+    monkeypatch.setattr(extract, "_client", lambda: fake)
+    out = tmp_path / "results"
+    corpus.run(path, out, workers=1)
+    res = json.loads((out / "c900.json").read_text())
+    assert "error" not in res, res.get("error")
+    assert res["report"]["out_of_sample"]["boundary"] == "2023-06-01"
+    assert res["report"]["out_of_sample"]["boundary_source"] == "post date"
+    md = (out / "scoreboard.md").read_text()
+    assert "rule/backtest -> testable | 1/1" in md and "5/5" in md
+    assert "never quote it" in json.dumps(fake.calls[0]["messages"])  # hints go in as context, not as claim text
+    corpus.run(path, out, workers=1)  # resumable: nothing left to run, no extra model calls
+    assert len(fake.calls) == 2
