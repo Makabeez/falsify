@@ -186,18 +186,31 @@ def _client():
     return OpenAI(base_url=BASE_URL, api_key=key)
 
 
+MAX_TOKENS = int(os.environ.get("FALSIFY_MAX_TOKENS", "32000"))
+REASONING = os.environ.get("FALSIFY_REASONING", "medium")
+
+
 def _structured(client, model: str, messages: list[dict], name: str, schema: dict) -> tuple[str, dict]:
-    resp = client.chat.completions.create(
-        model=model,
-        messages=messages,
-        max_tokens=8000,  # reasoning shares the output budget
-        response_format={"type": "json_schema", "json_schema": {"name": name, "schema": schema}},
-    )
-    choice = resp.choices[0]
-    if choice.finish_reason == "length":
-        raise RuntimeError("model ran out of output budget before finishing the JSON")
-    usage = resp.usage.model_dump() if resp.usage else {}
-    return choice.message.content or "", usage
+    """One schema-constrained call. Reasoning shares max_tokens with the JSON, so if the
+    budget runs out we retry once with reasoning dialled down before giving up."""
+    usage_all: list[dict] = []
+    for effort in (REASONING, "low"):
+        resp = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            max_tokens=MAX_TOKENS,
+            reasoning_effort=effort,
+            response_format={"type": "json_schema", "json_schema": {"name": name, "schema": schema}},
+        )
+        choice = resp.choices[0]
+        usage = resp.usage.model_dump() if resp.usage else {}
+        usage_all.append(dict(usage, reasoning_effort=effort))
+        if choice.finish_reason != "length":
+            merged = dict(usage_all[-1])
+            merged["total_tokens"] = sum((u.get("total_tokens") or 0) for u in usage_all)
+            merged["calls"] = len(usage_all)
+            return choice.message.content or "", merged
+    raise RuntimeError(f"model ran out of output budget ({MAX_TOKENS} tokens) twice, even at low reasoning effort")
 
 
 def transcribe(source: Source, model: str | None = None, client=None) -> Transcript:

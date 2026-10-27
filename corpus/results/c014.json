@@ -13,6 +13,489 @@
     "verbatim_confidence": "high",
     "notes": "Day-of-week rule (exit Saturday, re-enter Wednesday); re-entry condition \"kinda going up\" is fuzzy, compiler must flag it."
   },
-  "error": "RuntimeError: model ran out of output budget before finishing the JSON",
-  "seconds": 27.4
+  "spec": {
+    "claim_summary": "Buy Bitcoin on Wednesday when price momentum is positive and sell on Saturday to avoid Sunday weakness on daily bars.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "day_of_week",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "gt",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 1.5,
+          "multiplier": 1.0,
+          "param": null
+        }
+      },
+      {
+        "left": {
+          "kind": "day_of_week",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "lt",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 2.5,
+          "multiplier": 1.0,
+          "param": null
+        }
+      },
+      {
+        "left": {
+          "kind": "pct_change",
+          "period": 7,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "gt",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 0.0,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "day_of_week",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "gt",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 4.5,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [
+      {
+        "name": "momentum lookback for kinda going up",
+        "target": "entry[2].left.period",
+        "candidates": [
+          3.0,
+          5.0,
+          7.0,
+          14.0,
+          21.0
+        ]
+      }
+    ],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": null
+    },
+    "assumptions": [
+      "Asset interpreted as BTCUSDT: claim says Bitcoin, mapped to Binance spot USDT symbol.",
+      "Timeframe 1d from claim's chart time period.",
+      "Direction is long: buys back on Wednesday and sells on Saturday.",
+      "'buys back the next Wednesday' encoded as entry on Wednesday close using day_of_week >1.5 AND day_of_week <2.5.",
+      "'if the price is kinda going up' interpreted as 7-bar percent change >0%; period 7 is a choice listed in free_parameters.",
+      "'sells on Saturday' encoded as exit on day_of_week >4.5; due to ANY exit semantics a single-sided bound is used, first trigger after Wednesday entry will be Saturday.",
+      "No exit, stop, take-profit or hold given besides Saturday sale, so Saturday exit is the only exit."
+    ],
+    "evidence": [
+      {
+        "field": "assets",
+        "quote": "Bitcoin",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": "set your chart time period to 1 day",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": "buys back",
+        "assumed": false
+      },
+      {
+        "field": "entry[0]",
+        "quote": "the next Wednesday",
+        "assumed": false
+      },
+      {
+        "field": "entry[1]",
+        "quote": "Wednesday",
+        "assumed": false
+      },
+      {
+        "field": "entry[2]",
+        "quote": "if the price is kinda going up",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": "sells on Saturday",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 6556,
+          "prompt_tokens": 1101,
+          "total_tokens": 7657,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 6484,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
+        },
+        "error": "1 validation error for ClaimSpec\n  Value error, testable claim needs at least one asset [type=value_error, input_value={'claim_summary': 'Buy Bi...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+      },
+      {
+        "usage": {
+          "completion_tokens": 4710,
+          "prompt_tokens": 1250,
+          "total_tokens": 5960,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 3854,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 7,
+      "quoted": 7,
+      "assumed": 0,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "entry[2]",
+        "exit[0]",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "audits": [
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ]
+  },
+  "report": {
+    "verdict": "DIES",
+    "headline": "After 2018-04-28 (post date), it lost -0.15% per trade over 230 trades.",
+    "reasons": [
+      "after 2018-04-28 (post date), it lost -0.15% per trade over 230 trades"
+    ],
+    "warnings": [
+      "not consistent over time: edge is not positive in both halves (split 2022-03-23)",
+      "just holding did better: +10% vs buy-and-hold +1781%"
+    ],
+    "asset": "BTCUSDT",
+    "timeframe": "1d",
+    "primary": {
+      "trades": 251,
+      "win_rate_pct": 45.0199203187251,
+      "avg_net_pct": 0.20043449990443432,
+      "total_net_pct": 10.397602940354744,
+      "total_gross_pct": 101.6409640528888,
+      "max_drawdown_pct": -64.79616411647173,
+      "avg_bars": 3.0,
+      "open_at_end": 0,
+      "buy_hold_pct": 1780.815115875236,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 22.424061941631923
+    },
+    "null_test": {
+      "p_value": 0.46776611694152925,
+      "strategy_mean_log_pct": 0.03940965542724991,
+      "null_median_log_pct": 0.00951958636655762,
+      "null_p95_log_pct": 0.6302848879686056,
+      "beat_by_random_pct": 46.75,
+      "sims": 2000
+    },
+    "out_of_sample": {
+      "available": true,
+      "boundary": "2018-04-28",
+      "boundary_source": "post date",
+      "claim_window": [
+        null,
+        null
+      ],
+      "in_window": {
+        "trades": 21,
+        "win_rate_pct": 71.42857142857143,
+        "avg_net_pct": 4.002683692484509,
+        "total_net_pct": 104.59825393208698,
+        "total_gross_pct": 115.17428843495053,
+        "max_drawdown_pct": -19.492113974011193,
+        "avg_bars": 3.0,
+        "open_at_end": 0
+      },
+      "after_window": {
+        "trades": 230,
+        "win_rate_pct": 42.608695652173914,
+        "avg_net_pct": -0.14672738289635517,
+        "total_net_pct": -46.04176681928117,
+        "total_gross_pct": -6.2894709588654285,
+        "max_drawdown_pct": -64.79616411647173,
+        "avg_bars": 3.0,
+        "open_at_end": 0
+      },
+      "counts": true
+    },
+    "halves": {
+      "split": "2022-03-23",
+      "first": {
+        "trades": 126,
+        "win_rate_pct": 50.79365079365079,
+        "avg_net_pct": 0.7411885859692805,
+        "total_net_pct": 88.37136200429086,
+        "total_gross_pct": 154.88577137228043,
+        "max_drawdown_pct": -38.2222723142322,
+        "avg_bars": 3.0,
+        "open_at_end": 0
+      },
+      "second": {
+        "trades": 125,
+        "win_rate_pct": 39.2,
+        "avg_net_pct": -0.34464561884893063,
+        "total_net_pct": -41.39363767097461,
+        "total_gross_pct": -20.889674238277976,
+        "max_drawdown_pct": -45.30907378959829,
+        "avg_bars": 3.0,
+        "open_at_end": 0
+      },
+      "consistent": false
+    },
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "ETHUSDT",
+          "trades": 245,
+          "total_net_pct": 10.969498747458474,
+          "avg_net_pct": 0.31739624097466984
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 164,
+          "total_net_pct": 269.99944124236276,
+          "avg_net_pct": 1.4711697909728163
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 257,
+          "total_net_pct": 584.4678417167266,
+          "avg_net_pct": 1.1170096720050544
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 206,
+          "total_net_pct": 571.375311318315,
+          "avg_net_pct": 1.4738184379118098
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 178,
+          "total_net_pct": 536.6620390353605,
+          "avg_net_pct": 2.0050327579038254
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 210,
+          "total_net_pct": 147.4748167790823,
+          "avg_net_pct": 0.9197204350375096
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 158,
+          "total_net_pct": 765.3322077481823,
+          "avg_net_pct": 1.9438366754474596
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 207,
+          "total_net_pct": 249.89984116219938,
+          "avg_net_pct": 1.0243402157062436
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 230,
+          "total_net_pct": 873.807691109052,
+          "avg_net_pct": 1.318491995301384
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 149,
+          "total_net_pct": 137.55942841773248,
+          "avg_net_pct": 1.0852239322701422
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 236,
+          "total_net_pct": 190.94560582062954,
+          "avg_net_pct": 0.6377935775636945
+        }
+      ],
+      "tested": 11,
+      "positive": 11,
+      "positive_share_pct": 100.0
+    },
+    "sweep": {
+      "readings": 5,
+      "truncated": false,
+      "positive_share_pct": 100.0,
+      "best": {
+        "params": {
+          "momentum lookback for kinda going up": 5.0
+        },
+        "trades": 266,
+        "avg_net_pct": 0.30290190559772473,
+        "total_net_pct": 44.81240289069943,
+        "p_value": 0.3932135728542914
+      },
+      "best_p_bonferroni": 1.0,
+      "results": [
+        {
+          "params": {
+            "momentum lookback for kinda going up": 3.0
+          },
+          "trades": 255,
+          "avg_net_pct": 0.30775269780087094,
+          "total_net_pct": 49.40303884479693,
+          "p_value": 0.3972055888223553
+        },
+        {
+          "params": {
+            "momentum lookback for kinda going up": 5.0
+          },
+          "trades": 266,
+          "avg_net_pct": 0.30290190559772473,
+          "total_net_pct": 44.81240289069943,
+          "p_value": 0.3932135728542914
+        },
+        {
+          "params": {
+            "momentum lookback for kinda going up": 7.0
+          },
+          "trades": 251,
+          "avg_net_pct": 0.20043449990443432,
+          "total_net_pct": 10.397602940354744,
+          "p_value": 0.49101796407185627
+        },
+        {
+          "params": {
+            "momentum lookback for kinda going up": 14.0
+          },
+          "trades": 256,
+          "avg_net_pct": 0.30040751064059473,
+          "total_net_pct": 46.370821741418446,
+          "p_value": 0.40119760479041916
+        },
+        {
+          "params": {
+            "momentum lookback for kinda going up": 21.0
+          },
+          "trades": 255,
+          "avg_net_pct": 0.19398289372717079,
+          "total_net_pct": 9.137649473844611,
+          "p_value": 0.5129740518962076
+        }
+      ]
+    },
+    "claimed_vs_measured": [],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 7,
+      "quoted": 7,
+      "assumed": 0,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "entry[2]",
+        "exit[0]",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "exact",
+      "gaps": [],
+      "audit_majors": []
+    }
+  },
+  "seconds": 55.5
 }

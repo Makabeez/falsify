@@ -108,7 +108,7 @@ def report(out_dir: str | Path) -> str:
     routed = {
         "vague -> UNTESTABLE": [r for r in ok if cat(r) == "vague"],
         "other_asset -> UNTESTABLE": [r for r in ok if cat(r) == "other_asset"],
-        "rule/backtest -> testable": [r for r in ok if cat(r) in ("rule", "backtest_claim")],
+        "rule/backtest -> testable (the rest are refused with a stated reason)": [r for r in ok if cat(r) in ("rule", "backtest_claim")],
     }
 
     def correct(name, r):
@@ -149,6 +149,26 @@ def report(out_dir: str | Path) -> str:
     if ok:
         lines.append(f"| Mean tokens per claim (transcribe + compile, excl. audit) | {tok // len(ok):,} |")
 
+    # Corpus-level multiple testing: Benjamini-Hochberg at 5% FDR over every claim that got a null p-value.
+    ps = sorted(((r["report"]["null_test"]["p_value"], r["id"]) for r in ok
+                 if (r["report"].get("null_test") or {}).get("p_value") is not None), key=lambda x: x[0])
+    m = len(ps)
+    cutoff_rank = 0
+    for k, (pv, _) in enumerate(ps, start=1):
+        if pv <= 0.05 * k / m:
+            cutoff_rank = k
+    bh_pass = {cid for _, cid in ps[:cutoff_rank]}
+    single = [r["id"] for r in ok if r["report"]["verdict"] == "SURVIVES"]
+    lines += ["", "## Correcting for testing many claims at once", "",
+              f"{m} claims got a random-timing p-value. At p < 0.05 each, about {m * 0.05:.1f} would pass by luck alone. "
+              f"Benjamini-Hochberg at a 5% false-discovery rate keeps the ones that still stand when the whole corpus "
+              f"is taken into account.", "",
+              f"- SURVIVES on its own: {len(single)} ({', '.join(sorted(single)) or 'none'})",
+              f"- Still survives after the corpus-level correction: {len([c for c in single if c in bh_pass])} "
+              f"({', '.join(sorted(c for c in single if c in bh_pass)) or 'none'})", ""]
+    for r in ok:
+        r["_bh"] = r["id"] in bh_pass
+
     lines += ["", "## Claim by claim", "",
               "| id | Kind | Claim (neutral summary) | Claimed | Measured | Verdict | Why | Quoted |",
               "|---|---|---|---|---|---|---|---|"]
@@ -168,8 +188,9 @@ def report(out_dir: str | Path) -> str:
         flag = " (approx.)" if (rp.get("fidelity") or {}).get("level") == "approximation" \
             and rp["verdict"] != "UNTESTABLE" else ""
         why = rp["headline"].replace("Tested an approximation of the claim. ", "").replace("|", "/")
+        bh = " ✓ corpus-corrected" if r.get("_bh") and rp["verdict"] == "SURVIVES" else ""
         lines.append(f"| [{rec['id']}]({rec['url']}) | {rec['category']} | {sp['claim_summary'].replace('|', '/')} | "
-                     f"{claimed.replace('|', '/')} | {measured} | **{rp['verdict']}**{flag} | {why} | {quoted} |")
+                     f"{claimed.replace('|', '/')} | {measured} | **{rp['verdict']}**{flag}{bh} | {why} | {quoted} |")
     md = "\n".join(lines) + "\n"
     (out / "scoreboard.md").write_text(md, encoding="utf-8")
     print(f"\nwrote {out / 'scoreboard.md'}  " + "  ".join(f"{k}={v}" for k, v in verdicts.items())

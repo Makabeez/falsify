@@ -128,7 +128,7 @@ def operand_series(op: Operand, df: pd.DataFrame, cache: dict | None = None) -> 
         elif k == OperandKind.ATR:
             s = _atr(df, p)
         elif k == OperandKind.DAY_OF_WEEK:
-            s = pd.Series(df.index.dayofweek, index=df.index, dtype=float)
+            s = pd.Series(df.index.day_of_week, index=df.index, dtype=float)
         elif k == OperandKind.HOUR_UTC:
             s = pd.Series(df.index.hour, index=df.index, dtype=float)
         elif k == OperandKind.WMA:

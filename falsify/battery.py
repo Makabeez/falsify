@@ -223,6 +223,17 @@ def compare_claim(spec: ClaimSpec, primary: dict) -> list[dict]:
     return rows
 
 
+def first_signal_possible(spec: ClaimSpec, df: pd.DataFrame):
+    """First bar on which every entry operand has a value (after indicator warm-up)."""
+    from .engine import operand_series
+    ok = pd.Series(True, index=df.index)
+    for c in spec.entry:
+        for op in (c.left, c.right):
+            ok &= operand_series(op, df).notna()
+    valid = ok[ok]
+    return valid.index[0] if len(valid) else None
+
+
 def _buy_hold_warning(spec: ClaimSpec, rep: Report) -> None:
     p = rep.primary
     bh = p.get("buy_hold_pct")
@@ -256,6 +267,10 @@ def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = Tr
     if claim_start is not None and claim_start < df.index[0]:
         rep.warnings.append(f"the claim's results start {claim_start.date()}; Binance history for {primary_asset} "
                             f"starts {df.index[0].date()}, so the test covers less history than the claim")
+    first = first_signal_possible(spec, df)
+    if first is not None and (first - df.index[0]) > (df.index[-1] - df.index[0]) * 0.25:
+        rep.warnings.append(f"indicator warm-up: the longest lookback needs data until {first.date()} before the first "
+                            f"signal is possible, so only part of the history is really tested")
     if primary.get("open_at_end"):
         rep.warnings.append("the last trade is still open at the end of the data; it is marked at the last close")
 

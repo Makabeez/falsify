@@ -13,6 +13,1305 @@
     "verbatim_confidence": "high",
     "notes": "Spot momentum entry RSI 55-70 on 4h above EMA200; ATR take-profit multiple unstated, no stop."
   },
-  "error": "RuntimeError: model ran out of output budget before finishing the JSON",
-  "seconds": 56.0
+  "spec": {
+    "claim_summary": "A spot bot enters long when 4H RSI is between 55 and 70 with price above the 200 EMA, exiting on RSI above 70 with a take-profit option.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "4h",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "rsi",
+          "period": 14,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "gt",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 55.0,
+          "multiplier": 1.0,
+          "param": null
+        }
+      },
+      {
+        "left": {
+          "kind": "rsi",
+          "period": 14,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "lt",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 70.0,
+          "multiplier": 1.0,
+          "param": null
+        }
+      },
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "gt",
+        "right": {
+          "kind": "ema",
+          "period": 200,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "rsi",
+          "period": 14,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "gt",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 70.0,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "stop_loss_pct": null,
+    "take_profit_pct": 3.0,
+    "max_hold_bars": null,
+    "free_parameters": [
+      {
+        "name": "RSI length",
+        "target": "entry[0].left.period",
+        "candidates": [
+          7.0,
+          14.0,
+          21.0,
+          28.0
+        ]
+      },
+      {
+        "name": "RSI length (upper bound)",
+        "target": "entry[1].left.period",
+        "candidates": [
+          7.0,
+          14.0,
+          21.0,
+          28.0
+        ]
+      },
+      {
+        "name": "RSI length (exit)",
+        "target": "exit[0].left.period",
+        "candidates": [
+          7.0,
+          14.0,
+          21.0,
+          28.0
+        ]
+      },
+      {
+        "name": "take-profit percent",
+        "target": "take_profit_pct",
+        "candidates": [
+          2.0,
+          3.0,
+          5.0,
+          8.0
+        ]
+      }
+    ],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": null
+    },
+    "assumptions": [
+      "RSI length not stated; used usual default 14 bars for entry and exit.",
+      "Direction inferred as long from spot design; no short signals stated.",
+      "Entry 'price action above the 200 EMA' interpreted as close above 200-period EMA on the same 4h timeframe.",
+      "Exit 'RSI above 70%' interpreted as RSI > 70 on bar close.",
+      "No stop-loss used, as stated that the bot does not use SL.",
+      "Take-profit percentage value not stated; used 3% as concrete interpretation of the '%'-based TP alternative.",
+      "NOT EXPRESSIBLE: ATR-based and SAR-based take-profit alternatives cannot be expressed in the schema; backtest uses the %-based take-profit plus the RSI exit.",
+      "No holding-period exit stated; position held until RSI exit or take-profit."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "the 4H RSI is above 55%",
+        "assumed": false
+      },
+      {
+        "field": "entry[1]",
+        "quote": "below 70%",
+        "assumed": false
+      },
+      {
+        "field": "entry[2]",
+        "quote": "the price action above the 200 EMA",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": "it could be an RSI above 70%",
+        "assumed": false
+      },
+      {
+        "field": "take_profit_pct",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "assets",
+        "quote": "In BTC it has a very good performance",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": "4H RSI",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": "This bot is designed for Spot",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": false,
+    "issues": [
+      {
+        "field": "take_profit_pct",
+        "problem": "Claim states TP is ATR with % or SAR as alternatives and gives no percent value. Spec invents take_profit_pct=3.0 and backtests that fixed % TP while omitting the stated ATR (and SAR) TP. This swaps one TP indicator for an unstated value.",
+        "severity": "major"
+      }
+    ]
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 2863,
+          "prompt_tokens": 2037,
+          "total_tokens": 4900,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 2155,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 8,
+      "quoted": 7,
+      "assumed": 1,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "entry[2]",
+        "exit[0]",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [
+        "take_profit_pct"
+      ],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 4557,
+            "prompt_tokens": 1145,
+            "total_tokens": 5702,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 3574,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            },
+            "reasoning_effort": "medium",
+            "calls": 1
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 7,
+        "quoted": 7,
+        "assumed": 0,
+        "quoted_fields": [
+          "entry[0]",
+          "entry[1]",
+          "entry[2]",
+          "exit[0]",
+          "assets",
+          "timeframe",
+          "direction"
+        ],
+        "assumed_fields": [],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "take_profit_pct",
+            "problem": "Claim states TP is ATR (with % or SAR as alternatives) but spec sets take_profit_pct null and implements no ATR/%/SAR take-profit, testing RSI exit only. Leaving out the stated TP changes what is being tested.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "take_profit_pct",
+            "problem": "Claim states TP is ATR with % or SAR as alternatives and gives no percent value. Spec invents take_profit_pct=3.0 and backtests that fixed % TP while omitting the stated ATR (and SAR) TP. This swaps one TP indicator for an unstated value.",
+            "severity": "major"
+          }
+        ]
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "DIES",
+    "headline": "Tested an approximation of the claim. No better than random timing: random entries with the same holding times did as well 83% of the time (p = 0.828).",
+    "reasons": [
+      "no better than random timing: random entries with the same holding times did as well 83% of the time (p = 0.828)",
+      "after 2024-09-15 (post date), it lost -0.12% per trade over 83 trades"
+    ],
+    "warnings": [
+      "the last trade is still open at the end of the data; it is marked at the last close",
+      "not consistent over time: edge is not positive in both halves (split 2022-03-24)",
+      "just holding did better: -40% vs buy-and-hold +1781%",
+      "left out: ATR-based and SAR-based take-profit alternatives cannot be expressed in the schema; backtest uses the %-based take-profit plus the RSI exit.",
+      "audit: take_profit_pct: Claim states TP is ATR with % or SAR as alternatives and gives no percent value. Spec invents take_profit_pct=3.0 and backtests that fixed % TP while omitting the stated ATR (and SAR) TP. This swaps one TP indicator for an unstated value."
+    ],
+    "asset": "BTCUSDT",
+    "timeframe": "4h",
+    "primary": {
+      "trades": 469,
+      "win_rate_pct": 84.22174840085287,
+      "avg_net_pct": 0.13510777699700716,
+      "total_net_pct": -39.9476479071737,
+      "total_gross_pct": 85.08538459503201,
+      "max_drawdown_pct": -86.04800577665534,
+      "avg_bars": 35.38805970149254,
+      "open_at_end": 1,
+      "buy_hold_pct": 1780.815115875236,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 82.4449853459838
+    },
+    "null_test": {
+      "p_value": 0.8275862068965517,
+      "strategy_mean_log_pct": -0.10873208301126445,
+      "null_median_log_pct": 0.2795658508655521,
+      "null_p95_log_pct": 0.9666419878369742,
+      "beat_by_random_pct": 82.75,
+      "sims": 2000
+    },
+    "out_of_sample": {
+      "available": true,
+      "boundary": "2024-09-15",
+      "boundary_source": "post date",
+      "claim_window": [
+        null,
+        null
+      ],
+      "in_window": {
+        "trades": 386,
+        "win_rate_pct": 85.23316062176166,
+        "avg_net_pct": 0.19102696429809757,
+        "total_net_pct": -25.724527448284185,
+        "total_gross_pct": 87.57546195273743,
+        "max_drawdown_pct": -86.04800577665534,
+        "avg_bars": 32.56217616580311,
+        "open_at_end": 0
+      },
+      "after_window": {
+        "trades": 83,
+        "win_rate_pct": 79.51807228915662,
+        "avg_net_pct": -0.12495013021047344,
+        "total_net_pct": -19.149148393483983,
+        "total_gross_pct": -1.3275069840066878,
+        "max_drawdown_pct": -49.1297184762291,
+        "avg_bars": 48.53012048192771,
+        "open_at_end": 1
+      },
+      "counts": true
+    },
+    "halves": {
+      "split": "2022-03-24",
+      "first": {
+        "trades": 283,
+        "win_rate_pct": 86.57243816254417,
+        "avg_net_pct": 0.2277172191747745,
+        "total_net_pct": -18.765220587239217,
+        "total_gross_pct": 60.219347679408685,
+        "max_drawdown_pct": -86.04800577665534,
+        "avg_bars": 29.791519434628974,
+        "open_at_end": 0
+      },
+      "second": {
+        "trades": 186,
+        "win_rate_pct": 80.64516129032258,
+        "avg_net_pct": -0.005797987176692579,
+        "total_net_pct": -26.07556452182227,
+        "total_gross_pct": 15.519996352362607,
+        "max_drawdown_pct": -49.1297184762291,
+        "avg_bars": 43.903225806451616,
+        "open_at_end": 1
+      },
+      "consistent": false
+    },
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "ETHUSDT",
+          "trades": 527,
+          "total_net_pct": -61.61136931832054,
+          "avg_net_pct": 0.2741028093118838
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 493,
+          "total_net_pct": 89.88965586049713,
+          "avg_net_pct": 0.562970225365915
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 529,
+          "total_net_pct": 423.1873318659428,
+          "avg_net_pct": 0.5818702239130332
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 419,
+          "total_net_pct": -95.49911678680358,
+          "avg_net_pct": -0.2551516612413554
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 448,
+          "total_net_pct": -86.2588903492814,
+          "avg_net_pct": 0.008827626863969925
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 530,
+          "total_net_pct": -91.54811893530635,
+          "avg_net_pct": 0.04558439413575613
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 438,
+          "total_net_pct": -93.70696251192317,
+          "avg_net_pct": 0.060963024077463915
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 592,
+          "total_net_pct": 412.444928797797,
+          "avg_net_pct": 0.6572708630395373
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 535,
+          "total_net_pct": -89.09899447656441,
+          "avg_net_pct": 0.07935622061760714
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 377,
+          "total_net_pct": -85.05416746929592,
+          "avg_net_pct": -0.0037514440791495468
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 473,
+          "total_net_pct": 48.22312659939847,
+          "avg_net_pct": 0.38116605633994083
+        }
+      ],
+      "tested": 11,
+      "positive": 9,
+      "positive_share_pct": 81.81818181818183
+    },
+    "sweep": {
+      "readings": 64,
+      "truncated": true,
+      "positive_share_pct": 59.375,
+      "best": {
+        "params": {
+          "RSI length": 21.0,
+          "RSI length (upper bound)": 28.0,
+          "RSI length (exit)": 7.0,
+          "take-profit percent": 2.0
+        },
+        "trades": 1418,
+        "avg_net_pct": -0.0650863295078256,
+        "total_net_pct": -81.0217515989906,
+        "p_value": 0.48502994011976047
+      },
+      "best_p_bonferroni": 1.0,
+      "results": [
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 760,
+          "avg_net_pct": -0.0007565919700227399,
+          "total_net_pct": -47.15745499229067,
+          "p_value": 0.6207584830339321
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 542,
+          "avg_net_pct": -0.005120986633877889,
+          "total_net_pct": -65.60275498036039,
+          "p_value": 0.8403193612774451
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 432,
+          "avg_net_pct": 0.1468593360736871,
+          "total_net_pct": -39.13926710380294,
+          "p_value": 0.8343313373253493
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 352,
+          "avg_net_pct": 0.17866194507205843,
+          "total_net_pct": -39.969893260828385,
+          "p_value": 0.8702594810379242
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 1052,
+          "avg_net_pct": -0.06570817753789025,
+          "total_net_pct": -74.95310884578063,
+          "p_value": 0.6626746506986028
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 576,
+          "avg_net_pct": 0.04468024611261735,
+          "total_net_pct": -54.225365719805495,
+          "p_value": 0.8083832335329342
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 422,
+          "avg_net_pct": 0.23218577286247388,
+          "total_net_pct": -15.460212232979176,
+          "p_value": 0.8143712574850299
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 346,
+          "avg_net_pct": 0.2872551817623012,
+          "total_net_pct": -14.293190800324673,
+          "p_value": 0.8163672654690619
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 1290,
+          "avg_net_pct": -0.09800011316521617,
+          "total_net_pct": -86.27617475565125,
+          "p_value": 0.6526946107784432
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 726,
+          "avg_net_pct": -0.050713881787590724,
+          "total_net_pct": -76.1917378391474,
+          "p_value": 0.8882235528942116
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 451,
+          "avg_net_pct": 0.22524816247514365,
+          "total_net_pct": -15.69550146680676,
+          "p_value": 0.7584830339321357
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 350,
+          "avg_net_pct": 0.3000176402033361,
+          "total_net_pct": -12.09994127846652,
+          "p_value": 0.8163672654690619
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 1433,
+          "avg_net_pct": -0.06819831848612407,
+          "total_net_pct": -81.89210988150538,
+          "p_value": 0.499001996007984
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 870,
+          "avg_net_pct": -0.006612257667359508,
+          "total_net_pct": -67.72132713692297,
+          "p_value": 0.7784431137724551
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 560,
+          "avg_net_pct": 0.21933859763046812,
+          "total_net_pct": 3.5234363115242973,
+          "p_value": 0.7504990019960079
+        },
+        {
+          "params": {
+            "RSI length": 7.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 390,
+          "avg_net_pct": 0.39445005849259734,
+          "total_net_pct": 40.90982062053834,
+          "p_value": 0.720558882235529
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 772,
+          "avg_net_pct": -0.0476329451995069,
+          "total_net_pct": -65.26192038438494,
+          "p_value": 0.6626746506986028
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 553,
+          "avg_net_pct": 0.0027222928029818697,
+          "total_net_pct": -64.78073863532549,
+          "p_value": 0.8662674650698603
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 446,
+          "avg_net_pct": 0.18789886165758835,
+          "total_net_pct": -25.874317272330003,
+          "p_value": 0.7604790419161677
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 366,
+          "avg_net_pct": 0.22878488096807675,
+          "total_net_pct": -26.521764168599347,
+          "p_value": 0.8003992015968064
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 1068,
+          "avg_net_pct": -0.0715968518970673,
+          "total_net_pct": -77.80657408198387,
+          "p_value": 0.6746506986027944
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 592,
+          "avg_net_pct": 0.028122164471376162,
+          "total_net_pct": -61.2776082180125,
+          "p_value": 0.8483033932135728
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 436,
+          "avg_net_pct": 0.27363035508417044,
+          "total_net_pct": 3.958758253683503,
+          "p_value": 0.7684630738522954
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 361,
+          "avg_net_pct": 0.33603175391343043,
+          "total_net_pct": 6.046551004119216,
+          "p_value": 0.7664670658682635
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 1304,
+          "avg_net_pct": -0.09765360487852648,
+          "total_net_pct": -86.96167294482781,
+          "p_value": 0.6586826347305389
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 745,
+          "avg_net_pct": -0.05117836330628296,
+          "total_net_pct": -78.17203371750932,
+          "p_value": 0.8582834331337326
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 468,
+          "avg_net_pct": 0.2715356689981621,
+          "total_net_pct": 8.610583346319366,
+          "p_value": 0.718562874251497
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 366,
+          "avg_net_pct": 0.35544666805446656,
+          "total_net_pct": 12.794063605722506,
+          "p_value": 0.7524950099800399
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 1442,
+          "avg_net_pct": -0.0754536266391273,
+          "total_net_pct": -84.45434073613197,
+          "p_value": 0.5668662674650699
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 885,
+          "avg_net_pct": -0.013323252728645707,
+          "total_net_pct": -71.76332049492765,
+          "p_value": 0.8203592814371258
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 573,
+          "avg_net_pct": 0.2529808170889913,
+          "total_net_pct": 28.98682552796201,
+          "p_value": 0.6646706586826348
+        },
+        {
+          "params": {
+            "RSI length": 14.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 400,
+          "avg_net_pct": 0.4282660699078856,
+          "total_net_pct": 67.65992213308658,
+          "p_value": 0.7105788423153693
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 739,
+          "avg_net_pct": -0.0158189892022029,
+          "total_net_pct": -53.30716585478585,
+          "p_value": 0.6347305389221557
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 556,
+          "avg_net_pct": 0.012142369358295105,
+          "total_net_pct": -62.8955229602409,
+          "p_value": 0.844311377245509
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 449,
+          "avg_net_pct": 0.19837276731183945,
+          "total_net_pct": -21.901570625682652,
+          "p_value": 0.7744510978043913
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 369,
+          "avg_net_pct": 0.24119714541476317,
+          "total_net_pct": -22.5837172696156,
+          "p_value": 0.8163672654690619
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 1043,
+          "avg_net_pct": -0.05925333137619871,
+          "total_net_pct": -73.40471345293177,
+          "p_value": 0.5988023952095808
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 595,
+          "avg_net_pct": 0.037299885983149914,
+          "total_net_pct": -59.08404390087829,
+          "p_value": 0.8323353293413174
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 438,
+          "avg_net_pct": 0.28105309456537403,
+          "total_net_pct": 7.952759458317016,
+          "p_value": 0.7564870259481038
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 363,
+          "avg_net_pct": 0.34385247927980545,
+          "total_net_pct": 9.802512399710883,
+          "p_value": 0.782435129740519
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 1280,
+          "avg_net_pct": -0.08658483311724503,
+          "total_net_pct": -84.08272010941454,
+          "p_value": 0.6167664670658682
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 747,
+          "avg_net_pct": -0.0463412233565727,
+          "total_net_pct": -77.39892985015088,
+          "p_value": 0.8662674650698603
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 469,
+          "avg_net_pct": 0.2746997579937109,
+          "total_net_pct": 10.517234977257184,
+          "p_value": 0.7704590818363274
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 367,
+          "avg_net_pct": 0.3592615093074803,
+          "total_net_pct": 14.77415595683551,
+          "p_value": 0.7524950099800399
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 1418,
+          "avg_net_pct": -0.0650863295078256,
+          "total_net_pct": -81.0217515989906,
+          "p_value": 0.48502994011976047
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 887,
+          "avg_net_pct": -0.009334940077824642,
+          "total_net_pct": -70.76323254150965,
+          "p_value": 0.7924151696606786
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 574,
+          "avg_net_pct": 0.25559843484303574,
+          "total_net_pct": 31.251180747178452,
+          "p_value": 0.6806387225548902
+        },
+        {
+          "params": {
+            "RSI length": 21.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 403,
+          "avg_net_pct": 0.4377205770068663,
+          "total_net_pct": 76.34786403334984,
+          "p_value": 0.6686626746506986
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 710,
+          "avg_net_pct": -0.06820391972634775,
+          "total_net_pct": -67.94034161409417,
+          "p_value": 0.720558882235529
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 554,
+          "avg_net_pct": -0.017118401547087488,
+          "total_net_pct": -68.57692974442185,
+          "p_value": 0.8822355289421158
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 445,
+          "avg_net_pct": 0.17580425056491306,
+          "total_net_pct": -29.859451191029997,
+          "p_value": 0.8423153692614771
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 7.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 368,
+          "avg_net_pct": 0.23708220991885084,
+          "total_net_pct": -23.91930878852574,
+          "p_value": 0.7904191616766467
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 997,
+          "avg_net_pct": -0.06838207575677015,
+          "total_net_pct": -74.81248811508817,
+          "p_value": 0.656686626746507
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 595,
+          "avg_net_pct": 0.036802373282594135,
+          "total_net_pct": -59.20307377576848,
+          "p_value": 0.8542914171656687
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 439,
+          "avg_net_pct": 0.28441172853654756,
+          "total_net_pct": 9.84786303426526,
+          "p_value": 0.7684630738522954
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 14.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 364,
+          "avg_net_pct": 0.3477306136991206,
+          "total_net_pct": 11.730088266607952,
+          "p_value": 0.7365269461077845
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 1234,
+          "avg_net_pct": -0.09400089674279614,
+          "total_net_pct": -84.74256838493439,
+          "p_value": 0.6367265469061876
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 748,
+          "avg_net_pct": -0.04503942103800472,
+          "total_net_pct": -77.19054156799314,
+          "p_value": 0.8822355289421158
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 470,
+          "avg_net_pct": 0.2778503827807679,
+          "total_net_pct": 12.457357751887876,
+          "p_value": 0.7325349301397206
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 21.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 368,
+          "avg_net_pct": 0.3630556177275972,
+          "total_net_pct": 16.789008698642593,
+          "p_value": 0.7624750499001997
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 7.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 1372,
+          "avg_net_pct": -0.07103566722495153,
+          "total_net_pct": -81.80849183135899,
+          "p_value": 0.5289421157684631
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 14.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 888,
+          "avg_net_pct": -0.008280050605966451,
+          "total_net_pct": -70.49366124660521,
+          "p_value": 0.782435129740519
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 21.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 575,
+          "avg_net_pct": 0.2582069478396748,
+          "total_net_pct": 33.55528657299993,
+          "p_value": 0.6746506986027944
+        },
+        {
+          "params": {
+            "RSI length": 28.0,
+            "RSI length (upper bound)": 28.0,
+            "RSI length (exit)": 28.0,
+            "take-profit percent": 2.0
+          },
+          "trades": 404,
+          "avg_net_pct": 0.44098239094474656,
+          "total_net_pct": 79.44363916144614,
+          "p_value": 0.7005988023952096
+        }
+      ]
+    },
+    "claimed_vs_measured": [],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 8,
+      "quoted": 7,
+      "assumed": 1,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "entry[2]",
+        "exit[0]",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [
+        "take_profit_pct"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: ATR-based and SAR-based take-profit alternatives cannot be expressed in the schema; backtest uses the %-based take-profit plus the RSI exit."
+      ],
+      "audit_majors": [
+        "take_profit_pct: Claim states TP is ATR with % or SAR as alternatives and gives no percent value. Spec invents take_profit_pct=3.0 and backtests that fixed % TP while omitting the stated ATR (and SAR) TP. This swaps one TP indicator for an unstated value."
+      ]
+    }
+  },
+  "seconds": 54.8
 }

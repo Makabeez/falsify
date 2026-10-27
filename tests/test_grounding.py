@@ -111,7 +111,22 @@ def test_corpus_run_with_fake_model(tmp_path, monkeypatch):
     assert res["report"]["out_of_sample"]["boundary"] == "2023-06-01"
     assert res["report"]["out_of_sample"]["boundary_source"] == "post date"
     md = (out / "scoreboard.md").read_text()
-    assert "rule/backtest -> testable | 1/1" in md and "5/5" in md
+    assert "rule/backtest -> testable (the rest are refused with a stated reason) | 1/1" in md and "5/5" in md
     assert "never quote it" in json.dumps(fake.calls[0]["messages"])  # hints go in as context, not as claim text
     corpus.run(path, out, workers=1)  # resumable: nothing left to run, no extra model calls
     assert len(fake.calls) == 2
+
+
+def test_length_cutoff_retries_at_low_reasoning():
+    from types import SimpleNamespace as NS
+    from falsify.extract import _structured
+    calls = []
+
+    def create(**kw):
+        calls.append(kw)
+        if len(calls) == 1:
+            return NS(choices=[NS(finish_reason="length", message=NS(content='{"ok": tr'))], usage=None)
+        return NS(choices=[NS(finish_reason="stop", message=NS(content='{"ok": true}'))], usage=None)
+
+    raw, usage = _structured(NS(chat=NS(completions=NS(create=create))), "m", [], "Ping", {"type": "object"})
+    assert raw == '{"ok": true}' and calls[1]["reasoning_effort"] == "low" and usage["calls"] == 2

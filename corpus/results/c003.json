@@ -13,6 +13,262 @@
     "verbatim_confidence": "high",
     "notes": "RSI<28 4h entry with DCA ladder and 3% TP, no stop; explicit test period and stats. Page shows Jun 30 without year; year inferred from test period ending Jun 29 2026."
   },
-  "error": "RuntimeError: model ran out of output budget before finishing the JSON",
-  "seconds": 31.9
+  "spec": {
+    "claim_summary": "Buy when 4h RSI(14) drops below 28 and average down through a five-level ladder to take 3% above average entry with no stop-loss.",
+    "source_type": "text",
+    "testable": false,
+    "untestable_reason": "The heart of the strategy is a five-rung DCA averaging ladder with 1.8x scaling and take-profit from averaged entry, which the schema cannot express.",
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "4h",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "rsi",
+          "period": 14,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 28.0,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [],
+    "stop_loss_pct": null,
+    "take_profit_pct": 3.0,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": 70.97,
+      "total_return_pct": 3.08,
+      "avg_return_per_trade_pct": null,
+      "period_start": "2024-01-01",
+      "period_end": "2026-06-29",
+      "other": "Net Profit: +3,078.29 USDT; Profit Factor: 4.028"
+    },
+    "assumptions": [
+      "Asset is BTCUSDT from page context; claim text names no asset.",
+      "Timeframe is 4h from '4h RSI(14)'.",
+      "Direction is long (base/averaging buys with take-profit above entry); claim never states long/short.",
+      "Entry interpreted as RSI(14) crosses_below 28 on bar close to represent 'drops below'.",
+      "NOT EXPRESSIBLE: Five averaging/DCA orders at fixed deviations (-2%, -5%, -9.5%, -16%, -25%) with 1.8x size scaling per rung are omitted; spec tests only single base RSI entry, which changes average entry, exposure and whether TP can be hit.",
+      "NOT EXPRESSIBLE: Take-profit is 3% above average entry after the DCA ladder; spec uses 3% fixed from base entry as closest core, which is materially different after drawdown because averaged entry is lower.",
+      "NOT EXPRESSIBLE: Position sizing / ladder allocation as structural risk cap and Stop Loss: None omitted beyond null stop_loss_pct.",
+      "Test window is not part of the rule; cited period recorded in claimed."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "4h RSI(14) drops below 28",
+        "assumed": false
+      },
+      {
+        "field": "take_profit_pct",
+        "quote": "Take Profit: 3% above average entry.",
+        "assumed": false
+      },
+      {
+        "field": "assets",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "timeframe",
+        "quote": "4h RSI(14) drops below 28",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "claimed.total_return_pct",
+        "quote": "+3,078.29 USDT (+3.08%)",
+        "assumed": false
+      },
+      {
+        "field": "claimed.win_rate_pct",
+        "quote": "Percent Profitable: 70.97% (44 / 62)",
+        "assumed": false
+      },
+      {
+        "field": "claimed.period_start",
+        "quote": "January 1, 2024 \u2014 June 29, 2026",
+        "assumed": false
+      },
+      {
+        "field": "claimed.period_end",
+        "quote": "January 1, 2024 \u2014 June 29, 2026",
+        "assumed": false
+      },
+      {
+        "field": "claimed.other",
+        "quote": "Profit Factor: 4.028",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": false,
+    "issues": [
+      {
+        "field": "entry",
+        "problem": "Spec encodes only the base RSI(14) drops below 28 entry and omits the five averaging orders at -2%, -5%, -9.5%, -16%, -25% with 1.8x scaling, which change average entry, exposure and whether TP is hit.",
+        "severity": "major"
+      },
+      {
+        "field": "take_profit_pct",
+        "problem": "Spec encodes 3% from base entry, while claim requires 3% above average entry after the DCA ladder; averaged entry is lower after drawdown so TP level and hit rate are materially different.",
+        "severity": "major"
+      }
+    ]
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 4756,
+          "prompt_tokens": 1875,
+          "total_tokens": 6631,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 4028,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 0,
+      "quoted": 0,
+      "assumed": 0,
+      "quoted_fields": [],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 3781,
+            "prompt_tokens": 1194,
+            "total_tokens": 4975,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 3234,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            },
+            "reasoning_effort": "medium",
+            "calls": 1
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 0,
+        "quoted": 0,
+        "assumed": 0,
+        "quoted_fields": [],
+        "assumed_fields": [],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "entry",
+            "problem": "Omits five averaging/DCA orders at -2%, -5%, -9.5%, -16%, -25% with 1.8x size scaling per rung; spec tests only single base RSI entry, which changes average entry, exposure and whether TP can be hit.",
+            "severity": "major"
+          },
+          {
+            "field": "take_profit_pct",
+            "problem": "Spec encodes 3% fixed from base entry but claim requires 3% above average entry after DCA ladder; averaged entry is lower after drawdown so TP level is materially different and could change verdict.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "entry",
+            "problem": "Spec encodes only the base RSI(14) drops below 28 entry and omits the five averaging orders at -2%, -5%, -9.5%, -16%, -25% with 1.8x scaling, which change average entry, exposure and whether TP is hit.",
+            "severity": "major"
+          },
+          {
+            "field": "take_profit_pct",
+            "problem": "Spec encodes 3% from base entry, while claim requires 3% above average entry after the DCA ladder; averaged entry is lower after drawdown so TP level and hit rate are materially different.",
+            "severity": "major"
+          }
+        ]
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "UNTESTABLE",
+    "headline": "This claim can't be turned into rules anyone could check.",
+    "reasons": [
+      "The heart of the strategy is a five-rung DCA averaging ladder with 1.8x scaling and take-profit from averaged entry, which the schema cannot express."
+    ],
+    "warnings": [],
+    "asset": null,
+    "timeframe": null,
+    "primary": {},
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {},
+    "sweep": {},
+    "claimed_vs_measured": [],
+    "costs": {},
+    "grounding": {},
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: Five averaging/DCA orders at fixed deviations (-2%, -5%, -9.5%, -16%, -25%) with 1.8x size scaling per rung are omitted; spec tests only single base RSI entry, which changes average entry, exposure and whether TP can be hit.",
+        "NOT EXPRESSIBLE: Take-profit is 3% above average entry after the DCA ladder; spec uses 3% fixed from base entry as closest core, which is materially different after drawdown because averaged entry is lower.",
+        "NOT EXPRESSIBLE: Position sizing / ladder allocation as structural risk cap and Stop Loss: None omitted beyond null stop_loss_pct."
+      ],
+      "audit_majors": [
+        "entry: Spec encodes only the base RSI(14) drops below 28 entry and omits the five averaging orders at -2%, -5%, -9.5%, -16%, -25% with 1.8x scaling, which change average entry, exposure and whether TP is hit.",
+        "take_profit_pct: Spec encodes 3% from base entry, while claim requires 3% above average entry after the DCA ladder; averaged entry is lower after drawdown so TP level and hit rate are materially different."
+      ]
+    }
+  },
+  "seconds": 57.0
 }
