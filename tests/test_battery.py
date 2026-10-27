@@ -101,3 +101,13 @@ def test_compile_repairs_invalid_output_once():
     second = client.chat.completions.calls[1]
     assert second["response_format"]["type"] == "json_schema"
     assert "failed validation" in second["messages"][-1]["content"]
+
+
+def test_calibration_small_run_controls_false_positives_and_has_power():
+    import pytest
+    from falsify import calibrate, data as data_mod
+    if ("BTCUSDT", "4h") not in data_mod.available():
+        pytest.skip("bundled data missing")
+    r = calibrate.run_setup(calibrate.Setup("BTCUSDT", "4h", 6, 200), reps=60, sims=400, edges_bps=[0, 800])
+    assert r["false_positive_pct"] <= 12  # nominal 5%, loose bound for 60 reps
+    assert r["power_pct"]["800"] >= 95

@@ -1,0 +1,128 @@
+[
+ {
+  "setup": "BTCUSDT 1d, hold 7d, ~30 trades, long",
+  "reps": 300,
+  "null_sims": 1000,
+  "trades_median": 30,
+  "false_positive_pct": 4.333333333333334,
+  "naive_profitable_pct": 63.66666666666667,
+  "power_pct": {
+   "0": 4.333333333333334,
+   "25": 6.333333333333334,
+   "50": 7.666666666666666,
+   "100": 17.333333333333336,
+   "200": 36.666666666666664,
+   "400": 83.66666666666667,
+   "800": 100.0
+  },
+  "min_detectable_edge_bps": 384.39716312056737
+ },
+ {
+  "setup": "BTCUSDT 1d, hold 7d, ~100 trades, long",
+  "reps": 300,
+  "null_sims": 1000,
+  "trades_median": 99,
+  "false_positive_pct": 2.666666666666667,
+  "naive_profitable_pct": 75.66666666666667,
+  "power_pct": {
+   "0": 2.666666666666667,
+   "25": 6.333333333333334,
+   "50": 13.333333333333334,
+   "100": 30.666666666666664,
+   "200": 78.66666666666666,
+   "400": 99.66666666666667,
+   "800": 100.0
+  },
+  "min_detectable_edge_bps": 212.69841269841277
+ },
+ {
+  "setup": "BTCUSDT 4h, hold 6x4h, ~100 trades, long",
+  "reps": 300,
+  "null_sims": 1000,
+  "trades_median": 99,
+  "false_positive_pct": 2.666666666666667,
+  "naive_profitable_pct": 27.333333333333332,
+  "power_pct": {
+   "0": 2.666666666666667,
+   "25": 15.0,
+   "50": 43.0,
+   "100": 92.33333333333333,
+   "200": 100.0,
+   "400": 100.0,
+   "800": 100.0
+  },
+  "min_detectable_edge_bps": 87.5
+ },
+ {
+  "setup": "BTCUSDT 4h, hold 6x4h, ~300 trades, long",
+  "reps": 300,
+  "null_sims": 1000,
+  "trades_median": 300,
+  "false_positive_pct": 3.0,
+  "naive_profitable_pct": 21.333333333333336,
+  "power_pct": {
+   "0": 3.0,
+   "25": 34.66666666666667,
+   "50": 87.66666666666667,
+   "100": 100.0,
+   "200": 100.0,
+   "400": 100.0,
+   "800": 100.0
+  },
+  "min_detectable_edge_bps": 46.38364779874214
+ },
+ {
+  "setup": "ETHUSDT 1h, hold 12h, ~300 trades, long",
+  "reps": 300,
+  "null_sims": 1000,
+  "trades_median": 298,
+  "false_positive_pct": 5.0,
+  "naive_profitable_pct": 10.666666666666668,
+  "power_pct": {
+   "0": 5.0,
+   "25": 43.666666666666664,
+   "50": 93.66666666666667,
+   "100": 100.0,
+   "200": 100.0,
+   "400": 100.0,
+   "800": 100.0
+  },
+  "min_detectable_edge_bps": 43.16666666666667
+ },
+ {
+  "setup": "ETHUSDT 1h, hold 12h, ~1000 trades, long",
+  "reps": 300,
+  "null_sims": 1000,
+  "trades_median": 998,
+  "false_positive_pct": 1.3333333333333335,
+  "naive_profitable_pct": 1.3333333333333335,
+  "power_pct": {
+   "0": 1.3333333333333335,
+   "25": 74.33333333333333,
+   "50": 100.0,
+   "100": 100.0,
+   "200": 100.0,
+   "400": 100.0,
+   "800": 100.0
+  },
+  "min_detectable_edge_bps": 30.519480519480528
+ },
+ {
+  "setup": "SOLUSDT 1d, hold 2d, ~300 trades, short",
+  "reps": 300,
+  "null_sims": 1000,
+  "trades_median": 300,
+  "false_positive_pct": 1.3333333333333335,
+  "naive_profitable_pct": 8.666666666666668,
+  "power_pct": {
+   "0": 1.3333333333333335,
+   "25": 9.0,
+   "50": 25.666666666666664,
+   "100": 66.33333333333333,
+   "200": 100.0,
+   "400": 100.0,
+   "800": 100.0
+  },
+  "min_detectable_edge_bps": 140.5940594059406
+ }
+]

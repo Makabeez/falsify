@@ -60,31 +60,41 @@ class Report:
 
 # ---------------------------------------------------------------- tests
 
+def round_trip_log_cost(costs: Costs) -> float:
+    """Exact log cost of one round trip under the engine's cost model."""
+    return math.log1p(costs.per_side) - math.log1p(-costs.per_side)
+
+
+def null_distribution(df: pd.DataFrame, hold: np.ndarray, direction: Direction, costs: Costs,
+                      sims: int = NULL_SIMS, seed: int = 7) -> np.ndarray | None:
+    """Mean net log-return per trade for `sims` random-timing strategies.
+
+    Each simulated strategy has len(hold) trades with exactly these holding times and side:
+    entry at a uniformly random open, exit at the open `hold` bars later, same costs.
+    """
+    log_open = np.log(df["open"].to_numpy(dtype=float))
+    hold = np.maximum(np.asarray(hold, dtype=int), 1)
+    max_entry = len(log_open) - 1 - hold  # per-trade upper bound so exit stays in range
+    if (max_entry < 1).any():
+        return None
+    sign = 1.0 if direction == Direction.LONG else -1.0
+    rng = np.random.default_rng(seed)
+    entries = (rng.random((sims, len(hold))) * max_entry).astype(int)
+    return (sign * (log_open[entries + hold] - log_open[entries]) - round_trip_log_cost(costs)).mean(axis=1)
+
+
 def random_entry_null(trades: pd.DataFrame, df: pd.DataFrame, direction: Direction,
                       costs: Costs, sims: int = NULL_SIMS, seed: int = 7) -> dict:
     """Could random timing with the same trade count, holding times and side do as well?
 
-    Statistic: mean net log-return per trade. Null trades enter at a uniformly
-    random open and exit at the open `bars` later, paying the same costs. This
-    strips out drift: a long-only rule in a bull market beats zero but not
-    random longs.
+    Statistic: mean net log-return per trade. This strips out drift: a long-only rule in
+    a bull market beats zero but not random longs. Calibration and power of this test on
+    the bundled data are measured by `falsify calibrate` (docs/calibration.md).
     """
-    n = len(trades)
-    opens = df["open"].to_numpy(dtype=float)
-    log_open = np.log(opens)
-    hold = np.maximum(trades["bars"].to_numpy(dtype=int), 1)
-    sign = 1.0 if direction == Direction.LONG else -1.0
-    cost = 2 * math.log1p(costs.per_side)
-
-    strat = np.log1p(trades["net_pct"].to_numpy() / 100).mean()
-
-    rng = np.random.default_rng(seed)
-    max_entry = len(opens) - 1 - hold  # per-trade upper bound so exit stays in range
-    if (max_entry < 1).any():
+    null_means = null_distribution(df, trades["bars"].to_numpy(dtype=int), direction, costs, sims, seed)
+    if null_means is None:
         return {"p_value": None, "note": "holding periods longer than the data"}
-    entries = (rng.random((sims, n)) * max_entry).astype(int)
-    exits = entries + hold
-    null_means = (sign * (log_open[exits] - log_open[entries]) - cost).mean(axis=1)
+    strat = np.log1p(trades["net_pct"].to_numpy() / 100).mean()
     p = (np.sum(null_means >= strat) + 1) / (sims + 1)
     return {
         "p_value": float(p),

@@ -90,6 +90,19 @@ The model's job is translation, which it is good at. It never gets the last word
 
 Thresholds are fixed statistical conventions (p < 0.05, n ≥ 30), stated before any claim is run, never tuned per claim.
 
+## Is it rigged to kill everything?
+
+No. That's measured, not asserted. `falsify calibrate` runs 300 coin-flip strategies per setup through the battery's own thresholds, then plants a true edge on top and checks whether it gets through. Full table: [docs/calibration.md](docs/calibration.md).
+
+| Setup (bundled data, costs included) | Coin flips a naive backtest calls profitable | Coin flips that pass Falsify | Edge caught 80% of the time |
+|---|---|---|---|
+| BTC daily, 7-day holds, 30 trades | 64% | 4.3% | 3.8% per trade |
+| BTC daily, 7-day holds, 100 trades | 76% | 2.7% | 2.1% per trade |
+| BTC 4h, 24h holds, 300 trades | 21% | 3.0% | 0.46% per trade |
+| ETH 1h, 12h holds, 1000 trades | 1% | 1.3% | 0.31% per trade |
+
+**On BTC daily, three out of four strategies that pick entries by coin flip "make money" in a naive backtest, because BTC went up. Falsify passes about 3%, under the 5% its threshold promises.** Plant a real edge and it gets through: how big it has to be depends on how many trades the claim has. That's why a 30-trade daily setup usually can't prove what it claims, however confident the post sounds.
+
 ## What it says about some classic setups
 
 From `make judge-demo` (Binance spot, 2019-01-01 to 2026-10-26, costs included):
@@ -128,11 +141,12 @@ set -a; . ./.env; set +a
 | Costs | **Modeled.** 10 bps fee + 2 bps slippage per side (Binance spot taker), configurable |
 | Shorts | **Modeled.** Priced as spot short with no borrow or funding cost |
 | Example claims in `claims/` | **Hand-compiled** paraphrases of common retail setups. No real posts, no authors |
+| Battery calibration | **Measured** on the bundled data with coin-flip strategies and planted edges (`falsify calibrate`) |
 | Muse Spark transcribe/compile/audit | Wired to Meta Model API; repair loop and quote check tested against a mock client (`tests/test_grounding.py`). Live runs and the extraction-accuracy measurement land in the next commits |
 
 ## Known limits
 
-- **Power.** Low-frequency rules (a few dozen trades since 2019) rarely clear p < 0.05 even when real. The battery is built to reject, and a test that kills everything is as useless as one that passes everything. `tests/test_battery.py` shows it flags a planted timing edge at p < 0.01; a measured power curve is next.
+- **Power.** Measured in [docs/calibration.md](docs/calibration.md): a daily rule with ~30 trades needs about 4% per trade of real edge to be caught 80% of the time. Low-frequency claims will mostly come back INCONCLUSIVE or DIES on the null, and that's the honest answer for that sample size, not a verdict that the idea can never work.
 - **Bar-close logic only.** Intrabar claims ("buy the wick") are approximated at the next open.
 - **Spot data.** No funding rates, order flow, sentiment or news; claims that need them are reported UNTESTABLE rather than approximated.
 - Not financial advice. A claim that SURVIVES has passed tests, not earned your money.
