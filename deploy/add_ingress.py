@@ -1,14 +1,16 @@
-"""Add falsify.baserep.xyz -> localhost:8095 to a cloudflared config, before the catch-all rule.
+"""Add falsify.baserep.xyz -> localhost:8097 to a cloudflared config, before the catch-all rule.
 
-    python3 deploy/add_ingress.py /home/vps/.cloudflared/baserep-config.yml
+    python3 deploy/add_ingress.py /home/vps/.cloudflared/baserep-config.yml [--port 8097]
 
 Idempotent: does nothing if the hostname is already there. Writes a .bak first.
 """
 import shutil
 import sys
 
-HOST, PORT = "falsify.baserep.xyz", 8095
-path = sys.argv[1]
+HOST = "falsify.baserep.xyz"
+args = sys.argv[1:]
+PORT = int(args[args.index("--port") + 1]) if "--port" in args else 8097
+path = args[0]
 text = open(path).read()
 if HOST in text:
     print(f"{HOST} already in {path}; nothing to do")

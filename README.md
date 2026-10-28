@@ -131,7 +131,7 @@ From `make judge-demo` (Binance spot, Aug 2017 to Oct 2026, including the 2018 a
 ## Web app
 
 ```bash
-make web            # http://127.0.0.1:8095, live checks need MODEL_API_KEY in .env
+make web            # http://127.0.0.1:8097, live checks need MODEL_API_KEY in .env
 ```
 
 `falsify/web.py` (FastAPI) runs live checks in a small worker pool and streams each stage to the page: transcribe, compile, quote check, audit, repair, backtest. Results are cached by content hash, so every result is a permalink (`/r/<key>`) and the same claim never costs twice. Live checks are capped per IP and per day, files are sniffed by content (not by extension) and size-limited, and `FALSIFY_LIVE=0` pauses them while keeping the examples up. The page is one static HTML file with no build step and no third-party JavaScript.

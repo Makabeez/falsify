@@ -246,7 +246,7 @@ def equity_series(trades: pd.DataFrame, df: pd.DataFrame, points: int = 260) -> 
     if len(trades):
         growth = (1 + trades["net_pct"].to_numpy() / 100).cumprod()
         exits = pd.DatetimeIndex(trades["exit_time"])
-        pos = np.searchsorted(exits.values, grid.values, side="right")
+        pos = np.searchsorted(exits.asi8, grid.asi8, side="right")
         eq = pd.Series(np.where(pos > 0, growth[np.maximum(pos - 1, 0)], 1.0), index=grid)
     return {"t": [d.date().isoformat() for d in grid],
             "rule": [round(float(v), 5) for v in eq.to_numpy()],
@@ -308,9 +308,10 @@ def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = Tr
     if primary["trades"] < MIN_TRADES:
         w = primary.get("window", ["?", "?"])
         rep.verdict = Verdict.INCONCLUSIVE
-        rep.headline = (f"Only {primary['trades']} trades from {w[0]} to {w[1]} -- "
+        rep.headline = (f"Only {primary['trades']} trades between {w[0]} and {w[1]}: "
                         f"too few to tell skill from luck.")
         rep.reasons.append(f"{primary['trades']} trades < {MIN_TRADES} minimum")
+        rep.out_of_sample = out_of_sample(spec, trades, posted)
         rep.sweep = sweep(spec, df, costs)
         if with_cross_asset:
             rep.cross_asset = cross_asset(spec, primary_asset, costs)

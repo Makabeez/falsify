@@ -1,6 +1,6 @@
 """Falsify web app: paste a post, drop a screenshot or a clip, get a verdict.
 
-    uvicorn falsify.web:app --host 127.0.0.1 --port 8095
+    uvicorn falsify.web:app --host 127.0.0.1 --port 8097
 
 Live checks call Meta Model API with the server's MODEL_API_KEY, so they are guarded:
 per-IP and daily caps, size limits, a small worker pool, and FALSIFY_LIVE=0 as a kill

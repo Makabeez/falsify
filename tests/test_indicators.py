@@ -134,3 +134,10 @@ def test_unresolved_gap_is_reported_as_approximation_in_headline():
     assert fid["level"] == "approximation"
     rep = attach_fidelity(Report(Verdict.DIES, "Loses money after costs."), fid)
     assert rep.headline.startswith("Tested an approximation") and any("averaging" in w for w in rep.warnings)
+
+
+def test_calendar_operands():
+    idx = pd.date_range("2024-01-29", periods=5, freq="D", tz="UTC")  # Jan 29..Feb 2
+    df = pd.DataFrame({"open": 1.0, "high": 1.0, "low": 1.0, "close": 1.0, "volume": 1.0}, index=idx)
+    assert operand_series(Operand(kind="day_of_month"), df).tolist() == [29, 30, 31, 1, 2]
+    assert operand_series(Operand(kind="days_left_in_month"), df).tolist() == [2, 1, 0, 28, 27]

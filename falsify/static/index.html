@@ -121,6 +121,13 @@ table{border-collapse:collapse;width:100%;font-size:15px}
 th,td{text-align:left;vertical-align:top;padding:9px 10px 9px 0;border-bottom:1px solid var(--rule)}
 th{font-weight:600;font-size:13px;color:var(--muted)}
 td.res{white-space:nowrap;font-weight:600}
+@media (max-width:640px){
+  table.tests thead{display:none}
+  table.tests tr{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:10px 0;border-bottom:1px solid var(--rule)}
+  table.tests td{border:0;padding:0}
+  table.tests td.res{text-align:right}
+  table.tests td.fine{grid-column:1 / -1}
+}
 .ok{color:var(--survives)}.bad{color:var(--dies)}.warn{color:var(--inconclusive)}.na{color:var(--untestable)}
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:24px}
 @media (max-width:700px){.charts{grid-template-columns:1fr}}
@@ -345,6 +352,8 @@ const condText = c => {
     if (c.op === "gt") return Math.floor(v) >= 6 ? "never (day above Sunday)" : `the day is after ${DAYS[Math.max(0, Math.floor(v))]}`;
     return Math.ceil(v) <= 0 ? "never (day before Monday)" : `the day is before ${DAYS[Math.min(6, Math.ceil(v))]}`;
   }
+  if (c.left.kind === "day_of_month" && c.right.kind === "const") return `the day of the month ${OPS[c.op]} ${fmt(c.right.value, 1).replace(/\.0$/, "")}`;
+  if (c.left.kind === "days_left_in_month" && c.right.kind === "const") return c.op === "lt" && c.right.value <= 1 ? "it is the last day of the month" : `days left in the month ${OPS[c.op]} ${fmt(c.right.value, 1).replace(/\.0$/, "")}`;
   if (c.left.kind === "hour_utc" && c.right.kind === "const") return `the hour (UTC) ${OPS[c.op]} ${fmt(c.right.value, 1).replace(/\.0$/, "")}:00`;
   return `${opLabel(c.left)} ${OPS[c.op]} ${opLabel(c.right)}`;
 };
@@ -449,7 +458,10 @@ function testRows(rep) {
   else if (p.trades) R("After the post", "no date", "na", "add the post date to test on data the claimant couldn't have seen");
   if (h.split) R("Both halves of history", `${pct(h.first?.avg_net_pct, 2)} / ${pct(h.second?.avg_net_pct, 2)}`, h.consistent ? "ok" : "warn", `per trade before and after ${h.split}`);
   if (ca.tested) R("Other coins", `${ca.positive} of ${ca.tested}`, ca.positive_share_pct >= 50 ? "ok" : "warn", "same rules on the other bundled coins with 30+ trades, profitable after costs");
-  if (sw.readings > 1) R("Vague numbers", `${fmt(sw.positive_share_pct, 0)}% of ${sw.readings} readings`, sw.positive_share_pct >= 50 ? "ok" : "warn", "every reasonable value for the numbers the claim left vague; the best one pays a search penalty");
+  if (sw.readings > 1) {
+    if (sw.positive_share_pct == null) R("Vague numbers", `${sw.readings} readings`, "na", "every reasonable value for the numbers the claim left vague; none produced 30+ trades, so none can be judged");
+    else R("Vague numbers", `${fmt(sw.positive_share_pct, 0)}% of ${sw.readings} readings`, sw.positive_share_pct >= 50 ? "ok" : "warn", "share of reasonable values for the vague numbers that make money; the best one pays a search penalty");
+  }
   if (p.buy_hold_pct != null && rep.verdict !== "UNTESTABLE") R("Versus just holding", `${pct(p.total_net_pct, 0)} vs ${pct(p.buy_hold_pct, 0)}`, p.total_net_pct >= p.buy_hold_pct ? "ok" : "warn", "the rule against buying at the start and holding");
   (rep.claimed_vs_measured || []).forEach(c => R(`Claimed ${c.metric}`, `${fmt(c.claimed, 0)} → ${fmt(c.measured, 0)}`, Math.abs(c.gap) <= 10 ? "ok" : "warn", "what the post says against what the data says"));
   return rows;
@@ -523,7 +535,7 @@ function render(res, animate) {
     const sym = {ok: "✓", bad: "✗", warn: "!", na: "–"};
     const label = {ok: "passed", bad: "failed", warn: "warning", na: "not available"};
     col.append(el("div", {class: "sect"}, el("h2", {}, "The tests"),
-      el("table", {}, el("thead", {}, el("tr", {}, el("th", {scope: "col"}, "Test"), el("th", {scope: "col"}, "Result"), el("th", {scope: "col"}, "What it means"))),
+      el("table", {class: "tests"}, el("thead", {}, el("tr", {}, el("th", {scope: "col"}, "Test"), el("th", {scope: "col"}, "Result"), el("th", {scope: "col"}, "What it means"))),
         el("tbody", {}, tr.map(t => el("tr", {}, el("td", {}, t.name), el("td", {class: "res " + t.cls}, el("span", {"aria-hidden": "true"}, sym[t.cls] + " "), el("span", {class: "sr"}, label[t.cls] + ": "), t.res), el("td", {class: "fine"}, t.detail)))))));
   }
 
@@ -540,7 +552,7 @@ function render(res, animate) {
   if (audits.length) {
     const last = audits[audits.length - 1];
     const intro = res.trace?.audit_repair
-      ? `The first read found ${audits[0].issues.length} problem(s); the rules were sent back once and checked again.`
+      ? `The first read found ${audits[0].issues.length === 1 ? "one problem" : audits[0].issues.length + " problems"}; the rules were sent back once and checked again.`
       : "A second Muse Spark read compared the rules with the original claim.";
     box.append(el("div", {class: "sect"}, el("h2", {}, "The audit"), el("p", {}, intro + " " + (last.faithful ? "Final check: the rules are a fair encoding of the claim." : "Final check: some differences remain, listed below.")),
       last.issues?.length ? el("ul", {}, last.issues.map(i => el("li", {}, el("strong", {}, i.severity === "major" ? "Major: " : "Minor: "), i.problem))) : null));

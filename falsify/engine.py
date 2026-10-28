@@ -131,6 +131,10 @@ def operand_series(op: Operand, df: pd.DataFrame, cache: dict | None = None) -> 
             s = pd.Series(df.index.day_of_week, index=df.index, dtype=float)
         elif k == OperandKind.HOUR_UTC:
             s = pd.Series(df.index.hour, index=df.index, dtype=float)
+        elif k == OperandKind.DAY_OF_MONTH:
+            s = pd.Series(df.index.day, index=df.index, dtype=float)
+        elif k == OperandKind.DAYS_LEFT_IN_MONTH:
+            s = pd.Series(df.index.days_in_month - df.index.day, index=df.index, dtype=float)
         elif k == OperandKind.WMA:
             s = _wma(c, p)
         elif k in (OperandKind.BB_UPPER, OperandKind.BB_LOWER):

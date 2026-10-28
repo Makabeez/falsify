@@ -19,7 +19,7 @@ test: setup
 data: setup
 	$(BIN)/falsify data fetch
 
-# Web app on http://127.0.0.1:8095 (live checks need MODEL_API_KEY in .env)
+# Web app on http://127.0.0.1:8097 (live checks need MODEL_API_KEY in .env)
 web: setup
 	./deploy/run-web.sh
 

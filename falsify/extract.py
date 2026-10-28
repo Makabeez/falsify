@@ -55,11 +55,15 @@ Rules:
   exit[0].right.period, stop_loss_pct, take_profit_pct, max_hold_bars.
 - Percentages are plain numbers: 3 means 3%. pct_change is in percent.
 - day_of_week: 0=Monday ... 6=Sunday, UTC. Express "on Friday" as day_of_week gt 3.5 AND day_of_week lt 4.5.
+  "On the 4th of the month" is day_of_month gt 3.5 AND day_of_month lt 4.5; "on the last day of the month" is
+  days_left_in_month lt 0.5. Calendar rules need daily or shorter bars.
+- Do not correct the claimant's text. If a word looks like a typo (e.g. "4th" where "4h" would make sense), compile
+  what is written, and say in assumptions which other reading was possible.
 - "Price above X" uses close. Breakouts use highest_high / lowest_low, which look at the PREVIOUS N bars.
 - Indicators available: sma, ema, wma, rsi, atr, adx, pct_change, highest_high, lowest_low, volume_sma,
   bb_upper / bb_lower (period, param = std width), macd_line / macd_signal / macd_hist (period = fast,
   param = slow, signal 9), supertrend (period = ATR length, param = multiplier; close above it = uptrend),
-  day_of_week, hour_utc. Use the claim's settings; when it gives none, use the indicator's usual default and
+  day_of_week, hour_utc, day_of_month (1-31), days_left_in_month (0 = last day of the month). Use the claim's settings; when it gives none, use the indicator's usual default and
   list that setting in free_parameters. Never swap one indicator for another (WMA is not SMA).
 - If the claim uses something the schema cannot express (an averaging / DCA ladder, position sizing, trailing
   stops, pyramiding, an indicator not listed above, a proprietary score), compile the closest testable core

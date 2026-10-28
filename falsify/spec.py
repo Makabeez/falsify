@@ -37,6 +37,8 @@ class OperandKind(str, Enum):
     ATR = "atr"
     DAY_OF_WEEK = "day_of_week"    # 0=Mon .. 6=Sun (UTC)
     HOUR_UTC = "hour_utc"
+    DAY_OF_MONTH = "day_of_month"              # 1..31 (UTC)
+    DAYS_LEFT_IN_MONTH = "days_left_in_month"  # 0 on the last day of the month
     WMA = "wma"                    # linearly weighted moving average of close, `period`
     BB_UPPER = "bb_upper"          # Bollinger: sma(period) + param * stdev(period); param default 2
     BB_LOWER = "bb_lower"
