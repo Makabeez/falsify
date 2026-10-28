@@ -17,16 +17,22 @@ dependencies = [
   "requests>=2.31,<3",
   "pydantic>=2.6,<3",
   "openai>=1.40,<4",
+  "fastapi>=0.110,<1",
+  "uvicorn[standard]>=0.29,<1",
+  "python-multipart>=0.0.9",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+dev = ["pytest>=8", "httpx>=0.27"]
 
 [project.scripts]
 falsify = "falsify.cli:main"
 
 [tool.setuptools]
 packages = ["falsify"]
+
+[tool.setuptools.package-data]
+falsify = ["static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

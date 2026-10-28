@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Falsify — test a trading claim</title>
+<meta name="description" content="Paste a trading tip, a chart screenshot or a short clip. Muse Spark turns it into rules; real Binance history tries to break them.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#edf1ec; --grid:#dde5df; --sheet:#f7f9f6; --ink:#13223a; --muted:#56637a; --rule:#c9d3cc;
+  --mark:#f2e165; --mark-edge:#e2cd3c;
+  --dies:#b3261e; --survives:#1d7a4c; --inconclusive:#9a6700; --untestable:#5c6675;
+  --focus:#2457c5;
+  --display:"Bricolage Grotesque", "Arial Narrow", sans-serif;
+  --body:"IBM Plex Sans", system-ui, sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background-color:var(--paper);color:var(--ink);font:400 16px/1.55 var(--body);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px;background-attachment:fixed;font-variant-numeric:tabular-nums}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:2px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+@media (max-width:600px){.wrap{padding:0 16px}}
+
+/* top bar */
+.top{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:22px 0 10px;flex-wrap:wrap}
+.brand{font:800 26px/1 var(--display);letter-spacing:-.5px;text-decoration:none}
+.brand s{text-decoration-thickness:3px;text-decoration-color:var(--dies)}
+.top nav{display:flex;gap:20px;font-size:15px}
+.top nav a{text-decoration:none;color:var(--muted)}
+.top nav a:hover{color:var(--ink);text-decoration:underline}
+
+/* hero + input */
+.hero{padding:36px 0 18px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:40px;align-items:start}
+@media (max-width:900px){.hero{grid-template-columns:1fr;gap:20px;padding-top:18px}}
+h1{font:800 clamp(38px,5.4vw,64px)/1.0 var(--display);letter-spacing:-1.5px;margin:0 0 18px}
+.lede{font-size:18px;max-width:34em;margin:0 0 14px}
+.fine{color:var(--muted);font-size:14px;max-width:38em}
+.panel{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:18px;box-shadow:0 1px 0 var(--rule)}
+label.lbl{display:block;font-weight:600;font-size:14px;margin:0 0 6px}
+textarea{width:100%;min-height:130px;resize:vertical;font:400 16px/1.5 var(--body);color:var(--ink);background:#fff;
+  border:1px solid var(--rule);border-radius:4px;padding:12px}
+.drop{margin-top:12px;border:1.5px dashed #9fb0a5;border-radius:4px;padding:14px;display:flex;gap:12px;align-items:center;
+  background:#fff;cursor:pointer;font-size:15px;color:var(--muted)}
+.drop.over{border-color:var(--ink);color:var(--ink)}
+.drop strong{color:var(--ink)}
+.drop img{max-height:56px;max-width:90px;border-radius:3px;border:1px solid var(--rule)}
+.row{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin-top:14px}
+.row .field{flex:1 1 180px}
+input[type=date]{font:inherit;color:var(--ink);background:#fff;border:1px solid var(--rule);border-radius:4px;padding:9px 10px;width:100%}
+button{font:600 16px/1 var(--body);border-radius:4px;cursor:pointer}
+.go{background:var(--ink);color:#fff;border:0;padding:13px 20px}
+.go:disabled{opacity:.55;cursor:progress}
+.ghost{background:transparent;border:1px solid var(--rule);color:var(--ink);padding:9px 14px;font-weight:500;font-size:14px}
+.ghost[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.err{color:var(--dies);font-weight:500;margin:10px 0 0}
+.clear{background:none;border:0;color:var(--muted);text-decoration:underline;padding:0;font-size:14px;font-weight:400}
+
+/* progress */
+.progress{margin:26px 0 0}
+.progress ol{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:8px}
+.progress li{display:flex;gap:12px;align-items:baseline;color:var(--muted)}
+.progress li .dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--rule);flex:none;transform:translateY(1px)}
+.progress li.now{color:var(--ink);font-weight:600}
+.progress li.now .dot{border-color:var(--ink);border-top-color:transparent;animation:spin .9s linear infinite}
+.progress li.done{color:var(--ink)}
+.progress li.done .dot{background:var(--ink);border-color:var(--ink)}
+@keyframes spin{to{transform:translateY(1px) rotate(360deg)}}
+
+/* result */
+.result{margin:34px 0 10px}
+.approx{border-left:4px solid var(--inconclusive);background:#fbf3df;padding:12px 16px;margin:0 0 18px;border-radius:0 4px 4px 0}
+.approx p{margin:0}
+.approx ul{margin:6px 0 0;padding-left:18px}
+.case{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:28px;align-items:start}
+@media (max-width:900px){.case{grid-template-columns:1fr}}
+.exhibit{position:sticky;top:16px}
+@media (max-width:900px){.exhibit{position:static}}
+.exhibit h2,.sect h2{font:700 21px/1.2 var(--display);margin:0 0 10px;letter-spacing:-.2px}
+.claimtext{font-size:17px;line-height:1.7;white-space:pre-wrap;word-wrap:break-word;margin:0}
+mark{background:linear-gradient(100deg,transparent 0 2px,var(--mark) 2px calc(100% - 2px),transparent calc(100% - 2px));
+  color:inherit;padding:1px 2px;border-radius:2px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+mark sup,.rules sup{font:700 11px/1 var(--body);color:var(--ink);background:#fff;border:1px solid var(--mark-edge);
+  border-radius:8px;padding:1px 4px;margin-left:2px;vertical-align:4px}
+mark.hot{outline:2px solid var(--ink)}
+.exhibit img{max-width:100%;border:1px solid var(--rule);border-radius:4px;display:block;margin-bottom:12px}
+.meta{color:var(--muted);font-size:14px;margin-top:12px}
+.transcript{margin-top:14px;font-size:14px}
+.transcript summary{cursor:pointer;color:var(--muted)}
+
+.verdict{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin:0 0 6px}
+.stamp{font:800 clamp(52px,8.5vw,104px)/.9 var(--display);letter-spacing:-2px;color:var(--v);
+  border:5px solid var(--v);border-radius:10px;padding:8px 18px 12px;transform:rotate(-3deg);background:rgba(255,255,255,.55)}
+.stamp.land{animation:land .45s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes land{from{opacity:0;transform:rotate(-9deg) scale(1.5)}to{opacity:1;transform:rotate(-3deg) scale(1)}}
+@media (prefers-reduced-motion:reduce){.stamp.land{animation:none}.progress li.now .dot{animation:none}}
+.headline{font-size:20px;line-height:1.4;margin:14px 0 18px;max-width:36em}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:4px 22px;margin:0 0 6px;padding:14px 0;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.nums div{display:flex;flex-direction:column}
+.nums dt{color:var(--muted);font-size:13px}
+.nums dd{margin:0;font:700 22px/1.25 var(--display)}
+.sect{margin-top:30px}
+.rules{list-style:none;padding:0;margin:0;display:grid;gap:2px}
+.rules li{display:grid;grid-template-columns:108px 1fr;gap:12px;padding:8px 0;border-bottom:1px dashed var(--rule)}
+.rules li .k{color:var(--muted);font-size:14px;padding-top:2px}
+.rules .q{color:var(--muted);font-size:14px;display:block;margin-top:2px}
+.rules .assumed{font-style:italic}
+.rules li:hover{background:rgba(242,225,101,.18)}
+details.more{margin-top:10px}
+details.more summary{cursor:pointer;color:var(--muted);font-size:14px}
+details.more ul{margin:8px 0 0;padding-left:18px;font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:9px 10px 9px 0;border-bottom:1px solid var(--rule)}
+th{font-weight:600;font-size:13px;color:var(--muted)}
+td.res{white-space:nowrap;font-weight:600}
+.ok{color:var(--survives)}.bad{color:var(--dies)}.warn{color:var(--inconclusive)}.na{color:var(--untestable)}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media (max-width:700px){.charts{grid-template-columns:1fr}}
+figure{margin:0}
+figcaption{font-size:14px;color:var(--muted);margin-top:4px}
+svg text{font:12px var(--body);fill:var(--muted)}
+.share{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:28px;padding-top:16px;border-top:1px solid var(--rule)}
+.share input{flex:1 1 260px;font:14px var(--body);padding:8px;border:1px solid var(--rule);border-radius:4px;background:#fff;color:var(--ink)}
+
+/* examples */
+.examples{margin:56px 0 20px}
+.examples h2,.how h2{font:800 34px/1.05 var(--display);letter-spacing:-.8px;margin:0 0 8px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.list{list-style:none;padding:0;margin:0;background:var(--sheet);border:1px solid var(--rule);border-radius:6px}
+.list li{border-bottom:1px solid var(--rule)}
+.list li:last-child{border-bottom:0}
+.list a{display:grid;grid-template-columns:132px 1fr auto;gap:16px;padding:13px 16px;text-decoration:none;align-items:baseline}
+.list a:hover{background:#fff}
+.list .v{font:800 16px/1.2 var(--display);color:var(--v)}
+.list .s{font-size:15px}
+.list .s small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.list .d{color:var(--muted);font-size:13px;white-space:nowrap}
+@media (max-width:640px){.list a{grid-template-columns:1fr}.list .d{white-space:normal}}
+.how{margin:56px 0;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:40px}
+@media (max-width:900px){.how{grid-template-columns:1fr}}
+.how ol{margin:0;padding-left:22px}
+.how ol li{margin-bottom:10px}
+footer{border-top:1px solid var(--rule);padding:22px 0 40px;color:var(--muted);font-size:14px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="/"><s>Falsify</s></a>
+    <nav aria-label="Main"><a href="#examples">Examples</a><a href="#how">How it works</a><a href="https://github.com/Makabeez/falsify">Code</a></nav>
+  </header>
+
+  <section class="hero" aria-labelledby="h1">
+    <div>
+      <h1 id="h1">Test a trading claim before you trade it.</h1>
+      <p class="lede">Paste the post, drop a screenshot of the chart, or a short clip. Muse Spark turns it into exact rules, using only the claimant's words. Then nine years of real Binance prices try to break them.</p>
+      <p class="fine">Most claims don't survive. On Bitcoin's daily chart, a naive backtest calls most strategies that buy at random profitable, because Bitcoin went up. Falsify passes about one in twenty, which is what its threshold promises.</p>
+    </div>
+    <form class="panel" id="form" novalidate>
+      <label class="lbl" for="text">The claim</label>
+      <textarea id="text" name="text" maxlength="4000" placeholder="e.g. Buy ETH when the 4h RSI drops under 30, sell above 70. 80% win rate."></textarea>
+      <div class="drop" id="drop" role="button" tabindex="0" aria-describedby="dropHelp">
+        <img id="thumb" alt="" hidden>
+        <span id="dropHelp"><strong>Or drop a screenshot or clip</strong> (PNG, JPG, WEBP or MP4), or click to choose a file.</span>
+        <input type="file" id="file" accept="image/png,image/jpeg,image/webp,image/gif,video/mp4" hidden>
+      </div>
+      <button type="button" class="clear" id="clearFile" hidden>Remove file</button>
+      <div class="row">
+        <div class="field">
+          <label class="lbl" for="posted">When was it posted? <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+          <input type="date" id="posted" name="posted" min="2015-01-01">
+        </div>
+        <button class="go" id="go" type="submit">Test this claim</button>
+      </div>
+      <p class="fine" id="liveNote" style="margin:12px 0 0">Takes about a minute. Everything after the post date is data the claimant couldn't have seen.</p>
+      <p class="err" id="err" role="alert" hidden></p>
+    </form>
+  </section>
+
+  <section class="progress" id="progress" hidden aria-live="polite">
+    <div class="panel">
+      <strong>Testing the claim</strong> <span class="fine" id="elapsed"></span>
+      <ol id="stages"></ol>
+    </div>
+  </section>
+
+  <section class="result" id="result" hidden aria-live="polite"></section>
+
+  <section class="examples" id="examples" aria-labelledby="exh">
+    <h2 id="exh">35 public claims, tested</h2>
+    <p class="fine">Strategy posts from TradingView, Substack, blogs and forums, each run through the same pipeline. Click one to see the full case. Authors aren't named; every claim links to its source.</p>
+    <div class="filters" id="filters" role="group" aria-label="Filter by verdict"></div>
+    <ul class="list" id="list"><li style="padding:14px 16px;color:var(--muted)">Loading…</li></ul>
+  </section>
+
+  <section class="how" id="how" aria-labelledby="howh">
+    <div>
+      <h2 id="howh">How a claim is tested</h2>
+      <p class="fine">The model reads; it never does the arithmetic. Every number on a result page comes from deterministic code you can run yourself with <code>make judge-demo</code>.</p>
+    </div>
+    <ol>
+      <li><strong>Read.</strong> For screenshots and clips, Muse Spark first writes down every word and number it sees or hears.</li>
+      <li><strong>Compile.</strong> It turns the claim into rules in a small fixed language: indicators, thresholds, exits. No code.</li>
+      <li><strong>Check the quotes.</strong> Each rule must quote the claimant's exact words or say it was assumed. Paraphrases are sent back.</li>
+      <li><strong>Audit.</strong> A second Muse Spark pass compares the rules with the original and flags anything that changed. If something can't be expressed, the verdict says it tested an approximation.</li>
+      <li><strong>Try to break it.</strong> Costs, 2,000 random-timing look-alikes, the period after the post, both halves of history, eleven other coins, and every reasonable reading of vague numbers.</li>
+    </ol>
+  </section>
+
+  <footer>
+    Not financial advice. A claim that survives has passed tests, not earned your money. Prices: Binance spot, public market data. Built for the Meta Global AI Developer Hackathon with Muse Spark.
+  </footer>
+</div>
+
+<script>
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const el = (tag, attrs = {}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === "class") n.className = v; else if (k === "style") n.style.cssText = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v); else n.setAttribute(k, v === true ? "" : v);
+  }
+  for (const k of kids.flat()) if (k != null && k !== false) n.append(k.nodeType ? k : document.createTextNode(String(k)));
+  return n;
+};
+const VCOL = {SURVIVES: "var(--survives)", DIES: "var(--dies)", INCONCLUSIVE: "var(--inconclusive)", UNTESTABLE: "var(--untestable)"};
+const fmt = (x, d = 2, plus = false) => x == null || isNaN(x) ? "–" : (plus && x > 0 ? "+" : "") + Number(x).toLocaleString("en-US", {minimumFractionDigits: d, maximumFractionDigits: d});
+const pct = (x, d = 1) => x == null ? "–" : fmt(x, d, true) + "%";
+
+/* ------------------------------------------------ input */
+let file = null;
+const drop = $("#drop"), fileIn = $("#file");
+function setFile(f) {
+  file = f || null;
+  const thumb = $("#thumb");
+  $("#clearFile").hidden = !file;
+  if (!file) { thumb.hidden = true; $("#dropHelp").replaceChildren(el("strong", {}, "Or drop a screenshot or clip"), " (PNG, JPG, WEBP or MP4), or click to choose a file."); return; }
+  $("#dropHelp").textContent = `${file.name}, ${(file.size / 1048576).toFixed(1)} MB`;
+  if (file.type.startsWith("image/")) { thumb.src = URL.createObjectURL(file); thumb.hidden = false; } else thumb.hidden = true;
+}
+drop.addEventListener("click", () => fileIn.click());
+drop.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileIn.click(); } });
+fileIn.addEventListener("change", () => setFile(fileIn.files[0]));
+$("#clearFile").addEventListener("click", () => { fileIn.value = ""; setFile(null); });
+["dragenter", "dragover"].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => { const f = e.dataTransfer.files[0]; if (f) setFile(f); });
+document.addEventListener("paste", e => {
+  const f = [...(e.clipboardData?.files || [])].find(x => x.type.startsWith("image/"));
+  if (f) { setFile(f); e.preventDefault(); }
+});
+
+function showErr(msg) { const e = $("#err"); e.textContent = msg; e.hidden = !msg; }
+
+$("#form").addEventListener("submit", async e => {
+  e.preventDefault();
+  showErr("");
+  const text = $("#text").value.trim();
+  if (!text && !file) { showErr("Paste a claim or drop a screenshot or clip first."); return; }
+  const fd = new FormData();
+  if (text) fd.append("text", text);
+  if (file) fd.append("file", file);
+  if ($("#posted").value) fd.append("posted", $("#posted").value);
+  $("#go").disabled = true;
+  try {
+    const r = await fetch("/api/check", {method: "POST", body: fd});
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.detail || "Something went wrong.");
+    history.pushState({}, "", "/r/" + j.key);
+    await follow(j.key, file ? (file.type.startsWith("video") ? "video" : "image") : "text");
+  } catch (err) { showErr(err.message); }
+  finally { $("#go").disabled = false; }
+});
+
+/* ------------------------------------------------ progress */
+const STAGE_TEXT = {
+  transcribe: "Reading every word and number in the media",
+  compile: "Turning the claim into rules",
+  quote_check: "Checking each rule against the claimant's exact words",
+  audit: "Second read: do the rules match the claim?",
+  repair: "Fixing what the check found",
+  backtest: "Running the tests on real prices",
+};
+function renderStages(kind, job) {
+  const order = (kind === "text" ? [] : ["transcribe"]).concat(["compile", "quote_check", "audit"],
+    (job.stages || []).includes("repair") ? ["repair"] : [], ["backtest"]);
+  const done = new Set(job.stages || []);
+  const ol = $("#stages"); ol.replaceChildren();
+  for (const s of order) {
+    const now = job.stage === s && job.status !== "done";
+    const state = now ? "now" : done.has(s) ? "done" : "";
+    ol.append(el("li", {class: state}, el("span", {class: "dot", "aria-hidden": "true"}), STAGE_TEXT[s]));
+  }
+}
+async function follow(key, kind) {
+  $("#result").hidden = true;
+  const prog = $("#progress"); prog.hidden = false;
+  const t0 = Date.now();
+  renderStages(kind, {stages: [], stage: kind === "text" ? "compile" : "transcribe"});
+  prog.scrollIntoView({behavior: "smooth", block: "start"});
+  for (;;) {
+    $("#elapsed").textContent = `${Math.round((Date.now() - t0) / 1000)} s`;
+    const r = await fetch("/api/result/" + key);
+    const j = await r.json();
+    if (!r.ok) { prog.hidden = true; throw new Error(j.detail || "Lost track of that check."); }
+    if (j.status === "done") { prog.hidden = true; render(j.result, true); return; }
+    if (j.status === "error") { prog.hidden = true; throw new Error("The model couldn't finish this one (" + (j.error || "unknown error") + "). Try rewording the claim."); }
+    renderStages(j.kind || kind, j);
+    await new Promise(res => setTimeout(res, 1500));
+  }
+}
+
+/* ------------------------------------------------ rule text */
+function opLabel(o) {
+  const k = o.kind, p = o.period, m = o.multiplier !== 1 && o.multiplier != null ? `${fmt(o.multiplier, 2).replace(/\.?0+$/, "")}× ` : "";
+  const names = {
+    close: "close", open: "open", high: "high", low: "low", volume: "volume",
+    sma: `${p}-bar simple average`, ema: `${p}-bar EMA`, wma: `${p}-bar WMA`, rsi: `RSI(${p})`,
+    pct_change: `% change over ${p} bars`, highest_high: `highest high of the previous ${p} bars`,
+    lowest_low: `lowest low of the previous ${p} bars`, volume_sma: `${p}-bar average volume`, atr: `ATR(${p})`,
+    adx: `ADX(${p})`, bb_upper: `upper Bollinger band (${p}, ${o.param})`, bb_lower: `lower Bollinger band (${p}, ${o.param})`,
+    macd_line: `MACD line (${p}, ${o.param})`, macd_signal: `MACD signal (${p}, ${o.param}, 9)`, macd_hist: `MACD histogram (${p}, ${o.param})`,
+    supertrend: `Supertrend (${p}, ${o.param})`, day_of_week: "day of week", hour_utc: "hour (UTC)",
+  };
+  if (k === "const") return fmt(o.value, 2).replace(/\.00$/, "");
+  return m + (names[k] || k);
+}
+const OPS = {gt: "is above", lt: "is below", crosses_above: "crosses above", crosses_below: "crosses below"};
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const condText = c => {
+  if (c.left.kind === "day_of_week" && c.right.kind === "const" && (c.op === "gt" || c.op === "lt")) {
+    const v = c.right.value;
+    if (c.op === "gt") return Math.floor(v) >= 6 ? "never (day above Sunday)" : `the day is after ${DAYS[Math.max(0, Math.floor(v))]}`;
+    return Math.ceil(v) <= 0 ? "never (day before Monday)" : `the day is before ${DAYS[Math.min(6, Math.ceil(v))]}`;
+  }
+  if (c.left.kind === "hour_utc" && c.right.kind === "const") return `the hour (UTC) ${OPS[c.op]} ${fmt(c.right.value, 1).replace(/\.0$/, "")}:00`;
+  return `${opLabel(c.left)} ${OPS[c.op]} ${opLabel(c.right)}`;
+};
+
+/* ------------------------------------------------ highlight quotes in the source */
+function quoteRegex(q) {
+  const esc = q.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    .replace(/['‘’]/g, "['‘’]").replace(/["“”]/g, "[\"“”]").replace(/[-–—−]/g, "[-–—−]").replace(/\s+/g, "\\s+");
+  return new RegExp(esc, "i");
+}
+function exhibitText(text, evidence) {
+  const spans = [];
+  evidence.forEach(ev => {
+    if (ev.assumed || !ev.quote) return;
+    let m; try { m = quoteRegex(ev.quote).exec(text); } catch { m = null; }
+    if (!m) return;
+    const s = m.index, e = s + m[0].length;
+    const hit = spans.find(x => s < x.e && e > x.s);
+    if (hit) { hit.n.push(ev.n); return; }
+    spans.push({s, e, n: [ev.n]});
+  });
+  spans.sort((a, b) => a.s - b.s);
+  const out = []; let i = 0;
+  for (const sp of spans) {
+    if (sp.s > i) out.push(text.slice(i, sp.s));
+    out.push(el("mark", {"data-n": sp.n.join(" ")}, text.slice(sp.s, sp.e), el("sup", {}, sp.n.join(","))));
+    i = sp.e;
+  }
+  out.push(text.slice(i));
+  return out;
+}
+
+/* ------------------------------------------------ charts (inline SVG) */
+const NS = "http://www.w3.org/2000/svg";
+const sv = (tag, a = {}) => { const n = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(a)) n.setAttribute(k, v); return n; };
+function equityChart(series, verdict) {
+  const W = 520, H = 250, L = 44, R = 70, T = 12, B = 26;
+  const vals = series.rule.concat(series.buy_hold).filter(v => v > 0);
+  let lo = Math.log10(Math.min(...vals)), hi = Math.log10(Math.max(...vals));
+  if (hi - lo < 0.3) { lo -= 0.15; hi += 0.15; }
+  const n = series.t.length, x = i => L + (W - L - R) * i / (n - 1), y = v => T + (H - T - B) * (1 - (Math.log10(Math.max(v, 1e-6)) - lo) / (hi - lo));
+  const s = sv("svg", {viewBox: `0 0 ${W} ${H}`, role: "img", width: "100%"});
+  const span = hi - lo, mult = span > 2.2 ? [1] : span > 1 ? [1, 3] : [1, 2, 5];
+  for (let d = Math.floor(lo) - 1; d <= Math.ceil(hi); d++) for (const m of mult) {
+    const v = m * 10 ** d, lv = Math.log10(v); if (lv < lo || lv > hi) continue;
+    s.append(sv("line", {x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: "#c9d3cc", "stroke-dasharray": v === 1 ? "" : "2 3"}));
+    const t = sv("text", {x: L - 6, y: y(v) + 4, "text-anchor": "end"});
+    t.textContent = "×" + (v >= 1 ? v.toLocaleString("en-US") : String(+v.toPrecision(2))); s.append(t);
+  }
+  let lastYear = "";
+  series.t.forEach((d, i) => { const yr = d.slice(0, 4); if (yr !== lastYear && d.slice(5, 7) <= "02") { lastYear = yr; if (+yr % 2 === 0 || n < 120) { const t = sv("text", {x: x(i), y: H - 6, "text-anchor": "middle"}); t.textContent = yr; s.append(t); } } });
+  const line = (arr, col, w) => s.append(sv("polyline", {points: arr.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" "), fill: "none", stroke: col, "stroke-width": w, "stroke-linejoin": "round"}));
+  line(series.buy_hold, "#8a97a8", 1.5); line(series.rule, VCOL[verdict] || "var(--ink)", 2.5);
+  const lab = (arr, txt, col) => { const t = sv("text", {x: W - R + 6, y: y(arr[arr.length - 1]) + 4, fill: col}); t.style.fill = col; t.style.fontWeight = 600; t.textContent = txt; s.append(t); };
+  const a = series.rule[series.rule.length - 1], b = series.buy_hold[series.buy_hold.length - 1];
+  const close = Math.abs(Math.log10(a) - Math.log10(b)) < (hi - lo) * 0.08;
+  lab(series.rule, "the rule", VCOL[verdict]); if (!close) lab(series.buy_hold, "holding", "#56637a");
+  return s;
+}
+function nullChart(h, verdict) {
+  const W = 520, H = 250, L = 10, R = 10, T = 26, B = 30;
+  const xs = h.edges, lo = xs[0], hi = xs[xs.length - 1], max = Math.max(...h.counts);
+  const x = v => L + (W - L - R) * (v - lo) / (hi - lo), y = c => T + (H - T - B) * (1 - c / max);
+  const s = sv("svg", {viewBox: `0 0 ${W} ${H}`, role: "img", width: "100%"});
+  h.counts.forEach((c, i) => s.append(sv("rect", {x: x(xs[i]) + 0.5, y: y(c), width: Math.max(0.5, x(xs[i + 1]) - x(xs[i]) - 1), height: H - B - y(c), fill: "#a9b6ad"})));
+  s.append(sv("line", {x1: L, x2: W - R, y1: H - B, y2: H - B, stroke: "#56637a"}));
+  if (lo < 0 && hi > 0) { s.append(sv("line", {x1: x(0), x2: x(0), y1: T, y2: H - B, stroke: "#56637a", "stroke-dasharray": "2 3"}));
+    const z = sv("text", {x: x(0), y: H - 10, "text-anchor": "middle"}); z.textContent = "0%"; s.append(z); }
+  [lo, hi].forEach((v, k) => { const t = sv("text", {x: k ? W - R : L, y: H - 10, "text-anchor": k ? "end" : "start"}); t.textContent = `${fmt(v, 1, true)}%`; s.append(t); });
+  const col = VCOL[verdict] || "var(--ink)", mx = x(h.strategy);
+  s.append(sv("line", {x1: mx, x2: mx, y1: T - 6, y2: H - B, stroke: col, "stroke-width": 3}));
+  const t = sv("text", {x: mx, y: T - 10, "text-anchor": mx > W * 0.75 ? "end" : mx < W * 0.25 ? "start" : "middle"});
+  t.style.fill = col; t.style.fontWeight = 600; t.textContent = "this claim"; s.append(t);
+  return s;
+}
+
+/* ------------------------------------------------ result page */
+function ruleRows(spec) {
+  const ev = Object.fromEntries((spec.evidence || []).map(e => [e.field, e]));
+  const rows = [];
+  const add = (field, k, text) => rows.push({field, k, text, ev: ev[field]});
+  add("assets", "Asset", (spec.assets || []).join(", ").replace(/USDT$/, " (Binance spot)"));
+  add("timeframe", "Bars", {"1h": "1 hour", "4h": "4 hours", "1d": "1 day"}[spec.timeframe] || spec.timeframe);
+  add("direction", "Side", spec.direction === "short" ? "Short" : "Long");
+  (spec.entry || []).forEach((c, i) => add(`entry[${i}]`, i ? "and" : "Enter when", condText(c)));
+  (spec.exit || []).forEach((c, i) => add(`exit[${i}]`, i ? "or" : "Exit when", condText(c)));
+  if (spec.stop_loss_pct != null) add("stop_loss_pct", "Stop", `${fmt(spec.stop_loss_pct, 1)}% below entry`.replace("below", spec.direction === "short" ? "above" : "below"));
+  if (spec.take_profit_pct != null) add("take_profit_pct", "Target", `${fmt(spec.take_profit_pct, 1)}% from entry`);
+  if (spec.max_hold_bars != null) add("max_hold_bars", "Time exit", `after ${spec.max_hold_bars} bars`);
+  let n = 0;
+  rows.forEach(r => { if (r.ev && !r.ev.assumed && r.ev.quote) r.n = ++n; });
+  return rows;
+}
+
+function testRows(rep) {
+  const rows = [], p = rep.primary || {}, nt = rep.null_test || {}, oos = rep.out_of_sample || {}, h = rep.halves || {}, ca = rep.cross_asset || {}, sw = rep.sweep || {};
+  const R = (name, res, cls, detail) => rows.push({name, res, cls, detail});
+  if (p.trades != null) R("Enough trades", `${p.trades} trades`, p.trades >= 30 ? "ok" : "warn", p.trades >= 30 ? "30 or more, so a win rate means something" : "fewer than 30, too few to separate skill from luck");
+  if (p.avg_net_pct != null) R("Makes money after costs", `${pct(p.avg_net_pct, 2)} per trade`, p.avg_net_pct > 0 ? "ok" : "bad", `${pct(p.total_net_pct, 0)} total, ${pct(p.total_gross_pct, 0)} before ${rep.costs?.fee_bps_per_side}+${rep.costs?.slippage_bps_per_side} bps a side`);
+  if (nt.p_value != null) R("Beats random timing", `p = ${fmt(nt.p_value, 3)}`, nt.p_value < 0.05 ? "ok" : nt.p_value >= 0.5 ? "bad" : "warn", nt.beat_by_random_pct === 0 ? `none of ${nt.sims} random-timing look-alikes did as well` : `random entries with the same holding times did as well ${fmt(nt.beat_by_random_pct, nt.beat_by_random_pct < 1 ? 1 : 0)}% of the time (out of ${nt.sims})`);
+  if (oos.available) { const a = oos.after_window || {}; R("After the post", a.trades ? `${a.trades} trades, ${pct(a.avg_net_pct, 2)}` : "no trades yet", !oos.counts ? "na" : a.avg_net_pct > 0 ? "ok" : "bad", `everything after ${oos.boundary} (${oos.boundary_source}), data the claimant couldn't have fitted`); }
+  else if (p.trades) R("After the post", "no date", "na", "add the post date to test on data the claimant couldn't have seen");
+  if (h.split) R("Both halves of history", `${pct(h.first?.avg_net_pct, 2)} / ${pct(h.second?.avg_net_pct, 2)}`, h.consistent ? "ok" : "warn", `per trade before and after ${h.split}`);
+  if (ca.tested) R("Other coins", `${ca.positive} of ${ca.tested}`, ca.positive_share_pct >= 50 ? "ok" : "warn", "same rules on the other bundled coins with 30+ trades, profitable after costs");
+  if (sw.readings > 1) R("Vague numbers", `${fmt(sw.positive_share_pct, 0)}% of ${sw.readings} readings`, sw.positive_share_pct >= 50 ? "ok" : "warn", "every reasonable value for the numbers the claim left vague; the best one pays a search penalty");
+  if (p.buy_hold_pct != null && rep.verdict !== "UNTESTABLE") R("Versus just holding", `${pct(p.total_net_pct, 0)} vs ${pct(p.buy_hold_pct, 0)}`, p.total_net_pct >= p.buy_hold_pct ? "ok" : "warn", "the rule against buying at the start and holding");
+  (rep.claimed_vs_measured || []).forEach(c => R(`Claimed ${c.metric}`, `${fmt(c.claimed, 0)} → ${fmt(c.measured, 0)}`, Math.abs(c.gap) <= 10 ? "ok" : "warn", "what the post says against what the data says"));
+  return rows;
+}
+
+function render(res, animate) {
+  const rep = res.report, spec = res.spec, src = res.source || {}, v = rep.verdict;
+  const box = $("#result"); box.replaceChildren(); box.hidden = false;
+  document.title = `${v}: ${spec.claim_summary} — Falsify`;
+  const fid = rep.fidelity || {};
+
+  if (fid.level === "approximation" && v !== "UNTESTABLE") {
+    const items = [...(fid.gaps || []).map(g => g.replace(/^NOT EXPRESSIBLE:\s*/i, "")), ...(fid.audit_majors || [])];
+    box.append(el("div", {class: "approx"}, el("p", {}, el("strong", {}, "We tested an approximation of this claim. "), "Part of it can't be expressed yet, so the verdict is about the closest testable version."),
+      items.length ? el("details", {class: "more"}, el("summary", {}, "What was left out or changed"), el("ul", {}, items.map(t => el("li", {}, t)))) : null));
+  }
+
+  const rows = ruleRows(spec);
+  const ev = rows.filter(r => r.n).map(r => ({...r.ev, n: r.n}));
+
+  // exhibit
+  const ex = el("div", {class: "exhibit"}, el("h2", {}, src.kind === "image" ? "The screenshot" : src.kind === "video" ? "The clip" : "The claim"));
+  const panel = el("div", {class: "panel"});
+  if (src.media) panel.append(el("img", {src: src.media, alt: "The screenshot that was tested"}));
+  const quotedText = src.kind === "text" ? (src.text || "") : (src.transcript?.visible_text || "") + (src.transcript?.speech ? "\n\n" + src.transcript.speech : "");
+  if (quotedText) panel.append(el("p", {class: "claimtext"}, exhibitText(quotedText, ev)));
+  if (src.kind !== "text" && src.transcript?.chart) panel.append(el("p", {class: "meta"}, "What the chart shows: " + src.transcript.chart));
+  const metaBits = [];
+  if (src.posted) metaBits.push(`Posted ${src.posted}`);
+  if (src.url) metaBits.push(el("a", {href: src.url, rel: "noopener nofollow", target: "_blank"}, `source (${new URL(src.url).hostname.replace(/^www\./, "")})`));
+  if (metaBits.length) panel.append(el("p", {class: "meta"}, metaBits.flatMap((b, i) => i ? [", ", b] : [b])));
+  if (src.kind !== "text") panel.append(el("p", {class: "meta"}, "Text above is Muse Spark's word-for-word transcript; highlighted words are the ones the rules quote."));
+  else if (ev.length) panel.append(el("p", {class: "meta"}, "Highlighted: the claimant's words each rule quotes. The small numbers match the numbered rules."));
+  ex.append(panel);
+
+  // verdict column
+  const col = el("div", {});
+  const stamp = el("div", {class: "stamp" + (animate ? " land" : ""), style: `--v:${VCOL[v]}`}, v.charAt(0) + v.slice(1).toLowerCase());
+  col.append(el("div", {class: "verdict"}, stamp));
+  col.append(el("p", {class: "headline"}, rep.headline.replace(/^Tested an approximation of the claim\.\s*/, "")));
+  const p = rep.primary || {};
+  if (p.trades) {
+    col.append(el("dl", {class: "nums"},
+      el("div", {}, el("dt", {}, "Tested on"), el("dd", {}, `${(rep.asset || "").replace("USDT", "")} ${rep.timeframe}`)),
+      el("div", {}, el("dt", {}, "Trades"), el("dd", {}, p.trades)),
+      el("div", {}, el("dt", {}, "Per trade, after costs"), el("dd", {}, pct(p.avg_net_pct, 2))),
+      el("div", {}, el("dt", {}, `Total, ${p.window?.[0]?.slice(0, 4)}–${p.window?.[1]?.slice(0, 4)}`), el("dd", {}, pct(p.total_net_pct, 0))),
+      el("div", {}, el("dt", {}, "Win rate"), el("dd", {}, p.win_rate_pct == null ? "–" : fmt(p.win_rate_pct, 0) + "%"))));
+  }
+  if (v === "UNTESTABLE") col.append(el("p", {}, (rep.reasons || [])[0] || spec.untestable_reason || ""));
+
+  // rules
+  if (spec.testable) {
+    const ul = el("ul", {class: "rules"});
+    rows.forEach(r => {
+      const q = r.n ? el("span", {class: "q"}, "“" + r.ev.quote + "”", el("sup", {}, r.n)) : el("span", {class: "q assumed"}, r.ev ? "not stated in the claim, our reading" : "no evidence row");
+      const li = el("li", {"data-n": r.n || ""}, el("span", {class: "k"}, r.k), el("span", {}, r.text, q));
+      li.addEventListener("mouseenter", () => document.querySelectorAll("mark").forEach(m => m.classList.toggle("hot", r.n && m.dataset.n.split(" ").includes(String(r.n)))));
+      li.addEventListener("mouseleave", () => document.querySelectorAll("mark.hot").forEach(m => m.classList.remove("hot")));
+      ul.append(li);
+    });
+    const g = rep.grounding || {};
+    col.append(el("div", {class: "sect"}, el("h2", {}, "What we tested"),
+      g.rule_elements ? el("p", {class: "fine", style: "margin:0 0 8px"}, `${g.quoted} of ${g.rule_elements} rule parts are the claimant's own words; ${g.assumed} are our reading.`) : null,
+      ul, (spec.assumptions || []).length ? el("details", {class: "more"}, el("summary", {}, `Every interpretation we made (${spec.assumptions.length})`), el("ul", {}, spec.assumptions.map(a => el("li", {}, a)))) : null));
+  }
+
+  // tests
+  const tr = testRows(rep);
+  if (tr.length) {
+    const sym = {ok: "✓", bad: "✗", warn: "!", na: "–"};
+    const label = {ok: "passed", bad: "failed", warn: "warning", na: "not available"};
+    col.append(el("div", {class: "sect"}, el("h2", {}, "The tests"),
+      el("table", {}, el("thead", {}, el("tr", {}, el("th", {scope: "col"}, "Test"), el("th", {scope: "col"}, "Result"), el("th", {scope: "col"}, "What it means"))),
+        el("tbody", {}, tr.map(t => el("tr", {}, el("td", {}, t.name), el("td", {class: "res " + t.cls}, el("span", {"aria-hidden": "true"}, sym[t.cls] + " "), el("span", {class: "sr"}, label[t.cls] + ": "), t.res), el("td", {class: "fine"}, t.detail)))))));
+  }
+
+  box.append(el("div", {class: "case"}, ex, col));
+
+  // charts
+  const charts = [];
+  if (rep.series?.t?.length && p.trades) charts.push(el("figure", {}, equityChart(rep.series, v), el("figcaption", {}, `Growth of 1, log scale: the rule after costs against buying and holding ${(rep.asset || "").replace("USDT", "")}.`)));
+  if (rep.null_test?.hist) charts.push(el("figure", {}, nullChart(rep.null_test.hist, v), el("figcaption", {}, `Average log return per trade, after costs, of ${rep.null_test.sims} random-timing strategies with the same number of trades and holding times. The line is this claim.`)));
+  if (charts.length) box.append(el("div", {class: "sect"}, el("h2", {}, "The evidence"), el("div", {class: "charts"}, charts)));
+
+  // audit
+  const audits = res.trace?.audits || (res.audit ? [res.audit] : []);
+  if (audits.length) {
+    const last = audits[audits.length - 1];
+    const intro = res.trace?.audit_repair
+      ? `The first read found ${audits[0].issues.length} problem(s); the rules were sent back once and checked again.`
+      : "A second Muse Spark read compared the rules with the original claim.";
+    box.append(el("div", {class: "sect"}, el("h2", {}, "The audit"), el("p", {}, intro + " " + (last.faithful ? "Final check: the rules are a fair encoding of the claim." : "Final check: some differences remain, listed below.")),
+      last.issues?.length ? el("ul", {}, last.issues.map(i => el("li", {}, el("strong", {}, i.severity === "major" ? "Major: " : "Minor: "), i.problem))) : null));
+  }
+
+  // share
+  const link = location.origin + location.pathname;
+  const inp = el("input", {value: link, readonly: true, "aria-label": "Link to this result"});
+  const btn = el("button", {class: "ghost", type: "button"}, "Copy link");
+  btn.addEventListener("click", async () => { try { await navigator.clipboard.writeText(link); btn.textContent = "Link copied"; } catch { inp.select(); } });
+  box.append(el("div", {class: "share"}, inp, btn));
+
+  box.scrollIntoView({behavior: animate ? "smooth" : "auto", block: "start"});
+}
+
+/* ------------------------------------------------ examples */
+let corpus = [], filter = "ALL";
+function renderList() {
+  const ul = $("#list"); ul.replaceChildren();
+  const items = corpus.filter(c => filter === "ALL" || c.verdict === filter);
+  for (const c of items) {
+    const host = new URL(c.url).hostname.replace(/^www\./, "");
+    ul.append(el("li", {}, el("a", {href: "/example/" + c.id, "data-id": c.id},
+      el("span", {class: "v", style: `--v:${VCOL[c.verdict]}`}, c.verdict.charAt(0) + c.verdict.slice(1).toLowerCase() + (c.approximation ? "*" : "")),
+      el("span", {class: "s"}, c.summary, el("small", {}, c.headline)),
+      el("span", {class: "d"}, `${host}${c.posted ? ", " + c.posted.slice(0, 7) : ""}`))));
+  }
+  if (!items.length) ul.append(el("li", {style: "padding:14px 16px"}, "No claims with that verdict."));
+}
+async function loadCorpus() {
+  try {
+    const j = await (await fetch("/api/corpus")).json();
+    corpus = j.items;
+    const order = ["SURVIVES", "DIES", "INCONCLUSIVE", "UNTESTABLE"];
+    corpus.sort((a, b) => order.indexOf(a.verdict) - order.indexOf(b.verdict) || a.id.localeCompare(b.id));
+    const f = $("#filters"); f.replaceChildren();
+    const mk = (key, txt) => { const b = el("button", {class: "ghost", type: "button", "aria-pressed": String(filter === key)}, txt);
+      b.addEventListener("click", () => { filter = key; f.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); renderList(); }); f.append(b); };
+    mk("ALL", `All ${corpus.length}`);
+    order.forEach(v => { const n = corpus.filter(c => c.verdict === v).length; if (n) mk(v, `${v.charAt(0) + v.slice(1).toLowerCase()} ${n}`); });
+    if (j.corpus_corrected?.length) $("#examples .fine").append(` After correcting for testing them all at once, ${j.corpus_corrected.length === 1 ? "one claim still survives" : j.corpus_corrected.length + " claims still survive"}. * = tested an approximation.`);
+    renderList();
+  } catch { $("#list").replaceChildren(el("li", {style: "padding:14px 16px"}, "Couldn't load the examples. Reload the page to try again.")); }
+}
+$("#list").addEventListener("click", e => {
+  const a = e.target.closest("a[data-id]"); if (!a) return;
+  e.preventDefault(); history.pushState({}, "", a.getAttribute("href")); route();
+});
+
+/* ------------------------------------------------ routing */
+async function route() {
+  showErr("");
+  const m = location.pathname.match(/^\/(r|example)\/([\w-]+)$/);
+  if (!m) { $("#result").hidden = true; return; }
+  try {
+    const url = m[1] === "r" ? "/api/result/" + m[2] : "/api/corpus/" + m[2];
+    const r = await fetch(url); const j = await r.json();
+    if (!r.ok) throw new Error(j.detail || "Couldn't open that result.");
+    if (j.status === "done") render(j.result, false);
+    else await follow(m[2], j.kind || "text");
+  } catch (err) { showErr(err.message); }
+}
+window.addEventListener("popstate", route);
+
+(async () => {
+  loadCorpus();
+  try {
+    const meta = await (await fetch("/api/meta")).json();
+    if (!meta.live) { $("#liveNote").textContent = "Live checks are paused right now. Open any of the 35 tested claims below."; $("#go").disabled = true; }
+  } catch {}
+  route();
+})();
+</script>
+</body>
+</html>

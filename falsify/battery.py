@@ -53,6 +53,7 @@ class Report:
     costs: dict = field(default_factory=dict)
     grounding: dict = field(default_factory=dict)
     fidelity: dict = field(default_factory=dict)
+    series: dict = field(default_factory=dict)
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -105,7 +106,17 @@ def random_entry_null(trades: pd.DataFrame, df: pd.DataFrame, direction: Directi
         "null_p95_log_pct": float(np.quantile(null_means, 0.95) * 100),
         "beat_by_random_pct": float(np.mean(null_means >= strat) * 100),
         "sims": sims,
+        "hist": _histogram(null_means * 100, strat * 100),
     }
+
+
+def _histogram(values: np.ndarray, marker: float, bins: int = 40) -> dict:
+    """Null distribution for the UI: counts per bin plus where the claim landed (% per trade, log)."""
+    lo, hi = float(min(values.min(), marker)), float(max(values.max(), marker))
+    pad = (hi - lo) * 0.05 or 1e-6
+    counts, edges = np.histogram(values, bins=bins, range=(lo - pad, hi + pad))
+    return {"edges": [round(float(e), 4) for e in edges], "counts": counts.astype(int).tolist(),
+            "strategy": round(float(marker), 4)}
 
 
 def _mean_net(trades: pd.DataFrame) -> float | None:
@@ -223,6 +234,25 @@ def compare_claim(spec: ClaimSpec, primary: dict) -> list[dict]:
     return rows
 
 
+def equity_series(trades: pd.DataFrame, df: pd.DataFrame, points: int = 260) -> dict:
+    """Growth of 1 for the rule (stepping at each trade exit) and for buy-and-hold, on a common date grid."""
+    idx = df.index
+    step = max(1, len(idx) // points)
+    grid = idx[::step]
+    if grid[-1] != idx[-1]:
+        grid = grid.append(idx[-1:])
+    bh = (df["close"] / df["open"].iloc[0]).reindex(grid)
+    eq = pd.Series(1.0, index=grid)
+    if len(trades):
+        growth = (1 + trades["net_pct"].to_numpy() / 100).cumprod()
+        exits = pd.DatetimeIndex(trades["exit_time"])
+        pos = np.searchsorted(exits.values, grid.values, side="right")
+        eq = pd.Series(np.where(pos > 0, growth[np.maximum(pos - 1, 0)], 1.0), index=grid)
+    return {"t": [d.date().isoformat() for d in grid],
+            "rule": [round(float(v), 5) for v in eq.to_numpy()],
+            "buy_hold": [round(float(v), 5) for v in bh.to_numpy()]}
+
+
 def first_signal_possible(spec: ClaimSpec, df: pd.DataFrame):
     """First bar on which every entry operand has a value (after indicator warm-up)."""
     from .engine import operand_series
@@ -264,6 +294,7 @@ def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = Tr
     rep = Report(Verdict.SURVIVES, "", asset=primary_asset, timeframe=tf, primary=primary,
                  costs={"fee_bps_per_side": costs.fee_bps, "slippage_bps_per_side": costs.slippage_bps})
     rep.claimed_vs_measured = compare_claim(spec, primary)
+    rep.series = equity_series(trades, df)
     if claim_start is not None and claim_start < df.index[0]:
         rep.warnings.append(f"the claim's results start {claim_start.date()}; Binance history for {primary_asset} "
                             f"starts {df.index[0].date()}, so the test covers less history than the claim")

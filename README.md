@@ -5,6 +5,7 @@
 <p align="center"><b>Paste a trading tip, a chart screenshot or an influencer clip. Get back whether it survives contact with real market history.</b></p>
 
 <p align="center">
+  <a href="https://falsify.baserep.xyz"><img src="https://img.shields.io/badge/Live-falsify.baserep.xyz-13223a?style=for-the-badge" alt="Live app"/></a>
   <img src="https://img.shields.io/badge/Meta%20Global%20AI%20Hackathon-Indie%20track-0866FF?style=for-the-badge" alt="Meta Global AI Developer Hackathon, Indie track"/>
   <img src="https://img.shields.io/badge/Muse%20Spark-compiler%20%2B%20auditor-0866FF?style=for-the-badge" alt="Muse Spark"/>
   <img src="https://img.shields.io/badge/license-MIT-black?style=for-the-badge" alt="MIT license"/>
@@ -17,7 +18,11 @@
 
 > Retail traders lose real money on strategies nobody ever tested: an RSI rule with a "80% win rate", a weekend pump, a breakout that "works every time". Testing one properly takes a quant an afternoon. Falsify does it in seconds, and its default answer is that the claim is wrong until the data says otherwise.
 
-## Try it in one command
+## Try it
+
+**Live: [falsify.baserep.xyz](https://falsify.baserep.xyz).** Paste a post or drop a screenshot or clip, and get the verdict with the claimant's words highlighted next to the rules they became. The 35 public claims in [`corpus/`](corpus/) are one click each and don't call the model.
+
+## Run it in one command
 
 ```bash
 git clone https://github.com/Makabeez/falsify && cd falsify
@@ -122,6 +127,14 @@ From `make judge-demo` (Binance spot, Aug 2017 to Oct 2026, including the 2018 a
 | BTC 4h breakout above 20-bar high on 2× volume, 3% stop / 6% target | **INCONCLUSIVE** | 39% win rate, +0.27% per trade, random entries did as well 33% of the time |
 | BTC daily golden cross / death cross | **INCONCLUSIVE** | 9 trades since 2017; buy-and-hold made +1781% vs +635% |
 | "Accumulate strong projects when smart money buys" | **UNTESTABLE** | No mechanical trigger |
+
+## Web app
+
+```bash
+make web            # http://127.0.0.1:8095, live checks need MODEL_API_KEY in .env
+```
+
+`falsify/web.py` (FastAPI) runs live checks in a small worker pool and streams each stage to the page: transcribe, compile, quote check, audit, repair, backtest. Results are cached by content hash, so every result is a permalink (`/r/<key>`) and the same claim never costs twice. Live checks are capped per IP and per day, files are sniffed by content (not by extension) and size-limited, and `FALSIFY_LIVE=0` pauses them while keeping the examples up. The page is one static HTML file with no build step and no third-party JavaScript.
 
 ## With Muse Spark
 

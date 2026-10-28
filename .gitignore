@@ -7,3 +7,4 @@ spec.json
 out/
 corpus/raw/
 out*.json
+web_cache/

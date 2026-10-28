@@ -2,7 +2,7 @@ PY ?= python3
 VENV ?= .venv
 BIN := $(VENV)/bin
 
-.PHONY: setup test judge-demo data verify clean
+.PHONY: setup test judge-demo data verify web clean
 
 setup:
 	$(PY) -m venv $(VENV)
@@ -18,6 +18,10 @@ test: setup
 
 data: setup
 	$(BIN)/falsify data fetch
+
+# Web app on http://127.0.0.1:8095 (live checks need MODEL_API_KEY in .env)
+web: setup
+	./deploy/run-web.sh
 
 verify:
 	$(BIN)/falsify data verify

@@ -222,8 +222,12 @@ def transcribe(source: Source, model: str | None = None, client=None) -> Transcr
     return Transcript.model_validate_json(raw)
 
 
+def _noop(stage: str) -> None:
+    pass
+
+
 def compile_claim(source: Source, model: str | None = None, client=None,
-                  prior: tuple[str, str] | None = None) -> tuple[ClaimSpec, dict]:
+                  prior: tuple[str, str] | None = None, on_stage=_noop) -> tuple[ClaimSpec, dict]:
     """Source -> validated, quote-checked ClaimSpec. Returns (spec, trace).
 
     Each attempt is checked twice outside the model: pydantic validation, then the
@@ -239,6 +243,7 @@ def compile_claim(source: Source, model: str | None = None, client=None,
         ground_text = source.text or ""
     else:
         if source.transcript is None:
+            on_stage("transcribe")
             source.transcript = transcribe(source, model=model, client=client)
         trace["transcript"] = source.transcript.model_dump()
         transcript_text = source.transcript.as_text()
@@ -249,6 +254,7 @@ def compile_claim(source: Source, model: str | None = None, client=None,
     last_spec: ClaimSpec | None = None
     last_grounding = None
     for attempt in range(MAX_REPAIRS + 1):
+        on_stage("compile" if attempt == 0 and prior is None else "repair")
         raw, usage = _structured(client, model, messages, "ClaimSpec", model_json_schema())
         trace["attempts"].append({"usage": usage})
         try:
@@ -262,6 +268,7 @@ def compile_claim(source: Source, model: str | None = None, client=None,
             feedback = f"That ClaimSpec failed validation:\n{e}\nReturn a corrected ClaimSpec."
         else:
             spec.source_type = source.kind
+            on_stage("quote_check")
             g = grounding.check(spec, ground_text)
             last_spec, last_grounding = spec, g
             trace["attempts"][-1]["grounding_problems"] = g.problems
@@ -289,14 +296,16 @@ def major_issues(audit: Audit) -> list[AuditIssue]:
     return [i for i in audit.issues if i.severity.strip().lower() == "major"]
 
 
-def compile_and_audit(source: Source, model: str | None = None, client=None) -> tuple[ClaimSpec, Audit, dict]:
+def compile_and_audit(source: Source, model: str | None = None, client=None,
+                      on_stage=_noop) -> tuple[ClaimSpec, Audit, dict]:
     """Compile, audit, and give the compiler one chance to fix what the auditor found.
 
     The verifier runs outside the compiler's control. If the audit still finds major
     issues after one repair round, the spec is kept but reported as an approximation.
     """
     client = client or _client()
-    spec, trace = compile_claim(source, model=model, client=client)
+    spec, trace = compile_claim(source, model=model, client=client, on_stage=on_stage)
+    on_stage("audit")
     audit = audit_claim(source, spec, model=model, client=client)
     trace["audits"] = [audit.model_dump()]
     majors = major_issues(audit)
@@ -306,7 +315,9 @@ def compile_and_audit(source: Source, model: str | None = None, client=None) -> 
                     + "\nFix every issue the schema can express. For anything it cannot express, keep the closest "
                       "testable core and say so in an assumption starting with \"NOT EXPRESSIBLE:\" -- or set "
                       "testable=false if that part is the heart of the strategy. Return the full corrected ClaimSpec.")
-        spec2, trace2 = compile_claim(source, model=model, client=client, prior=(spec.model_dump_json(), feedback))
+        spec2, trace2 = compile_claim(source, model=model, client=client, prior=(spec.model_dump_json(), feedback),
+                                      on_stage=on_stage)
+        on_stage("audit")
         audit2 = audit_claim(source, spec2, model=model, client=client)
         trace2["first_pass"] = {"attempts": trace["attempts"], "grounding": trace.get("grounding")}
         trace2["audits"] = trace["audits"] + [audit2.model_dump()]
