@@ -15,8 +15,9 @@ def test_parse_operand_grammar():
     o = parse_operand("close[1]")
     assert (o.kind, o.offset) == ("close", 1)
     assert parse_operand("bb_lower(20)").param == 2.0
+    assert parse_operand("rsi(14)[160]+5").add == 5.0 and parse_operand("rsi(14)[160]+5").offset == 160
     with pytest.raises(ValueError):
-        parse_operand("close+1")
+        parse_operand("close^2")
 
 
 def test_parse_condition_and_exits():
@@ -62,3 +63,10 @@ def test_score_claim_fields_and_routing():
     assert s.fields == {"routing": True}
     s = score_claim("c3", {"testable": "full"}, _spec(), "UNTESTABLE")
     assert s.fields == {"routing": False} and s.notes
+
+
+def test_integer_calendar_ranges_are_equivalent():
+    ref = [parse_condition("day_of_week >= 2"), parse_condition("day_of_week <= 2")]
+    got = [parse_condition("day_of_week > 1.5"), parse_condition("day_of_week < 2.5")]
+    assert conditions_match(ref, got, lenient=False)
+    assert not conditions_match(ref, [parse_condition("day_of_week > 2.5")] + got[1:], lenient=False)

@@ -13,6 +13,398 @@
     "verbatim_confidence": "high",
     "notes": "Forex EMA5/50 + RSI(5) cross 50 rule; no page date header, in-text date 20/08/2013 implies post ~2013-08-21."
   },
-  "error": "RuntimeError: model output failed validation 3 times: 1 validation error for ClaimSpec\n  Value error, testable claim needs at least one asset [type=value_error, input_value={'claim_summary': 'Enter ...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error",
-  "seconds": 77.4
+  "spec": {
+    "claim_summary": "Enter when the 5-period EMA crosses the 50-period EMA and the 5-period RSI crosses the 50 line.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "USDCAD",
+      "EURUSD",
+      "GBPUSD",
+      "EURJPY"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "ema",
+          "period": 5,
+          "value": null,
+          "multiplier": 1.0,
+          "add": 0.0,
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "ema",
+          "period": 50,
+          "value": null,
+          "multiplier": 1.0,
+          "add": 0.0,
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
+        }
+      },
+      {
+        "left": {
+          "kind": "rsi",
+          "period": 5,
+          "value": null,
+          "multiplier": 1.0,
+          "add": 0.0,
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 50.0,
+          "multiplier": 1.0,
+          "add": 0.0,
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "ema",
+          "period": 5,
+          "value": null,
+          "multiplier": 1.0,
+          "add": 0.0,
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "ema",
+          "period": 50,
+          "value": null,
+          "multiplier": 1.0,
+          "add": 0.0,
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
+        }
+      }
+    ],
+    "stop_loss_pct": null,
+    "stop_atr_mult": null,
+    "stop_atr_period": 14,
+    "take_profit_pct": null,
+    "take_profit_atr_mult": null,
+    "take_profit_r": null,
+    "trailing_stop_pct": null,
+    "trailing_stop_atr_mult": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": null
+    },
+    "assumptions": [
+      "Direction not stated as long-only; 'crosses' compiled as crosses_above for long entry.",
+      "NOT EXPRESSIBLE: claim implies both long and short signals from crosses in either direction but schema direction allows only long or short, so the short side (5EMA crosses below 50EMA with RSI crossing below 50) is omitted.",
+      "NOT EXPRESSIBLE: claim states use on both the daily and 4 hour charts but schema timeframe allows only one value, so only 1d is tested and the 4h variant is omitted.",
+      "No exit stated; exit by opposite EMA cross (5EMA crosses below 50EMA) used as most common reading for MA-cross setup.",
+      "Waiting for candle close is default bar-close evaluation."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "5ema crosses your 50ema",
+        "assumed": false
+      },
+      {
+        "field": "entry[1]",
+        "quote": "RSI cross the 50 line",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "assets",
+        "quote": "on USD/CAD, EUR/USD, GBP/USD, and also EUR/JPY",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": "on the daily and 4 hour charts",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": null,
+        "assumed": true
+      }
+    ]
+  },
+  "audit": {
+    "faithful": false,
+    "issues": [
+      {
+        "field": "direction",
+        "problem": "Claim says '5ema crosses your 50ema and RSI cross the 50 line' with no long-only limit, implying signals in both directions. Spec restricts to direction=long with crosses_above only and omits the short side (5EMA crosses below 50EMA with RSI crossing below 50).",
+        "severity": "major"
+      },
+      {
+        "field": "timeframe",
+        "problem": "Claim explicitly says strategy used 'on the daily and 4 hour charts'. Spec tests only timeframe 1d and omits the 4h variant.",
+        "severity": "major"
+      },
+      {
+        "field": "exit[0]",
+        "problem": "Claimant states no exit rule. Spec invents exit by opposite EMA cross (5EMA crosses_below 50EMA), which adds a holding/exit rule the claimant never gave.",
+        "severity": "major"
+      }
+    ]
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 1760,
+          "prompt_tokens": 2660,
+          "total_tokens": 4420,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 1703,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
+        },
+        "error": "1 validation error for ClaimSpec\n  Value error, testable claim needs at least one asset [type=value_error, input_value={'claim_summary': 'Enter ...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+      },
+      {
+        "usage": {
+          "completion_tokens": 2843,
+          "prompt_tokens": 2793,
+          "total_tokens": 5636,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 2113,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 1781,
+            "image_tokens": null,
+            "text_tokens": null
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 4,
+      "assumed": 2,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "assets",
+        "timeframe"
+      ],
+      "assumed_fields": [
+        "exit[0]",
+        "direction"
+      ],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 4532,
+            "prompt_tokens": 1783,
+            "total_tokens": 6315,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 3991,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            },
+            "reasoning_effort": "medium",
+            "calls": 1
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 6,
+        "quoted": 4,
+        "assumed": 2,
+        "quoted_fields": [
+          "entry[0]",
+          "entry[1]",
+          "assets",
+          "timeframe"
+        ],
+        "assumed_fields": [
+          "exit[0]",
+          "direction"
+        ],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "direction",
+            "problem": "Claim says 5EMA 'crosses your 50ema' and RSI 'cross the 50 line' with no long-only qualifier; spec restricts to long-only / crosses_above, omitting the short-side signals.",
+            "severity": "major"
+          },
+          {
+            "field": "timeframe",
+            "problem": "Claim states use 'on the daily and 4 hour charts'; spec tests only '1d', omitting the 4-hour variant.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "direction",
+            "problem": "Claim says '5ema crosses your 50ema and RSI cross the 50 line' with no long-only limit, implying signals in both directions. Spec restricts to direction=long with crosses_above only and omits the short side (5EMA crosses below 50EMA with RSI crossing below 50).",
+            "severity": "major"
+          },
+          {
+            "field": "timeframe",
+            "problem": "Claim explicitly says strategy used 'on the daily and 4 hour charts'. Spec tests only timeframe 1d and omits the 4h variant.",
+            "severity": "major"
+          },
+          {
+            "field": "exit[0]",
+            "problem": "Claimant states no exit rule. Spec invents exit by opposite EMA cross (5EMA crosses_below 50EMA), which adds a holding/exit rule the claimant never gave.",
+            "severity": "major"
+          }
+        ]
+      }
+    ],
+    "audit_repair": true,
+    "cost": [
+      {
+        "step": "compile",
+        "seconds": 16.4,
+        "tokens": 6315,
+        "quote_repairs": 0
+      },
+      {
+        "step": "audit",
+        "seconds": 22.0,
+        "tokens": 6419
+      },
+      {
+        "step": "audit repair",
+        "seconds": 21.2,
+        "tokens": 10056,
+        "quote_repairs": 1
+      },
+      {
+        "step": "audit",
+        "seconds": 12.0,
+        "tokens": 4180
+      }
+    ]
+  },
+  "report": {
+    "verdict": "UNTESTABLE",
+    "headline": "No bundled history for the asset/timeframe this claim needs.",
+    "reasons": [
+      "wanted ['USDCAD', 'EURUSD', 'GBPUSD', 'EURJPY'] on 1d; bundled universe is ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'LINKUSDT', 'LTCUSDT', 'DOTUSDT', 'TRXUSDT']"
+    ],
+    "warnings": [],
+    "asset": null,
+    "timeframe": "1d",
+    "primary": {},
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {},
+    "sweep": {},
+    "claimed_vs_measured": [],
+    "costs": {},
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 4,
+      "assumed": 2,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "assets",
+        "timeframe"
+      ],
+      "assumed_fields": [
+        "exit[0]",
+        "direction"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: claim implies both long and short signals from crosses in either direction but schema direction allows only long or short, so the short side (5EMA crosses below 50EMA with RSI crossing below 50) is omitted.",
+        "NOT EXPRESSIBLE: claim states use on both the daily and 4 hour charts but schema timeframe allows only one value, so only 1d is tested and the 4h variant is omitted."
+      ],
+      "audit_majors": [
+        "direction: Claim says '5ema crosses your 50ema and RSI cross the 50 line' with no long-only limit, implying signals in both directions. Spec restricts to direction=long with crosses_above only and omits the short side (5EMA crosses below 50EMA with RSI crossing below 50).",
+        "timeframe: Claim explicitly says strategy used 'on the daily and 4 hour charts'. Spec tests only timeframe 1d and omits the 4h variant.",
+        "exit[0]: Claimant states no exit rule. Spec invents exit by opposite EMA cross (5EMA crosses_below 50EMA), which adds a holding/exit rule the claimant never gave."
+      ]
+    },
+    "review": {},
+    "series": {}
+  },
+  "seconds": 75.4
 }

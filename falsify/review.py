@@ -42,6 +42,8 @@ def review_state(report: dict) -> dict:
         return {"needs_human": False, "reasons": []}
     reasons = [f"audit still disagrees: {m}" for m in (report.get("fidelity") or {}).get("audit_majors", [])]
     reasons += [f"quote check: {p}" for p in (report.get("grounding") or {}).get("problems", [])]
+    if (report.get("primary") or {}).get("trades") == 0:
+        reasons.append("the rules never trigger on the full price history, which usually means they misread the claim")
     return {"needs_human": bool(reasons), "reasons": reasons}
 
 

@@ -163,7 +163,9 @@ def operand_series(op: Operand, df: pd.DataFrame, cache: dict | None = None) -> 
                 d = d.shift(op.offset)
             cache[dkey] = d
         s = cache[dkey]
-    return s * op.multiplier if op.multiplier != 1.0 else s
+    if op.multiplier != 1.0:
+        s = s * op.multiplier
+    return s + op.add if op.add else s
 
 
 def condition_mask(cond: Condition, df: pd.DataFrame, cache: dict | None = None) -> np.ndarray:

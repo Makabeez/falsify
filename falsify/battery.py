@@ -415,6 +415,8 @@ def escalate(rep: Report) -> Report:
         return rep
     reasons = [f"audit still disagrees: {m}" for m in (rep.fidelity or {}).get("audit_majors", [])]
     reasons += [f"quote check: {p}" for p in (rep.grounding or {}).get("problems", [])]
+    if (rep.primary or {}).get("trades") == 0:
+        reasons.append("the rules never trigger on the full price history, which usually means they misread the claim")
     rep.review = {"needs_human": bool(reasons), "reasons": reasons}
     if reasons:
         rep.warnings.insert(0, "needs a human check: the automatic checks still disagree with the compiled rules "

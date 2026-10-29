@@ -46,6 +46,7 @@ class Opnd:
     window_fn: str | None = None
     window: int | None = None
     offset: int = 0
+    add: float = 0.0
 
 
 def _round(x):
@@ -54,6 +55,10 @@ def _round(x):
 
 def parse_operand(text: str) -> Opnd:
     t = text.strip().replace(" ", "")
+    add = 0.0
+    m = re.fullmatch(rf"(.*[a-z\])])([+-]{_NUM[1:]})", t)  # rsi(14)[160]+5
+    if m:
+        t, add = m.group(1), float(m.group(2))
     mult = 1.0
     m = re.fullmatch(rf"({_NUM})\*(.+)", t)
     if m and not re.fullmatch(_NUM, t):
@@ -78,7 +83,7 @@ def parse_operand(text: str) -> Opnd:
         dp, dq = _DEFAULTS[kind]
         period = period or dp
         param = param if param is not None else _round(dq)
-    return Opnd(kind, period, param, None, _round(mult), window_fn, window, offset)
+    return Opnd(kind, period, param, None, _round(mult), window_fn, window, offset, _round(add))
 
 
 def parse_condition(text: str) -> tuple[Opnd, str, Opnd]:
@@ -94,15 +99,33 @@ def from_spec_operand(o: dict) -> Opnd:
     if kind == "const":
         return Opnd("const", value=_round(o["value"]))
     return Opnd(kind, o.get("period"), _round(o.get("param")), None, _round(o.get("multiplier", 1.0)),
-                o.get("window_fn"), o.get("window"), o.get("offset") or 0)
+                o.get("window_fn"), o.get("window"), o.get("offset") or 0, _round(o.get("add") or 0.0))
 
 
 def from_spec_condition(c: dict) -> tuple[Opnd, str, Opnd]:
     return from_spec_operand(c["left"]), c["op"], from_spec_operand(c["right"])
 
 
+_INTEGER_KINDS = {"day_of_week", "hour_utc", "day_of_month", "days_left_in_month"}
+
+
+def _integer_bound(cond):
+    """day_of_week > 1.5 and day_of_week >= 2 are the same rule: rewrite integer-valued comparisons as ge/le."""
+    import math
+    a, op, b = cond
+    if b.kind == "const" and a.kind in _INTEGER_KINDS and a.mult == 1 and not a.add and op in ("gt", "lt", "ge", "le"):
+        v = b.value
+        op, v = {"gt": ("ge", math.floor(v) + 1), "ge": ("ge", math.ceil(v)),
+                 "lt": ("le", math.ceil(v) - 1), "le": ("le", math.floor(v))}[op]
+        return a, op, Opnd("const", value=_round(v))
+    return cond
+
+
 def _canon(cond, lenient: bool):
     a, op, b = cond
+    if a.kind == "const" and b.kind in _INTEGER_KINDS:
+        a, op, b = b, _MIRROR.get(op, op), a
+    a, op, b = _integer_bound((a, op, b))
     if lenient:
         op = _LENIENT.get(op, op)
     # mirror so the left side sorts first: a > b == b < a

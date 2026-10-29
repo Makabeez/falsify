@@ -78,6 +78,11 @@ class Operand(BaseModel):
     multiplier: float = Field(
         default=1.0, description="Scales the operand, e.g. 1.5 x volume_sma for 'volume 50% above average'."
     )
+    add: float = Field(
+        default=0.0, description="Constant added after scaling, in the operand's own units: 'RSI of 160 bars ago "
+                                 "plus 5 points' is rsi with offset 160 and add 5; 'close 2% above the SMA' is "
+                                 "multiplier 1.02, not add."
+    )
     param: Optional[float] = Field(
         default=None, description="Second setting: Bollinger std-dev width (default 2), MACD slow length "
                                   "(default 26, fast = period default 12, signal fixed 9), Supertrend ATR "
@@ -114,8 +119,8 @@ class Operand(BaseModel):
             raise ValueError("window must be 1..2000 bars")
         if not 0 <= self.offset <= 500:
             raise ValueError("offset must be 0..500 bars")
-        if self.kind == OperandKind.CONST and (self.window_fn is not None or self.offset):
-            raise ValueError("a constant has no window or offset")
+        if self.kind == OperandKind.CONST and (self.window_fn is not None or self.offset or self.add):
+            raise ValueError("a constant has no window, offset or add; put the number in value")
         return self
 
     def label(self) -> str:
@@ -130,6 +135,8 @@ class Operand(BaseModel):
             base = f"{base}[{self.offset}]"
         if self.multiplier != 1.0:
             base = f"{self.multiplier:g}*{base}"
+        if self.add:
+            base = f"{base}{self.add:+g}"
         return base
 
 

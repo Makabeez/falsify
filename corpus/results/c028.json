@@ -14,7 +14,7 @@
     "notes": "Turtle Soup 20-day false-breakout rule on Binance BTC daily; exit window 2-6 bars is a range (compiler must pick)."
   },
   "spec": {
-    "claim_summary": "Buy Bitcoin after a new 20-day high when the close exceeds a marker at least 3 sessions old, with a stop below the signal extreme and exit within 2-6 bars.",
+    "claim_summary": "Buy Bitcoin after a closing new 20-day high where the prior extreme was at least 3 sessions earlier, exiting within 2-6 bars.",
     "source_type": "text",
     "testable": true,
     "untestable_reason": null,
@@ -30,6 +30,7 @@
           "period": null,
           "value": null,
           "multiplier": 1.0,
+          "add": 0.0,
           "param": null,
           "window_fn": null,
           "window": null,
@@ -41,41 +42,20 @@
           "period": 20,
           "value": null,
           "multiplier": 1.0,
+          "add": 0.0,
           "param": null,
           "window_fn": null,
           "window": null,
-          "offset": 1
+          "offset": 0
         }
       },
       {
         "left": {
-          "kind": "highest_high",
-          "period": 20,
+          "kind": "close",
+          "period": null,
           "value": null,
           "multiplier": 1.0,
-          "param": null,
-          "window_fn": null,
-          "window": null,
-          "offset": 1
-        },
-        "op": "ge",
-        "right": {
-          "kind": "highest_high",
-          "period": 20,
-          "value": null,
-          "multiplier": 1.0,
-          "param": null,
-          "window_fn": null,
-          "window": null,
-          "offset": 3
-        }
-      },
-      {
-        "left": {
-          "kind": "highest_high",
-          "period": 20,
-          "value": null,
-          "multiplier": 1.0,
+          "add": 0.0,
           "param": null,
           "window_fn": null,
           "window": null,
@@ -87,61 +67,41 @@
           "period": 20,
           "value": null,
           "multiplier": 1.0,
-          "param": null,
-          "window_fn": null,
-          "window": null,
-          "offset": 3
-        }
-      },
-      {
-        "left": {
-          "kind": "lowest_low",
-          "period": 20,
-          "value": null,
-          "multiplier": 1.0,
+          "add": 0.0,
           "param": null,
           "window_fn": null,
           "window": null,
           "offset": 1
-        },
-        "op": "ge",
-        "right": {
-          "kind": "lowest_low",
-          "period": 20,
-          "value": null,
-          "multiplier": 1.0,
-          "param": null,
-          "window_fn": null,
-          "window": null,
-          "offset": 3
         }
       },
       {
         "left": {
-          "kind": "lowest_low",
-          "period": 20,
+          "kind": "close",
+          "period": null,
           "value": null,
           "multiplier": 1.0,
+          "add": 0.0,
           "param": null,
           "window_fn": null,
           "window": null,
-          "offset": 1
+          "offset": 2
         },
         "op": "le",
         "right": {
-          "kind": "lowest_low",
+          "kind": "highest_high",
           "period": 20,
           "value": null,
           "multiplier": 1.0,
+          "add": 0.0,
           "param": null,
           "window_fn": null,
           "window": null,
-          "offset": 3
+          "offset": 2
         }
       }
     ],
     "exit": [],
-    "stop_loss_pct": 3.0,
+    "stop_loss_pct": 2.0,
     "stop_atr_mult": null,
     "stop_atr_period": 14,
     "take_profit_pct": null,
@@ -152,7 +112,17 @@
     "max_hold_bars": 4,
     "free_parameters": [
       {
-        "name": "holding period within 2-6 intervals",
+        "name": "stop distance below trigger level",
+        "target": "stop_loss_pct",
+        "candidates": [
+          1.0,
+          2.0,
+          3.0,
+          4.0
+        ]
+      },
+      {
+        "name": "holding period within 2-6 bars",
         "target": "max_hold_bars",
         "candidates": [
           2.0,
@@ -160,16 +130,6 @@
           4.0,
           5.0,
           6.0
-        ]
-      },
-      {
-        "name": "fixed stop proxy for watermark stop",
-        "target": "stop_loss_pct",
-        "candidates": [
-          1.0,
-          2.0,
-          3.0,
-          5.0
         ]
       }
     ],
@@ -182,17 +142,19 @@
       "other": null
     },
     "assumptions": [
-      "Timeframe 1d chosen as natural reading for '20day high', 'trading sessions' and candlestick intervals; claim does not state bar length explicitly.",
-      "Entry fill at next bar open approximates 'Buy entry is placed on the next day at the previous 20 day high/low watermark'.",
-      "Breakout encoded as close(0) gt highest_high(20) offset 1 to compare close to prior marker and avoid current-bar high inclusion which makes close gt highest_high offset 0 unsatisfiable.",
-      "Marker-age 'at least 3 trading sessions prior' encoded as highest_high(20) offset 1 equal to highest_high(20) offset 3 via ge plus le pair; same equality added for lowest_low to reference low marker age and require quiet range.",
-      "NOT EXPRESSIBLE: 'new 20day high or low' as alternative Buy triggers is an OR the schema cannot express because entry conditions are AND-only; compiled high-breakout branch as testable core and retained low-marker age only.",
-      "NOT EXPRESSIBLE: price-level stop 'below the latest high/low that triggered the signal' cannot be expressed as a watermark level; approximated as fixed stop_loss_pct proxy for testing."
+      "Timeframe 1d chosen from page chart; claim says candlestick intervals but gives no explicit timeframe.",
+      "Direction is long-only from Buy entry wording; both high and low triggers are buys per claim.",
+      "New 20-day high compiled as close gt highest_high(20), which already excludes the current bar.",
+      "Gap of at least 3 sessions compiled as no closing breakout on the 2 prior bars: close[1] <= highest_high(20)[1] and close[2] <= highest_high(20)[2].",
+      "NOT EXPRESSIBLE: Claim triggers buy on new 20-day high OR new 20-day low, but entry conditions are ANDed so OR cannot be expressed; low-side buy on new 20-day low omitted and only high-side core tested.",
+      "NOT EXPRESSIBLE: Stop below the latest high/low price level that triggered the signal cannot be expressed as a distance stop; approximated with fixed stop_loss_pct proxy.",
+      "Holding 2-6 candlestick intervals compiled as max_hold_bars 4 with 2-6 as candidates.",
+      "Entry at previous watermark next day is the engine default fill at next bar open; not separately encoded."
     ],
     "evidence": [
       {
         "field": "assets",
-        "quote": "Bitcoin (BTC) from Binance exchange",
+        "quote": "OHLCV historical data for Bitcoin (BTC) from Binance exchange.",
         "assumed": false
       },
       {
@@ -212,22 +174,12 @@
       },
       {
         "field": "entry[1]",
-        "quote": "previous high/low marker must have been at least 3 trading sessions prior",
+        "quote": "previous high/low marker must have been at least 3 trading sessions prior.",
         "assumed": false
       },
       {
         "field": "entry[2]",
-        "quote": "previous high/low marker must have been at least 3 trading sessions prior",
-        "assumed": false
-      },
-      {
-        "field": "entry[3]",
-        "quote": "previous high/low marker must have been at least 3 trading sessions prior",
-        "assumed": false
-      },
-      {
-        "field": "entry[4]",
-        "quote": "previous high/low marker must have been at least 3 trading sessions prior",
+        "quote": "previous high/low marker must have been at least 3 trading sessions prior.",
         "assumed": false
       },
       {
@@ -247,17 +199,12 @@
     "issues": [
       {
         "field": "entry",
-        "problem": "Claim triggers Buy on 'a new 20day high or low' with close beyond prior marker. Spec only encodes high-breakout trigger close gt prior highest_high and omits low-side trigger close beyond prior low. Tests only half the claimed setups.",
-        "severity": "major"
-      },
-      {
-        "field": "entry[3], entry[4]",
-        "problem": "For a high breakout spec additionally requires lowest_low offset1 equal lowest_low offset3, i.e. low marker also quiet for 3 sessions. Claim only requires the triggering 'previous high/low marker' to be at least 3 sessions prior, not both extremes to be old.",
+        "problem": "Claim triggers a Buy on a new 20-day high OR a new 20-day low; spec only encodes the high-side closing breakout and omits the low-side buy on a new 20-day low with close beyond prior low marker.",
         "severity": "major"
       },
       {
         "field": "stop_loss_pct",
-        "problem": "Claim stop is price-level 'below the latest high/low that triggered the signal'. Spec replaces with fixed 3.0% stop proxy. Different stop level/type can change verdict.",
+        "problem": "Claim says 'Stop entries for failed trades are placed below the latest high/low that triggered the signal' with no percent distance; spec invents fixed stop_loss_pct 2.0 with 1-4 candidates as proxy.",
         "severity": "major"
       }
     ]
@@ -267,13 +214,37 @@
     "attempts": [
       {
         "usage": {
-          "completion_tokens": 8977,
-          "prompt_tokens": 2626,
-          "total_tokens": 11603,
+          "completion_tokens": 5472,
+          "prompt_tokens": 2778,
+          "total_tokens": 8250,
           "completion_tokens_details": {
             "accepted_prediction_tokens": null,
             "audio_tokens": null,
-            "reasoning_tokens": 8905,
+            "reasoning_tokens": 5408,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 1781,
+            "image_tokens": null,
+            "text_tokens": null
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
+        },
+        "error": "1 validation error for ClaimSpec\n  Value error, testable claim needs at least one asset [type=value_error, input_value={'claim_summary': 'Buy Bi...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+      },
+      {
+        "usage": {
+          "completion_tokens": 4684,
+          "prompt_tokens": 2919,
+          "total_tokens": 7603,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 3874,
             "rejected_prediction_tokens": null,
             "text_tokens": null
           },
@@ -287,67 +258,17 @@
           "reasoning_effort": "medium",
           "calls": 1
         },
-        "error": "1 validation error for ClaimSpec\n  Value error, testable claim needs at least one asset [type=value_error, input_value={'claim_summary': 'Buy Bi...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
-      },
-      {
-        "usage": {
-          "completion_tokens": 5297,
-          "prompt_tokens": 2773,
-          "total_tokens": 8070,
-          "completion_tokens_details": {
-            "accepted_prediction_tokens": null,
-            "audio_tokens": null,
-            "reasoning_tokens": 5226,
-            "rejected_prediction_tokens": null,
-            "text_tokens": null
-          },
-          "prompt_tokens_details": {
-            "audio_tokens": null,
-            "cache_write_tokens": null,
-            "cached_tokens": 1309,
-            "image_tokens": null,
-            "text_tokens": null
-          },
-          "reasoning_effort": "medium",
-          "calls": 1
-        },
-        "error": "1 validation error for ClaimSpec\n  Value error, testable claim needs at least one asset [type=value_error, input_value={'claim_summary': 'Buy Bi...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
-      },
-      {
-        "usage": {
-          "completion_tokens": 9326,
-          "prompt_tokens": 2922,
-          "total_tokens": 12248,
-          "completion_tokens_details": {
-            "accepted_prediction_tokens": null,
-            "audio_tokens": null,
-            "reasoning_tokens": 8377,
-            "rejected_prediction_tokens": null,
-            "text_tokens": null
-          },
-          "prompt_tokens_details": {
-            "audio_tokens": null,
-            "cache_write_tokens": null,
-            "cached_tokens": 2589,
-            "image_tokens": null,
-            "text_tokens": null
-          },
-          "reasoning_effort": "medium",
-          "calls": 1
-        },
         "grounding_problems": []
       }
     ],
     "grounding": {
-      "rule_elements": 10,
-      "quoted": 9,
+      "rule_elements": 8,
+      "quoted": 7,
       "assumed": 1,
       "quoted_fields": [
         "entry[0]",
         "entry[1]",
         "entry[2]",
-        "entry[3]",
-        "entry[4]",
         "stop_loss_pct",
         "max_hold_bars",
         "assets",
@@ -362,20 +283,68 @@
       "attempts": [
         {
           "usage": {
-            "completion_tokens": 5213,
-            "prompt_tokens": 1535,
-            "total_tokens": 6748,
+            "completion_tokens": 4685,
+            "prompt_tokens": 1782,
+            "total_tokens": 6467,
             "completion_tokens_details": {
               "accepted_prediction_tokens": null,
               "audio_tokens": null,
-              "reasoning_tokens": 4465,
+              "reasoning_tokens": 4028,
               "rejected_prediction_tokens": null,
               "text_tokens": null
             },
             "prompt_tokens_details": {
               "audio_tokens": null,
               "cache_write_tokens": null,
-              "cached_tokens": 1309,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            },
+            "reasoning_effort": "medium",
+            "calls": 1
+          },
+          "error": "1 validation error for ClaimSpec\n  Value error, testable claim needs at least one asset [type=value_error, input_value={'claim_summary': 'Buy Bi...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+        },
+        {
+          "usage": {
+            "completion_tokens": 5904,
+            "prompt_tokens": 2515,
+            "total_tokens": 8419,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 5254,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            },
+            "reasoning_effort": "medium",
+            "calls": 1
+          },
+          "error": "1 validation error for ClaimSpec\n  Value error, testable claim needs at least one asset [type=value_error, input_value={'claim_summary': 'Buy Bi...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+        },
+        {
+          "usage": {
+            "completion_tokens": 4331,
+            "prompt_tokens": 3241,
+            "total_tokens": 7572,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 3436,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 1781,
               "image_tokens": null,
               "text_tokens": null
             },
@@ -386,13 +355,12 @@
         }
       ],
       "grounding": {
-        "rule_elements": 7,
-        "quoted": 6,
+        "rule_elements": 6,
+        "quoted": 5,
         "assumed": 1,
         "quoted_fields": [
           "entry[0]",
           "entry[1]",
-          "entry[2]",
           "max_hold_bars",
           "assets",
           "direction"
@@ -408,18 +376,18 @@
         "faithful": false,
         "issues": [
           {
-            "field": "entry[0]",
-            "problem": "Compares close(0) to highest_high(20) offset 0, which includes the current bar high and can never be satisfied since close <= high. Claimant requires close beyond the previous marker from at least 3 sessions prior, i.e. comparison to a prior offset.",
+            "field": "entry",
+            "problem": "Claim triggers buy on new 20-day high OR new 20-day low, but spec encodes only new-high trigger and omits low-side buy signal entirely.",
             "severity": "major"
           },
           {
-            "field": "entry",
-            "problem": "Encodes only new 20-day highs and omits the claimant's alternative new 20-day low trigger for a Buy at the high/low watermark. Claim states new 20day high or low.",
+            "field": "entry[1]",
+            "problem": "Claim requires prior extreme marker at least 3 sessions prior, meaning no breakout in prior 1-2 bars, but spec only checks close[3] <= highest_high(20)[3] and omits checks for 1 and 2 bars ago, allowing signals that violate the gap.",
             "severity": "major"
           },
           {
             "field": "stop_loss_pct",
-            "problem": "Omits the claimant's stop below the latest high/low that triggered the signal. Marked NOT EXPRESSIBLE but omission removes a defined exit and changes what is tested.",
+            "problem": "Claim requires stop below latest high/low that triggered signal, but spec omits any stop. Leaving it out changes what is tested.",
             "severity": "major"
           }
         ]
@@ -429,17 +397,12 @@
         "issues": [
           {
             "field": "entry",
-            "problem": "Claim triggers Buy on 'a new 20day high or low' with close beyond prior marker. Spec only encodes high-breakout trigger close gt prior highest_high and omits low-side trigger close beyond prior low. Tests only half the claimed setups.",
-            "severity": "major"
-          },
-          {
-            "field": "entry[3], entry[4]",
-            "problem": "For a high breakout spec additionally requires lowest_low offset1 equal lowest_low offset3, i.e. low marker also quiet for 3 sessions. Claim only requires the triggering 'previous high/low marker' to be at least 3 sessions prior, not both extremes to be old.",
+            "problem": "Claim triggers a Buy on a new 20-day high OR a new 20-day low; spec only encodes the high-side closing breakout and omits the low-side buy on a new 20-day low with close beyond prior low marker.",
             "severity": "major"
           },
           {
             "field": "stop_loss_pct",
-            "problem": "Claim stop is price-level 'below the latest high/low that triggered the signal'. Spec replaces with fixed 3.0% stop proxy. Different stop level/type can change verdict.",
+            "problem": "Claim says 'Stop entries for failed trades are placed below the latest high/low that triggered the signal' with no percent distance; spec invents fixed stop_loss_pct 2.0 with 1-4 candidates as proxy.",
             "severity": "major"
           }
         ]
@@ -449,153 +412,152 @@
     "cost": [
       {
         "step": "compile",
-        "seconds": 21.7,
-        "tokens": 6748,
-        "quote_repairs": 0
-      },
-      {
-        "step": "audit",
-        "seconds": 19.6,
-        "tokens": 5846
-      },
-      {
-        "step": "audit repair",
-        "seconds": 110.9,
-        "tokens": 31921,
+        "seconds": 62.0,
+        "tokens": 22458,
         "quote_repairs": 2
       },
       {
         "step": "audit",
-        "seconds": 15.9,
-        "tokens": 5676
+        "seconds": 13.8,
+        "tokens": 4489
+      },
+      {
+        "step": "audit repair",
+        "seconds": 44.6,
+        "tokens": 15853,
+        "quote_repairs": 1
+      },
+      {
+        "step": "audit",
+        "seconds": 19.3,
+        "tokens": 6424
       }
     ]
   },
   "report": {
     "verdict": "SURVIVES",
-    "headline": "Tested an approximation of the claim. Holds up: +1.43% per trade after costs over 60 trades, beats random timing (p = 0.048).",
+    "headline": "Tested an approximation of the claim. Holds up: +0.91% per trade after costs over 122 trades, beats random timing (p = 0.042).",
     "reasons": [],
     "warnings": [
       "needs a human check: the automatic checks still disagree with the compiled rules after the repair rounds, so treat the verdict as provisional",
-      "just holding did better: +112% vs buy-and-hold +1781%",
-      "left out: 'new 20day high or low' as alternative Buy triggers is an OR the schema cannot express because entry conditions are AND-only; compiled high-breakout branch as testable core and retained low-marker age only.",
-      "left out: price-level stop 'below the latest high/low that triggered the signal' cannot be expressed as a watermark level; approximated as fixed stop_loss_pct proxy for testing.",
-      "audit: entry: Claim triggers Buy on 'a new 20day high or low' with close beyond prior marker. Spec only encodes high-breakout trigger close gt prior highest_high and omits low-side trigger close beyond prior low. Tests only half the claimed setups.",
-      "audit: entry[3], entry[4]: For a high breakout spec additionally requires lowest_low offset1 equal lowest_low offset3, i.e. low marker also quiet for 3 sessions. Claim only requires the triggering 'previous high/low marker' to be at least 3 sessions prior, not both extremes to be old.",
-      "audit: stop_loss_pct: Claim stop is price-level 'below the latest high/low that triggered the signal'. Spec replaces with fixed 3.0% stop proxy. Different stop level/type can change verdict."
+      "just holding did better: +154% vs buy-and-hold +1781%",
+      "left out: Claim triggers buy on new 20-day high OR new 20-day low, but entry conditions are ANDed so OR cannot be expressed; low-side buy on new 20-day low omitted and only high-side core tested.",
+      "left out: Stop below the latest high/low price level that triggered the signal cannot be expressed as a distance stop; approximated with fixed stop_loss_pct proxy.",
+      "audit: entry: Claim triggers a Buy on a new 20-day high OR a new 20-day low; spec only encodes the high-side closing breakout and omits the low-side buy on a new 20-day low with close beyond prior low marker.",
+      "audit: stop_loss_pct: Claim says 'Stop entries for failed trades are placed below the latest high/low that triggered the signal' with no percent distance; spec invents fixed stop_loss_pct 2.0 with 1-4 candidates as proxy."
     ],
     "asset": "BTCUSDT",
     "timeframe": "1d",
     "primary": {
-      "trades": 60,
-      "win_rate_pct": 43.333333333333336,
-      "avg_net_pct": 1.4299618428427312,
-      "total_net_pct": 112.34470457591269,
-      "total_gross_pct": 145.2335417946963,
-      "max_drawdown_pct": -15.150920522109136,
-      "avg_bars": 2.533333333333333,
+      "trades": 122,
+      "win_rate_pct": 31.147540983606557,
+      "avg_net_pct": 0.9100392031344294,
+      "total_net_pct": 154.29325777598754,
+      "total_gross_pct": 240.79744564233317,
+      "max_drawdown_pct": -22.126853032611137,
+      "avg_bars": 1.860655737704918,
       "open_at_end": 0,
       "buy_hold_pct": 1780.815115875236,
       "window": [
         "2017-08-17",
         "2026-10-26"
       ],
-      "exposure_pct": 4.526503871351995
+      "exposure_pct": 6.759976176295414
     },
     "null_test": {
-      "p_value": 0.047976011994003,
-      "strategy_mean_log_pct": 1.2550678886912086,
-      "null_median_log_pct": 0.012861361596423156,
-      "null_p95_log_pct": 1.2183856135184896,
-      "beat_by_random_pct": 4.75,
+      "p_value": 0.04247876061969016,
+      "strategy_mean_log_pct": 0.7650147321425441,
+      "null_median_log_pct": -0.035715718146305205,
+      "null_p95_log_pct": 0.7357835462419624,
+      "beat_by_random_pct": 4.2,
       "sims": 2000,
       "hist": {
         "edges": [
-          -2.6327,
-          -2.4932,
-          -2.3538,
-          -2.2143,
-          -2.0749,
-          -1.9355,
-          -1.796,
-          -1.6566,
-          -1.5171,
-          -1.3777,
-          -1.2383,
-          -1.0988,
-          -0.9594,
-          -0.8199,
-          -0.6805,
-          -0.5411,
-          -0.4016,
-          -0.2622,
-          -0.1227,
-          0.0167,
-          0.1561,
-          0.2956,
-          0.435,
-          0.5745,
-          0.7139,
-          0.8533,
-          0.9928,
-          1.1322,
-          1.2717,
-          1.4111,
-          1.5505,
-          1.69,
-          1.8294,
-          1.9689,
-          2.1083,
-          2.2477,
-          2.3872,
-          2.5266,
-          2.6661,
-          2.8055,
-          2.9449
+          -1.8834,
+          -1.7888,
+          -1.6942,
+          -1.5996,
+          -1.505,
+          -1.4104,
+          -1.3158,
+          -1.2212,
+          -1.1266,
+          -1.032,
+          -0.9374,
+          -0.8428,
+          -0.7483,
+          -0.6537,
+          -0.5591,
+          -0.4645,
+          -0.3699,
+          -0.2753,
+          -0.1807,
+          -0.0861,
+          0.0085,
+          0.1031,
+          0.1977,
+          0.2923,
+          0.3869,
+          0.4815,
+          0.5761,
+          0.6707,
+          0.7653,
+          0.8599,
+          0.9544,
+          1.049,
+          1.1436,
+          1.2382,
+          1.3328,
+          1.4274,
+          1.522,
+          1.6166,
+          1.7112,
+          1.8058,
+          1.9004
         ],
         "counts": [
           0,
           1,
-          1,
-          1,
-          7,
-          5,
-          10,
-          13,
-          26,
-          32,
-          34,
-          52,
-          86,
-          87,
-          104,
-          105,
-          148,
-          144,
-          151,
-          134,
-          127,
-          137,
-          132,
-          122,
-          85,
-          85,
-          49,
-          31,
-          35,
-          31,
-          8,
-          5,
-          5,
-          2,
+          0,
           2,
           0,
+          5,
+          2,
+          9,
+          9,
+          19,
+          39,
+          42,
+          61,
+          85,
+          96,
+          105,
+          143,
+          148,
+          147,
+          169,
+          165,
+          137,
+          117,
+          137,
+          98,
+          72,
+          65,
+          43,
+          33,
+          18,
+          11,
+          7,
+          8,
+          2,
+          1,
+          1,
           1,
           1,
           1,
           0
         ],
-        "strategy": 1.2551
+        "strategy": 0.765
       }
     },
     "out_of_sample": {
@@ -607,23 +569,23 @@
         null
       ],
       "in_window": {
-        "trades": 41,
-        "win_rate_pct": 43.90243902439025,
-        "avg_net_pct": 1.9143086516306338,
-        "total_net_pct": 100.34060936660873,
-        "total_gross_pct": 121.05665189269455,
-        "max_drawdown_pct": -15.150920522109136,
-        "avg_bars": 2.4390243902439024,
+        "trades": 84,
+        "win_rate_pct": 30.952380952380953,
+        "avg_net_pct": 1.1918200367998915,
+        "total_net_pct": 135.31624040781813,
+        "total_gross_pct": 187.87616646798062,
+        "max_drawdown_pct": -22.126853032611137,
+        "avg_bars": 1.6666666666666667,
         "open_at_end": 0
       },
       "after_window": {
-        "trades": 19,
-        "win_rate_pct": 42.10526315789473,
-        "avg_net_pct": 0.3847924133530465,
-        "total_net_pct": 5.991843215040515,
-        "total_gross_pct": 10.936965567422853,
-        "max_drawdown_pct": -8.458313695111041,
-        "avg_bars": 2.736842105263158,
+        "trades": 38,
+        "win_rate_pct": 31.57894736842105,
+        "avg_net_pct": 0.2871552550318285,
+        "total_net_pct": 8.064474145635202,
+        "total_gross_pct": 18.383348584794625,
+        "max_drawdown_pct": -16.699053949516507,
+        "avg_bars": 2.289473684210526,
         "open_at_end": 0
       },
       "counts": true
@@ -631,23 +593,23 @@
     "halves": {
       "split": "2022-03-23",
       "first": {
-        "trades": 34,
-        "win_rate_pct": 44.11764705882353,
-        "avg_net_pct": 2.093437881468056,
-        "total_net_pct": 88.74302970891183,
-        "total_gross_pct": 104.79029368393032,
-        "max_drawdown_pct": -13.02828145005802,
-        "avg_bars": 2.4411764705882355,
+        "trades": 66,
+        "win_rate_pct": 30.303030303030305,
+        "avg_net_pct": 1.228315051252595,
+        "total_net_pct": 98.67583818718337,
+        "total_gross_pct": 132.7755346756776,
+        "max_drawdown_pct": -18.40680941601024,
+        "avg_bars": 1.5909090909090908,
         "open_at_end": 0
       },
       "second": {
-        "trades": 26,
-        "win_rate_pct": 42.30769230769231,
-        "avg_net_pct": 0.5623393307942293,
-        "total_net_pct": 12.504660385816813,
-        "total_gross_pct": 19.748615709876027,
-        "max_drawdown_pct": -8.527861275121662,
-        "avg_bars": 2.6538461538461537,
+        "trades": 56,
+        "win_rate_pct": 32.142857142857146,
+        "avg_net_pct": 0.5349283821380196,
+        "total_net_pct": 27.99405307473968,
+        "total_gross_pct": 46.406041389685136,
+        "max_drawdown_pct": -16.699053949516518,
+        "avg_bars": 2.1785714285714284,
         "open_at_end": 0
       },
       "consistent": true
@@ -656,74 +618,74 @@
       "assets": [
         {
           "asset": "ETHUSDT",
-          "trades": 58,
-          "total_net_pct": 81.59970409316195,
-          "avg_net_pct": 1.313521316084561
+          "trades": 117,
+          "total_net_pct": 153.22907779629756,
+          "avg_net_pct": 1.027647810373034
         },
         {
           "asset": "SOLUSDT",
-          "trades": 37,
-          "total_net_pct": 35.53064699468385,
-          "avg_net_pct": 1.119843930437125
+          "trades": 82,
+          "total_net_pct": 59.5969160439594,
+          "avg_net_pct": 0.8064288385388804
         },
         {
           "asset": "BNBUSDT",
-          "trades": 53,
-          "total_net_pct": -29.924591183028625,
-          "avg_net_pct": -0.22982750480064099
+          "trades": 115,
+          "total_net_pct": 27.140376461431572,
+          "avg_net_pct": 0.5421999332350125
         },
         {
           "asset": "XRPUSDT",
-          "trades": 48,
-          "total_net_pct": -34.760268214671086,
-          "avg_net_pct": -0.6746415061732509
+          "trades": 73,
+          "total_net_pct": 171.07523538802872,
+          "avg_net_pct": 2.189511590256933
         },
         {
           "asset": "DOGEUSDT",
-          "trades": 32,
-          "total_net_pct": 206.42216475965927,
-          "avg_net_pct": 4.8137994848017875
+          "trades": 58,
+          "total_net_pct": 97.85903330303543,
+          "avg_net_pct": 1.665258256590187
         },
         {
           "asset": "ADAUSDT",
-          "trades": 46,
-          "total_net_pct": 94.1121253105991,
-          "avg_net_pct": 2.0688095972989147
+          "trades": 88,
+          "total_net_pct": -29.747137834988536,
+          "avg_net_pct": -0.13832612365661498
         },
         {
           "asset": "AVAXUSDT",
-          "trades": 29,
-          "total_net_pct": -14.817584537228601,
-          "avg_net_pct": -0.2779006577024338
+          "trades": 62,
+          "total_net_pct": -9.80208125886618,
+          "avg_net_pct": 0.08211182135626288
         },
         {
           "asset": "LINKUSDT",
-          "trades": 54,
-          "total_net_pct": 6.343401020781125,
-          "avg_net_pct": 0.3126395343643517
+          "trades": 107,
+          "total_net_pct": -8.472021197245304,
+          "avg_net_pct": 0.05740029866489658
         },
         {
           "asset": "LTCUSDT",
-          "trades": 63,
-          "total_net_pct": -46.06489970956752,
-          "avg_net_pct": -0.8201783284099086
+          "trades": 102,
+          "total_net_pct": -64.79149625900462,
+          "avg_net_pct": -0.9363614588874417
         },
         {
           "asset": "DOTUSDT",
-          "trades": 35,
-          "total_net_pct": -10.493654893895577,
-          "avg_net_pct": 0.12762946126077004
+          "trades": 63,
+          "total_net_pct": 4.2910906716882025,
+          "avg_net_pct": 0.3498435800504602
         },
         {
           "asset": "TRXUSDT",
-          "trades": 51,
-          "total_net_pct": -24.969159298975395,
-          "avg_net_pct": -0.2594682749727328
+          "trades": 104,
+          "total_net_pct": -22.91788497708539,
+          "avg_net_pct": -0.15609210845661609
         }
       ],
-      "tested": 10,
-      "positive": 6,
-      "positive_share_pct": 60.0
+      "tested": 11,
+      "positive": 8,
+      "positive_share_pct": 72.72727272727273
     },
     "sweep": {
       "readings": 20,
@@ -731,215 +693,215 @@
       "positive_share_pct": 100.0,
       "best": {
         "params": {
-          "holding period within 2-6 intervals": 5.0,
-          "fixed stop proxy for watermark stop": 3.0
+          "stop distance below trigger level": 1.0,
+          "holding period within 2-6 bars": 5.0
         },
-        "trades": 60,
-        "avg_net_pct": 2.38978927465333,
-        "total_net_pct": 251.2775667345335,
-        "p_value": 0.011976047904191617
+        "trades": 125,
+        "avg_net_pct": 1.2695771594269434,
+        "total_net_pct": 300.2428363683215,
+        "p_value": 0.003992015968063872
       },
-      "best_p_bonferroni": 0.23952095808383234,
+      "best_p_bonferroni": 0.07984031936127745,
       "results": [
         {
           "params": {
-            "holding period within 2-6 intervals": 2.0,
-            "fixed stop proxy for watermark stop": 1.0
+            "stop distance below trigger level": 1.0,
+            "holding period within 2-6 bars": 2.0
           },
-          "trades": 71,
-          "avg_net_pct": 0.4695143304185922,
-          "total_net_pct": 34.58256764682026,
-          "p_value": 0.13572854291417166
+          "trades": 129,
+          "avg_net_pct": 0.5167106634866971,
+          "total_net_pct": 78.14913857572621,
+          "p_value": 0.05588822355289421
         },
         {
           "params": {
-            "holding period within 2-6 intervals": 2.0,
-            "fixed stop proxy for watermark stop": 2.0
+            "stop distance below trigger level": 1.0,
+            "holding period within 2-6 bars": 3.0
           },
-          "trades": 63,
-          "avg_net_pct": 0.8627583997748461,
-          "total_net_pct": 63.337904870662776,
-          "p_value": 0.059880239520958084
+          "trades": 128,
+          "avg_net_pct": 0.6019248894843708,
+          "total_net_pct": 95.74771720761785,
+          "p_value": 0.06187624750499002
         },
         {
           "params": {
-            "holding period within 2-6 intervals": 2.0,
-            "fixed stop proxy for watermark stop": 3.0
+            "stop distance below trigger level": 1.0,
+            "holding period within 2-6 bars": 4.0
           },
-          "trades": 60,
-          "avg_net_pct": 0.8493155000721925,
-          "total_net_pct": 56.780766856822986,
-          "p_value": 0.08183632734530938
+          "trades": 128,
+          "avg_net_pct": 0.853239171517756,
+          "total_net_pct": 159.08275530960955,
+          "p_value": 0.027944111776447105
         },
         {
           "params": {
-            "holding period within 2-6 intervals": 2.0,
-            "fixed stop proxy for watermark stop": 5.0
+            "stop distance below trigger level": 1.0,
+            "holding period within 2-6 bars": 5.0
           },
-          "trades": 58,
-          "avg_net_pct": 0.9702986491697329,
-          "total_net_pct": 64.71843814186376,
-          "p_value": 0.07385229540918163
+          "trades": 125,
+          "avg_net_pct": 1.2695771594269434,
+          "total_net_pct": 300.2428363683215,
+          "p_value": 0.003992015968063872
         },
         {
           "params": {
-            "holding period within 2-6 intervals": 3.0,
-            "fixed stop proxy for watermark stop": 1.0
+            "stop distance below trigger level": 1.0,
+            "holding period within 2-6 bars": 6.0
           },
-          "trades": 71,
-          "avg_net_pct": 0.6110545819970657,
-          "total_net_pct": 47.2737647033997,
-          "p_value": 0.1277445109780439
+          "trades": 125,
+          "avg_net_pct": 1.4254098226936656,
+          "total_net_pct": 362.95722773060805,
+          "p_value": 0.003992015968063872
         },
         {
           "params": {
-            "holding period within 2-6 intervals": 3.0,
-            "fixed stop proxy for watermark stop": 2.0
+            "stop distance below trigger level": 2.0,
+            "holding period within 2-6 bars": 2.0
           },
-          "trades": 63,
-          "avg_net_pct": 0.8891722677855765,
-          "total_net_pct": 63.97701063293479,
-          "p_value": 0.08982035928143713
-        },
-        {
-          "params": {
-            "holding period within 2-6 intervals": 3.0,
-            "fixed stop proxy for watermark stop": 3.0
-          },
-          "trades": 60,
-          "avg_net_pct": 1.3270974179870176,
-          "total_net_pct": 104.83212511231699,
-          "p_value": 0.041916167664670656
-        },
-        {
-          "params": {
-            "holding period within 2-6 intervals": 3.0,
-            "fixed stop proxy for watermark stop": 5.0
-          },
-          "trades": 58,
-          "avg_net_pct": 1.2502112490795432,
-          "total_net_pct": 89.76178759344424,
-          "p_value": 0.0658682634730539
-        },
-        {
-          "params": {
-            "holding period within 2-6 intervals": 4.0,
-            "fixed stop proxy for watermark stop": 1.0
-          },
-          "trades": 71,
-          "avg_net_pct": 0.7476780480050296,
-          "total_net_pct": 60.26603693257411,
-          "p_value": 0.11377245508982035
-        },
-        {
-          "params": {
-            "holding period within 2-6 intervals": 4.0,
-            "fixed stop proxy for watermark stop": 2.0
-          },
-          "trades": 63,
-          "avg_net_pct": 0.8765335604989193,
-          "total_net_pct": 60.882419380916716,
-          "p_value": 0.12574850299401197
-        },
-        {
-          "params": {
-            "holding period within 2-6 intervals": 4.0,
-            "fixed stop proxy for watermark stop": 3.0
-          },
-          "trades": 60,
-          "avg_net_pct": 1.4299618428427312,
-          "total_net_pct": 112.34470457591269,
-          "p_value": 0.05189620758483034
-        },
-        {
-          "params": {
-            "holding period within 2-6 intervals": 4.0,
-            "fixed stop proxy for watermark stop": 5.0
-          },
-          "trades": 57,
-          "avg_net_pct": 1.4033552210226916,
-          "total_net_pct": 98.56785016944971,
-          "p_value": 0.11976047904191617
-        },
-        {
-          "params": {
-            "holding period within 2-6 intervals": 5.0,
-            "fixed stop proxy for watermark stop": 1.0
-          },
-          "trades": 71,
-          "avg_net_pct": 0.9778635414742158,
-          "total_net_pct": 83.43658097298703,
-          "p_value": 0.08982035928143713
-        },
-        {
-          "params": {
-            "holding period within 2-6 intervals": 5.0,
-            "fixed stop proxy for watermark stop": 2.0
-          },
-          "trades": 63,
-          "avg_net_pct": 1.3604112319862005,
-          "total_net_pct": 110.07324240670448,
-          "p_value": 0.04790419161676647
-        },
-        {
-          "params": {
-            "holding period within 2-6 intervals": 5.0,
-            "fixed stop proxy for watermark stop": 3.0
-          },
-          "trades": 60,
-          "avg_net_pct": 2.38978927465333,
-          "total_net_pct": 251.2775667345335,
+          "trades": 129,
+          "avg_net_pct": 0.8757159447916502,
+          "total_net_pct": 172.31443219280197,
           "p_value": 0.011976047904191617
         },
         {
           "params": {
-            "holding period within 2-6 intervals": 5.0,
-            "fixed stop proxy for watermark stop": 5.0
+            "stop distance below trigger level": 2.0,
+            "holding period within 2-6 bars": 3.0
           },
-          "trades": 57,
-          "avg_net_pct": 2.115806305077092,
-          "total_net_pct": 183.5107921205844,
-          "p_value": 0.03792415169660679
+          "trades": 127,
+          "avg_net_pct": 0.7131886269071923,
+          "total_net_pct": 118.87415433026214,
+          "p_value": 0.06187624750499002
         },
         {
           "params": {
-            "holding period within 2-6 intervals": 6.0,
-            "fixed stop proxy for watermark stop": 1.0
+            "stop distance below trigger level": 2.0,
+            "holding period within 2-6 bars": 4.0
           },
-          "trades": 70,
-          "avg_net_pct": 0.9017149675628803,
-          "total_net_pct": 72.82147742750091,
-          "p_value": 0.09580838323353294
-        },
-        {
-          "params": {
-            "holding period within 2-6 intervals": 6.0,
-            "fixed stop proxy for watermark stop": 2.0
-          },
-          "trades": 62,
-          "avg_net_pct": 1.0827221028093967,
-          "total_net_pct": 75.64750820758188,
-          "p_value": 0.13373253493013973
-        },
-        {
-          "params": {
-            "holding period within 2-6 intervals": 6.0,
-            "fixed stop proxy for watermark stop": 3.0
-          },
-          "trades": 58,
-          "avg_net_pct": 1.7071708126179488,
-          "total_net_pct": 130.91233295907537,
+          "trades": 122,
+          "avg_net_pct": 0.9100392031344294,
+          "total_net_pct": 154.29325777598754,
           "p_value": 0.05389221556886228
         },
         {
           "params": {
-            "holding period within 2-6 intervals": 6.0,
-            "fixed stop proxy for watermark stop": 5.0
+            "stop distance below trigger level": 2.0,
+            "holding period within 2-6 bars": 5.0
           },
-          "trades": 55,
-          "avg_net_pct": 1.8985739077571209,
-          "total_net_pct": 138.27890057966678,
-          "p_value": 0.11177644710578842
+          "trades": 118,
+          "avg_net_pct": 1.488439582397392,
+          "total_net_pct": 349.5095985434985,
+          "p_value": 0.007984031936127744
+        },
+        {
+          "params": {
+            "stop distance below trigger level": 2.0,
+            "holding period within 2-6 bars": 6.0
+          },
+          "trades": 117,
+          "avg_net_pct": 1.6236682157501046,
+          "total_net_pct": 390.7913946809193,
+          "p_value": 0.011976047904191617
+        },
+        {
+          "params": {
+            "stop distance below trigger level": 3.0,
+            "holding period within 2-6 bars": 2.0
+          },
+          "trades": 129,
+          "avg_net_pct": 0.6776780928935359,
+          "total_net_pct": 107.34090047860367,
+          "p_value": 0.04590818363273453
+        },
+        {
+          "params": {
+            "stop distance below trigger level": 3.0,
+            "holding period within 2-6 bars": 3.0
+          },
+          "trades": 127,
+          "avg_net_pct": 0.5808494213568567,
+          "total_net_pct": 81.32601425592227,
+          "p_value": 0.14570858283433133
+        },
+        {
+          "params": {
+            "stop distance below trigger level": 3.0,
+            "holding period within 2-6 bars": 4.0
+          },
+          "trades": 122,
+          "avg_net_pct": 0.7767662068341622,
+          "total_net_pct": 109.99824401242435,
+          "p_value": 0.11976047904191617
+        },
+        {
+          "params": {
+            "stop distance below trigger level": 3.0,
+            "holding period within 2-6 bars": 5.0
+          },
+          "trades": 117,
+          "avg_net_pct": 1.338565677225289,
+          "total_net_pct": 261.42025459174374,
+          "p_value": 0.033932135728542916
+        },
+        {
+          "params": {
+            "stop distance below trigger level": 3.0,
+            "holding period within 2-6 bars": 6.0
+          },
+          "trades": 115,
+          "avg_net_pct": 1.605733740436147,
+          "total_net_pct": 343.0993887020024,
+          "p_value": 0.041916167664670656
+        },
+        {
+          "params": {
+            "stop distance below trigger level": 4.0,
+            "holding period within 2-6 bars": 2.0
+          },
+          "trades": 129,
+          "avg_net_pct": 0.7662493599001763,
+          "total_net_pct": 127.28060085300234,
+          "p_value": 0.03792415169660679
+        },
+        {
+          "params": {
+            "stop distance below trigger level": 4.0,
+            "holding period within 2-6 bars": 3.0
+          },
+          "trades": 126,
+          "avg_net_pct": 0.6193989126600586,
+          "total_net_pct": 84.71058527064808,
+          "p_value": 0.13572854291417166
+        },
+        {
+          "params": {
+            "stop distance below trigger level": 4.0,
+            "holding period within 2-6 bars": 4.0
+          },
+          "trades": 119,
+          "avg_net_pct": 0.811913171333505,
+          "total_net_pct": 108.55561293858212,
+          "p_value": 0.15169660678642716
+        },
+        {
+          "params": {
+            "stop distance below trigger level": 4.0,
+            "holding period within 2-6 bars": 5.0
+          },
+          "trades": 114,
+          "avg_net_pct": 1.3732726532688377,
+          "total_net_pct": 253.9718386223068,
+          "p_value": 0.06387225548902195
+        },
+        {
+          "params": {
+            "stop distance below trigger level": 4.0,
+            "holding period within 2-6 bars": 6.0
+          },
+          "trades": 110,
+          "avg_net_pct": 1.3506456574136647,
+          "total_net_pct": 220.74901349236248,
+          "p_value": 0.08383233532934131
         }
       ]
     },
@@ -949,15 +911,13 @@
       "slippage_bps_per_side": 2.0
     },
     "grounding": {
-      "rule_elements": 10,
-      "quoted": 9,
+      "rule_elements": 8,
+      "quoted": 7,
       "assumed": 1,
       "quoted_fields": [
         "entry[0]",
         "entry[1]",
         "entry[2]",
-        "entry[3]",
-        "entry[4]",
         "stop_loss_pct",
         "max_hold_bars",
         "assets",
@@ -971,21 +931,19 @@
     "fidelity": {
       "level": "approximation",
       "gaps": [
-        "NOT EXPRESSIBLE: 'new 20day high or low' as alternative Buy triggers is an OR the schema cannot express because entry conditions are AND-only; compiled high-breakout branch as testable core and retained low-marker age only.",
-        "NOT EXPRESSIBLE: price-level stop 'below the latest high/low that triggered the signal' cannot be expressed as a watermark level; approximated as fixed stop_loss_pct proxy for testing."
+        "NOT EXPRESSIBLE: Claim triggers buy on new 20-day high OR new 20-day low, but entry conditions are ANDed so OR cannot be expressed; low-side buy on new 20-day low omitted and only high-side core tested.",
+        "NOT EXPRESSIBLE: Stop below the latest high/low price level that triggered the signal cannot be expressed as a distance stop; approximated with fixed stop_loss_pct proxy."
       ],
       "audit_majors": [
-        "entry: Claim triggers Buy on 'a new 20day high or low' with close beyond prior marker. Spec only encodes high-breakout trigger close gt prior highest_high and omits low-side trigger close beyond prior low. Tests only half the claimed setups.",
-        "entry[3], entry[4]: For a high breakout spec additionally requires lowest_low offset1 equal lowest_low offset3, i.e. low marker also quiet for 3 sessions. Claim only requires the triggering 'previous high/low marker' to be at least 3 sessions prior, not both extremes to be old.",
-        "stop_loss_pct: Claim stop is price-level 'below the latest high/low that triggered the signal'. Spec replaces with fixed 3.0% stop proxy. Different stop level/type can change verdict."
+        "entry: Claim triggers a Buy on a new 20-day high OR a new 20-day low; spec only encodes the high-side closing breakout and omits the low-side buy on a new 20-day low with close beyond prior low marker.",
+        "stop_loss_pct: Claim says 'Stop entries for failed trades are placed below the latest high/low that triggered the signal' with no percent distance; spec invents fixed stop_loss_pct 2.0 with 1-4 candidates as proxy."
       ]
     },
     "review": {
       "needs_human": true,
       "reasons": [
-        "audit still disagrees: entry: Claim triggers Buy on 'a new 20day high or low' with close beyond prior marker. Spec only encodes high-breakout trigger close gt prior highest_high and omits low-side trigger close beyond prior low. Tests only half the claimed setups.",
-        "audit still disagrees: entry[3], entry[4]: For a high breakout spec additionally requires lowest_low offset1 equal lowest_low offset3, i.e. low marker also quiet for 3 sessions. Claim only requires the triggering 'previous high/low marker' to be at least 3 sessions prior, not both extremes to be old.",
-        "audit still disagrees: stop_loss_pct: Claim stop is price-level 'below the latest high/low that triggered the signal'. Spec replaces with fixed 3.0% stop proxy. Different stop level/type can change verdict."
+        "audit still disagrees: entry: Claim triggers a Buy on a new 20-day high OR a new 20-day low; spec only encodes the high-side closing breakout and omits the low-side buy on a new 20-day low with close beyond prior low marker.",
+        "audit still disagrees: stop_loss_pct: Claim says 'Stop entries for failed trades are placed below the latest high/low that triggered the signal' with no percent distance; spec invents fixed stop_loss_pct 2.0 with 1-4 candidates as proxy."
       ]
     },
     "series": {
@@ -1278,282 +1236,282 @@
         1.0,
         1.0,
         1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.11088,
-        1.11088,
-        1.07497,
-        1.07497,
-        1.07497,
-        1.07497,
-        1.07497,
-        1.07497,
-        1.07497,
-        1.07497,
-        1.07497,
-        1.07497,
-        1.03245,
-        1.03245,
-        1.03245,
-        1.03245,
-        1.03245,
-        1.03245,
-        1.03245,
-        1.03245,
-        0.99842,
-        0.99842,
-        0.99842,
-        0.96615,
-        0.96615,
-        0.96615,
-        0.96615,
-        0.96615,
-        0.96615,
-        0.96615,
-        0.96615,
-        0.96615,
-        0.96615,
-        0.96615,
-        0.96615,
-        0.96615,
-        0.96615,
-        0.96615,
-        0.97982,
-        0.97982,
-        0.97982,
-        1.15679,
-        1.15679,
-        1.15679,
-        1.1194,
-        1.1194,
-        1.1194,
-        1.08322,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.25733,
-        1.33733,
-        1.33733,
-        1.33733,
-        1.33733,
-        1.33733,
-        1.33733,
-        1.33733,
-        1.2941,
-        1.2941,
-        1.41836,
-        1.41836,
-        1.41836,
-        1.41836,
-        1.41836,
-        1.41836,
-        1.41836,
-        1.47641,
-        1.42869,
-        1.42869,
-        1.42869,
-        1.42869,
-        1.42869,
-        1.42869,
-        1.58086,
-        1.58086,
-        1.52976,
-        1.52976,
-        1.52976,
-        1.67773,
-        1.85472,
-        2.04641,
-        2.04641,
-        2.04641,
-        2.04641,
-        2.04641,
-        1.91625,
-        1.91625,
-        1.91625,
-        1.85431,
-        1.85431,
-        1.85431,
-        1.85431,
-        1.85431,
-        1.85431,
-        1.85431,
-        1.85431,
-        1.85431,
-        1.85431,
-        1.96854,
-        1.9049,
-        1.9049,
-        1.9049,
-        1.9049,
-        2.08297,
-        2.01564,
-        1.95048,
-        1.95048,
-        1.95048,
-        1.95048,
-        1.95048,
-        1.95048,
-        1.95048,
-        1.95048,
-        1.88743,
-        1.88743,
-        1.88743,
-        1.88743,
-        1.88743,
-        1.88743,
-        1.88743,
-        1.88743,
-        1.88743,
-        1.88743,
-        1.88743,
-        1.88743,
-        1.88743,
-        1.82642,
-        1.82642,
-        1.82642,
-        1.82642,
-        1.82642,
-        1.76738,
-        1.76738,
-        1.76738,
-        1.76738,
-        1.76738,
-        1.76738,
-        1.76738,
-        1.76738,
-        1.76738,
-        1.76738,
-        2.04548,
-        2.04548,
-        2.04548,
-        2.04548,
-        2.04548,
-        2.04548,
-        2.06663,
-        2.06663,
-        2.11938,
-        2.11938,
-        2.11938,
-        2.11938,
-        2.11938,
-        2.11938,
-        2.11938,
-        2.11938,
-        2.11938,
-        2.11938,
-        2.11938,
-        2.11938,
-        2.11938,
-        2.11938,
-        2.07033,
-        2.07033,
-        2.00341,
-        2.00341,
-        2.00341,
-        2.00341,
-        2.00341,
-        2.00341,
-        1.93865,
-        1.93865,
-        1.93865,
-        2.10627,
-        2.10627,
-        2.10627,
-        2.03818,
-        2.03818,
-        2.03818,
-        2.03818,
-        2.03818,
-        2.03818,
-        2.03818,
-        2.03818,
-        2.03818,
-        2.03818,
-        2.03818,
-        2.03818,
-        2.03818,
-        2.03818,
-        2.03818,
-        2.03818,
-        2.08377,
-        2.08377,
-        2.11919,
-        2.10002,
-        2.10002,
-        2.17527,
-        2.17527,
-        2.10496,
-        2.10496,
-        2.03691,
-        2.03691,
-        2.03691,
-        2.03691,
-        2.03691,
-        2.03691,
-        2.03691,
-        2.03691,
-        2.03691,
-        2.0578,
-        1.99128,
-        1.99128,
-        1.99128,
-        1.99128,
-        1.99128,
-        2.12675,
-        2.12675,
-        2.12675,
-        2.12675,
-        2.12675,
-        2.12675,
-        2.10161,
-        2.18297,
-        2.18297,
-        2.18297,
-        2.18297,
-        2.18297,
-        2.18297,
-        2.18297,
-        2.18297,
-        2.18297,
-        2.17166,
-        2.17166,
-        2.17166,
-        2.17166,
-        2.17166,
-        2.10146,
-        2.10146,
-        2.10146,
-        2.10146,
-        2.10146,
-        2.10146,
-        2.10146,
-        2.10146,
-        2.10146,
-        2.10146,
-        2.03353,
-        2.03353,
-        2.03353,
-        2.19438,
-        2.19438,
-        2.12345,
-        2.12345,
-        2.12345,
-        2.12345
+        1.1696,
+        1.14346,
+        1.29856,
+        1.24116,
+        1.21343,
+        1.18631,
+        1.15979,
+        1.15979,
+        1.15979,
+        1.15979,
+        1.15979,
+        1.15979,
+        1.15979,
+        1.15979,
+        1.15979,
+        1.15979,
+        1.10853,
+        1.08376,
+        1.08376,
+        1.08376,
+        1.08376,
+        1.08376,
+        1.08376,
+        1.08376,
+        1.15658,
+        1.15658,
+        1.15658,
+        1.10546,
+        1.10546,
+        1.10546,
+        1.10546,
+        1.10546,
+        1.10546,
+        1.10546,
+        1.10546,
+        1.10546,
+        1.10546,
+        1.10546,
+        1.10546,
+        1.10546,
+        1.10546,
+        1.10546,
+        1.09604,
+        1.09604,
+        1.09604,
+        1.29401,
+        1.26509,
+        1.23682,
+        1.51429,
+        1.51429,
+        1.48045,
+        1.48045,
+        1.67729,
+        1.67729,
+        1.67729,
+        1.6398,
+        1.6398,
+        1.6398,
+        1.6398,
+        1.6398,
+        1.6398,
+        1.6398,
+        1.60315,
+        1.60315,
+        1.60315,
+        1.60315,
+        1.60315,
+        1.60315,
+        1.60315,
+        1.65223,
+        1.64986,
+        1.65934,
+        1.65934,
+        1.65934,
+        1.65934,
+        1.65934,
+        1.62225,
+        1.62225,
+        1.64341,
+        1.64341,
+        1.60668,
+        1.60668,
+        1.60668,
+        1.60668,
+        1.60668,
+        1.67244,
+        1.63506,
+        1.59852,
+        1.59852,
+        1.59852,
+        1.59852,
+        1.59852,
+        1.76879,
+        1.72925,
+        1.84528,
+        2.00889,
+        1.964,
+        2.15397,
+        2.32798,
+        2.27595,
+        2.27595,
+        2.22508,
+        2.17535,
+        2.17535,
+        2.12674,
+        2.12674,
+        2.12674,
+        2.07921,
+        2.07921,
+        2.07921,
+        2.07921,
+        2.07921,
+        2.07921,
+        2.07921,
+        2.07921,
+        2.07921,
+        2.29366,
+        2.38054,
+        2.32733,
+        2.27532,
+        2.27532,
+        2.22447,
+        2.12615,
+        2.07863,
+        2.03218,
+        2.03218,
+        2.03218,
+        2.03218,
+        2.03218,
+        2.03218,
+        2.03218,
+        2.03218,
+        1.98676,
+        1.98676,
+        1.98676,
+        1.98676,
+        2.12305,
+        2.12305,
+        2.12305,
+        2.12305,
+        2.12305,
+        2.12305,
+        2.12305,
+        2.12305,
+        2.12305,
+        2.0756,
+        2.0756,
+        2.0756,
+        2.0756,
+        2.0756,
+        2.02921,
+        2.02921,
+        2.02921,
+        2.02921,
+        1.93952,
+        1.93952,
+        1.93952,
+        1.93952,
+        1.89618,
+        1.89618,
+        2.08146,
+        2.07335,
+        2.07335,
+        2.02701,
+        2.02701,
+        1.93742,
+        1.93742,
+        1.93742,
+        1.98688,
+        1.98688,
+        1.98688,
+        1.98688,
+        1.98688,
+        1.98688,
+        2.13752,
+        2.13752,
+        2.13752,
+        2.13752,
+        2.13752,
+        2.13752,
+        2.13752,
+        2.13752,
+        2.08974,
+        2.08974,
+        2.08881,
+        2.07028,
+        2.07028,
+        2.35316,
+        2.35316,
+        2.35316,
+        2.24916,
+        2.24916,
+        2.24916,
+        2.44362,
+        2.44362,
+        2.6684,
+        2.6684,
+        2.6684,
+        2.6684,
+        2.6684,
+        2.6684,
+        2.55046,
+        2.55046,
+        2.55046,
+        2.55046,
+        2.55046,
+        2.49346,
+        2.46047,
+        2.46047,
+        2.40548,
+        2.40548,
+        2.40548,
+        2.41517,
+        2.41517,
+        2.45622,
+        2.434,
+        2.58233,
+        2.67487,
+        2.67487,
+        2.61508,
+        2.61508,
+        2.55664,
+        2.55664,
+        2.55664,
+        2.55664,
+        2.55664,
+        2.55664,
+        2.55664,
+        2.55664,
+        2.55664,
+        2.52513,
+        2.41352,
+        2.35958,
+        2.35958,
+        2.35958,
+        2.35958,
+        2.5201,
+        2.5201,
+        2.5201,
+        2.46378,
+        2.46378,
+        2.46378,
+        2.43466,
+        2.52891,
+        2.52891,
+        2.52891,
+        2.52891,
+        2.52891,
+        2.52891,
+        2.52891,
+        2.52891,
+        2.47239,
+        2.45958,
+        2.45958,
+        2.45958,
+        2.45958,
+        2.40461,
+        2.35087,
+        2.35087,
+        2.42888,
+        2.42888,
+        2.43313,
+        2.43313,
+        2.43313,
+        2.43313,
+        2.43313,
+        2.43313,
+        2.32559,
+        2.32559,
+        2.32559,
+        2.60106,
+        2.60106,
+        2.54293,
+        2.54293,
+        2.54293,
+        2.54293
       ],
       "buy_hold": [
         1.00554,
@@ -1840,5 +1798,5 @@
       ]
     }
   },
-  "seconds": 168.2
+  "seconds": 139.8
 }

@@ -157,7 +157,7 @@ def _run_job(key: str, kind: str, text: str | None, blob: bytes | None, ext: str
                        "transcript": trace.get("transcript"), "media": f"/api/media/{key}" if kind == "image" else None},
             "spec": spec.model_dump(mode="json"),
             "audit": audit.model_dump(),
-            "trace": {k: trace.get(k) for k in ("model", "grounding", "audit_repair", "audits", "cost")},
+            "trace": {k: trace.get(k) for k in ("model", "grounding", "audit_repair", "audit_repair_failed", "audits", "cost")},
             "report": report,
         }
         CACHE.mkdir(parents=True, exist_ok=True)
@@ -333,7 +333,7 @@ def corpus_item(cid: str) -> JSONResponse:
             "source": {"kind": "text", "text": rec["excerpt"], "note": None, "posted": rec.get("posted"),
                        "url": rec["url"], "origin": rec["source"], "transcript": None, "media": None},
             "spec": d["spec"], "audit": d.get("audit"),
-            "trace": {k: (d.get("trace") or {}).get(k) for k in ("model", "grounding", "audit_repair", "audits", "cost")},
+            "trace": {k: (d.get("trace") or {}).get(k) for k in ("model", "grounding", "audit_repair", "audit_repair_failed", "audits", "cost")},
             "report": report,
             "review": review_mod.review_state(report),
         }

@@ -187,3 +187,14 @@ def test_v2_validation():
         spec(stop_loss_pct=3, stop_atr_mult=2)
     with pytest.raises(ValueError):
         spec(entry=[{"left": {"kind": "close", "window_fn": "min"}, "op": "gt", "right": {"kind": "const", "value": 1}}])
+
+
+def test_add_operand():
+    from falsify.engine import operand_series
+    from falsify.spec import Operand
+    df = _px([10, 20, 30, 40])
+    s = operand_series(Operand(kind="close", offset=1, add=5), df).tolist()
+    assert np.isnan(s[0]) and s[1:] == [15, 25, 35]
+    assert Operand(kind="rsi", period=14, offset=160, add=5).label() == "rsi(14)[160]+5"
+    with pytest.raises(ValueError):
+        Operand(kind="const", value=3, add=1)

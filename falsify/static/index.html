@@ -354,7 +354,8 @@ function opLabel(o) {
   let base = names[k] || k;
   if (o.window_fn) base = `the ${o.window_fn === "min" ? "lowest" : "highest"} ${base} of the last ${o.window} bars`;
   if (o.offset) base = `${base} ${o.offset === 1 ? "one bar ago" : o.offset + " bars ago"}`;
-  return m + base;
+  const add = o.add ? ` ${o.add > 0 ? "plus" : "minus"} ${fmt(Math.abs(o.add), 2).replace(/\.?0+$/, "")}` : "";
+  return m + base + add;
 }
 const OPS = {gt: "is above", lt: "is below", ge: "is at or above", le: "is at or below", crosses_above: "crosses above", crosses_below: "crosses below"};
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -587,7 +588,9 @@ function render(res, animate) {
   const audits = res.trace?.audits || (res.audit ? [res.audit] : []);
   if (audits.length) {
     const last = audits[audits.length - 1];
-    const intro = res.trace?.audit_repair
+    const intro = res.trace?.audit_repair_failed
+      ? `The first read found ${audits[0].issues.length === 1 ? "one problem" : audits[0].issues.length + " problems"}; the rules were sent back once, but the repair never produced a valid spec, so the first version was tested.`
+      : res.trace?.audit_repair
       ? `The first read found ${audits[0].issues.length === 1 ? "one problem" : audits[0].issues.length + " problems"}; the rules were sent back once and checked again.`
       : "A second Muse Spark read compared the rules with the original claim.";
     box.append(el("div", {class: "sect"}, el("h2", {}, "The audit"), el("p", {}, intro + " " + (last.faithful ? "Final check: the rules are a fair encoding of the claim." : "Final check: some differences remain, listed below.")),

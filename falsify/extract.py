@@ -25,7 +25,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from . import grounding
+from . import grounding, sanity
 from .data import UNIVERSE
 from .spec import ClaimSpec, SourceType, model_json_schema
 
@@ -60,7 +60,9 @@ Rules:
   days_left_in_month lt 0.5. Calendar rules need daily or shorter bars.
 - Do not correct the claimant's text. If a word looks like a typo (e.g. "4th" where "4h" would make sense), compile
   what is written, and say in assumptions which other reading was possible.
-- "Price above X" uses close. Breakouts use highest_high / lowest_low, which look at the PREVIOUS N bars.
+- "Price above X" uses close. Breakouts use highest_high / lowest_low, which already look at the PREVIOUS N bars
+  (the current bar excluded): "close above the 20-day high" is close gt highest_high(20) with offset 0. Adding
+  offset 1 would lag it a second time.
 - Indicators available: sma, ema, wma, rsi, atr, adx, pct_change, highest_high, lowest_low, volume_sma,
   bb_upper / bb_lower (period, param = std width), macd_line / macd_signal / macd_hist (period = fast,
   param = slow, signal 9), supertrend (period = ATR length, param = multiplier; close above it = uptrend),
@@ -72,15 +74,22 @@ Rules:
   type and one target type.
 - Operand extras: offset = value N bars ago ("previous RSI" is offset 1; "rising for 3 bars" is x > x[1] AND
   x[1] > x[2] AND x[2] > x[3]); window_fn min/max with window = lowest/highest of that operand over the last N bars
-  including the current one ("RSI at its 50-bar low": rsi le min(rsi, 50)). Comparisons: gt, lt, ge, le,
-  crosses_above, crosses_below.
+  including the current one ("RSI at its 50-bar low": rsi le min(rsi, 50)); add = a constant added after the
+  multiplier ("RSI 160 bars ago plus 5": rsi, offset 160, add 5). Comparisons: gt, lt, ge, le, crosses_above,
+  crosses_below.
+- All entry conditions must be able to hold on the SAME bar. A sequence ("hit its 50-bar low, then rose for 3
+  bars") needs offsets: the low is 3 bars back, rsi[3] le min(rsi, 50)[3], plus the three rises. "At its low"
+  and "rising" on the same bar contradict each other and the rule never fires. Every entry is checked against
+  the full price history; a rule that never fires is sent back.
 - If the claim uses something the schema cannot express (an averaging / DCA ladder, position sizing, partial
   exits, moving a stop to breakeven, pyramiding, multi-timeframe conditions, an indicator not listed above, a
   proprietary score), compile the closest testable core
   and add an assumption that starts with "NOT EXPRESSIBLE:" naming exactly what was left out. If what is left
   out is the heart of the strategy, set testable=false instead.
-- Every exit must be expressible: a condition, stop_loss_pct, take_profit_pct or max_hold_bars. If the claim
-  gives no exit at all, use the most common reading for that setup and say so in assumptions.
+- Every testable spec needs an exit: a condition, a stop, a target, a trailing stop or max_hold_bars. If the
+  claim gives no exit at all, use the most common reading for that setup and say so in assumptions.
+- Every testable spec needs assets, even when the claim is about something outside the bundled universe:
+  name it (EURUSD, SPX, XAUUSD) and keep testable=true; the engine reports it as lacking data.
 - The engine always tests the rule over ALL available history, starting flat, one position at a time. The test
   window and the starting position are not part of the rule: do not mark them NOT EXPRESSIBLE, and put any
   period the claimant cites in `claimed`.
@@ -90,8 +99,8 @@ Rules:
   funding rates, order flow, sentiment or news). Give the reason in one sentence.
 - claim_summary: one neutral sentence. Never include usernames, handles or names of the author.
 - assumptions: list every interpretation you made. The test is only as honest as this list.
-- evidence: one row for EVERY rule element: each entry[i], each exit[i], each of stop_loss_pct / take_profit_pct /
-  max_hold_bars that you set, plus assets, timeframe and direction. If the claimant states it, copy their exact
+- evidence: one row for EVERY rule element: each entry[i], each exit[i], each stop, target, trailing stop and
+  max_hold_bars field that you set (field = its name, e.g. stop_atr_mult), plus assets, timeframe and direction. If the claimant states it, copy their exact
   words into quote (short: only the words that state it, copied verbatim from the CLAIM or TRANSCRIPT, never from
   CONTEXT) and set assumed=false. If you chose it, set quote=null and assumed=true. Quotes are checked
   mechanically against the source; a paraphrase is rejected.
@@ -288,13 +297,20 @@ def compile_claim(source: Source, model: str | None = None, client=None,
             spec.source_type = source.kind
             on_stage("quote_check")
             g = grounding.check(spec, ground_text)
+            fires = sanity.entry_problems(spec)
             last_spec, last_grounding = spec, g
             trace["attempts"][-1]["grounding_problems"] = g.problems
-            if g.ok or attempt == MAX_REPAIRS:
+            if fires:
+                trace["attempts"][-1]["sanity_problems"] = fires
+            if (g.ok and not fires) or attempt == MAX_REPAIRS:
                 break
-            feedback = ("The ClaimSpec is valid but its evidence failed the quote check:\n- "
-                        + "\n- ".join(g.problems) + "\nReturn a corrected ClaimSpec. Change only what these "
-                        "problems require.")
+            parts = []
+            if g.problems:
+                parts.append("its evidence failed the quote check:\n- " + "\n- ".join(g.problems))
+            if fires:
+                parts.append("it was run against the price history:\n- " + "\n- ".join(fires))
+            feedback = ("The ClaimSpec is valid but " + "\nAlso, ".join(parts)
+                        + "\nReturn a corrected ClaimSpec. Change only what these problems require.")
         messages += [{"role": "assistant", "content": raw}, {"role": "user", "content": feedback}]
     assert last_spec is not None and last_grounding is not None
     trace["grounding"] = last_grounding.summary()
@@ -350,8 +366,17 @@ def compile_and_audit(source: Source, model: str | None = None, client=None,
                       "testable core and say so in an assumption starting with \"NOT EXPRESSIBLE:\" -- or set "
                       "testable=false if that part is the heart of the strategy. Return the full corrected ClaimSpec.")
         t1 = time.time()
-        spec2, trace2 = compile_claim(source, model=model, client=client, prior=(spec.model_dump_json(), feedback),
-                                      on_stage=on_stage)
+        try:
+            spec2, trace2 = compile_claim(source, model=model, client=client,
+                                          prior=(spec.model_dump_json(), feedback), on_stage=on_stage)
+        except RuntimeError as e:
+            # The repair itself failed validation every time. Keep the first-pass spec and its audit: its major
+            # issues stay on the record, so the result is escalated to a human instead of lost.
+            ledger.append({"step": "audit repair", "seconds": round(time.time() - t1, 1), "tokens": 0, "failed": True})
+            trace["audit_repair"] = True
+            trace["audit_repair_failed"] = str(e)[:500]
+            trace["cost"] = ledger
+            return spec, audit, trace
         ledger.append(_compile_cost("audit repair", trace2, t1))
         on_stage("audit")
         audit2 = audit_claim(source, spec2, model=model, client=client, ledger=ledger)

@@ -6,44 +6,43 @@
 
 | Verdict | Claims |
 |---|---|
-| SURVIVES | 5 |
+| SURVIVES | 4 |
 | DIES | 4 |
 | INCONCLUSIVE | 12 |
-| UNTESTABLE | 12 |
-| pipeline error | 2 |
+| UNTESTABLE | 15 |
 
 ## How well the compiler did
 
 | Check | Result |
 |---|---|
 | vague -> UNTESTABLE | 4/5 |
-| other_asset -> UNTESTABLE | 3/3 |
-| rule/backtest -> testable (the rest are refused with a stated reason) | 20/25 |
-| Rule elements quoted verbatim from the claim (tested claims) | 114/136 (84%) |
-| Compiled valid and quote-clean on the first attempt | 27/33 |
-| Audit found major issues and sent the spec back for one repair | 14/33 |
-| Still flagged unfaithful after repair | 10/33 |
-| Verdicts on an approximation (disclosed gap or unresolved audit issue) | 10/21 |
-| Escalated to a human (audit or quote check still failing after the repairs) | 6/21 |
-| Mean tokens per claim (transcribe + compile, excl. audit) | 7,932 |
+| other_asset -> UNTESTABLE | 4/4 |
+| rule/backtest -> testable (the rest are refused with a stated reason) | 19/26 |
+| Rule elements quoted verbatim from the claim (tested claims) | 104/124 (84%) |
+| Compiled valid and quote-clean on the first attempt | 28/35 |
+| Audit found major issues and sent the spec back for one repair | 16/35 |
+| Still flagged unfaithful after repair | 11/35 |
+| Verdicts on an approximation (disclosed gap or unresolved audit issue) | 9/20 |
+| Escalated to a human (audit or quote check still failing after the repairs) | 5/20 |
+| Mean tokens per claim (transcribe + compile, excl. audit) | 7,645 |
 
 ## What verification costs
 
-Measured on the 33 claims with a cost ledger. Audit = the independent Muse Spark read; audit repair = the compiler's second pass when the audit finds a major issue.
+Measured on the 35 claims with a cost ledger. Audit = the independent Muse Spark read; audit repair = the compiler's second pass when the audit finds a major issue.
 
 | Step | Runs | Mean seconds | Mean tokens | Share of time | Share of tokens |
 |---|---|---|---|---|---|
-| compile | 33 | 20 | 6,520 | 36% | 35% |
-| audit | 47 | 16 | 5,444 | 42% | 42% |
-| audit repair | 14 | 29 | 9,963 | 22% | 23% |
+| compile | 35 | 20 | 6,853 | 37% | 37% |
+| audit | 50 | 15 | 5,347 | 40% | 41% |
+| audit repair | 16 | 27 | 8,698 | 23% | 22% |
 
-Verification (audit + repair) is 64% of model time and 65% of tokens; mean end-to-end 55s per claim.
+Verification (audit + repair) is 63% of model time and 63% of tokens; mean end-to-end 55s per claim.
 
 ## Correcting for testing many claims at once
 
-15 claims got a random-timing p-value. At p < 0.05 each, about 0.8 would pass by luck alone. Benjamini-Hochberg at a 5% false-discovery rate keeps the ones that still stand when the whole corpus is taken into account.
+14 claims got a random-timing p-value. At p < 0.05 each, about 0.7 would pass by luck alone. Benjamini-Hochberg at a 5% false-discovery rate keeps the ones that still stand when the whole corpus is taken into account.
 
-- SURVIVES on its own: 5 (c007, c017, c026, c028, c033)
+- SURVIVES on its own: 4 (c007, c017, c028, c033)
 - Still survives after the corpus-level correction: 1 (c033)
 
 
@@ -51,7 +50,7 @@ Verification (audit + repair) is 64% of model time and 65% of tokens; mean end-t
 
 | id | Kind | Claim (neutral summary) | Claimed | Measured | Verdict | Why | Quoted |
 |---|---|---|---|---|---|---|---|
-| [c001](https://www.tradingview.com/chart/BTCUSD/y4z6Xvkd-This-Bitcoin-signal-has-a-71-winrate/) | backtest_claim | A Bitcoin daily long signal requiring RSI at its 50-day low, rising for 3 bars, below 37.5 and below its value 160 days earlier plus 5 is claimed to have a 71% win rate. | 71.4% Winrate |  | **INCONCLUSIVE** (approx.) | Only 0 trades between 2017-08-17 and 2026-10-26: too few to tell skill from luck. | 7/10 |
+| [c001](https://www.tradingview.com/chart/BTCUSD/y4z6Xvkd-This-Bitcoin-signal-has-a-71-winrate/) | backtest_claim | A daily Bitcoin long signal requiring RSI at its 50-day low then rising for three bars, below 37.5 and below RSI 160 bars ago plus 5, claimed to have 71.4% win rate. | 71.4% Winrate |  | **UNTESTABLE** | This claim can't be turned into rules anyone could check. |  |
 | [c002](https://www.tradingview.com/chart/BTCUSD/VZbyvzJF-8-and-21-day-moving-averages-FTW/) | backtest_claim | Enter when the 8-day EMA crosses the 21-day EMA and exit if price crosses the 21-day EMA or after six days. | produced much more profit than loss | 72 trades, win 47%, +0.91%/trade | **INCONCLUSIVE** (approx.) | Makes money (+0.91% per trade after costs, 72 trades) but can't be told from luck: random timing did as well 28% of the time. | 3/6 |
 | [c003](https://www.tradingview.com/script/eZsaqsZY-BTC-RSI-Strategy-3Commas/) | backtest_claim | A 4-hour RSI(14) strategy enters when RSI drops below 28, layers five scaled averaging orders at fixed drawdowns, and targets 3% above average entry with no stop. | Percent Profitable: 70.97% (44 / 62) |  | **UNTESTABLE** | This claim can't be turned into rules anyone could check. |  |
 | [c004](https://backtrex.com/en/backtests/ema-8-21-crossover-gold) | other_asset | Long-only 1-hour XAU/USD strategy that buys when EMA 8 crosses above EMA 21 with a 1.5% stop and 4.5% target. | won 34% of them and returned +119% |  | **UNTESTABLE** | No bundled history for the asset/timeframe this claim needs. | 6/6 |
@@ -62,7 +61,7 @@ Verification (audit + repair) is 64% of model time and 65% of tokens; mean end-t
 | [c009](https://www.bloomberg.com/professional/insights/markets/this-bitcoin-trading-strategy-gained-7830-in-5-years) | backtest_claim | A 50-day and 55-day moving-average crossover strategy on Bitcoin generated about 7,830% profit over the past five years. | a profit of about 7,830% | 56 trades, win 46%, +12.21%/trade | **INCONCLUSIVE** | Makes money (+12.21% per trade after costs, 56 trades) but can't be told from luck: random timing did as well 15% of the time. | 3/5 |
 | [c010](https://www.tradingview.com/script/N0nYQBlh/) | rule | Enter long when Supertrend flips from downtrend to uptrend with an ATR-based stop, exiting on Supertrend flip to downtrend. | The strategy has also worked in previous years | 225 trades, win 32%, +1.66%/trade | **INCONCLUSIVE** (approx.) | Makes money (+1.66% per trade after costs, 225 trades) but can't be told from luck: random timing did as well 7% of the time. | 6/6 |
 | [c011](https://northbit.substack.com/p/when-to-buy-crypto) | backtest_claim | Buy Bitcoin when price falls below its 200-week moving average. | Investing $10,000 during the March 2020 dip would have resulted in a 1.8 BTC / $105,000 portfolio today | 1 trades, win 100%, +261.21%/trade | **INCONCLUSIVE** (approx.) | Only 1 trades between 2017-08-17 and 2026-10-26: too few to tell skill from luck. | 3/5 |
-| [c012](https://seekingalpha.com/article/4678880-bitcoin-strategy-using-200-day-simple-moving-average) | rule | | | | ERROR | RuntimeError: model output failed validation 3 times: 1 validation error for Cla | |
+| [c012](https://seekingalpha.com/article/4678880-bitcoin-strategy-using-200-day-simple-moving-average) | rule | Buy Bitcoin on the last day of the month when price is above its 200-day simple moving average and sell when price is below it. | The strategy has been profitable so far | 13 trades, win 54%, +33.38%/trade | **INCONCLUSIVE** (approx.) | Only 13 trades between 2017-08-17 and 2026-10-26: too few to tell skill from luck. | 4/6 |
 | [c013](https://bestinterest.blog/buy-the-dip-for-bitcoin/) | backtest_claim | Buying only on days more than 5% below the recent high accumulates less bitcoin than buying $1 every day. | dollar cost averaging works better than buying the dip |  | **UNTESTABLE** | This claim can't be turned into rules anyone could check. |  |
 | [c014](https://www.tradingview.com/script/gPAcpcHK-Sundays-Suck-for-Bitcoin-Daily-Strategy/) | rule | Buy Bitcoin on Wednesday when price is rising and sell on Saturday on daily bars to avoid weak Sundays. |  | 251 trades, win 50%, +0.20%/trade | **DIES** | No better than random timing: random entries with the same holding times did as well 52% of the time (p = 0.524). | 6/7 |
 | [c015](https://www.steemit.com/crypto/@grayble/algorithmic-trading-backtesting-a-simple-moving-average-strategy-on-btc-usd-with-python) | backtest_claim | A 15-period simple moving average strategy buys bitcoin when closing price is above the average and sells when the average is above closing price. | would have generated 130% return on investment | 223 trades, win 26%, +2.03%/trade | **INCONCLUSIVE** | Makes money (+2.03% per trade after costs, 223 trades) but can't be told from luck: random timing did as well 14% of the time. | 5/5 |
@@ -74,11 +73,11 @@ Verification (audit + repair) is 64% of model time and 65% of tokens; mean end-t
 | [c021](https://www.tradingview.com/script/IYQMk5fS/) | backtest_claim | An ETH/USDT 4h Ichimoku lead-line strategy that holds long while the green lead line is above the red lead line, entering on a green close above the green line and exiting on a red close below the green line. | you would make more profit with this strategy than holding the coin |  | **UNTESTABLE** | This claim can't be turned into rules anyone could check. |  |
 | [c022](https://community.gainium.io/t/classic-20-50-rsi-bot/2442) | rule | Go long when 20 EMA crosses above 50 EMA while RSI is below 70, exiting on reverse EMA crossover with a moving stop for protection. | it works very well in the backtests with ETH | 661 trades, win 29%, -0.08%/trade | **DIES** (approx.) | Loses money after costs: -0.08% per trade, -53.9% total (before costs +125.2%). | 7/7 |
 | [c023](https://community.gainium.io/t/strategy-quant-bot-ii/1204) | rule | A spot long bot enters when 4-hour RSI is between 55 and 70 with price above the 200 EMA, exits on RSI above 70 with an ATR take-profit and no stop-loss. | In BTC it has a very good performance | 604 trades, win 87%, +0.01%/trade | **DIES** (approx.) | No better than random timing: random entries with the same holding times did as well 86% of the time (p = 0.858). | 8/8 |
-| [c024](https://forums.babypips.com/t/the-5-ema-method-i-use/55777) | other_asset | | | | ERROR | RuntimeError: model output failed validation 3 times: 1 validation error for Cla | |
+| [c024](https://forums.babypips.com/t/the-5-ema-method-i-use/55777) | other_asset | Enter when the 5-period EMA crosses the 50-period EMA and the 5-period RSI crosses the 50 line. | usd/cad has moved just over 200 pips in my favour |  | **UNTESTABLE** | No bundled history for the asset/timeframe this claim needs. | 4/6 |
 | [c025](https://quantpedia.com/how-to-design-a-simple-multi-timeframe-trend-strategy-on-bitcoin/) | backtest_claim | Long hourly MACD crosses filtered by daily MACD uptrend improves annual return, drawdown and Sharpe. | Annual return rises to 6.6% (from 4.6%) |  | **UNTESTABLE** | This claim can't be turned into rules anyone could check. |  |
-| [c026](https://roguequant.substack.com/p/i-backtested-the-legendary-turtle) | backtest_claim | Long-side Turtle system buying 20-day breakouts and exiting on 10-day reversals with ATR stops, applied to Bitcoin and Ethereum. | Total profit across all 43 markets: $1,147,318 | 47 trades, win 40%, +13.86%/trade | **SURVIVES** (approx.) | Holds up: +13.86% per trade after costs over 47 trades, beats random timing (p = 0.033). | 5/6 |
+| [c026](https://roguequant.substack.com/p/i-backtested-the-legendary-turtle) | backtest_claim | Long-side Turtle strategy buys 20-day breakouts and exits on 10-day reversals with ATR stops, reported profitable across 43 markets from 2007 to 2025. | Total profit across all 43 markets: $1,147,318 |  | **UNTESTABLE** | This claim can't be turned into rules anyone could check. |  |
 | [c027](https://www.tradingview.com/chart/BTCUSD/fV1dY48o-BTC-Daily-Here-comes-the-Money-Wyckoff-Re-accumulation-Pattern/) | vague | The claim is that a potential Wyckoff re-accumulation spring is playing out with scope for about 25% upside back to the all-time high over the coming weeks. |  |  | **UNTESTABLE** | This claim can't be turned into rules anyone could check. |  |
-| [c028](https://www.cryptodatadownload.com/blog/posts/turtle-soup-trading-strategy-python-cryptocurrency/) | rule | Buy Bitcoin after a new 20-day high when the close exceeds a marker at least 3 sessions old, with a stop below the signal extreme and exit within 2-6 bars. |  | 60 trades, win 43%, +1.43%/trade | **SURVIVES** (approx.) | Holds up: +1.43% per trade after costs over 60 trades, beats random timing (p = 0.048). | 9/10 |
+| [c028](https://www.cryptodatadownload.com/blog/posts/turtle-soup-trading-strategy-python-cryptocurrency/) | rule | Buy Bitcoin after a closing new 20-day high where the prior extreme was at least 3 sessions earlier, exiting within 2-6 bars. |  | 122 trades, win 31%, +0.91%/trade | **SURVIVES** (approx.) | Holds up: +0.91% per trade after costs over 122 trades, beats random timing (p = 0.042). | 7/8 |
 | [c029](https://backtrex.com/en/backtests/connors-rsi-2-sp-500) | other_asset | A daily long strategy on the S&P 500 entering when 2-period RSI is below 5 while above the 200-day SMA and exiting on a close above the 5-day SMA or below the 200-day SMA returned 18.1% from October 2016 to October 2026 versus 255.4% buy-and-hold. | the strategy is at +18.1%, against +255.4% for buying and holding |  | **UNTESTABLE** | No bundled history for the asset/timeframe this claim needs. | 7/7 |
 | [c030](https://the-arc.beehiiv.com/p/blood-buy) | vague | The claim is that buying Bitcoin after pullbacks of 20% or more leads to a rebound to new highs. | History says you will be okay. | 13 trades, win 62%, +8.52%/trade | **INCONCLUSIVE** (approx.) | Only 13 trades between 2017-08-17 and 2026-10-26: too few to tell skill from luck. | 4/5 |
 | [c031](https://community.gainium.io/t/the-ultimately-set-and-forget/970) | backtest_claim | Buying Solana when WMA7 crosses above WMA25 and selling when WMA7 crosses below WMA25 would have grown an investment from 4 years ago to 85 times its initial value in 36 trades. | you would have made 85 times your money in 36 risk-free deals | 64 trades, win 31%, +22.50%/trade | **INCONCLUSIVE** (approx.) | Makes money (+22.50% per trade after costs, 64 trades) but can't be told from luck: random timing did as well 10% of the time. | 4/5 |

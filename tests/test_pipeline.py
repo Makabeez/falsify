@@ -57,3 +57,54 @@ def test_one_repair_round_then_escalate():
 def test_repair_fixes_it():
     client, trace, rep = _run([MAJOR, {"faithful": True, "issues": []}])
     assert trace["audit_repair"] and not rep.review["needs_human"]
+
+
+def test_failed_audit_repair_keeps_first_pass_and_escalates():
+    """c012/c024 on 29 Oct: the repair round returned an invalid spec 3 times and the whole claim errored."""
+    bad = dict(SPEC, assets=[])
+
+    class Flaky(FakeClient):
+        def create(self, **kw):
+            r = super().create(**kw)
+            if kw["response_format"]["json_schema"]["name"] == "ClaimSpec" and self.calls.count("ClaimSpec") > 1:
+                r.choices[0].message.content = json.dumps(bad)
+            return r
+
+    client = Flaky([MAJOR])
+    spec, audit, trace = compile_and_audit(Source.from_text("btc above 100, hold a week"), model="m", client=client)
+    assert client.calls == ["ClaimSpec", "Audit", "ClaimSpec", "ClaimSpec", "ClaimSpec"]
+    assert spec.assets == ["BTCUSDT"] and trace["audit_repair_failed"]
+    assert trace["cost"][-1] == {"step": "audit repair", "seconds": trace["cost"][-1]["seconds"], "tokens": 0, "failed": True}
+    rep = falsify(spec, with_cross_asset=False)
+    attach_fidelity(rep, fidelity(spec, audit))
+    assert rep.review["needs_human"]
+
+
+def test_entry_that_never_fires_is_sent_back():
+    from falsify import data as data_mod
+    import pytest
+    if ("BTCUSDT", "1d") not in data_mod.available():
+        pytest.skip("bundled data missing")
+    never = dict(SPEC, entry=[{"left": {"kind": "rsi", "period": 14}, "op": "le",
+                                "right": {"kind": "rsi", "period": 14, "window_fn": "min", "window": 50}},
+                               {"left": {"kind": "rsi", "period": 14}, "op": "gt",
+                                "right": {"kind": "rsi", "period": 14, "offset": 1}}])
+
+    class Seq(FakeClient):
+        def create(self, **kw):
+            r = super().create(**kw)
+            if kw["response_format"]["json_schema"]["name"] == "ClaimSpec" and self.calls.count("ClaimSpec") == 1:
+                r.choices[0].message.content = json.dumps(never)
+            return r
+
+    client = Seq([{"faithful": True, "issues": []}])
+    spec, audit, trace = compile_and_audit(Source.from_text("btc above 100, hold a week"), model="m", client=client)
+    first = trace["attempts"][0]["sanity_problems"][0]
+    assert "never all on the same bar" in first and "entry[1]" in first
+    assert len(trace["attempts"]) == 2 and spec.entry[0].right.kind.value == "const"
+
+
+def test_zero_trades_escalates():
+    from falsify.battery import Report, Verdict, escalate
+    rep = escalate(Report(verdict=Verdict.INCONCLUSIVE, headline="x", primary={"trades": 0}))
+    assert rep.review["needs_human"] and "never trigger" in rep.review["reasons"][0]

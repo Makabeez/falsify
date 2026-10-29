@@ -50,10 +50,11 @@ So Falsify splits the job:
   │ Muse Spark: COMPILE    │── ClaimSpec JSON (typed DSL, no code) + one evidence row per rule element
   └────────────────────────┘
         │                    ▲
-        ▼                    │ schema error or failed quote → sent back, max 2 repairs
+        ▼                    │ schema error, failed quote or dead rule → sent back, max 2 repairs
   ┌────────────────────────┐ │
   │ Validate + QUOTE CHECK │─┘ deterministic: every rule element quoted verbatim from the source,
-  └────────────────────────┘   or declared assumed. Paraphrases are refused.
+  │ + DOES IT EVER FIRE?   │   or declared assumed (paraphrases are refused); and the entry must trigger
+  └────────────────────────┘   at least once on the full history (contradictory conditions are refused).
         │
         ▼
   ┌────────────────────────┐
