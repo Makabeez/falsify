@@ -14,135 +14,57 @@
     "notes": "MACD(12,26,9) 1h entries filtered by daily MACD trend, BTC Dec 2018-Nov 2025; multi-timeframe test of compiler; base exit is H1 MACD cross down."
   },
   "spec": {
-    "claim_summary": "Long-only hourly MACD upward-cross entries filtered to take trades only when the daily MACD line is above its signal line.",
+    "claim_summary": "Long hourly MACD crosses filtered by daily MACD uptrend improves annual return, drawdown and Sharpe.",
     "source_type": "text",
     "testable": false,
-    "untestable_reason": "The strategy requires filtering hourly MACD entries by the daily MACD line-versus-signal position, which needs synchronized two-timeframe evaluation the single-timeframe spec cannot express.",
-    "assets": [
-      "BTCUSDT"
-    ],
-    "timeframe": "1h",
+    "untestable_reason": "The claimed edge requires filtering H1 MACD longs by the D1 MACD trend state, which is a multi-timeframe condition the single-timeframe spec cannot express and is the heart of the strategy.**assets** ['BTCUSDT']**timeframe** 1h**direction** long**entry** H1 MACD line crosses above H1 signal line**exit** H1 MACD line crosses below H1 signal line**claimed period** begins December 2018**claimed performance** annual return, drawdown and Sharpe improvement figures as stated by claimant Assumed BTC because source page context is about BTC but claim names no asset; assumed standard MACD settings and opposite-cross exit as closest testable core without daily filter; multi-timeframe filter is not expressible.**entry[0]** execute long entries only when the H1 MACD crosses upward**timeframe** On the Hourly (H1) timeframe**direction** Ignore short signals entirely.**claimed.period_start** The analysis begins in December 2018**claimed.other** Annual return rises to 6.6% (from 4.6%) -- full quoted performance in claimed.other MACD fast length entry[0].left.period [8,12,19] MACD slow length entry[0].left.param [21,26,35] Standard 12,26,9 used where unstated. NOT EXPRESSIBLE multi-timeframe D1 trend filter (D1 MACD line above D1 signal) gating H1 longs left out of single-timeframe core; without it the spec tests the unfiltered baseline, not the claimed filtered strategy. No exit stated; opposite H1 cross assumed as most common reading. Asset and timeframe assumptions as above. Engine tests all history flat-start one position at a time, so cited period stored in claimed only. All trades at bar closes filled next open; no intrabar logic. Breakout and indicator semantics per spec. The daily filter is the heart of the claimed improvement, so testable is false. -- Internal audit note, not part of ClaimSpec JSON. The JSON below is the complete corrected ClaimSpec:{\"additionalProperties\":false,\"properties\":{\"assets\":{\"description\":\"Binance spot symbols, e.g. BTCUSDT\",\"items\":{\"type\":\"string\"},\"title\":\"Assets\",\"type\":\"array\"},\"assumptions\":{\"description\":\"Every interpretation choice made while compiling the claim. Be explicit.\",\"items\":{\"type\":\"string\"},\"title\":\"Assumptions\",\"type\":\"array\"},\"claim_summary\":{\"description\":\"One neutral sentence restating the claim. No author handles.\",\"title\":\"Claim Summary\",\"type\":\"string\"},\"claimed\":{\"additionalProperties\":false,\"description\":\"What the claimant says the strategy does. Null when not stated.\",\"properties\":{\"avg_return_per_trade_pct\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"title\":\"Avg Return Per Trade Pct\"},\"other\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Any other stated performance claim, verbatim-short\",\"title\":\"Other\"},\"period_end\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"ISO date YYYY-MM-DD\",\"title\":\"Period End\"},\"period_start\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"ISO date YYYY-MM-DD if the claim names a period\",\"title\":\"Period Start\"},\"total_return_pct\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"title\":\"Total Return Pct\"},\"win_rate_pct\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"title\":\"Win Rate Pct\"}},\"title\":\"ClaimedPerformance\",\"type\":\"object\"},\"direction\":{\"enum\":[\"long\",\"short\"],\"title\":\"Direction\",\"type\":\"string\"},\"entry\":{\"description\":\"ALL must be true on a bar close to enter\",\"items\":{\"additionalProperties\":false,\"properties\":{\"left\":{\"additionalProperties\":false,\"properties\":{\"kind\":{\"enum\":[\"const\",\"close\",\"open\",\"high\",\"low\",\"volume\",\"sma\",\"ema\",\"rsi\",\"pct_change\",\"highest_high\",\"lowest_low\",\"volume_sma\",\"atr\",\"day_of_week\",\"hour_utc\",\"day_of_month\",\"days_left_in_month\",\"wma\",\"bb_upper\",\"bb_lower\",\"macd_line\",\"macd_signal\",\"macd_hist\",\"supertrend\",\"adx\"],\"title\":\"OperandKind\",\"type\":\"string\"},\"multiplier\":{\"default\":1.0,\"description\":\"Scales the operand, e.g. 1.5 x volume_sma for 'volume 50% above average'.\",\"title\":\"Multiplier\",\"type\":\"number\"},\"offset\":{\"default\":0,\"description\":\"Value this many bars ago: 1 = previous bar. 'RSI rising for 3 bars' is rsi > rsi[1] AND rsi[1] > rsi[2] AND rsi[2] > rsi[3].\",\"title\":\"Offset\",\"type\":\"integer\"},\"param\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Second setting: Bollinger std-dev width (default 2), MACD slow length (default 26, fast = period default 12, signal fixed 9), Supertrend ATR multiplier (default 3, ATR length = period default 10). Null otherwise.\",\"title\":\"Param\"},\"period\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Lookback in bars. Required for sma/ema/rsi/pct_change/highest_high/lowest_low/volume_sma/atr.\",\"title\":\"Period\"},\"value\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Required when kind=const. Percentages as plain numbers: 5 means 5%.\",\"title\":\"Value\"},\"window\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Bars for window_fn.\",\"title\":\"Window\"},\"window_fn\":{\"anyOf\":[{\"enum\":[\"min\",\"max\"]},{\"type\":\"null\"}],\"default\":null,\"description\":\"Rolling extreme of this operand: 'min' or 'max' over the last `window` bars INCLUDING the current one. E.g. RSI at its 50-bar low: rsi(14) le min(rsi(14), 50).\",\"title\":\"WindowFn\",\"type\":\"string\"}},\"required\":[\"kind\"],\"title\":\"Operand\",\"type\":\"object\"},\"op\":{\"enum\":[\"gt\",\"lt\",\"ge\",\"le\",\"crosses_above\",\"crosses_below\"],\"title\":\"Op\",\"type\":\"string\"},\"right\":{\"additionalProperties\":false,\"properties\":{\"kind\":{\"enum\":[\"const\",\"close\",\"open\",\"high\",\"low\",\"volume\",\"sma\",\"ema\",\"rsi\",\"pct_change\",\"highest_high\",\"lowest_low\",\"volume_sma\",\"atr\",\"day_of_week\",\"hour_utc\",\"day_of_month\",\"days_left_in_month\",\"wma\",\"bb_upper\",\"bb_lower\",\"macd_line\",\"macd_signal\",\"macd_hist\",\"supertrend\",\"adx\"],\"title\":\"OperandKind\",\"type\":\"string\"},\"multiplier\":{\"default\":1.0,\"description\":\"Scales the operand, e.g. 1.5 x volume_sma for 'volume 50% above average'.\",\"title\":\"Multiplier\",\"type\":\"number\"},\"offset\":{\"default\":0,\"description\":\"Value this many bars ago: 1 = previous bar. 'RSI rising for 3 bars' is rsi > rsi[1] AND rsi[1] > rsi[2] AND rsi[2] > rsi[3].\",\"title\":\"Offset\",\"type\":\"integer\"},\"param\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Second setting: Bollinger std-dev width (default 2), MACD slow length (default 26, fast = period default 12, signal fixed 9), Supertrend ATR multiplier (default 3, ATR length = period default 10). Null otherwise.\",\"title\":\"Param\"},\"period\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Lookback in bars. Required for sma/ema/rsi/pct_change/highest_high/lowest_low/volume_sma/atr.\",\"title\":\"Period\"},\"value\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Required when kind=const. Percentages as plain numbers: 5 means 5%.\",\"title\":\"Value\"},\"window\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Bars for window_fn.\",\"title\":\"Window\"},\"window_fn\":{\"anyOf\":[{\"enum\":[\"min\",\"max\"]},{\"type\":\"null\"}],\"default\":null,\"description\":\"Rolling extreme of this operand: 'min' or 'max' over the last `window` bars INCLUDING the current one. E.g. RSI at its 50-bar low: rsi(14) le min(rsi(14), 50).\",\"title\":\"WindowFn\",\"type\":\"string\"}},\"required\":[\"kind\"],\"title\":\"Operand\",\"type\":\"object\"}},\"required\":[\"left\",\"op\",\"right\"],\"title\":\"Condition\",\"type\":\"object\"},\"title\":\"Entry\",\"type\":\"array\"},\"evidence\":{\"description\":\"One row per rule element: every entry[i], every exit[i], every exit field that is set (stops, targets, trailing stops, max_hold_bars), plus assets, timeframe and direction.\",\"items\":{\"additionalProperties\":false,\"description\":\"Where a rule element comes from. Checked against the source by falsify.grounding.\",\"properties\":{\"assumed\":{\"description\":\"True if the claim never states this and you chose it\",\"title\":\"Assumed\",\"type\":\"boolean\"},\"field\":{\"description\":\"entry[i], exit[i], any exit field that is set (stop_loss_pct, stop_atr_mult, take_profit_pct, take_profit_atr_mult, take_profit_r, trailing_stop_pct, trailing_stop_atr_mult, max_hold_bars), assets, timeframe, direction, or claimed.<name>\",\"title\":\"Field\",\"type\":\"string\"},\"quote\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"The claimant's exact words that state this, copied verbatim from the source or transcript. Null if assumed.\",\"title\":\"Quote\"}},\"required\":[\"field\",\"assumed\"],\"title\":\"Evidence\",\"type\":\"object\"},\"title\":\"Evidence\",\"type\":\"array\"},\"exit\":{\"description\":\"ANY true on a bar close exits\",\"items\":{\"additionalProperties\":false,\"properties\":{\"left\":{\"additionalProperties\":false,\"properties\":{\"kind\":{\"enum\":[\"const\",\"close\",\"open\",\"high\",\"low\",\"volume\",\"sma\",\"ema\",\"rsi\",\"pct_change\",\"highest_high\",\"lowest_low\",\"volume_sma\",\"atr\",\"day_of_week\",\"hour_utc\",\"day_of_month\",\"days_left_in_month\",\"wma\",\"bb_upper\",\"bb_lower\",\"macd_line\",\"macd_signal\",\"macd_hist\",\"supertrend\",\"adx\"],\"title\":\"OperandKind\",\"type\":\"string\"},\"multiplier\":{\"default\":1.0,\"description\":\"Scales the operand, e.g. 1.5 x volume_sma for 'volume 50% above average'.\",\"title\":\"Multiplier\",\"type\":\"number\"},\"offset\":{\"default\":0,\"description\":\"Value this many bars ago: 1 = previous bar. 'RSI rising for 3 bars' is rsi > rsi[1] AND rsi[1] > rsi[2] AND rsi[2] > rsi[3].\",\"title\":\"Offset\",\"type\":\"integer\"},\"param\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Second setting: Bollinger std-dev width (default 2), MACD slow length (default 26, fast = period default 12, signal fixed 9), Supertrend ATR multiplier (default 3, ATR length = period default 10). Null otherwise.\",\"title\":\"Param\"},\"period\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Lookback in bars. Required for sma/ema/rsi/pct_change/highest_high/lowest_low/volume_sma/atr.\",\"title\":\"Period\"},\"value\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Required when kind=const. Percentages as plain numbers: 5 means 5%.\",\"title\":\"Value\"},\"window\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Bars for window_fn.\",\"title\":\"Window\"},\"window_fn\":{\"anyOf\":[{\"enum\":[\"min\",\"max\"]},{\"type\":\"null\"}],\"default\":null,\"description\":\"Rolling extreme of this operand: 'min' or 'max' over the last `window` bars INCLUDING the current one. E.g. RSI at its 50-bar low: rsi(14) le min(rsi(14), 50).\",\"title\":\"WindowFn\",\"type\":\"string\"}},\"required\":[\"kind\"],\"title\":\"Operand\",\"type\":\"object\"},\"op\":{\"enum\":[\"gt\",\"lt\",\"ge\",\"le\",\"crosses_above\",\"crosses_below\"],\"title\":\"Op\",\"type\":\"string\"},\"right\":{\"additionalProperties\":false,\"properties\":{\"kind\":{\"enum\":[\"const\",\"close\",\"open\",\"high\",\"low\",\"volume\",\"sma\",\"ema\",\"rsi\",\"pct_change\",\"highest_high\",\"lowest_low\",\"volume_sma\",\"atr\",\"day_of_week\",\"hour_utc\",\"day_of_month\",\"days_left_in_month\",\"wma\",\"bb_upper\",\"bb_lower\",\"macd_line\",\"macd_signal\",\"macd_hist\",\"supertrend\",\"adx\"],\"title\":\"OperandKind\",\"type\":\"string\"},\"multiplier\":{\"default\":1.0,\"description\":\"Scales the operand, e.g. 1.5 x volume_sma for 'volume 50% above average'.\",\"title\":\"Multiplier\",\"type\":\"number\"},\"offset\":{\"default\":0,\"description\":\"Value this many bars ago: 1 = previous bar. 'RSI rising for 3 bars' is rsi > rsi[1] AND rsi[1] > rsi[2] AND rsi[2] > rsi[3].\",\"title\":\"Offset\",\"type\":\"integer\"},\"param\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Second setting: Bollinger std-dev width (default 2), MACD slow length (default 26, fast = period default 12, signal fixed 9), Supertrend ATR multiplier (default 3, ATR length = period default 10). Null otherwise.\",\"title\":\"Param\"},\"period\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Lookback in bars. Required for sma/ema/rsi/pct_change/highest_high/lowest_low/volume_sma/atr.\",\"title\":\"Period\"},\"value\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Required when kind=const. Percentages as plain numbers: 5 means 5%.\",\"title\":\"Value\"},\"window\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Bars for window_fn.\",\"title\":\"Window\"},\"window_fn\":{\"anyOf\":[{\"enum\":[\"min\",\"max\"]},{\"type\":\"null\"}],\"default\":null,\"description\":\"Rolling extreme of this operand: 'min' or 'max' over the last `window` bars INCLUDING the current one. E.g. RSI at its 50-bar low: rsi(14) le min(rsi(14), 50).\",\"title\":\"WindowFn\",\"type\":\"string\"}},\"required\":[\"kind\"],\"title\":\"Operand\",\"type\":\"object\"}},\"required\":[\"left\",\"op\",\"right\"],\"title\":\"Condition\",\"type\":\"object\"},\"title\":\"Exit\",\"type\":\"array\"},\"free_parameters\":{\"items\":{\"additionalProperties\":false,\"description\":\"A number the claim leaves vague ('a short MA', 'oversold').\\n\\nThe engine sweeps `candidates` and charges a multiple-testing penalty for\\nevery extra variant tried -- vagueness is not free.\",\"properties\":{\"candidates\":{\"description\":\"2-6 plausible values a reader could reasonably have meant\",\"items\":{\"type\":\"number\"},\"title\":\"Candidates\",\"type\":\"array\"},\"name\":{\"description\":\"Human label, e.g. 'fast MA length'\",\"title\":\"Name\",\"type\":\"string\"},\"target\":{\"description\":\"Path into the spec: 'entry[0].left.period', 'exit[1].right.value', 'entry[0].left.window', 'stop_loss_pct', 'stop_atr_mult', 'take_profit_pct', 'take_profit_atr_mult', 'take_profit_r', 'trailing_stop_pct', 'trailing_stop_atr_mult' or 'max_hold_bars'\",\"title\":\"Target\",\"type\":\"string\"}},\"required\":[\"name\",\"target\",\"candidates\"],\"title\":\"FreeParameter\",\"type\":\"object\"},\"title\":\"Free Parameters\",\"type\":\"array\"},\"max_hold_bars\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Time exit in bars\",\"title\":\"Max Hold Bars\"},\"source_type\":{\"enum\":[\"text\",\"image\",\"video\"],\"title\":\"SourceType\",\"type\":\"string\"},\"stop_atr_mult\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Fixed stop at entry minus mult x ATR(stop_atr_period) (plus, for shorts), ATR taken at the signal bar. Use instead of stop_loss_pct, not with it.\",\"title\":\"Stop Atr Mult\"},\"stop_atr_period\":{\"default\":14,\"description\":\"ATR length for every ATR-based stop, target or trail\",\"title\":\"Stop Atr Period\",\"type\":\"integer\"},\"stop_loss_pct\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Fixed stop, % from entry: 3 = 3%\",\"title\":\"Stop Loss Pct\"},\"take_profit_atr_mult\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Target at entry + mult x ATR\",\"title\":\"Take Profit Atr Mult\"},\"take_profit_pct\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Fixed target, % from entry\",\"title\":\"Take Profit Pct\"},\"take_profit_r\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Target as a multiple of the initial stop distance ('2R', '1.8:1 reward to risk'). Needs stop_loss_pct or stop_atr_mult.\",\"title\":\"Take Profit R\"},\"testable\":{\"description\":\"False if the claim cannot be turned into mechanical rules\",\"title\":\"Testable\",\"type\":\"boolean\"},\"timeframe\":{\"enum\":[\"1h\",\"4h\",\"1d\"],\"title\":\"Timeframe\",\"type\":\"string\"},\"trailing_stop_atr_mult\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Trailing stop, mult x ATR below the highest close since entry\",\"title\":\"Trailing Stop Atr Mult\"},\"trailing_stop_pct\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Trailing stop, % below the highest close since entry (above the lowest, for shorts)\",\"title\":\"Trailing Stop Pct\"},\"untestable_reason\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Required when testable=false\",\"title\":\"Untestable Reason\"}},\"required\":[\"claim_summary\",\"source_type\",\"testable\"],\"title\":\"ClaimSpec\",\"type\":\"object\"}",
+    "assets": [],
+    "timeframe": "1d",
     "direction": "long",
-    "entry": [
-      {
-        "left": {
-          "kind": "macd_line",
-          "period": 12,
-          "value": null,
-          "multiplier": 1.0,
-          "param": 26.0
-        },
-        "op": "crosses_above",
-        "right": {
-          "kind": "macd_signal",
-          "period": 12,
-          "value": null,
-          "multiplier": 1.0,
-          "param": 26.0
-        }
-      }
-    ],
-    "exit": [
-      {
-        "left": {
-          "kind": "macd_line",
-          "period": 12,
-          "value": null,
-          "multiplier": 1.0,
-          "param": 26.0
-        },
-        "op": "crosses_below",
-        "right": {
-          "kind": "macd_signal",
-          "period": 12,
-          "value": null,
-          "multiplier": 1.0,
-          "param": 26.0
-        }
-      }
-    ],
+    "entry": [],
+    "exit": [],
     "stop_loss_pct": null,
+    "stop_atr_mult": null,
+    "stop_atr_period": 14,
     "take_profit_pct": null,
+    "take_profit_atr_mult": null,
+    "take_profit_r": null,
+    "trailing_stop_pct": null,
+    "trailing_stop_atr_mult": null,
     "max_hold_bars": null,
-    "free_parameters": [
-      {
-        "name": "MACD fast length",
-        "target": "entry[0].left.period",
-        "candidates": [
-          8.0,
-          12.0,
-          21.0
-        ]
-      },
-      {
-        "name": "MACD slow length",
-        "target": "entry[0].left.param",
-        "candidates": [
-          20.0,
-          26.0,
-          30.0
-        ]
-      }
-    ],
+    "free_parameters": [],
     "claimed": {
       "win_rate_pct": null,
       "total_return_pct": null,
       "avg_return_per_trade_pct": null,
-      "period_start": "2018-12-01",
+      "period_start": null,
       "period_end": null,
-      "other": "Annual return rises to 6.6% (from 4.6%); maximum drawdown improves from \u201323.9% to \u201312.4%; Sharpe ratio increases from 0.33 to 0.80"
+      "other": null
     },
-    "assumptions": [
-      "Asset not named in claim; assumed BTCUSDT from page context as most natural reading.",
-      "MACD lengths not stated; used standard 12, 26, 9 for both H1 and D1 legs.",
-      "No exit stated; assumed opposite bearish cross as most common reading for MACD-cross setup.",
-      "Claim period beginning December 2018 recorded in claimed.period_start; test window is not part of the rule.",
-      "NOT EXPRESSIBLE: D1 MACD line-above-signal trend filter requiring synchronized D1 plus H1 multi-timeframe evaluation cannot be expressed in the single-timeframe 1h spec, and it is the heart of the claimed filtered strategy."
-    ],
-    "evidence": [
-      {
-        "field": "assets",
-        "quote": null,
-        "assumed": true
-      },
-      {
-        "field": "timeframe",
-        "quote": "On the Hourly (H1) timeframe",
-        "assumed": false
-      },
-      {
-        "field": "direction",
-        "quote": "Ignore short signals entirely.",
-        "assumed": false
-      },
-      {
-        "field": "entry[0]",
-        "quote": "when the H1 MACD crosses upward",
-        "assumed": false
-      },
-      {
-        "field": "exit[0]",
-        "quote": null,
-        "assumed": true
-      },
-      {
-        "field": "claimed.period_start",
-        "quote": "The analysis begins in December 2018",
-        "assumed": false
-      },
-      {
-        "field": "claimed.other",
-        "quote": "Annual return rises to 6.6% (from 4.6%)",
-        "assumed": false
-      }
-    ]
+    "assumptions": [],
+    "evidence": []
   },
   "audit": {
     "faithful": false,
     "issues": [
       {
-        "field": "entry",
-        "problem": "Omits the core D1 trend filter: claim requires H1 long crosses only when D1 MACD line is above its signal line / only in direction of D1 trend, but spec encodes only unfiltered H1 MACD line crosses_above signal. Leaving out the D1 filter changes what is being tested.",
+        "field": "timeframe",
+        "problem": "Claim states entries are on the Hourly (H1) timeframe; spec sets timeframe to 1d.",
+        "severity": "major"
+      },
+      {
+        "field": "entry[0]",
+        "problem": "Claim requires long entry when H1 MACD line crosses above H1 signal line in D1 uptrend; spec entry is empty and omits the core H1 cross.",
+        "severity": "major"
+      },
+      {
+        "field": "entry[0]",
+        "problem": "Claim requires D1 MACD line above D1 signal as trend filter gating H1 longs; spec omits this multi-timeframe condition. Without it the spec would test the unfiltered baseline, not the claimed filtered strategy.",
+        "severity": "major"
+      },
+      {
+        "field": "claimed.other",
+        "problem": "Claim states annual return rises to 6.6% from 4.6%, drawdown improves from -23.9% to -12.4%, Sharpe increases from 0.33 to 0.80; spec claimed.other is null and omits the claimed performance.",
         "severity": "major"
       }
     ]
@@ -152,13 +74,13 @@
     "attempts": [
       {
         "usage": {
-          "completion_tokens": 5371,
-          "prompt_tokens": 1984,
-          "total_tokens": 7355,
+          "completion_tokens": 6423,
+          "prompt_tokens": 2483,
+          "total_tokens": 8906,
           "completion_tokens_details": {
             "accepted_prediction_tokens": null,
             "audio_tokens": null,
-            "reasoning_tokens": 4695,
+            "reasoning_tokens": 1921,
             "rejected_prediction_tokens": null,
             "text_tokens": null
           },
@@ -168,7 +90,9 @@
             "cached_tokens": 0,
             "image_tokens": null,
             "text_tokens": null
-          }
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
         },
         "grounding_problems": []
       }
@@ -185,13 +109,13 @@
       "attempts": [
         {
           "usage": {
-            "completion_tokens": 6928,
-            "prompt_tokens": 1182,
-            "total_tokens": 8110,
+            "completion_tokens": 5096,
+            "prompt_tokens": 1547,
+            "total_tokens": 6643,
             "completion_tokens_details": {
               "accepted_prediction_tokens": null,
               "audio_tokens": null,
-              "reasoning_tokens": 6240,
+              "reasoning_tokens": 4395,
               "rejected_prediction_tokens": null,
               "text_tokens": null
             },
@@ -201,7 +125,9 @@
               "cached_tokens": 0,
               "image_tokens": null,
               "text_tokens": null
-            }
+            },
+            "reasoning_effort": "medium",
+            "calls": 1
           },
           "grounding_problems": []
         }
@@ -227,8 +153,8 @@
         "faithful": false,
         "issues": [
           {
-            "field": "entry",
-            "problem": "Omits core D1 trend filter: claim requires H1 long entries only when D1 MACD line is above its signal line; spec tests H1 MACD upward crosses unconditionally. Marked NOT EXPRESSIBLE in assumptions but leaving it out tests the unfiltered baseline, not the claimed filtered strategy.",
+            "field": "entry[0]",
+            "problem": "Omits required D1 trend filter: claim requires D1 MACD line above D1 signal line / take H1 longs only in direction of D1 uptrend. Spec tests all H1 MACD crosses upward with no daily filter, i.e. the unfiltered baseline, not the claimed filtered strategy.",
             "severity": "major"
           }
         ]
@@ -237,20 +163,59 @@
         "faithful": false,
         "issues": [
           {
-            "field": "entry",
-            "problem": "Omits the core D1 trend filter: claim requires H1 long crosses only when D1 MACD line is above its signal line / only in direction of D1 trend, but spec encodes only unfiltered H1 MACD line crosses_above signal. Leaving out the D1 filter changes what is being tested.",
+            "field": "timeframe",
+            "problem": "Claim states entries are on the Hourly (H1) timeframe; spec sets timeframe to 1d.",
+            "severity": "major"
+          },
+          {
+            "field": "entry[0]",
+            "problem": "Claim requires long entry when H1 MACD line crosses above H1 signal line in D1 uptrend; spec entry is empty and omits the core H1 cross.",
+            "severity": "major"
+          },
+          {
+            "field": "entry[0]",
+            "problem": "Claim requires D1 MACD line above D1 signal as trend filter gating H1 longs; spec omits this multi-timeframe condition. Without it the spec would test the unfiltered baseline, not the claimed filtered strategy.",
+            "severity": "major"
+          },
+          {
+            "field": "claimed.other",
+            "problem": "Claim states annual return rises to 6.6% from 4.6%, drawdown improves from -23.9% to -12.4%, Sharpe increases from 0.33 to 0.80; spec claimed.other is null and omits the claimed performance.",
             "severity": "major"
           }
         ]
       }
     ],
-    "audit_repair": true
+    "audit_repair": true,
+    "cost": [
+      {
+        "step": "compile",
+        "seconds": 18.5,
+        "tokens": 6643,
+        "quote_repairs": 0
+      },
+      {
+        "step": "audit",
+        "seconds": 14.3,
+        "tokens": 4837
+      },
+      {
+        "step": "audit repair",
+        "seconds": 19.7,
+        "tokens": 8906,
+        "quote_repairs": 0
+      },
+      {
+        "step": "audit",
+        "seconds": 30.6,
+        "tokens": 11604
+      }
+    ]
   },
   "report": {
     "verdict": "UNTESTABLE",
     "headline": "This claim can't be turned into rules anyone could check.",
     "reasons": [
-      "The strategy requires filtering hourly MACD entries by the daily MACD line-versus-signal position, which needs synchronized two-timeframe evaluation the single-timeframe spec cannot express."
+      "The claimed edge requires filtering H1 MACD longs by the D1 MACD trend state, which is a multi-timeframe condition the single-timeframe spec cannot express and is the heart of the strategy.**assets** ['BTCUSDT']**timeframe** 1h**direction** long**entry** H1 MACD line crosses above H1 signal line**exit** H1 MACD line crosses below H1 signal line**claimed period** begins December 2018**claimed performance** annual return, drawdown and Sharpe improvement figures as stated by claimant Assumed BTC because source page context is about BTC but claim names no asset; assumed standard MACD settings and opposite-cross exit as closest testable core without daily filter; multi-timeframe filter is not expressible.**entry[0]** execute long entries only when the H1 MACD crosses upward**timeframe** On the Hourly (H1) timeframe**direction** Ignore short signals entirely.**claimed.period_start** The analysis begins in December 2018**claimed.other** Annual return rises to 6.6% (from 4.6%) -- full quoted performance in claimed.other MACD fast length entry[0].left.period [8,12,19] MACD slow length entry[0].left.param [21,26,35] Standard 12,26,9 used where unstated. NOT EXPRESSIBLE multi-timeframe D1 trend filter (D1 MACD line above D1 signal) gating H1 longs left out of single-timeframe core; without it the spec tests the unfiltered baseline, not the claimed filtered strategy. No exit stated; opposite H1 cross assumed as most common reading. Asset and timeframe assumptions as above. Engine tests all history flat-start one position at a time, so cited period stored in claimed only. All trades at bar closes filled next open; no intrabar logic. Breakout and indicator semantics per spec. The daily filter is the heart of the claimed improvement, so testable is false. -- Internal audit note, not part of ClaimSpec JSON. The JSON below is the complete corrected ClaimSpec:{\"additionalProperties\":false,\"properties\":{\"assets\":{\"description\":\"Binance spot symbols, e.g. BTCUSDT\",\"items\":{\"type\":\"string\"},\"title\":\"Assets\",\"type\":\"array\"},\"assumptions\":{\"description\":\"Every interpretation choice made while compiling the claim. Be explicit.\",\"items\":{\"type\":\"string\"},\"title\":\"Assumptions\",\"type\":\"array\"},\"claim_summary\":{\"description\":\"One neutral sentence restating the claim. No author handles.\",\"title\":\"Claim Summary\",\"type\":\"string\"},\"claimed\":{\"additionalProperties\":false,\"description\":\"What the claimant says the strategy does. Null when not stated.\",\"properties\":{\"avg_return_per_trade_pct\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"title\":\"Avg Return Per Trade Pct\"},\"other\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Any other stated performance claim, verbatim-short\",\"title\":\"Other\"},\"period_end\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"ISO date YYYY-MM-DD\",\"title\":\"Period End\"},\"period_start\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"ISO date YYYY-MM-DD if the claim names a period\",\"title\":\"Period Start\"},\"total_return_pct\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"title\":\"Total Return Pct\"},\"win_rate_pct\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"title\":\"Win Rate Pct\"}},\"title\":\"ClaimedPerformance\",\"type\":\"object\"},\"direction\":{\"enum\":[\"long\",\"short\"],\"title\":\"Direction\",\"type\":\"string\"},\"entry\":{\"description\":\"ALL must be true on a bar close to enter\",\"items\":{\"additionalProperties\":false,\"properties\":{\"left\":{\"additionalProperties\":false,\"properties\":{\"kind\":{\"enum\":[\"const\",\"close\",\"open\",\"high\",\"low\",\"volume\",\"sma\",\"ema\",\"rsi\",\"pct_change\",\"highest_high\",\"lowest_low\",\"volume_sma\",\"atr\",\"day_of_week\",\"hour_utc\",\"day_of_month\",\"days_left_in_month\",\"wma\",\"bb_upper\",\"bb_lower\",\"macd_line\",\"macd_signal\",\"macd_hist\",\"supertrend\",\"adx\"],\"title\":\"OperandKind\",\"type\":\"string\"},\"multiplier\":{\"default\":1.0,\"description\":\"Scales the operand, e.g. 1.5 x volume_sma for 'volume 50% above average'.\",\"title\":\"Multiplier\",\"type\":\"number\"},\"offset\":{\"default\":0,\"description\":\"Value this many bars ago: 1 = previous bar. 'RSI rising for 3 bars' is rsi > rsi[1] AND rsi[1] > rsi[2] AND rsi[2] > rsi[3].\",\"title\":\"Offset\",\"type\":\"integer\"},\"param\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Second setting: Bollinger std-dev width (default 2), MACD slow length (default 26, fast = period default 12, signal fixed 9), Supertrend ATR multiplier (default 3, ATR length = period default 10). Null otherwise.\",\"title\":\"Param\"},\"period\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Lookback in bars. Required for sma/ema/rsi/pct_change/highest_high/lowest_low/volume_sma/atr.\",\"title\":\"Period\"},\"value\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Required when kind=const. Percentages as plain numbers: 5 means 5%.\",\"title\":\"Value\"},\"window\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Bars for window_fn.\",\"title\":\"Window\"},\"window_fn\":{\"anyOf\":[{\"enum\":[\"min\",\"max\"]},{\"type\":\"null\"}],\"default\":null,\"description\":\"Rolling extreme of this operand: 'min' or 'max' over the last `window` bars INCLUDING the current one. E.g. RSI at its 50-bar low: rsi(14) le min(rsi(14), 50).\",\"title\":\"WindowFn\",\"type\":\"string\"}},\"required\":[\"kind\"],\"title\":\"Operand\",\"type\":\"object\"},\"op\":{\"enum\":[\"gt\",\"lt\",\"ge\",\"le\",\"crosses_above\",\"crosses_below\"],\"title\":\"Op\",\"type\":\"string\"},\"right\":{\"additionalProperties\":false,\"properties\":{\"kind\":{\"enum\":[\"const\",\"close\",\"open\",\"high\",\"low\",\"volume\",\"sma\",\"ema\",\"rsi\",\"pct_change\",\"highest_high\",\"lowest_low\",\"volume_sma\",\"atr\",\"day_of_week\",\"hour_utc\",\"day_of_month\",\"days_left_in_month\",\"wma\",\"bb_upper\",\"bb_lower\",\"macd_line\",\"macd_signal\",\"macd_hist\",\"supertrend\",\"adx\"],\"title\":\"OperandKind\",\"type\":\"string\"},\"multiplier\":{\"default\":1.0,\"description\":\"Scales the operand, e.g. 1.5 x volume_sma for 'volume 50% above average'.\",\"title\":\"Multiplier\",\"type\":\"number\"},\"offset\":{\"default\":0,\"description\":\"Value this many bars ago: 1 = previous bar. 'RSI rising for 3 bars' is rsi > rsi[1] AND rsi[1] > rsi[2] AND rsi[2] > rsi[3].\",\"title\":\"Offset\",\"type\":\"integer\"},\"param\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Second setting: Bollinger std-dev width (default 2), MACD slow length (default 26, fast = period default 12, signal fixed 9), Supertrend ATR multiplier (default 3, ATR length = period default 10). Null otherwise.\",\"title\":\"Param\"},\"period\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Lookback in bars. Required for sma/ema/rsi/pct_change/highest_high/lowest_low/volume_sma/atr.\",\"title\":\"Period\"},\"value\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Required when kind=const. Percentages as plain numbers: 5 means 5%.\",\"title\":\"Value\"},\"window\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Bars for window_fn.\",\"title\":\"Window\"},\"window_fn\":{\"anyOf\":[{\"enum\":[\"min\",\"max\"]},{\"type\":\"null\"}],\"default\":null,\"description\":\"Rolling extreme of this operand: 'min' or 'max' over the last `window` bars INCLUDING the current one. E.g. RSI at its 50-bar low: rsi(14) le min(rsi(14), 50).\",\"title\":\"WindowFn\",\"type\":\"string\"}},\"required\":[\"kind\"],\"title\":\"Operand\",\"type\":\"object\"}},\"required\":[\"left\",\"op\",\"right\"],\"title\":\"Condition\",\"type\":\"object\"},\"title\":\"Entry\",\"type\":\"array\"},\"evidence\":{\"description\":\"One row per rule element: every entry[i], every exit[i], every exit field that is set (stops, targets, trailing stops, max_hold_bars), plus assets, timeframe and direction.\",\"items\":{\"additionalProperties\":false,\"description\":\"Where a rule element comes from. Checked against the source by falsify.grounding.\",\"properties\":{\"assumed\":{\"description\":\"True if the claim never states this and you chose it\",\"title\":\"Assumed\",\"type\":\"boolean\"},\"field\":{\"description\":\"entry[i], exit[i], any exit field that is set (stop_loss_pct, stop_atr_mult, take_profit_pct, take_profit_atr_mult, take_profit_r, trailing_stop_pct, trailing_stop_atr_mult, max_hold_bars), assets, timeframe, direction, or claimed.<name>\",\"title\":\"Field\",\"type\":\"string\"},\"quote\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"The claimant's exact words that state this, copied verbatim from the source or transcript. Null if assumed.\",\"title\":\"Quote\"}},\"required\":[\"field\",\"assumed\"],\"title\":\"Evidence\",\"type\":\"object\"},\"title\":\"Evidence\",\"type\":\"array\"},\"exit\":{\"description\":\"ANY true on a bar close exits\",\"items\":{\"additionalProperties\":false,\"properties\":{\"left\":{\"additionalProperties\":false,\"properties\":{\"kind\":{\"enum\":[\"const\",\"close\",\"open\",\"high\",\"low\",\"volume\",\"sma\",\"ema\",\"rsi\",\"pct_change\",\"highest_high\",\"lowest_low\",\"volume_sma\",\"atr\",\"day_of_week\",\"hour_utc\",\"day_of_month\",\"days_left_in_month\",\"wma\",\"bb_upper\",\"bb_lower\",\"macd_line\",\"macd_signal\",\"macd_hist\",\"supertrend\",\"adx\"],\"title\":\"OperandKind\",\"type\":\"string\"},\"multiplier\":{\"default\":1.0,\"description\":\"Scales the operand, e.g. 1.5 x volume_sma for 'volume 50% above average'.\",\"title\":\"Multiplier\",\"type\":\"number\"},\"offset\":{\"default\":0,\"description\":\"Value this many bars ago: 1 = previous bar. 'RSI rising for 3 bars' is rsi > rsi[1] AND rsi[1] > rsi[2] AND rsi[2] > rsi[3].\",\"title\":\"Offset\",\"type\":\"integer\"},\"param\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Second setting: Bollinger std-dev width (default 2), MACD slow length (default 26, fast = period default 12, signal fixed 9), Supertrend ATR multiplier (default 3, ATR length = period default 10). Null otherwise.\",\"title\":\"Param\"},\"period\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Lookback in bars. Required for sma/ema/rsi/pct_change/highest_high/lowest_low/volume_sma/atr.\",\"title\":\"Period\"},\"value\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Required when kind=const. Percentages as plain numbers: 5 means 5%.\",\"title\":\"Value\"},\"window\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Bars for window_fn.\",\"title\":\"Window\"},\"window_fn\":{\"anyOf\":[{\"enum\":[\"min\",\"max\"]},{\"type\":\"null\"}],\"default\":null,\"description\":\"Rolling extreme of this operand: 'min' or 'max' over the last `window` bars INCLUDING the current one. E.g. RSI at its 50-bar low: rsi(14) le min(rsi(14), 50).\",\"title\":\"WindowFn\",\"type\":\"string\"}},\"required\":[\"kind\"],\"title\":\"Operand\",\"type\":\"object\"},\"op\":{\"enum\":[\"gt\",\"lt\",\"ge\",\"le\",\"crosses_above\",\"crosses_below\"],\"title\":\"Op\",\"type\":\"string\"},\"right\":{\"additionalProperties\":false,\"properties\":{\"kind\":{\"enum\":[\"const\",\"close\",\"open\",\"high\",\"low\",\"volume\",\"sma\",\"ema\",\"rsi\",\"pct_change\",\"highest_high\",\"lowest_low\",\"volume_sma\",\"atr\",\"day_of_week\",\"hour_utc\",\"day_of_month\",\"days_left_in_month\",\"wma\",\"bb_upper\",\"bb_lower\",\"macd_line\",\"macd_signal\",\"macd_hist\",\"supertrend\",\"adx\"],\"title\":\"OperandKind\",\"type\":\"string\"},\"multiplier\":{\"default\":1.0,\"description\":\"Scales the operand, e.g. 1.5 x volume_sma for 'volume 50% above average'.\",\"title\":\"Multiplier\",\"type\":\"number\"},\"offset\":{\"default\":0,\"description\":\"Value this many bars ago: 1 = previous bar. 'RSI rising for 3 bars' is rsi > rsi[1] AND rsi[1] > rsi[2] AND rsi[2] > rsi[3].\",\"title\":\"Offset\",\"type\":\"integer\"},\"param\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Second setting: Bollinger std-dev width (default 2), MACD slow length (default 26, fast = period default 12, signal fixed 9), Supertrend ATR multiplier (default 3, ATR length = period default 10). Null otherwise.\",\"title\":\"Param\"},\"period\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Lookback in bars. Required for sma/ema/rsi/pct_change/highest_high/lowest_low/volume_sma/atr.\",\"title\":\"Period\"},\"value\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Required when kind=const. Percentages as plain numbers: 5 means 5%.\",\"title\":\"Value\"},\"window\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Bars for window_fn.\",\"title\":\"Window\"},\"window_fn\":{\"anyOf\":[{\"enum\":[\"min\",\"max\"]},{\"type\":\"null\"}],\"default\":null,\"description\":\"Rolling extreme of this operand: 'min' or 'max' over the last `window` bars INCLUDING the current one. E.g. RSI at its 50-bar low: rsi(14) le min(rsi(14), 50).\",\"title\":\"WindowFn\",\"type\":\"string\"}},\"required\":[\"kind\"],\"title\":\"Operand\",\"type\":\"object\"}},\"required\":[\"left\",\"op\",\"right\"],\"title\":\"Condition\",\"type\":\"object\"},\"title\":\"Exit\",\"type\":\"array\"},\"free_parameters\":{\"items\":{\"additionalProperties\":false,\"description\":\"A number the claim leaves vague ('a short MA', 'oversold').\\n\\nThe engine sweeps `candidates` and charges a multiple-testing penalty for\\nevery extra variant tried -- vagueness is not free.\",\"properties\":{\"candidates\":{\"description\":\"2-6 plausible values a reader could reasonably have meant\",\"items\":{\"type\":\"number\"},\"title\":\"Candidates\",\"type\":\"array\"},\"name\":{\"description\":\"Human label, e.g. 'fast MA length'\",\"title\":\"Name\",\"type\":\"string\"},\"target\":{\"description\":\"Path into the spec: 'entry[0].left.period', 'exit[1].right.value', 'entry[0].left.window', 'stop_loss_pct', 'stop_atr_mult', 'take_profit_pct', 'take_profit_atr_mult', 'take_profit_r', 'trailing_stop_pct', 'trailing_stop_atr_mult' or 'max_hold_bars'\",\"title\":\"Target\",\"type\":\"string\"}},\"required\":[\"name\",\"target\",\"candidates\"],\"title\":\"FreeParameter\",\"type\":\"object\"},\"title\":\"Free Parameters\",\"type\":\"array\"},\"max_hold_bars\":{\"anyOf\":[{\"type\":\"integer\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Time exit in bars\",\"title\":\"Max Hold Bars\"},\"source_type\":{\"enum\":[\"text\",\"image\",\"video\"],\"title\":\"SourceType\",\"type\":\"string\"},\"stop_atr_mult\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Fixed stop at entry minus mult x ATR(stop_atr_period) (plus, for shorts), ATR taken at the signal bar. Use instead of stop_loss_pct, not with it.\",\"title\":\"Stop Atr Mult\"},\"stop_atr_period\":{\"default\":14,\"description\":\"ATR length for every ATR-based stop, target or trail\",\"title\":\"Stop Atr Period\",\"type\":\"integer\"},\"stop_loss_pct\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Fixed stop, % from entry: 3 = 3%\",\"title\":\"Stop Loss Pct\"},\"take_profit_atr_mult\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Target at entry + mult x ATR\",\"title\":\"Take Profit Atr Mult\"},\"take_profit_pct\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Fixed target, % from entry\",\"title\":\"Take Profit Pct\"},\"take_profit_r\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Target as a multiple of the initial stop distance ('2R', '1.8:1 reward to risk'). Needs stop_loss_pct or stop_atr_mult.\",\"title\":\"Take Profit R\"},\"testable\":{\"description\":\"False if the claim cannot be turned into mechanical rules\",\"title\":\"Testable\",\"type\":\"boolean\"},\"timeframe\":{\"enum\":[\"1h\",\"4h\",\"1d\"],\"title\":\"Timeframe\",\"type\":\"string\"},\"trailing_stop_atr_mult\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Trailing stop, mult x ATR below the highest close since entry\",\"title\":\"Trailing Stop Atr Mult\"},\"trailing_stop_pct\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Trailing stop, % below the highest close since entry (above the lowest, for shorts)\",\"title\":\"Trailing Stop Pct\"},\"untestable_reason\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Required when testable=false\",\"title\":\"Untestable Reason\"}},\"required\":[\"claim_summary\",\"source_type\",\"testable\"],\"title\":\"ClaimSpec\",\"type\":\"object\"}"
     ],
     "warnings": [],
     "asset": null,
@@ -266,13 +231,16 @@
     "grounding": {},
     "fidelity": {
       "level": "approximation",
-      "gaps": [
-        "NOT EXPRESSIBLE: D1 MACD line-above-signal trend filter requiring synchronized D1 plus H1 multi-timeframe evaluation cannot be expressed in the single-timeframe 1h spec, and it is the heart of the claimed filtered strategy."
-      ],
+      "gaps": [],
       "audit_majors": [
-        "entry: Omits the core D1 trend filter: claim requires H1 long crosses only when D1 MACD line is above its signal line / only in direction of D1 trend, but spec encodes only unfiltered H1 MACD line crosses_above signal. Leaving out the D1 filter changes what is being tested."
+        "timeframe: Claim states entries are on the Hourly (H1) timeframe; spec sets timeframe to 1d.",
+        "entry[0]: Claim requires long entry when H1 MACD line crosses above H1 signal line in D1 uptrend; spec entry is empty and omits the core H1 cross.",
+        "entry[0]: Claim requires D1 MACD line above D1 signal as trend filter gating H1 longs; spec omits this multi-timeframe condition. Without it the spec would test the unfiltered baseline, not the claimed filtered strategy.",
+        "claimed.other: Claim states annual return rises to 6.6% from 4.6%, drawdown improves from -23.9% to -12.4%, Sharpe increases from 0.33 to 0.80; spec claimed.other is null and omits the claimed performance."
       ]
-    }
+    },
+    "review": {},
+    "series": {}
   },
-  "seconds": 63.9
+  "seconds": 83.2
 }

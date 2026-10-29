@@ -1,0 +1,293 @@
+{
+  "id": "c020",
+  "record": {
+    "id": "c020",
+    "url": "https://rektelligence.substack.com/p/eth-golden-cross-incoming",
+    "source": "substack",
+    "posted": "2024-12-02",
+    "asset_hint": "ETH",
+    "timeframe_hint": "1d",
+    "category": "backtest_claim",
+    "excerpt": "its 50-day simple moving average will cross above its 200-day simple moving average on a closing basis \u2026 CONDITION 1: Ether's 50-day sma crosses above its 200-day sma \u2026 Sell 180 days later \u2026 The average trade of +59.2% in just 180 days bodes well for ETH in 2025, even removing the large 2017 outlier. \u2026 the largest and only loss following a Golden Cross signal is less than one percent",
+    "performance_claim": "The average trade of +59.2% in just 180 days",
+    "verbatim_confidence": "high",
+    "notes": "ETH 50/200 SMA golden cross with fixed 180-day hold; clean event study, easy to falsify on Binance ETHUSDT."
+  },
+  "spec": {
+    "claim_summary": "Ether's 50-day simple moving average crossing above its 200-day simple moving average is followed by selling 180 days later.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "ETHUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "sma",
+          "period": 50,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "sma",
+          "period": 200,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": 180,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": 59.2,
+      "period_start": null,
+      "period_end": null,
+      "other": "largest and only loss following a Golden Cross signal is less than one percent"
+    },
+    "assumptions": [
+      "Asset is ETHUSDT because the claim says Ether / ETH.",
+      "Timeframe is 1d inferred from 50-day, 200-day and 180 days lengths; no explicit bar timeframe is stated.",
+      "Direction is long: buy at the Golden Cross signal and Sell 180 days later.",
+      "Entry is evaluated on bar closes: 50-day SMA crosses_above 200-day SMA.",
+      "Exit is time-only: 180 daily bars holding, no stop-loss or take-profit stated.",
+      "Engine tests over all history starting flat one position at a time; fill at next open is engine behavior, not part of the rule."
+    ],
+    "evidence": [
+      {
+        "field": "assets",
+        "quote": "Ether's 50-day sma",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "direction",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "entry[0]",
+        "quote": "Ether's 50-day sma crosses above its 200-day sma",
+        "assumed": false
+      },
+      {
+        "field": "max_hold_bars",
+        "quote": "Sell 180 days later",
+        "assumed": false
+      },
+      {
+        "field": "claimed.avg_return_per_trade_pct",
+        "quote": "average trade of +59.2% in just 180 days",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 3868,
+          "prompt_tokens": 1150,
+          "total_tokens": 5018,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 3363,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 3,
+      "assumed": 2,
+      "quoted_fields": [
+        "entry[0]",
+        "max_hold_bars",
+        "assets"
+      ],
+      "assumed_fields": [
+        "timeframe",
+        "direction"
+      ],
+      "problems": []
+    },
+    "audits": [
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ]
+  },
+  "report": {
+    "verdict": "INCONCLUSIVE",
+    "headline": "Only 8 trades from 2017-08-17 to 2026-10-26 -- too few to tell skill from luck.",
+    "reasons": [
+      "8 trades < 30 minimum"
+    ],
+    "warnings": [
+      "the last trade is still open at the end of the data; it is marked at the last close",
+      "just holding did better: +156% vs buy-and-hold +672%"
+    ],
+    "asset": "ETHUSDT",
+    "timeframe": "1d",
+    "primary": {
+      "trades": 8,
+      "win_rate_pct": 62.5,
+      "avg_net_pct": 16.664940483621514,
+      "total_net_pct": 155.67352874988615,
+      "total_gross_pct": 160.62989170671727,
+      "max_drawdown_pct": -31.65152211116097,
+      "avg_bars": 164.375,
+      "open_at_end": 1,
+      "buy_hold_pct": 671.9423504798593,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 39.16021441334128
+    },
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "BTCUSDT",
+          "trades": 8,
+          "total_net_pct": 280.07770156130584,
+          "avg_net_pct": 22.3157848459913
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 5,
+          "total_net_pct": 112.67822339181338,
+          "avg_net_pct": 63.803210350714856
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 8,
+          "total_net_pct": 494.61972638381815,
+          "avg_net_pct": 36.27655950005024
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 9,
+          "total_net_pct": -15.411928588845692,
+          "avg_net_pct": 27.57782606331115
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 7,
+          "total_net_pct": 9416.648840625196,
+          "avg_net_pct": 1831.5167084985023
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 7,
+          "total_net_pct": -74.08292881831193,
+          "avg_net_pct": -0.5964837322553008
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 6,
+          "total_net_pct": -67.87634751497635,
+          "avg_net_pct": -2.7843678748985896
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 7,
+          "total_net_pct": -32.41556704421632,
+          "avg_net_pct": 28.744719241695986
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 10,
+          "total_net_pct": -63.44976162324052,
+          "avg_net_pct": 9.604482209821926
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 6,
+          "total_net_pct": -95.07976055731608,
+          "avg_net_pct": -32.632506106054635
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 7,
+          "total_net_pct": -43.82617135542263,
+          "avg_net_pct": -1.8300828084728864
+        }
+      ],
+      "tested": 0,
+      "positive": 0,
+      "positive_share_pct": null
+    },
+    "sweep": {
+      "readings": 1,
+      "note": "claim fixes every parameter"
+    },
+    "claimed_vs_measured": [
+      {
+        "metric": "avg return / trade %",
+        "claimed": 59.2,
+        "measured": 16.66,
+        "gap": -42.54
+      }
+    ],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 3,
+      "assumed": 2,
+      "quoted_fields": [
+        "entry[0]",
+        "max_hold_bars",
+        "assets"
+      ],
+      "assumed_fields": [
+        "timeframe",
+        "direction"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "exact",
+      "gaps": [],
+      "audit_majors": []
+    }
+  },
+  "seconds": 21.8
+}

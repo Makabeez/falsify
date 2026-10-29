@@ -1,0 +1,332 @@
+{
+  "id": "c005",
+  "record": {
+    "id": "c005",
+    "url": "https://rektelligence.substack.com/p/the-20200-collision",
+    "source": "substack",
+    "posted": null,
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "backtest_claim",
+    "excerpt": "Setup Condition: Bitcoin\u2019s 20ma closes > its 200ma \u2026 Entry: Buy market on close (research-style entry) \u2026 Exit: Sell if Bitcoin\u2019s 20ma closes < its 200ma \u2026 Hit Rate: 53.33% \u2026 Total Return: 321,940% \u2026 Annualized Return: 69.10% \u2026 Profit Factor: 7.183 \u2026 Dates: 2011-01-01 to 2026-05-13 (present)",
+    "performance_claim": "Total Return: 321,940%",
+    "verbatim_confidence": "high",
+    "notes": "Clean 20/200 MA cross long-only rule with full stats; backtest from 2011 predates Binance data (2017+), good test of period mismatch. No publish date shown (backtest ends 2026-05-13)."
+  },
+  "spec": {
+    "claim_summary": "Buy Bitcoin when its 20-period moving average is above its 200-period moving average and sell when it is below.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "sma",
+          "period": 20,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "gt",
+        "right": {
+          "kind": "sma",
+          "period": 200,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "sma",
+          "period": 20,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "lt",
+        "right": {
+          "kind": "sma",
+          "period": 200,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": 53.33,
+      "total_return_pct": 321940.0,
+      "avg_return_per_trade_pct": null,
+      "period_start": "2011-01-01",
+      "period_end": "2026-05-13",
+      "other": "Annualized Return: 69.10% Profit Factor: 7.183"
+    },
+    "assumptions": [
+      "Interpreted '20ma' and '200ma' as simple moving averages (SMA 20 and SMA 200) on close; claim does not specify MA type.",
+      "Interpreted 'Bitcoin' as BTCUSDT spot.",
+      "Timeframe 1d taken from page chart context, not stated in claimant words.",
+      "Entry evaluated on bar closes with fill at next open per engine; 'research-style entry' treated as consistent with this.",
+      "Exit is to hold until opposite MA condition; no stop-loss, take-profit or max hold was stated.",
+      "Claimant's dates are recorded in claimed only; engine tests over all available history starting flat."
+    ],
+    "evidence": [
+      {
+        "field": "assets",
+        "quote": "Bitcoin\u2019s",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "direction",
+        "quote": "Buy market on close",
+        "assumed": false
+      },
+      {
+        "field": "entry[0]",
+        "quote": "Bitcoin\u2019s 20ma closes > its 200ma",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": "Sell if Bitcoin\u2019s 20ma closes < its 200ma",
+        "assumed": false
+      },
+      {
+        "field": "claimed.win_rate_pct",
+        "quote": "Hit Rate: 53.33%",
+        "assumed": false
+      },
+      {
+        "field": "claimed.total_return_pct",
+        "quote": "Total Return: 321,940%",
+        "assumed": false
+      },
+      {
+        "field": "claimed.other",
+        "quote": "Annualized Return: 69.10% \u2026 Profit Factor: 7.183",
+        "assumed": false
+      },
+      {
+        "field": "claimed.period_start",
+        "quote": "2011-01-01 to 2026-05-13",
+        "assumed": false
+      },
+      {
+        "field": "claimed.period_end",
+        "quote": "2011-01-01 to 2026-05-13",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 4996,
+          "prompt_tokens": 1143,
+          "total_tokens": 6139,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 4299,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 4,
+      "assumed": 1,
+      "quoted_fields": [
+        "entry[0]",
+        "exit[0]",
+        "assets",
+        "direction"
+      ],
+      "assumed_fields": [
+        "timeframe"
+      ],
+      "problems": []
+    },
+    "audits": [
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ]
+  },
+  "report": {
+    "verdict": "INCONCLUSIVE",
+    "headline": "Only 11 trades from 2017-08-17 to 2026-10-26 -- too few to tell skill from luck.",
+    "reasons": [
+      "11 trades < 30 minimum"
+    ],
+    "warnings": [
+      "the claim's results start 2011-01-01; Binance history for BTCUSDT starts 2017-08-17, so the test covers less history than the claim",
+      "the last trade is still open at the end of the data; it is marked at the last close",
+      "just holding did better: +453% vs buy-and-hold +1781%"
+    ],
+    "asset": "BTCUSDT",
+    "timeframe": "1d",
+    "primary": {
+      "trades": 11,
+      "win_rate_pct": 54.54545454545454,
+      "avg_net_pct": 34.16761701932108,
+      "total_net_pct": 452.8137425667783,
+      "total_gross_pct": 467.6023836162374,
+      "max_drawdown_pct": -48.68501741439724,
+      "avg_bars": 151.27272727272728,
+      "open_at_end": 1,
+      "buy_hold_pct": 1780.815115875236,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 49.55330553901132
+    },
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "ETHUSDT",
+          "trades": 11,
+          "total_net_pct": 218.82721875354827,
+          "avg_net_pct": 67.09228533519294
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 7,
+          "total_net_pct": 1269.1856652359884,
+          "avg_net_pct": 149.31265272218545
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 15,
+          "total_net_pct": 806.9008811298661,
+          "avg_net_pct": 108.47749606515112
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 16,
+          "total_net_pct": -50.983821979060494,
+          "avg_net_pct": 4.4978023912621
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 12,
+          "total_net_pct": 1523.8595527263592,
+          "avg_net_pct": 427.9548101806771
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 9,
+          "total_net_pct": 633.0863381864302,
+          "avg_net_pct": 334.7550115181402
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 8,
+          "total_net_pct": -66.32333864122273,
+          "avg_net_pct": -6.722264696313997
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 14,
+          "total_net_pct": 137.1093281267044,
+          "avg_net_pct": 40.67579795258554
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 11,
+          "total_net_pct": 62.1501445157286,
+          "avg_net_pct": 17.70661945970646
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 8,
+          "total_net_pct": -86.32754627618495,
+          "avg_net_pct": -19.493232181988855
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 9,
+          "total_net_pct": 504.1477588573854,
+          "avg_net_pct": 44.70027774943672
+        }
+      ],
+      "tested": 0,
+      "positive": 0,
+      "positive_share_pct": null
+    },
+    "sweep": {
+      "readings": 1,
+      "note": "claim fixes every parameter"
+    },
+    "claimed_vs_measured": [
+      {
+        "metric": "win rate %",
+        "claimed": 53.33,
+        "measured": 54.55,
+        "gap": 1.22
+      }
+    ],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 4,
+      "assumed": 1,
+      "quoted_fields": [
+        "entry[0]",
+        "exit[0]",
+        "assets",
+        "direction"
+      ],
+      "assumed_fields": [
+        "timeframe"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "exact",
+      "gaps": [],
+      "audit_majors": []
+    }
+  },
+  "seconds": 27.2
+}

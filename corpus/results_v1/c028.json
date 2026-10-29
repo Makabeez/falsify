@@ -1,0 +1,599 @@
+{
+  "id": "c028",
+  "record": {
+    "id": "c028",
+    "url": "https://www.cryptodatadownload.com/blog/posts/turtle-soup-trading-strategy-python-cryptocurrency/",
+    "source": "blog",
+    "posted": "2023-12-17",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "rule",
+    "excerpt": "The market makes a new 20day high or low and the previous high/low marker must have been at least 3 trading sessions prior. \u2026 The close of the new high/low must be greater than (beyond) the previous high/low price marker. \u2026 Buy entry is placed on the next day at the previous 20 day high/low watermark \u2026 Stop entries for failed trades are placed below the latest high/low that triggered the signal \u2026 Profits/exits should be taken within 2-6 candlestick intervals \u2026 OHLCV historical data for Bitcoin (BTC) from Binance exchange.",
+    "performance_claim": null,
+    "verbatim_confidence": "high",
+    "notes": "Turtle Soup 20-day false-breakout rule on Binance BTC daily; exit window 2-6 bars is a range (compiler must pick)."
+  },
+  "spec": {
+    "claim_summary": "Bitcoin buys a new 20-day high close beyond a marker at least 3 sessions old and exits within 2-6 bars with a stop below the trigger extreme.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "gt",
+        "right": {
+          "kind": "highest_high",
+          "period": 20,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      },
+      {
+        "left": {
+          "kind": "highest_high",
+          "period": 3,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "lt",
+        "right": {
+          "kind": "highest_high",
+          "period": 20,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": 4,
+    "free_parameters": [
+      {
+        "name": "holding period in bars",
+        "target": "max_hold_bars",
+        "candidates": [
+          2.0,
+          3.0,
+          4.0,
+          5.0,
+          6.0
+        ]
+      }
+    ],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": null
+    },
+    "assumptions": [
+      "Timeframe 1d assumed as most natural reading for 20day highs and candlestick intervals; claim states no bar length.",
+      "Entry uses close above previous 20-bar highest_high to represent a new 20-day high close beyond the previous marker; next-bar open fill approximates next-day entry.",
+      "Three-session age filter compiled as 3-bar highest_high below 20-bar highest_high, so the 20-day marker comes from more than 3 sessions prior.",
+      "NOT EXPRESSIBLE: new 20-day low trigger for a Buy cannot be expressed because entry conditions combine with AND only; this spec tests the high-breakout side and omits the low-breakout Buy side.",
+      "NOT EXPRESSIBLE: next-day entry at the previous 20 day high/low watermark price cannot be expressed; the engine fills at the next bar open.",
+      "NOT EXPRESSIBLE: stop below the latest high/low that triggered the signal is an entry-anchored price-level stop and cannot be expressed as stop_loss_pct; no stop set.",
+      "Time exit within 2-6 intervals compiled as fixed max_hold_bars 4, the midpoint of the stated range."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "makes a new 20day high or low",
+        "assumed": false
+      },
+      {
+        "field": "entry[1]",
+        "quote": "must have been at least 3 trading sessions prior",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": "Buy entry is placed on the next day at the previous 20 day high/low watermark",
+        "assumed": false
+      },
+      {
+        "field": "assets",
+        "quote": "OHLCV historical data for Bitcoin (BTC) from Binance exchange.",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "max_hold_bars",
+        "quote": "Profits/exits should be taken within 2-6 candlestick intervals",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": false,
+    "issues": [
+      {
+        "field": "entry",
+        "problem": "Claim requires Buy on new 20-day high OR new 20-day low. Spec tests only the high-breakout side (close > 20-bar highest_high) and omits the low-breakout Buy side. Leaving out half the signals changes what is tested.",
+        "severity": "major"
+      },
+      {
+        "field": "stop_loss_pct",
+        "problem": "Claim requires stop below the latest high/low that triggered the signal. Spec sets no stop (null). Omitting the stop changes losses and verdict.",
+        "severity": "major"
+      },
+      {
+        "field": "entry (fill price)",
+        "problem": "Claim requires next-day entry at the previous 20-day high/low watermark price. Spec fills at next bar open, a different price than the watermark limit level, which changes trade prices.",
+        "severity": "major"
+      }
+    ]
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 3954,
+          "prompt_tokens": 1969,
+          "total_tokens": 5923,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 3882,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
+        },
+        "error": "1 validation error for ClaimSpec\n  Value error, testable claim needs at least one asset [type=value_error, input_value={'claim_summary': 'Bitcoi...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+      },
+      {
+        "usage": {
+          "completion_tokens": 4658,
+          "prompt_tokens": 2119,
+          "total_tokens": 6777,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 4593,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
+        },
+        "error": "1 validation error for ClaimSpec\n  Value error, testable claim needs at least one asset [type=value_error, input_value={'claim_summary': 'Bitcoi...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+      },
+      {
+        "usage": {
+          "completion_tokens": 3650,
+          "prompt_tokens": 2263,
+          "total_tokens": 5913,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 3044,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 2077,
+            "image_tokens": null,
+            "text_tokens": null
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 5,
+      "assumed": 1,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "max_hold_bars",
+        "assets",
+        "direction"
+      ],
+      "assumed_fields": [
+        "timeframe"
+      ],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 5568,
+            "prompt_tokens": 1170,
+            "total_tokens": 6738,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 5012,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            },
+            "reasoning_effort": "medium",
+            "calls": 1
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 5,
+        "quoted": 4,
+        "assumed": 1,
+        "quoted_fields": [
+          "entry[0]",
+          "max_hold_bars",
+          "assets",
+          "direction"
+        ],
+        "assumed_fields": [
+          "timeframe"
+        ],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "entry",
+            "problem": "Claim requires the previous high/low marker was at least 3 trading sessions prior. Spec omits this filter as NOT EXPRESSIBLE, admitting trades the claimant would exclude.",
+            "severity": "major"
+          },
+          {
+            "field": "entry",
+            "problem": "Claim triggers on a new 20-day high OR low for a Buy entry. Spec encodes only close gt highest_high 20, omitting the new-low trigger side.",
+            "severity": "major"
+          },
+          {
+            "field": "entry[0]",
+            "problem": "Claim requires close beyond the previous marker with next-day entry at the previous watermark price. Spec encodes close vs 20-bar highest_high with next-bar open fill, not a watermark-level entry.",
+            "severity": "major"
+          },
+          {
+            "field": "stop_loss_pct",
+            "problem": "Claim requires stop below the latest high/low that triggered the signal. Spec sets no stop as NOT EXPRESSIBLE, removing downside protection.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "entry",
+            "problem": "Claim requires Buy on new 20-day high OR new 20-day low. Spec tests only the high-breakout side (close > 20-bar highest_high) and omits the low-breakout Buy side. Leaving out half the signals changes what is tested.",
+            "severity": "major"
+          },
+          {
+            "field": "stop_loss_pct",
+            "problem": "Claim requires stop below the latest high/low that triggered the signal. Spec sets no stop (null). Omitting the stop changes losses and verdict.",
+            "severity": "major"
+          },
+          {
+            "field": "entry (fill price)",
+            "problem": "Claim requires next-day entry at the previous 20-day high/low watermark price. Spec fills at next bar open, a different price than the watermark limit level, which changes trade prices.",
+            "severity": "major"
+          }
+        ]
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "INCONCLUSIVE",
+    "headline": "Tested an approximation of the claim. Makes money (+0.76% per trade after costs, 71 trades) but can't be told from luck: random timing did as well 30% of the time.",
+    "reasons": [
+      "makes money after costs (+0.76% per trade), but random timing did as well 30% of the time (p = 0.303); needs p < 0.05 to count as an edge"
+    ],
+    "warnings": [
+      "just holding did better: +44% vs buy-and-hold +1781%",
+      "left out: new 20-day low trigger for a Buy cannot be expressed because entry conditions combine with AND only; this spec tests the high-breakout side and omits the low-breakout Buy side.",
+      "left out: next-day entry at the previous 20 day high/low watermark price cannot be expressed; the engine fills at the next bar open.",
+      "left out: stop below the latest high/low that triggered the signal is an entry-anchored price-level stop and cannot be expressed as stop_loss_pct; no stop set.",
+      "audit: entry: Claim requires Buy on new 20-day high OR new 20-day low. Spec tests only the high-breakout side (close > 20-bar highest_high) and omits the low-breakout Buy side. Leaving out half the signals changes what is tested.",
+      "audit: stop_loss_pct: Claim requires stop below the latest high/low that triggered the signal. Spec sets no stop (null). Omitting the stop changes losses and verdict.",
+      "audit: entry (fill price): Claim requires next-day entry at the previous 20-day high/low watermark price. Spec fills at next bar open, a different price than the watermark limit level, which changes trade prices."
+    ],
+    "asset": "BTCUSDT",
+    "timeframe": "1d",
+    "primary": {
+      "trades": 71,
+      "win_rate_pct": 47.88732394366197,
+      "avg_net_pct": 0.7605131189237815,
+      "total_net_pct": 44.28026283690647,
+      "total_gross_pct": 71.08452960502905,
+      "max_drawdown_pct": -39.6942873245277,
+      "avg_bars": 4.0,
+      "open_at_end": 0,
+      "buy_hold_pct": 1780.815115875236,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 8.457415128052412
+    },
+    "null_test": {
+      "p_value": 0.30334832583708143,
+      "strategy_mean_log_pct": 0.5163204109290992,
+      "null_median_log_pct": 0.09714368516429787,
+      "null_p95_log_pct": 1.456332728940725,
+      "beat_by_random_pct": 30.3,
+      "sims": 2000
+    },
+    "out_of_sample": {
+      "available": true,
+      "boundary": "2023-12-17",
+      "boundary_source": "post date",
+      "claim_window": [
+        null,
+        null
+      ],
+      "in_window": {
+        "trades": 46,
+        "win_rate_pct": 50.0,
+        "avg_net_pct": 0.9116147165838586,
+        "total_net_pct": 33.545162912958794,
+        "total_gross_pct": 49.13318602064953,
+        "max_drawdown_pct": -39.6942873245277,
+        "avg_bars": 4.0,
+        "open_at_end": 0
+      },
+      "after_window": {
+        "trades": 25,
+        "win_rate_pct": 44.0,
+        "avg_net_pct": 0.48248617922923964,
+        "total_net_pct": 8.038553916733381,
+        "total_gross_pct": 14.719288288617394,
+        "max_drawdown_pct": -15.694574542684869,
+        "avg_bars": 4.0,
+        "open_at_end": 0
+      },
+      "counts": true
+    },
+    "halves": {
+      "split": "2022-03-23",
+      "first": {
+        "trades": 35,
+        "win_rate_pct": 54.285714285714285,
+        "avg_net_pct": 1.384443884548467,
+        "total_net_pct": 46.81318712396199,
+        "total_gross_pct": 59.67827074641654,
+        "max_drawdown_pct": -24.80902420209745,
+        "avg_bars": 4.0,
+        "open_at_end": 0
+      },
+      "second": {
+        "trades": 36,
+        "win_rate_pct": 41.66666666666667,
+        "avg_net_pct": 0.15391376345533755,
+        "total_net_pct": -1.7252702816926258,
+        "total_gross_pct": 7.143275541057581,
+        "max_drawdown_pct": -28.015474151932274,
+        "avg_bars": 4.0,
+        "open_at_end": 0
+      },
+      "consistent": true
+    },
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "ETHUSDT",
+          "trades": 58,
+          "total_net_pct": -12.935745575337565,
+          "avg_net_pct": 0.29520080427816464
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 39,
+          "total_net_pct": 428.04636956935946,
+          "avg_net_pct": 6.183571369350896
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 66,
+          "total_net_pct": 452.65120672190665,
+          "avg_net_pct": 3.6947713379794846
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 42,
+          "total_net_pct": 142.43353208911245,
+          "avg_net_pct": 3.3889565544553495
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 31,
+          "total_net_pct": 4723.907825338312,
+          "avg_net_pct": 16.363529603840057
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 43,
+          "total_net_pct": 205.976187798378,
+          "avg_net_pct": 3.7869277781473807
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 31,
+          "total_net_pct": 8.906140415087616,
+          "avg_net_pct": 0.9567583612396476
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 61,
+          "total_net_pct": 797.0551989875919,
+          "avg_net_pct": 4.417530967298886
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 63,
+          "total_net_pct": 16.729284383853795,
+          "avg_net_pct": 0.6928146774597523
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 41,
+          "total_net_pct": 106.58035195381323,
+          "avg_net_pct": 2.463063495968441
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 56,
+          "total_net_pct": 11.161077533250019,
+          "avg_net_pct": 0.7075465669492732
+        }
+      ],
+      "tested": 11,
+      "positive": 11,
+      "positive_share_pct": 100.0
+    },
+    "sweep": {
+      "readings": 5,
+      "truncated": false,
+      "positive_share_pct": 100.0,
+      "best": {
+        "params": {
+          "holding period in bars": 6.0
+        },
+        "trades": 70,
+        "avg_net_pct": 2.2536526104135906,
+        "total_net_pct": 264.79318124571927,
+        "p_value": 0.06187624750499002
+      },
+      "best_p_bonferroni": 0.30938123752495006,
+      "results": [
+        {
+          "params": {
+            "holding period in bars": 2.0
+          },
+          "trades": 72,
+          "avg_net_pct": 0.8304186928572583,
+          "total_net_pct": 67.42930845429555,
+          "p_value": 0.09780439121756487
+        },
+        {
+          "params": {
+            "holding period in bars": 3.0
+          },
+          "trades": 72,
+          "avg_net_pct": 0.919934568798895,
+          "total_net_pct": 74.08251755949016,
+          "p_value": 0.18163672654690619
+        },
+        {
+          "params": {
+            "holding period in bars": 4.0
+          },
+          "trades": 71,
+          "avg_net_pct": 0.7605131189237815,
+          "total_net_pct": 44.28026283690647,
+          "p_value": 0.33532934131736525
+        },
+        {
+          "params": {
+            "holding period in bars": 5.0
+          },
+          "trades": 71,
+          "avg_net_pct": 1.3934859498545438,
+          "total_net_pct": 107.5975253962774,
+          "p_value": 0.1996007984031936
+        },
+        {
+          "params": {
+            "holding period in bars": 6.0
+          },
+          "trades": 70,
+          "avg_net_pct": 2.2536526104135906,
+          "total_net_pct": 264.79318124571927,
+          "p_value": 0.06187624750499002
+        }
+      ]
+    },
+    "claimed_vs_measured": [],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 5,
+      "assumed": 1,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "max_hold_bars",
+        "assets",
+        "direction"
+      ],
+      "assumed_fields": [
+        "timeframe"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: new 20-day low trigger for a Buy cannot be expressed because entry conditions combine with AND only; this spec tests the high-breakout side and omits the low-breakout Buy side.",
+        "NOT EXPRESSIBLE: next-day entry at the previous 20 day high/low watermark price cannot be expressed; the engine fills at the next bar open.",
+        "NOT EXPRESSIBLE: stop below the latest high/low that triggered the signal is an entry-anchored price-level stop and cannot be expressed as stop_loss_pct; no stop set."
+      ],
+      "audit_majors": [
+        "entry: Claim requires Buy on new 20-day high OR new 20-day low. Spec tests only the high-breakout side (close > 20-bar highest_high) and omits the low-breakout Buy side. Leaving out half the signals changes what is tested.",
+        "stop_loss_pct: Claim requires stop below the latest high/low that triggered the signal. Spec sets no stop (null). Omitting the stop changes losses and verdict.",
+        "entry (fill price): Claim requires next-day entry at the previous 20-day high/low watermark price. Spec fills at next bar open, a different price than the watermark limit level, which changes trade prices."
+      ]
+    }
+  },
+  "seconds": 112.3
+}

@@ -14,7 +14,7 @@
     "notes": "Connors RSI(2)<5 above SMA200 on S&P 500; mechanical but index, out of universe. Date is stated backtest run date."
   },
   "spec": {
-    "claim_summary": "Buy when 2-period RSI is below 5 while close is above the 200-day SMA and exit when close is back above the 5-day SMA or below the 200-day SMA on S&P 500 daily.",
+    "claim_summary": "A daily long strategy on the S&P 500 entering when 2-period RSI is below 5 while above the 200-day SMA and exiting on a close above the 5-day SMA or below the 200-day SMA returned 18.1% from October 2016 to October 2026 versus 255.4% buy-and-hold.",
     "source_type": "text",
     "testable": true,
     "untestable_reason": null,
@@ -30,7 +30,10 @@
           "period": 2,
           "value": null,
           "multiplier": 1.0,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         },
         "op": "lt",
         "right": {
@@ -38,7 +41,10 @@
           "period": null,
           "value": 5.0,
           "multiplier": 1.0,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         }
       },
       {
@@ -47,7 +53,10 @@
           "period": null,
           "value": null,
           "multiplier": 1.0,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         },
         "op": "gt",
         "right": {
@@ -55,7 +64,10 @@
           "period": 200,
           "value": null,
           "multiplier": 1.0,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         }
       }
     ],
@@ -66,7 +78,10 @@
           "period": null,
           "value": null,
           "multiplier": 1.0,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         },
         "op": "gt",
         "right": {
@@ -74,7 +89,10 @@
           "period": 5,
           "value": null,
           "multiplier": 1.0,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         }
       },
       {
@@ -83,7 +101,10 @@
           "period": null,
           "value": null,
           "multiplier": 1.0,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         },
         "op": "lt",
         "right": {
@@ -91,12 +112,21 @@
           "period": 200,
           "value": null,
           "multiplier": 1.0,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         }
       }
     ],
     "stop_loss_pct": null,
+    "stop_atr_mult": null,
+    "stop_atr_period": 14,
     "take_profit_pct": null,
+    "take_profit_atr_mult": null,
+    "take_profit_r": null,
+    "trailing_stop_pct": null,
+    "trailing_stop_atr_mult": null,
     "max_hold_bars": null,
     "free_parameters": [],
     "claimed": {
@@ -105,14 +135,17 @@
       "avg_return_per_trade_pct": null,
       "period_start": "2016-10-01",
       "period_end": "2026-10-01",
-      "other": "against +255.4% for buying and holding SPX500/USD over the same days"
+      "other": "+255.4% for buying and holding SPX500/USD over the same days"
     },
     "assumptions": [
-      "Asset SPX500/USD mapped to SPX500USDT with no substitution; engine has no Binance spot data for it.",
-      "SMA and RSI(2) calculated on daily closes using standard definitions.",
-      "Exit 'below the 200-day SMA' interpreted as close < 200-day SMA on bar close.",
-      "No stop-loss, take-profit or max hold stated, so none used; position held until an exit condition occurs.",
-      "Month-precision claim period October 2016 to October 2026 recorded as 2016-10-01 to 2026-10-01 in `claimed` only; test window is not part of the rule."
+      "Entry conditions are evaluated on bar closes with fills at the next bar open per engine convention.",
+      "Entry requires both RSI(2) below 5 and close above 200-day SMA true on the same bar close.",
+      "Exit is OR: any exit condition true on a bar close exits.",
+      "'Below' for exit[1] encoded as close lt 200-day SMA.",
+      "Asset S&P 500 (SPX500/USD) mapped to SPX500USDT; it is outside the Binance spot USDT test universe and the engine will report lack of data.",
+      "Period October 2016 to October 2026 interpreted as 2016-10-01 to 2026-10-01 for claimed.",
+      "No stop-loss, take-profit, trailing stop or max hold stated so none are set.",
+      "Buy-and-hold comparison is not part of the rule and is recorded only in claimed."
     ],
     "evidence": [
       {
@@ -122,12 +155,12 @@
       },
       {
         "field": "entry[1]",
-        "quote": "the close above the 200-day simple moving average (SMA)",
+        "quote": "close above the 200-day simple moving average (SMA)",
         "assumed": false
       },
       {
         "field": "exit[0]",
-        "quote": "the close is back above the 5-day SMA",
+        "quote": "close is back above the 5-day SMA",
         "assumed": false
       },
       {
@@ -149,6 +182,21 @@
         "field": "direction",
         "quote": "Long entry:",
         "assumed": false
+      },
+      {
+        "field": "claimed.total_return_pct",
+        "quote": "+18.1%",
+        "assumed": false
+      },
+      {
+        "field": "claimed.period_start",
+        "quote": "October 2016 to October 2026",
+        "assumed": false
+      },
+      {
+        "field": "claimed.period_end",
+        "quote": "October 2016 to October 2026",
+        "assumed": false
       }
     ]
   },
@@ -161,23 +209,25 @@
     "attempts": [
       {
         "usage": {
-          "completion_tokens": 4485,
-          "prompt_tokens": 1164,
-          "total_tokens": 5649,
+          "completion_tokens": 3642,
+          "prompt_tokens": 1529,
+          "total_tokens": 5171,
           "completion_tokens_details": {
             "accepted_prediction_tokens": null,
             "audio_tokens": null,
-            "reasoning_tokens": 3820,
+            "reasoning_tokens": 2854,
             "rejected_prediction_tokens": null,
             "text_tokens": null
           },
           "prompt_tokens_details": {
             "audio_tokens": null,
             "cache_write_tokens": null,
-            "cached_tokens": 925,
+            "cached_tokens": 0,
             "image_tokens": null,
             "text_tokens": null
-          }
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
         },
         "grounding_problems": []
       }
@@ -202,6 +252,19 @@
       {
         "faithful": true,
         "issues": []
+      }
+    ],
+    "cost": [
+      {
+        "step": "compile",
+        "seconds": 14.5,
+        "tokens": 5171,
+        "quote_repairs": 0
+      },
+      {
+        "step": "audit",
+        "seconds": 10.5,
+        "tokens": 3990
       }
     ]
   },
@@ -242,7 +305,9 @@
       "level": "exact",
       "gaps": [],
       "audit_majors": []
-    }
+    },
+    "review": {},
+    "series": {}
   },
-  "seconds": 21.0
+  "seconds": 24.9
 }

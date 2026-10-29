@@ -1,0 +1,409 @@
+{
+  "id": "c030",
+  "record": {
+    "id": "c030",
+    "url": "https://the-arc.beehiiv.com/p/blood-buy",
+    "source": "blog",
+    "posted": "2024-05-04",
+    "asset_hint": "BTC",
+    "timeframe_hint": null,
+    "category": "vague",
+    "excerpt": "Embrace the blood. Buy the blood. History says you will be okay. \u2026 Stack SATs. \u2026 Scared markets are where people make their money. \u2026 It is extremely common for Bitcoin to have pullbacks upwards of 20% to then rebound to new heights.",
+    "performance_claim": "History says you will be okay.",
+    "verbatim_confidence": "high",
+    "notes": "Sentiment-driven buy-the-fear exhortation; the 20% pullback figure is an observation, not a rule. Compiler should refuse or flag as non-mechanical. Bold markers removed."
+  },
+  "spec": {
+    "claim_summary": "Buy Bitcoin after a pullback of about 20% from a recent high and hold.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "lt",
+        "right": {
+          "kind": "highest_high",
+          "period": 200,
+          "value": null,
+          "multiplier": 0.8,
+          "param": null
+        }
+      }
+    ],
+    "exit": [],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": 3650,
+    "free_parameters": [
+      {
+        "name": "pullback lookback length",
+        "target": "entry[0].right.period",
+        "candidates": [
+          100.0,
+          200.0,
+          252.0,
+          365.0
+        ]
+      }
+    ],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": null
+    },
+    "assumptions": [
+      "Asset is BTCUSDT because the claim mentions Bitcoin.",
+      "Timeframe is 1d; the claim states no timeframe and daily bars are the most natural reading for historical Bitcoin pullbacks.",
+      "Entry is compiled as close < 0.8 * prior N-bar high to represent 'pullbacks upwards of 20%'.",
+      "Prior-high lookback N is set to 200 bars; the claim gives no lookback.",
+      "NOT EXPRESSIBLE: the claim advocates indefinite holding with no sell/exit trigger, so no condition exit is encoded; 'to then rebound to new heights' describes the historical outcome, not an exit; max_hold_bars 3650 is used only as a test proxy for holding because the engine requires an exit rule."
+    ],
+    "evidence": [
+      {
+        "field": "assets",
+        "quote": "Bitcoin",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "direction",
+        "quote": "Buy the blood.",
+        "assumed": false
+      },
+      {
+        "field": "entry[0]",
+        "quote": "pullbacks upwards of 20%",
+        "assumed": false
+      },
+      {
+        "field": "max_hold_bars",
+        "quote": null,
+        "assumed": true
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 3417,
+          "prompt_tokens": 1770,
+          "total_tokens": 5187,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 3004,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "error": "1 validation error for ClaimSpec\n  Value error, testable claim needs an exit rule (condition, stop, target or time exit) [type=value_error, input_value={'assets': ['BTCUSDT'], '...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+      },
+      {
+        "usage": {
+          "completion_tokens": 3000,
+          "prompt_tokens": 2271,
+          "total_tokens": 5271,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 2550,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 1053,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 3,
+      "assumed": 2,
+      "quoted_fields": [
+        "entry[0]",
+        "assets",
+        "direction"
+      ],
+      "assumed_fields": [
+        "max_hold_bars",
+        "timeframe"
+      ],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 5530,
+            "prompt_tokens": 1097,
+            "total_tokens": 6627,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 5013,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            }
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 5,
+        "quoted": 4,
+        "assumed": 1,
+        "quoted_fields": [
+          "entry[0]",
+          "exit[0]",
+          "assets",
+          "direction"
+        ],
+        "assumed_fields": [
+          "timeframe"
+        ],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "exit[0]",
+            "problem": "Claim gives no sell/exit trigger. 'to then rebound to new heights' describes the historical outcome after pullbacks, while 'Stack SATs' and 'History says you will be okay' advocate buying and holding. Spec invents a round-trip exit (sell on close back above prior high) the claimant never stated.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "INCONCLUSIVE",
+    "headline": "Tested an approximation of the claim. Only 1 trades from 2017-08-17 to 2026-10-26 -- too few to tell skill from luck.",
+    "reasons": [
+      "1 trades < 30 minimum"
+    ],
+    "warnings": [
+      "the last trade is still open at the end of the data; it is marked at the last close",
+      "just holding did better: +598% vs buy-and-hold +1781%",
+      "left out: the claim advocates indefinite holding with no sell/exit trigger, so no condition exit is encoded; 'to then rebound to new heights' describes the historical outcome, not an exit; max_hold_bars 3650 is used only as a test proxy for holding because the engine requires an exit rule."
+    ],
+    "asset": "BTCUSDT",
+    "timeframe": "1d",
+    "primary": {
+      "trades": 1,
+      "win_rate_pct": 100.0,
+      "avg_net_pct": 598.0220795542947,
+      "total_net_pct": 598.0220795542947,
+      "total_gross_pct": 599.6993452640768,
+      "max_drawdown_pct": 0.0,
+      "avg_bars": 3156.0,
+      "open_at_end": 1,
+      "buy_hold_pct": 1780.815115875236,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 93.98451459201907
+    },
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "ETHUSDT",
+          "trades": 1,
+          "total_net_pct": 172.88191086007276,
+          "avg_net_pct": 172.88191086007276
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 1,
+          "total_net_pct": 663.7900570145159,
+          "avg_net_pct": 663.7900570145159
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 1,
+          "total_net_pct": 5595.11196528125,
+          "avg_net_pct": 5595.11196528125
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 1,
+          "total_net_pct": 194.9219117030208,
+          "avg_net_pct": 194.9219117030208
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 1,
+          "total_net_pct": 3189.8094266695944,
+          "avg_net_pct": 3189.8094266695944
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 1,
+          "total_net_pct": 187.31296444545208,
+          "avg_net_pct": 187.31296444545208
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 1,
+          "total_net_pct": -71.80198651992514,
+          "avg_net_pct": -71.80198651992514
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 1,
+          "total_net_pct": 353.3871940832812,
+          "avg_net_pct": 353.3871940832812
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 1,
+          "total_net_pct": -29.12228687256132,
+          "avg_net_pct": -29.12228687256132
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 1,
+          "total_net_pct": -96.97395269261958,
+          "avg_net_pct": -96.97395269261958
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 1,
+          "total_net_pct": 1520.0598709837993,
+          "avg_net_pct": 1520.0598709837993
+        }
+      ],
+      "tested": 0,
+      "positive": 0,
+      "positive_share_pct": null
+    },
+    "sweep": {
+      "readings": 4,
+      "truncated": false,
+      "positive_share_pct": null,
+      "best": null,
+      "best_p_bonferroni": null,
+      "results": [
+        {
+          "params": {
+            "pullback lookback length": 100.0
+          },
+          "trades": 1,
+          "avg_net_pct": 415.39431864540967,
+          "total_net_pct": 415.39431864540967,
+          "p_value": null
+        },
+        {
+          "params": {
+            "pullback lookback length": 200.0
+          },
+          "trades": 1,
+          "avg_net_pct": 598.0220795542947,
+          "total_net_pct": 598.0220795542947,
+          "p_value": null
+        },
+        {
+          "params": {
+            "pullback lookback length": 252.0
+          },
+          "trades": 1,
+          "avg_net_pct": 762.8269166382804,
+          "total_net_pct": 762.8269166382804,
+          "p_value": null
+        },
+        {
+          "params": {
+            "pullback lookback length": 365.0
+          },
+          "trades": 1,
+          "avg_net_pct": 1115.3510118945085,
+          "total_net_pct": 1115.3510118945085,
+          "p_value": null
+        }
+      ]
+    },
+    "claimed_vs_measured": [],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 3,
+      "assumed": 2,
+      "quoted_fields": [
+        "entry[0]",
+        "assets",
+        "direction"
+      ],
+      "assumed_fields": [
+        "max_hold_bars",
+        "timeframe"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: the claim advocates indefinite holding with no sell/exit trigger, so no condition exit is encoded; 'to then rebound to new heights' describes the historical outcome, not an exit; max_hold_bars 3650 is used only as a test proxy for holding because the engine requires an exit rule."
+      ],
+      "audit_majors": []
+    }
+  },
+  "seconds": 70.4
+}

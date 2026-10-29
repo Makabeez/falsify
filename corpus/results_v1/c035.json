@@ -1,0 +1,142 @@
+{
+  "id": "c035",
+  "record": {
+    "id": "c035",
+    "url": "https://www.tradingview.com/chart/BTCUSD/Oqyw95Il-Is-Divergence-the-King-or-Queen-of-Crypto-Technical-Analysis/",
+    "source": "tradingview_idea",
+    "posted": "2019-04-17",
+    "asset_hint": "BTC",
+    "timeframe_hint": null,
+    "category": "vague",
+    "excerpt": "Divergence is one of the best technical analysis theories. \u2026 Although not 100%, a very high probability of profitability is well known. \u2026 Signals: Blue ascending arrows in RSI & MACD \u2026 Instances of Bullish Divergences (Green Arrows) 29 instances, probability of profitability > 85% \u2026 Instances of Bearish Divergences (Red Arrows) 17 instances, probability of profitability > 90%",
+    "performance_claim": "probability of profitability > 85%",
+    "verbatim_confidence": "high",
+    "notes": "Hand-marked RSI/MACD divergences with precise-looking success rates but no definition of divergence, exit or horizon; compiler should flag as discretionary."
+  },
+  "spec": {
+    "claim_summary": "The claim states that RSI and MACD bullish and bearish divergences predict profitable moves with success rates above 85% and 90%.",
+    "source_type": "text",
+    "testable": false,
+    "untestable_reason": "RSI and MACD bullish/bearish divergence requires comparing successive price pivots to indicator pivots, which cannot be expressed as single-bar close conditions in the available schema.",
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [],
+    "exit": [],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": 85.0,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": "Bearish divergences: probability of profitability > 90% (17 instances)"
+    },
+    "assumptions": [
+      "Asset not named in claim; BTCUSDT chosen as most natural reading for a page about BTC.",
+      "Timeframe not stated; 1d assumed as default.",
+      "NOT EXPRESSIBLE: RSI and MACD divergence detection comparing successive price pivots to indicator pivots and 'Blue ascending arrows' signal logic left out; this is the heart of the strategy.",
+      "Direction set to long to represent bullish divergences; bearish short side omitted because the schema allows only one direction.",
+      "85% taken as the bullish-divergence win rate; bearish-divergence 90% rate recorded separately in claimed.other."
+    ],
+    "evidence": [
+      {
+        "field": "assets",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "timeframe",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "direction",
+        "quote": "Instances of Bullish Divergences (Green Arrows)",
+        "assumed": false
+      },
+      {
+        "field": "claimed.win_rate_pct",
+        "quote": "probability of profitability > 85%",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 3235,
+          "prompt_tokens": 1131,
+          "total_tokens": 4366,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 2851,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 0,
+      "quoted": 0,
+      "assumed": 0,
+      "quoted_fields": [],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "audits": [
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ]
+  },
+  "report": {
+    "verdict": "UNTESTABLE",
+    "headline": "This claim can't be turned into rules anyone could check.",
+    "reasons": [
+      "RSI and MACD bullish/bearish divergence requires comparing successive price pivots to indicator pivots, which cannot be expressed as single-bar close conditions in the available schema."
+    ],
+    "warnings": [],
+    "asset": null,
+    "timeframe": null,
+    "primary": {},
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {},
+    "sweep": {},
+    "claimed_vs_measured": [],
+    "costs": {},
+    "grounding": {},
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: RSI and MACD divergence detection comparing successive price pivots to indicator pivots and 'Blue ascending arrows' signal logic left out; this is the heart of the strategy."
+      ],
+      "audit_majors": []
+    }
+  },
+  "seconds": 23.3
+}

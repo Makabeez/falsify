@@ -1,0 +1,332 @@
+{
+  "id": "c024",
+  "record": {
+    "id": "c024",
+    "url": "https://forums.babypips.com/t/the-5-ema-method-i-use/55777",
+    "source": "forum",
+    "posted": null,
+    "asset_hint": "EURUSD",
+    "timeframe_hint": "1d",
+    "category": "other_asset",
+    "excerpt": "So basically I use 5EMA and also use a 50EMA ( for trend basically ) then I set my RSI to 5 also\u2026 \u2026 So once your 5ema crosses your 50ema and RSI cross the 50 line, boom there is your signal, \u2026 I do like to wait for the candle of that day to close though, \u2026 since this week I started using it on the daily and 4 hour charts \u2026 So far I have opened 4 trades at 8pm last night (20/08/2013) on USD/CAD, EUR/USD, GBP/USD, and also EUR/JPY.",
+    "performance_claim": "usd/cad has moved just over 200 pips in my favour",
+    "verbatim_confidence": "high",
+    "notes": "Forex EMA5/50 + RSI(5) cross 50 rule; no page date header, in-text date 20/08/2013 implies post ~2013-08-21."
+  },
+  "spec": {
+    "claim_summary": "Enter when the 5-period EMA crosses the 50-period EMA and the 5-period RSI crosses the 50 line on candle close.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "USDCAD",
+      "EURUSD",
+      "GBPUSD",
+      "EURJPY"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "ema",
+          "period": 5,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "ema",
+          "period": 50,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      },
+      {
+        "left": {
+          "kind": "rsi",
+          "period": 5,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 50.0,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "ema",
+          "period": 5,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "ema",
+          "period": 50,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": null
+    },
+    "assumptions": [
+      "RSI length 5 from 'I set my RSI to 5' combined with 50 level from 'RSI cross the 50 line' into a 5-period RSI crosses 50 condition.",
+      "Wait-for-close is enforced by bar-CLOSE evaluation; no intrabar logic encoded.",
+      "No exit stated; used opposite cross 5EMA crosses below 50EMA as the most common reading for this crossover setup.",
+      "NOT EXPRESSIBLE: Claim does not state long-only and describes crosses without side; the short/bearish side (5EMA crossing below 50EMA with RSI crossing below 50) cannot be expressed alongside the long side because direction allows only one value, so only the bullish long side is compiled.",
+      "NOT EXPRESSIBLE: Claim states use 'on the daily and 4 hour charts' but only a single timeframe can be compiled; this spec compiles the daily (1d) reading and does not cover the 4-hour variant.",
+      "Assets are forex pairs with no Binance spot data; named as tickers with no substitution, engine is expected to report lack of data."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "5ema crosses your 50ema",
+        "assumed": false
+      },
+      {
+        "field": "entry[1]",
+        "quote": "RSI cross the 50 line",
+        "assumed": false
+      },
+      {
+        "field": "assets",
+        "quote": "on USD/CAD, EUR/USD, GBP/USD, and also EUR/JPY",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": "on the daily and 4 hour charts",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "exit[0]",
+        "quote": null,
+        "assumed": true
+      }
+    ]
+  },
+  "audit": {
+    "faithful": false,
+    "issues": [
+      {
+        "field": "direction",
+        "problem": "Claim never states long-only; it says '5ema crosses your 50ema and RSI cross the 50 line' with no above/below or long/short qualifier. Spec encodes direction long with crosses_above for both EMA and RSI, omitting the bearish side (5EMA crossing below 50EMA with RSI crossing below 50). Leaving out the short side changes what is tested.",
+        "severity": "major"
+      },
+      {
+        "field": "timeframe",
+        "problem": "Claim states use 'on the daily and 4 hour charts' - two timeframes. Spec compiles only timeframe 1d and does not cover the 4-hour variant. Omitting the 4h signals changes what is tested.",
+        "severity": "major"
+      },
+      {
+        "field": "exit[0]",
+        "problem": "Claim states no exit rule. Spec invents exit as 5EMA crosses_below 50EMA with no supporting quote. Adding an exit not stated by claimant changes holding period and verdict.",
+        "severity": "major"
+      }
+    ]
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 4974,
+          "prompt_tokens": 2024,
+          "total_tokens": 6998,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 4398,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 4,
+      "assumed": 2,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "assets",
+        "timeframe"
+      ],
+      "assumed_fields": [
+        "exit[0]",
+        "direction"
+      ],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 6098,
+            "prompt_tokens": 1171,
+            "total_tokens": 7269,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 5450,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            }
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 6,
+        "quoted": 4,
+        "assumed": 2,
+        "quoted_fields": [
+          "entry[0]",
+          "entry[1]",
+          "assets",
+          "timeframe"
+        ],
+        "assumed_fields": [
+          "exit[0]",
+          "direction"
+        ],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "direction",
+            "problem": "Claim never states long-only; it says '5ema crosses your 50ema and RSI cross the 50 line' for trend with no side given. Spec encodes direction=long and narrows both entries to crosses_above, omitting the bearish/short side.",
+            "severity": "major"
+          },
+          {
+            "field": "timeframe",
+            "problem": "Claim explicitly states use 'on the daily and 4 hour charts'. Spec sets timeframe to 1d only and does not test 4h, omitting half of the claimed usage.",
+            "severity": "major"
+          },
+          {
+            "field": "exit[0]",
+            "problem": "Claim states no exit rule. Spec invents exit of 5EMA crosses_below 50EMA, which determines hold time and returns but was never said.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "direction",
+            "problem": "Claim never states long-only; it says '5ema crosses your 50ema and RSI cross the 50 line' with no above/below or long/short qualifier. Spec encodes direction long with crosses_above for both EMA and RSI, omitting the bearish side (5EMA crossing below 50EMA with RSI crossing below 50). Leaving out the short side changes what is tested.",
+            "severity": "major"
+          },
+          {
+            "field": "timeframe",
+            "problem": "Claim states use 'on the daily and 4 hour charts' - two timeframes. Spec compiles only timeframe 1d and does not cover the 4-hour variant. Omitting the 4h signals changes what is tested.",
+            "severity": "major"
+          },
+          {
+            "field": "exit[0]",
+            "problem": "Claim states no exit rule. Spec invents exit as 5EMA crosses_below 50EMA with no supporting quote. Adding an exit not stated by claimant changes holding period and verdict.",
+            "severity": "major"
+          }
+        ]
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "UNTESTABLE",
+    "headline": "No bundled history for the asset/timeframe this claim needs.",
+    "reasons": [
+      "wanted ['USDCAD', 'EURUSD', 'GBPUSD', 'EURJPY'] on 1d; bundled universe is ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'LINKUSDT', 'LTCUSDT', 'DOTUSDT', 'TRXUSDT']"
+    ],
+    "warnings": [],
+    "asset": null,
+    "timeframe": "1d",
+    "primary": {},
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {},
+    "sweep": {},
+    "claimed_vs_measured": [],
+    "costs": {},
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 4,
+      "assumed": 2,
+      "quoted_fields": [
+        "entry[0]",
+        "entry[1]",
+        "assets",
+        "timeframe"
+      ],
+      "assumed_fields": [
+        "exit[0]",
+        "direction"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: Claim does not state long-only and describes crosses without side; the short/bearish side (5EMA crossing below 50EMA with RSI crossing below 50) cannot be expressed alongside the long side because direction allows only one value, so only the bullish long side is compiled.",
+        "NOT EXPRESSIBLE: Claim states use 'on the daily and 4 hour charts' but only a single timeframe can be compiled; this spec compiles the daily (1d) reading and does not cover the 4-hour variant."
+      ],
+      "audit_majors": [
+        "direction: Claim never states long-only; it says '5ema crosses your 50ema and RSI cross the 50 line' with no above/below or long/short qualifier. Spec encodes direction long with crosses_above for both EMA and RSI, omitting the bearish side (5EMA crossing below 50EMA with RSI crossing below 50). Leaving out the short side changes what is tested.",
+        "timeframe: Claim states use 'on the daily and 4 hour charts' - two timeframes. Spec compiles only timeframe 1d and does not cover the 4-hour variant. Omitting the 4h signals changes what is tested.",
+        "exit[0]: Claim states no exit rule. Spec invents exit as 5EMA crosses_below 50EMA with no supporting quote. Adding an exit not stated by claimant changes holding period and verdict."
+      ]
+    }
+  },
+  "seconds": 64.7
+}

@@ -14,10 +14,10 @@
     "notes": "Discretionary Wyckoff pattern read; no mechanical entry/exit, compiler should refuse."
   },
   "spec": {
-    "claim_summary": "The claim asserts a potential spring of a Wyckoff re-accumulation pattern is playing out with an expected 25% rise back to all-time high over coming weeks after a possible retest of the breakout.",
+    "claim_summary": "The claim is that a potential Wyckoff re-accumulation spring is playing out with scope for about 25% upside back to the all-time high over the coming weeks.",
     "source_type": "text",
     "testable": false,
-    "untestable_reason": "No mechanical entry or exit trigger is stated, only a discretionary Wyckoff pattern label and a directional forecast.",
+    "untestable_reason": "No mechanical entry trigger, indicator settings, or exits are stated and the Wyckoff spring call relies on discretionary chart reading.",
     "assets": [
       "BTCUSDT"
     ],
@@ -26,23 +26,28 @@
     "entry": [],
     "exit": [],
     "stop_loss_pct": null,
+    "stop_atr_mult": null,
+    "stop_atr_period": 14,
     "take_profit_pct": null,
+    "take_profit_atr_mult": null,
+    "take_profit_r": null,
+    "trailing_stop_pct": null,
+    "trailing_stop_atr_mult": null,
     "max_hold_bars": null,
     "free_parameters": [],
     "claimed": {
       "win_rate_pct": null,
-      "total_return_pct": null,
+      "total_return_pct": 25.0,
       "avg_return_per_trade_pct": null,
       "period_start": null,
       "period_end": null,
       "other": null
     },
     "assumptions": [
-      "Asset BTCUSDT inferred from page context; claim text names no asset.",
-      "Timeframe 1d inferred from page chart setting; claim text names no timeframe.",
-      "Direction inferred as long from expected +25% climb back to ATH.",
-      "NOT EXPRESSIBLE: Wyckoff re-accumulation pattern and spring / breakout-retest identification has no mechanical definition in the claim and cannot be expressed with available operands.",
-      "No entry trigger, exit condition, stop, target, or holding period is stated, so no testable core can be compiled."
+      "Asset not named in claim text; inferred as BTCUSDT from page context that page is about BTC.",
+      "Timeframe not named in claim text; inferred as 1d from chart timeframe on the page.",
+      "Direction inferred as long from expectation of a climb back to ATH.",
+      "NOT EXPRESSIBLE: Wyckoff re-accumulation pattern and spring identification rely on discretionary chart reading with no stated mechanical trigger, indicator, breakout level, or exit."
     ],
     "evidence": [
       {
@@ -59,6 +64,11 @@
         "field": "direction",
         "quote": null,
         "assumed": true
+      },
+      {
+        "field": "claimed.total_return_pct",
+        "quote": "a +25%climb back to ATH over the coming weeks",
+        "assumed": false
       }
     ]
   },
@@ -71,13 +81,13 @@
     "attempts": [
       {
         "usage": {
-          "completion_tokens": 2739,
-          "prompt_tokens": 1114,
-          "total_tokens": 3853,
+          "completion_tokens": 2855,
+          "prompt_tokens": 1479,
+          "total_tokens": 4334,
           "completion_tokens_details": {
             "accepted_prediction_tokens": null,
             "audio_tokens": null,
-            "reasoning_tokens": 2442,
+            "reasoning_tokens": 2434,
             "rejected_prediction_tokens": null,
             "text_tokens": null
           },
@@ -87,7 +97,9 @@
             "cached_tokens": 0,
             "image_tokens": null,
             "text_tokens": null
-          }
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
         },
         "grounding_problems": []
       }
@@ -105,13 +117,26 @@
         "faithful": true,
         "issues": []
       }
+    ],
+    "cost": [
+      {
+        "step": "compile",
+        "seconds": 11.6,
+        "tokens": 4334,
+        "quote_repairs": 0
+      },
+      {
+        "step": "audit",
+        "seconds": 9.2,
+        "tokens": 3128
+      }
     ]
   },
   "report": {
     "verdict": "UNTESTABLE",
     "headline": "This claim can't be turned into rules anyone could check.",
     "reasons": [
-      "No mechanical entry or exit trigger is stated, only a discretionary Wyckoff pattern label and a directional forecast."
+      "No mechanical entry trigger, indicator settings, or exits are stated and the Wyckoff spring call relies on discretionary chart reading."
     ],
     "warnings": [],
     "asset": null,
@@ -128,10 +153,12 @@
     "fidelity": {
       "level": "approximation",
       "gaps": [
-        "NOT EXPRESSIBLE: Wyckoff re-accumulation pattern and spring / breakout-retest identification has no mechanical definition in the claim and cannot be expressed with available operands."
+        "NOT EXPRESSIBLE: Wyckoff re-accumulation pattern and spring identification rely on discretionary chart reading with no stated mechanical trigger, indicator, breakout level, or exit."
       ],
       "audit_majors": []
-    }
+    },
+    "review": {},
+    "series": {}
   },
-  "seconds": 21.9
+  "seconds": 20.9
 }

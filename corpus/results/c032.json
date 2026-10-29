@@ -14,19 +14,49 @@
     "notes": "Looks mechanical but relies on proprietary undefined Trend Score indicators; only the 10-day-high leg is computable. Good trap: compiler should flag unresolvable inputs."
   },
   "spec": {
-    "claim_summary": "A system buys bitcoin when trend scores exceed 7 at a 10-day high and exits when the trend score falls below 5, claimed to have 70% success since 2011.",
+    "claim_summary": "A long Bitcoin strategy buys when trend scores exceed 7 and price closes at a 10-day high and exits when the trend score falls below 5.",
     "source_type": "text",
     "testable": false,
-    "untestable_reason": "Entry and exit depend on proprietary Bitcoin Trend Score and Relative Trend Score which have no definition or formula and cannot be computed from available indicators.",
+    "untestable_reason": "No mechanical rule can be recovered because entry and exit depend on proprietary Bitcoin Trend Score and Relative Trend Score values that are not defined.",
     "assets": [
       "BTCUSDT"
     ],
     "timeframe": "1d",
     "direction": "long",
-    "entry": [],
+    "entry": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
+        },
+        "op": "ge",
+        "right": {
+          "kind": "highest_high",
+          "period": 10,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
+        }
+      }
+    ],
     "exit": [],
     "stop_loss_pct": null,
+    "stop_atr_mult": null,
+    "stop_atr_period": 14,
     "take_profit_pct": null,
+    "take_profit_atr_mult": null,
+    "take_profit_r": null,
+    "trailing_stop_pct": null,
+    "trailing_stop_atr_mult": null,
     "max_hold_bars": null,
     "free_parameters": [],
     "claimed": {
@@ -35,14 +65,16 @@
       "avg_return_per_trade_pct": null,
       "period_start": "2011-01-01",
       "period_end": null,
-      "other": "ten buy signals, average gain of 1436.28% per win, losses averaged -18.78%"
+      "other": "average gain of 1436.28% per win, losses averaged -18.78%, ten buy signals"
     },
     "assumptions": [
-      "Asset interpreted as BTCUSDT from references to Bitcoin.",
-      "Timeframe assumed as 1d because the claim refers to closes and 10-day highs with no explicit timeframe stated.",
-      "Direction interpreted as long from buy signals.",
-      "Claimed period start interpreted as 2011-01-01 from Since 2011.",
-      "NOT EXPRESSIBLE: Bitcoin Trend Score and Bitcoin Relative Trend Score are proprietary scores with no formula, so conditions Bitcoin Trend Score > 7, Bitcoin Relative Trend Score > 7, and Bitcoin Trend Score falls below 5 cannot be computed and are the heart of the system."
+      "Asset BTCUSDT mapped from claim word 'Bitcoin'.",
+      "Timeframe 1d taken from page chart timeframe in user context, not stated in claim text.",
+      "Direction long inferred from buy signals.",
+      "Entry 'closed at a 10-day high' compiled as close >= highest high of previous 10 bars.",
+      "Claimed period 'Since 2011' interpreted as 2011-01-01.",
+      "NOT EXPRESSIBLE: 'Bitcoin Trend Score' and 'Bitcoin Relative Trend Score' are proprietary indicators with no definition and cannot be encoded; entry thresholds '> 7' omitted.",
+      "NOT EXPRESSIBLE: exit condition 'Bitcoin Trend Score falls below 5' cannot be encoded, leaving no testable exit; closest testable core retains only the 10-day-high filter."
     ],
     "evidence": [
       {
@@ -61,8 +93,18 @@
         "assumed": false
       },
       {
+        "field": "entry[0]",
+        "quote": "Bitcoin closed at a 10-day high",
+        "assumed": false
+      },
+      {
         "field": "claimed.win_rate_pct",
         "quote": "70% success rate",
+        "assumed": false
+      },
+      {
+        "field": "claimed.other",
+        "quote": "average gain of 1436.28% per win, while losses averaged -18.78%",
         "assumed": false
       },
       {
@@ -74,36 +116,32 @@
   },
   "audit": {
     "faithful": true,
-    "issues": [
-      {
-        "field": "entry",
-        "problem": "Claim requires 'Bitcoin closed at a 10-day high' as a simultaneous entry trigger. This condition is computable from price history but entry is empty with no assumption explaining its omission.",
-        "severity": "minor"
-      }
-    ]
+    "issues": []
   },
   "trace": {
     "model": "muse-spark-1.3",
     "attempts": [
       {
         "usage": {
-          "completion_tokens": 4096,
-          "prompt_tokens": 1152,
-          "total_tokens": 5248,
+          "completion_tokens": 4168,
+          "prompt_tokens": 1517,
+          "total_tokens": 5685,
           "completion_tokens_details": {
             "accepted_prediction_tokens": null,
             "audio_tokens": null,
-            "reasoning_tokens": 3635,
+            "reasoning_tokens": 3604,
             "rejected_prediction_tokens": null,
             "text_tokens": null
           },
           "prompt_tokens_details": {
             "audio_tokens": null,
             "cache_write_tokens": null,
-            "cached_tokens": 0,
+            "cached_tokens": 1309,
             "image_tokens": null,
             "text_tokens": null
-          }
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
         },
         "grounding_problems": []
       }
@@ -119,13 +157,20 @@
     "audits": [
       {
         "faithful": true,
-        "issues": [
-          {
-            "field": "entry",
-            "problem": "Claim requires 'Bitcoin closed at a 10-day high' as a simultaneous entry trigger. This condition is computable from price history but entry is empty with no assumption explaining its omission.",
-            "severity": "minor"
-          }
-        ]
+        "issues": []
+      }
+    ],
+    "cost": [
+      {
+        "step": "compile",
+        "seconds": 17.1,
+        "tokens": 5685,
+        "quote_repairs": 0
+      },
+      {
+        "step": "audit",
+        "seconds": 13.0,
+        "tokens": 4382
       }
     ]
   },
@@ -133,7 +178,7 @@
     "verdict": "UNTESTABLE",
     "headline": "This claim can't be turned into rules anyone could check.",
     "reasons": [
-      "Entry and exit depend on proprietary Bitcoin Trend Score and Relative Trend Score which have no definition or formula and cannot be computed from available indicators."
+      "No mechanical rule can be recovered because entry and exit depend on proprietary Bitcoin Trend Score and Relative Trend Score values that are not defined."
     ],
     "warnings": [],
     "asset": null,
@@ -150,10 +195,13 @@
     "fidelity": {
       "level": "approximation",
       "gaps": [
-        "NOT EXPRESSIBLE: Bitcoin Trend Score and Bitcoin Relative Trend Score are proprietary scores with no formula, so conditions Bitcoin Trend Score > 7, Bitcoin Relative Trend Score > 7, and Bitcoin Trend Score falls below 5 cannot be computed and are the heart of the system."
+        "NOT EXPRESSIBLE: 'Bitcoin Trend Score' and 'Bitcoin Relative Trend Score' are proprietary indicators with no definition and cannot be encoded; entry thresholds '> 7' omitted.",
+        "NOT EXPRESSIBLE: exit condition 'Bitcoin Trend Score falls below 5' cannot be encoded, leaving no testable exit; closest testable core retains only the 10-day-high filter."
       ],
       "audit_majors": []
-    }
+    },
+    "review": {},
+    "series": {}
   },
-  "seconds": 36.3
+  "seconds": 30.1
 }

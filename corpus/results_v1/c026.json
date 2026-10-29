@@ -1,0 +1,524 @@
+{
+  "id": "c026",
+  "record": {
+    "id": "c026",
+    "url": "https://roguequant.substack.com/p/i-backtested-the-legendary-turtle",
+    "source": "substack",
+    "posted": "2025-08-15",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "backtest_claim",
+    "excerpt": "So I took the pure long-side Turtle code \u2014 20-day breakout, 10-day exit, ATR stops \u2014 and let it loose on: \u2026 Including: Bitcoin & Ethereum \u2026 Buy when price breaks above the highest high of the last 20 days. \u2026 Exit when price reverses direction for 10 days. \u2026 18 years of data (2007-2025) \u2026 Total profit across all 43 markets: $1,147,318 \u2026 It's completely misleading.",
+    "performance_claim": "Total profit across all 43 markets: $1,147,318",
+    "verbatim_confidence": "high",
+    "notes": "Turtle 20/10 Donchian long-only; result is pooled over 43 futures markets incl. BTC/ETH, so per-asset claim is not stated; author himself calls aggregate misleading."
+  },
+  "spec": {
+    "claim_summary": "A long-only Turtle system that buys on a 20-day high breakout, exits on a 10-day low breakdown and uses ATR stops was run across 43 markets including Bitcoin and Ethereum.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "BTCUSDT",
+      "ETHUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "gt",
+        "right": {
+          "kind": "highest_high",
+          "period": 20,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "lt",
+        "right": {
+          "kind": "lowest_low",
+          "period": 10,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "stop_loss_pct": 5.0,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [
+      {
+        "name": "ATR stop size (fixed-percent approximation)",
+        "target": "stop_loss_pct",
+        "candidates": [
+          2.0,
+          5.0,
+          8.0,
+          12.0
+        ]
+      }
+    ],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": "2007-01-01",
+      "period_end": "2025-12-31",
+      "other": "Total profit across all 43 markets: $1,147,318"
+    },
+    "assumptions": [
+      "Timeframe 1d is assumed from day-based breakout/exit definitions and daily chart; the claim never states a bar timeframe.",
+      "Entry compiled as close > highest_high of previous 20 bars evaluated on bar close, filled at next open per engine convention.",
+      "Exit phrase interpreted as standard Turtle long Donchian exit: close < lowest_low of previous 10 bars.",
+      "NOT EXPRESSIBLE: The claim tests a 43-market portfolio for portfolio-level profit; the full 43-market list is not disclosed beyond Bitcoin & Ethereum and includes non-crypto markets outside engine data, so the test covers only the explicitly named BTCUSDT and ETHUSDT and cannot reproduce portfolio-level profit.",
+      "NOT EXPRESSIBLE: Turtle ATR stops are trailing ATR-based stops with position sizing/pyramiding; the schema has no entry-price-relative trailing ATR stop, so the trailing and sizing logic is omitted and approximated as a fixed stop_loss_pct."
+    ],
+    "evidence": [
+      {
+        "field": "entry[0]",
+        "quote": "Buy when price breaks above the highest high of the last 20 days.",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": "Exit when price reverses direction for 10 days.",
+        "assumed": false
+      },
+      {
+        "field": "stop_loss_pct",
+        "quote": "ATR stops",
+        "assumed": false
+      },
+      {
+        "field": "assets",
+        "quote": "Including: Bitcoin & Ethereum",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "direction",
+        "quote": "pure long-side Turtle code",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": false,
+    "issues": [
+      {
+        "field": "assets",
+        "problem": "Claim tests a 43-market portfolio for $1,147,318 total profit; spec tests only BTCUSDT and ETHUSDT. Omitting 41 markets means the portfolio-level result cannot be reproduced and changes what is being tested.",
+        "severity": "major"
+      },
+      {
+        "field": "stop_loss_pct",
+        "problem": "Claim states only 'ATR stops' with no percent value; spec invents a fixed 5.0% stop and omits trailing ATR logic. Invented threshold changes what is tested.",
+        "severity": "major"
+      },
+      {
+        "field": "free_parameters",
+        "problem": "Claim gives no stop-size grid; spec invents candidates 2.0, 5.0, 8.0, 12.0 for stop_loss_pct. Invented optimization grid changes what is tested.",
+        "severity": "major"
+      }
+    ]
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 5481,
+          "prompt_tokens": 1953,
+          "total_tokens": 7434,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 4925,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 5,
+      "assumed": 1,
+      "quoted_fields": [
+        "entry[0]",
+        "exit[0]",
+        "stop_loss_pct",
+        "assets",
+        "direction"
+      ],
+      "assumed_fields": [
+        "timeframe"
+      ],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 5793,
+            "prompt_tokens": 1149,
+            "total_tokens": 6942,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 5156,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            }
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 5,
+        "quoted": 4,
+        "assumed": 1,
+        "quoted_fields": [
+          "entry[0]",
+          "exit[0]",
+          "assets",
+          "direction"
+        ],
+        "assumed_fields": [
+          "timeframe"
+        ],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "assets",
+            "problem": "Claim tests 43 markets for Total profit across all 43 markets: $1,147,318 Including: Bitcoin & Ethereum. Spec tests only BTCUSDT and ETHUSDT subset, which cannot reproduce portfolio-level profit.",
+            "severity": "major"
+          },
+          {
+            "field": "stop_loss_pct",
+            "problem": "Claim includes 'ATR stops' as part of 'pure long-side Turtle code \u2014 20-day breakout, 10-day exit, ATR stops'. Spec sets stop_loss_pct null and omits ATR stops as NOT EXPRESSIBLE, removing a trade-closing risk rule that changes results.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "assets",
+            "problem": "Claim tests a 43-market portfolio for $1,147,318 total profit; spec tests only BTCUSDT and ETHUSDT. Omitting 41 markets means the portfolio-level result cannot be reproduced and changes what is being tested.",
+            "severity": "major"
+          },
+          {
+            "field": "stop_loss_pct",
+            "problem": "Claim states only 'ATR stops' with no percent value; spec invents a fixed 5.0% stop and omits trailing ATR logic. Invented threshold changes what is tested.",
+            "severity": "major"
+          },
+          {
+            "field": "free_parameters",
+            "problem": "Claim gives no stop-size grid; spec invents candidates 2.0, 5.0, 8.0, 12.0 for stop_loss_pct. Invented optimization grid changes what is tested.",
+            "severity": "major"
+          }
+        ]
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "SURVIVES",
+    "headline": "Tested an approximation of the claim. Holds up: +13.81% per trade after costs over 50 trades, beats random timing (p = 0.015).",
+    "reasons": [],
+    "warnings": [
+      "the claim's results start 2007-01-01; Binance history for BTCUSDT starts 2017-08-17, so the test covers less history than the claim",
+      "too few trades after the claim's period to judge it out-of-sample",
+      "left out: The claim tests a 43-market portfolio for portfolio-level profit; the full 43-market list is not disclosed beyond Bitcoin & Ethereum and includes non-crypto markets outside engine data, so the test covers only the explicitly named BTCUSDT and ETHUSDT and cannot reproduce portfolio-level profit.",
+      "left out: Turtle ATR stops are trailing ATR-based stops with position sizing/pyramiding; the schema has no entry-price-relative trailing ATR stop, so the trailing and sizing logic is omitted and approximated as a fixed stop_loss_pct.",
+      "audit: assets: Claim tests a 43-market portfolio for $1,147,318 total profit; spec tests only BTCUSDT and ETHUSDT. Omitting 41 markets means the portfolio-level result cannot be reproduced and changes what is being tested.",
+      "audit: stop_loss_pct: Claim states only 'ATR stops' with no percent value; spec invents a fixed 5.0% stop and omits trailing ATR logic. Invented threshold changes what is tested.",
+      "audit: free_parameters: Claim gives no stop-size grid; spec invents candidates 2.0, 5.0, 8.0, 12.0 for stop_loss_pct. Invented optimization grid changes what is tested."
+    ],
+    "asset": "BTCUSDT",
+    "timeframe": "1d",
+    "primary": {
+      "trades": 50,
+      "win_rate_pct": 42.0,
+      "avg_net_pct": 13.80959448122529,
+      "total_net_pct": 5593.516001934609,
+      "total_gross_pct": 6319.421736357104,
+      "max_drawdown_pct": -29.06445951849477,
+      "avg_bars": 25.02,
+      "open_at_end": 0,
+      "buy_hold_pct": 1780.815115875236,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 37.25431804645623
+    },
+    "null_test": {
+      "p_value": 0.015492253873063468,
+      "strategy_mean_log_pct": 8.08382615364119,
+      "null_median_log_pct": 1.8067856203049963,
+      "null_p95_log_pct": 6.281652797928028,
+      "beat_by_random_pct": 1.5,
+      "sims": 2000
+    },
+    "out_of_sample": {
+      "available": true,
+      "boundary": "2025-12-31",
+      "boundary_source": "claimed period end",
+      "claim_window": [
+        "2007-01-01",
+        "2025-12-31"
+      ],
+      "in_window": {
+        "trades": 44,
+        "win_rate_pct": 43.18181818181818,
+        "avg_net_pct": 15.659191747821028,
+        "total_net_pct": 5609.886167610879,
+        "total_gross_pct": 6245.837832430935,
+        "max_drawdown_pct": -29.06445951849477,
+        "avg_bars": 25.477272727272727,
+        "open_at_end": 0
+      },
+      "after_window": {
+        "trades": 6,
+        "win_rate_pct": 33.33333333333333,
+        "avg_net_pct": 0.24588119285653237,
+        "total_net_pct": -0.28669863453895106,
+        "total_gross_pct": 1.1595616823063537,
+        "max_drawdown_pct": -13.434230714074047,
+        "avg_bars": 21.666666666666668,
+        "open_at_end": 0
+      },
+      "counts": false
+    },
+    "halves": {
+      "split": "2022-03-23",
+      "first": {
+        "trades": 22,
+        "win_rate_pct": 50.0,
+        "avg_net_pct": 26.70312665059054,
+        "total_net_pct": 2489.1416021042887,
+        "total_gross_pct": 2629.5217709132294,
+        "max_drawdown_pct": -13.981146982352977,
+        "avg_bars": 26.954545454545453,
+        "open_at_end": 0
+      },
+      "second": {
+        "trades": 28,
+        "win_rate_pct": 35.714285714285715,
+        "avg_net_pct": 3.678962062438302,
+        "total_net_pct": 119.89975354408138,
+        "total_gross_pct": 135.18485196801802,
+        "max_drawdown_pct": -25.183101061288326,
+        "avg_bars": 23.5,
+        "open_at_end": 0
+      },
+      "consistent": true
+    },
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "ETHUSDT",
+          "trades": 66,
+          "total_net_pct": 643.6385886407544,
+          "avg_net_pct": 5.06348242038601
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 46,
+          "total_net_pct": 2699.706534566773,
+          "avg_net_pct": 15.446501572972087
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 60,
+          "total_net_pct": 13128.141168730292,
+          "avg_net_pct": 22.02762971009669
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 64,
+          "total_net_pct": -31.810066359927937,
+          "avg_net_pct": 2.8396860529603205
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 49,
+          "total_net_pct": 270.55597506422913,
+          "avg_net_pct": 6.416630072130452
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 57,
+          "total_net_pct": 1504.433998740944,
+          "avg_net_pct": 9.7526733172118
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 47,
+          "total_net_pct": 566.5778715448611,
+          "avg_net_pct": 10.272155249436587
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 73,
+          "total_net_pct": 104.44948725330967,
+          "avg_net_pct": 2.8282602467876927
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 68,
+          "total_net_pct": -68.03706179603863,
+          "avg_net_pct": -0.6004392967122127
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 51,
+          "total_net_pct": -7.075669625727765,
+          "avg_net_pct": 1.9683729441563764
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 59,
+          "total_net_pct": -11.51800299326724,
+          "avg_net_pct": 0.6181581418842899
+        }
+      ],
+      "tested": 11,
+      "positive": 10,
+      "positive_share_pct": 90.9090909090909
+    },
+    "sweep": {
+      "readings": 4,
+      "truncated": false,
+      "positive_share_pct": 100.0,
+      "best": {
+        "params": {
+          "ATR stop size (fixed-percent approximation)": 5.0
+        },
+        "trades": 50,
+        "avg_net_pct": 13.80959448122529,
+        "total_net_pct": 5593.516001934609,
+        "p_value": 0.017964071856287425
+      },
+      "best_p_bonferroni": 0.0718562874251497,
+      "results": [
+        {
+          "params": {
+            "ATR stop size (fixed-percent approximation)": 2.0
+          },
+          "trades": 73,
+          "avg_net_pct": 8.122457990847805,
+          "total_net_pct": 2618.31055343158,
+          "p_value": 0.023952095808383235
+        },
+        {
+          "params": {
+            "ATR stop size (fixed-percent approximation)": 5.0
+          },
+          "trades": 50,
+          "avg_net_pct": 13.80959448122529,
+          "total_net_pct": 5593.516001934609,
+          "p_value": 0.017964071856287425
+        },
+        {
+          "params": {
+            "ATR stop size (fixed-percent approximation)": 8.0
+          },
+          "trades": 48,
+          "avg_net_pct": 13.869418477049352,
+          "total_net_pct": 3942.177712577302,
+          "p_value": 0.027944111776447105
+        },
+        {
+          "params": {
+            "ATR stop size (fixed-percent approximation)": 12.0
+          },
+          "trades": 46,
+          "avg_net_pct": 14.185813431444577,
+          "total_net_pct": 3327.6706624245207,
+          "p_value": 0.06187624750499002
+        }
+      ]
+    },
+    "claimed_vs_measured": [],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 6,
+      "quoted": 5,
+      "assumed": 1,
+      "quoted_fields": [
+        "entry[0]",
+        "exit[0]",
+        "stop_loss_pct",
+        "assets",
+        "direction"
+      ],
+      "assumed_fields": [
+        "timeframe"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: The claim tests a 43-market portfolio for portfolio-level profit; the full 43-market list is not disclosed beyond Bitcoin & Ethereum and includes non-crypto markets outside engine data, so the test covers only the explicitly named BTCUSDT and ETHUSDT and cannot reproduce portfolio-level profit.",
+        "NOT EXPRESSIBLE: Turtle ATR stops are trailing ATR-based stops with position sizing/pyramiding; the schema has no entry-price-relative trailing ATR stop, so the trailing and sizing logic is omitted and approximated as a fixed stop_loss_pct."
+      ],
+      "audit_majors": [
+        "assets: Claim tests a 43-market portfolio for $1,147,318 total profit; spec tests only BTCUSDT and ETHUSDT. Omitting 41 markets means the portfolio-level result cannot be reproduced and changes what is being tested.",
+        "stop_loss_pct: Claim states only 'ATR stops' with no percent value; spec invents a fixed 5.0% stop and omits trailing ATR logic. Invented threshold changes what is tested.",
+        "free_parameters: Claim gives no stop-size grid; spec invents candidates 2.0, 5.0, 8.0, 12.0 for stop_loss_pct. Invented optimization grid changes what is tested."
+      ]
+    }
+  },
+  "seconds": 67.8
+}

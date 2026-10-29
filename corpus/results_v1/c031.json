@@ -1,0 +1,356 @@
+{
+  "id": "c031",
+  "record": {
+    "id": "c031",
+    "url": "https://community.gainium.io/t/the-ultimately-set-and-forget/970",
+    "source": "forum",
+    "posted": "2024-08-14",
+    "asset_hint": "SOL",
+    "timeframe_hint": null,
+    "category": "backtest_claim",
+    "excerpt": "If you had bought Solana 4 years ago and kept it until today you would have made 48 times your money. \u2026 If you had bought Solana 4 years ago and sold everything each time WMA7 crossed down over WMA25 \u2026 reinvested all you did get from selling them when WMA7 crossed up over WMA25 \u2026 you would have made 85 times your money in 36 risk-free deals spread over 4 years.",
+    "performance_claim": "you would have made 85 times your money in 36 risk-free deals",
+    "verbatim_confidence": "high",
+    "notes": "WMA 7/25 cross on SOL, timeframe not stated by author (a reply suggests 8h); striking 85x vs 48x HODL claim, very falsifiable."
+  },
+  "spec": {
+    "claim_summary": "Buying Solana when WMA7 crosses above WMA25 and selling everything when WMA7 crosses below WMA25 would have turned an initial investment into 85 times its value over four years.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "SOLUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "wma",
+          "period": 7,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "wma",
+          "period": 25,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "wma",
+          "period": 7,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "wma",
+          "period": 25,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": 8400.0,
+      "avg_return_per_trade_pct": null,
+      "period_start": "2020-08-14",
+      "period_end": "2024-08-14",
+      "other": "36 risk-free deals spread over 4 years"
+    },
+    "assumptions": [
+      "Timeframe not stated; assumed 1d as the most natural reading for a multi-year WMA7/WMA25 swing system.",
+      "Direction interpreted as long-only spot from 'bought Solana', 'sold everything' and reinvesting proceeds.",
+      "'crossed down over' compiled as crosses_below and 'crossed up over' compiled as crosses_above, evaluated on bar closes with next-bar open fill.",
+      "Full reinvestment of all proceeds compiled as the engine's one-position-at-a-time compounding; no separate sizing rule.",
+      "'36 risk-free deals' interpreted as trade count, not a guarantee of no risk.",
+      "'85 times your money' interpreted as 85x multiple = 8400% total return gain.",
+      "4-year period interpreted as 2020-08-14 to 2024-08-14 using posted date 2024-08-14; 48-times buy-and-hold is a benchmark, not the claimed strategy performance."
+    ],
+    "evidence": [
+      {
+        "field": "assets",
+        "quote": "bought Solana",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "direction",
+        "quote": "bought Solana",
+        "assumed": false
+      },
+      {
+        "field": "entry[0]",
+        "quote": "when WMA7 crossed up over WMA25",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": "each time WMA7 crossed down over WMA25",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 5136,
+          "prompt_tokens": 1132,
+          "total_tokens": 6268,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 4545,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 4,
+      "assumed": 1,
+      "quoted_fields": [
+        "entry[0]",
+        "exit[0]",
+        "assets",
+        "direction"
+      ],
+      "assumed_fields": [
+        "timeframe"
+      ],
+      "problems": []
+    },
+    "audits": [
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ]
+  },
+  "report": {
+    "verdict": "INCONCLUSIVE",
+    "headline": "Makes money (+22.50% per trade after costs, 64 trades) but can't be told from luck: random timing did as well 10% of the time.",
+    "reasons": [
+      "makes money after costs (+22.50% per trade), but random timing did as well 10% of the time (p = 0.098); needs p < 0.05 to count as an edge"
+    ],
+    "warnings": [],
+    "asset": "SOLUSDT",
+    "timeframe": "1d",
+    "primary": {
+      "trades": 64,
+      "win_rate_pct": 31.25,
+      "avg_net_pct": 22.50067910440496,
+      "total_net_pct": 9742.53696884432,
+      "total_gross_pct": 11376.638949592327,
+      "max_drawdown_pct": -82.97726121220734,
+      "avg_bars": 17.328125,
+      "open_at_end": 0,
+      "buy_hold_pct": 3442.1052631578946,
+      "window": [
+        "2020-08-11",
+        "2026-10-26"
+      ],
+      "exposure_pct": 48.89770723104056
+    },
+    "null_test": {
+      "p_value": 0.09795102448775612,
+      "strategy_mean_log_pct": 7.170779051351317,
+      "null_median_log_pct": 2.4543213708486213,
+      "null_p95_log_pct": 8.500387721881934,
+      "beat_by_random_pct": 9.75,
+      "sims": 2000
+    },
+    "out_of_sample": {
+      "available": true,
+      "boundary": "2024-08-14",
+      "boundary_source": "post date",
+      "claim_window": [
+        "2020-08-14",
+        "2024-08-14"
+      ],
+      "in_window": {
+        "trades": 42,
+        "win_rate_pct": 28.57142857142857,
+        "avg_net_pct": 33.912262805810435,
+        "total_net_pct": 9820.067568694441,
+        "total_gross_pct": 10872.144918503243,
+        "max_drawdown_pct": -82.97726121220734,
+        "avg_bars": 17.238095238095237,
+        "open_at_end": 0
+      },
+      "after_window": {
+        "trades": 22,
+        "win_rate_pct": 36.36363636363637,
+        "avg_net_pct": 0.7149284017217771,
+        "total_net_pct": -0.7815531427909805,
+        "total_gross_pct": 4.597952677769657,
+        "max_drawdown_pct": -36.89863148849084,
+        "avg_bars": 17.5,
+        "open_at_end": 0
+      },
+      "counts": true
+    },
+    "halves": {
+      "split": "2023-09-19",
+      "first": {
+        "trades": 34,
+        "win_rate_pct": 20.588235294117645,
+        "avg_net_pct": 31.634258681176387,
+        "total_net_pct": 1465.0087875448025,
+        "total_gross_pct": 1598.0685841141785,
+        "max_drawdown_pct": -82.97726121220734,
+        "avg_bars": 14.823529411764707,
+        "open_at_end": 0
+      },
+      "second": {
+        "trades": 30,
+        "win_rate_pct": 43.333333333333336,
+        "avg_net_pct": 12.149288917397344,
+        "total_net_pct": 528.9125688735182,
+        "total_gross_pct": 575.8642764467183,
+        "max_drawdown_pct": -36.89863148849085,
+        "avg_bars": 20.166666666666668,
+        "open_at_end": 0
+      },
+      "consistent": true
+    },
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "BTCUSDT",
+          "trades": 88,
+          "total_net_pct": 1551.143734172031,
+          "avg_net_pct": 4.9152107968269165
+        },
+        {
+          "asset": "ETHUSDT",
+          "trades": 97,
+          "total_net_pct": 1786.6244420806095,
+          "avg_net_pct": 5.759411136953287
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 90,
+          "total_net_pct": 11414.591648945772,
+          "avg_net_pct": 11.180296016419755
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 87,
+          "total_net_pct": 430.1090485104271,
+          "avg_net_pct": 6.093486579964189
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 68,
+          "total_net_pct": 5906.0771176310645,
+          "avg_net_pct": 13.568015709819715
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 81,
+          "total_net_pct": 568.5225439576694,
+          "avg_net_pct": 10.957890184334653
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 54,
+          "total_net_pct": 2608.6949604212846,
+          "avg_net_pct": 20.256518270178194
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 87,
+          "total_net_pct": 2672.0033526317766,
+          "avg_net_pct": 7.13285817232924
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 92,
+          "total_net_pct": 112.39993953426159,
+          "avg_net_pct": 2.62800854472941
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 67,
+          "total_net_pct": -3.8409641803475947,
+          "avg_net_pct": 7.224166153649121
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 88,
+          "total_net_pct": 594.2992489560421,
+          "avg_net_pct": 3.5140504660965792
+        }
+      ],
+      "tested": 11,
+      "positive": 11,
+      "positive_share_pct": 100.0
+    },
+    "sweep": {
+      "readings": 1,
+      "note": "claim fixes every parameter"
+    },
+    "claimed_vs_measured": [],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 4,
+      "assumed": 1,
+      "quoted_fields": [
+        "entry[0]",
+        "exit[0]",
+        "assets",
+        "direction"
+      ],
+      "assumed_fields": [
+        "timeframe"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "exact",
+      "gaps": [],
+      "audit_majors": []
+    }
+  },
+  "seconds": 25.1
+}

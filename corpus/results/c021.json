@@ -14,10 +14,10 @@
     "notes": "Ichimoku cloud (lead lines) trend rule on ETH 4h; Ichimoku periods unstated (compiler must assume 9/26/52); claim is beat buy-and-hold."
   },
   "spec": {
-    "claim_summary": "A 4-hour ETH/USDT strategy enters when a green candle closes above the green Ichimoku lead line while that line is above the red lead line and exits when a red candle closes below the green lead line.",
+    "claim_summary": "An ETH/USDT 4h Ichimoku lead-line strategy that holds long while the green lead line is above the red lead line, entering on a green close above the green line and exiting on a red close below the green line.",
     "source_type": "text",
     "testable": false,
-    "untestable_reason": "The entry and exit rules require Ichimoku Senkou Span lead lines, which are not among the available indicators and cannot be mechanically encoded.",
+    "untestable_reason": "The entry and exit both require Ichimoku lead-line (Senkou Span) values, which the schema has no operands for.",
     "assets": [
       "ETHUSDT"
     ],
@@ -26,7 +26,13 @@
     "entry": [],
     "exit": [],
     "stop_loss_pct": null,
+    "stop_atr_mult": null,
+    "stop_atr_period": 14,
     "take_profit_pct": null,
+    "take_profit_atr_mult": null,
+    "take_profit_r": null,
+    "trailing_stop_pct": null,
+    "trailing_stop_atr_mult": null,
     "max_hold_bars": null,
     "free_parameters": [],
     "claimed": {
@@ -38,11 +44,12 @@
       "other": "you would make more profit with this strategy than holding the coin"
     },
     "assumptions": [
-      "Asset ETH/USDT mapped to Binance spot symbol ETHUSDT.",
-      "Timeframe interpreted as 4h from 'four hour chart'.",
-      "Direction assumed long-only because the claim compares profit to holding the coin with buying above the line and selling below it.",
-      "Period 'beginning of 2017' interpreted as 2017-01-01 and 'today' interpreted as posting date 2021-06-02.",
-      "NOT EXPRESSIBLE: Ichimoku lead lines - green Ichimoku lead line (Senkou Span A) and red Ichimoku lead line (Senkou Span B), their relative position, and candle closes relative to the green lead line - are not in the available indicator set, so no entry or exit condition could be encoded and no indicator was substituted."
+      "Mapped 'ETH/USDT' to Binance spot symbol ETHUSDT.",
+      "Timeframe read as 4h from 'four hour chart'.",
+      "Direction read as long: buying/holding when conditions hold and exiting on close below the line, consistent with comparison to holding the coin.",
+      "Green candle interpreted as close greater than open; red candle as close less than open.",
+      "Claimed test period 'beginning of 2017 until today' interpreted as 2017-01-01 to posting date 2021-06-02 for claimed window only; test window is not part of the rule.",
+      "NOT EXPRESSIBLE: Ichimoku Senkou Span lead lines (green lead line and red lead line) and positions/crosses relative to them - the schema has no ichimoku operands and another indicator cannot be substituted, so no mechanical entry or exit can be recovered."
     ],
     "evidence": [
       {
@@ -59,6 +66,16 @@
         "field": "direction",
         "quote": null,
         "assumed": true
+      },
+      {
+        "field": "claimed.other",
+        "quote": "you would make more profit with this strategy than holding the coin",
+        "assumed": false
+      },
+      {
+        "field": "claimed.period_start",
+        "quote": "beginning of 2017 until today",
+        "assumed": false
       }
     ]
   },
@@ -71,13 +88,13 @@
     "attempts": [
       {
         "usage": {
-          "completion_tokens": 4594,
-          "prompt_tokens": 1153,
-          "total_tokens": 5747,
+          "completion_tokens": 3456,
+          "prompt_tokens": 1518,
+          "total_tokens": 4974,
           "completion_tokens_details": {
             "accepted_prediction_tokens": null,
             "audio_tokens": null,
-            "reasoning_tokens": 4170,
+            "reasoning_tokens": 2942,
             "rejected_prediction_tokens": null,
             "text_tokens": null
           },
@@ -87,7 +104,9 @@
             "cached_tokens": 0,
             "image_tokens": null,
             "text_tokens": null
-          }
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
         },
         "grounding_problems": []
       }
@@ -105,13 +124,26 @@
         "faithful": true,
         "issues": []
       }
+    ],
+    "cost": [
+      {
+        "step": "compile",
+        "seconds": 14.2,
+        "tokens": 4974,
+        "quote_repairs": 0
+      },
+      {
+        "step": "audit",
+        "seconds": 11.8,
+        "tokens": 3888
+      }
     ]
   },
   "report": {
     "verdict": "UNTESTABLE",
     "headline": "This claim can't be turned into rules anyone could check.",
     "reasons": [
-      "The entry and exit rules require Ichimoku Senkou Span lead lines, which are not among the available indicators and cannot be mechanically encoded."
+      "The entry and exit both require Ichimoku lead-line (Senkou Span) values, which the schema has no operands for."
     ],
     "warnings": [],
     "asset": null,
@@ -128,10 +160,12 @@
     "fidelity": {
       "level": "approximation",
       "gaps": [
-        "NOT EXPRESSIBLE: Ichimoku lead lines - green Ichimoku lead line (Senkou Span A) and red Ichimoku lead line (Senkou Span B), their relative position, and candle closes relative to the green lead line - are not in the available indicator set, so no entry or exit condition could be encoded and no indicator was substituted."
+        "NOT EXPRESSIBLE: Ichimoku Senkou Span lead lines (green lead line and red lead line) and positions/crosses relative to them - the schema has no ichimoku operands and another indicator cannot be substituted, so no mechanical entry or exit can be recovered."
       ],
       "audit_majors": []
-    }
+    },
+    "review": {},
+    "series": {}
   },
-  "seconds": 24.7
+  "seconds": 26.0
 }

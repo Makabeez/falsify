@@ -1,0 +1,339 @@
+{
+  "id": "c033",
+  "record": {
+    "id": "c033",
+    "url": "https://www.tradingview.com/script/VsKRTMpe-Bitcoin-Momentum-Strategy-RSI-5-70/",
+    "source": "tradingview_script",
+    "posted": null,
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "backtest_claim",
+    "excerpt": "Bitcoin Momentum Strategy RSI(5) > 70 \u2026 Works on the daily (1D) timeframe \u2026 This One Indicator Outperforms Buy & Hold on Bitcoin (Full Backtest / 2015 - Now) \u2026 With clear results on profit factor, drawdown, and total returns, this strategy proves that sometimes less is more \u2014 and that buy & hold isn't always the best option.",
+    "performance_claim": "Outperforms Buy & Hold on Bitcoin",
+    "verbatim_confidence": "low",
+    "notes": "Momentum entry RSI(5)>70 on BTC daily; exit not stated in fetched text; no publish date shown (fetched via my. mirror, stored as www URL)."
+  },
+  "spec": {
+    "claim_summary": "A daily Bitcoin strategy buys when 5-period RSI is above 70 and is claimed to outperform buy-and-hold since 2015.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "rsi",
+          "period": 5,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "gt",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 70.0,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "rsi",
+          "period": 5,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "lt",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 70.0,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": "2015-01-01",
+      "period_end": null,
+      "other": "Outperforms Buy & Hold on Bitcoin"
+    },
+    "assumptions": [
+      "Asset 'Bitcoin' interpreted as BTCUSDT spot.",
+      "Direction assumed long because outperformance versus buy & hold implies long exposure; claim never states long or short.",
+      "Entry uses daily-bar close with RSI(5) greater than 70, as stated.",
+      "No exit stated; assumed most common reading for this setup is to hold while condition holds and exit when RSI(5) falls below 70.",
+      "'2015' interpreted as 2015-01-01; 'Now' is the test end and not part of the rule.",
+      "No stop-loss, take-profit, or max hold stated; none used."
+    ],
+    "evidence": [
+      {
+        "field": "assets",
+        "quote": "Bitcoin",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": "Works on the daily (1D) timeframe",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "entry[0]",
+        "quote": "RSI(5) > 70",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "claimed.period_start",
+        "quote": "2015 - Now",
+        "assumed": false
+      },
+      {
+        "field": "claimed.other",
+        "quote": "Outperforms Buy & Hold on Bitcoin",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 5387,
+          "prompt_tokens": 1123,
+          "total_tokens": 6510,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 4854,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 925,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 3,
+      "assumed": 2,
+      "quoted_fields": [
+        "entry[0]",
+        "assets",
+        "timeframe"
+      ],
+      "assumed_fields": [
+        "exit[0]",
+        "direction"
+      ],
+      "problems": []
+    },
+    "audits": [
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ]
+  },
+  "report": {
+    "verdict": "SURVIVES",
+    "headline": "Holds up: +2.14% per trade after costs over 190 trades, beats random timing (p = 0.001).",
+    "reasons": [],
+    "warnings": [
+      "the claim's results start 2015-01-01; Binance history for BTCUSDT starts 2017-08-17, so the test covers less history than the claim"
+    ],
+    "asset": "BTCUSDT",
+    "timeframe": "1d",
+    "primary": {
+      "trades": 190,
+      "win_rate_pct": 33.68421052631579,
+      "avg_net_pct": 2.1447224580304614,
+      "total_net_pct": 2534.473128806489,
+      "total_gross_pct": 4056.5417970370722,
+      "max_drawdown_pct": -22.901087947564804,
+      "avg_bars": 3.8526315789473684,
+      "open_at_end": 0,
+      "buy_hold_pct": 1780.815115875236,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 21.798689696247767
+    },
+    "null_test": {
+      "p_value": 0.0009995002498750624,
+      "strategy_mean_log_pct": 1.7217201599354734,
+      "null_median_log_pct": 0.0925992467276209,
+      "null_p95_log_pct": 0.8990110630514305,
+      "beat_by_random_pct": 0.05,
+      "sims": 2000
+    },
+    "out_of_sample": {
+      "available": false,
+      "note": "claim names no period and has no post date; nothing is strictly out-of-sample"
+    },
+    "halves": {
+      "split": "2022-03-23",
+      "first": {
+        "trades": 94,
+        "win_rate_pct": 38.297872340425535,
+        "avg_net_pct": 3.5498330538890297,
+        "total_net_pct": 1402.6756845704545,
+        "total_gross_pct": 1782.9645384943326,
+        "max_drawdown_pct": -15.932064111918088,
+        "avg_bars": 4.191489361702128,
+        "open_at_end": 0
+      },
+      "second": {
+        "trades": 96,
+        "win_rate_pct": 29.166666666666668,
+        "avg_net_pct": 0.7688849995856142,
+        "total_net_pct": 75.31881003049337,
+        "total_gross_pct": 120.74456061507925,
+        "max_drawdown_pct": -22.90108794756479,
+        "avg_bars": 3.5208333333333335,
+        "open_at_end": 0
+      },
+      "consistent": true
+    },
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "ETHUSDT",
+          "trades": 204,
+          "total_net_pct": 565.7926018106408,
+          "avg_net_pct": 1.3147672755746762
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 131,
+          "total_net_pct": 942.8183065298585,
+          "avg_net_pct": 2.9039941465477055
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 211,
+          "total_net_pct": 1281.53753194566,
+          "avg_net_pct": 2.6777494198644947
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 156,
+          "total_net_pct": 436.50874758711984,
+          "avg_net_pct": 2.922575584479956
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 140,
+          "total_net_pct": 1376.3879341353681,
+          "avg_net_pct": 3.714000546113768
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 162,
+          "total_net_pct": 517.6353243855092,
+          "avg_net_pct": 2.003221140516053
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 119,
+          "total_net_pct": 3304.4428274561255,
+          "avg_net_pct": 5.7568190484946316
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 182,
+          "total_net_pct": 195.22765816442922,
+          "avg_net_pct": 1.1913869916308095
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 201,
+          "total_net_pct": -74.93393119220624,
+          "avg_net_pct": -0.524632897798057
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 136,
+          "total_net_pct": -9.352975802145625,
+          "avg_net_pct": 0.2586240024984233
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 200,
+          "total_net_pct": 144.97138885945864,
+          "avg_net_pct": 0.7566608740684384
+        }
+      ],
+      "tested": 11,
+      "positive": 10,
+      "positive_share_pct": 90.9090909090909
+    },
+    "sweep": {
+      "readings": 1,
+      "note": "claim fixes every parameter"
+    },
+    "claimed_vs_measured": [],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 3,
+      "assumed": 2,
+      "quoted_fields": [
+        "entry[0]",
+        "assets",
+        "timeframe"
+      ],
+      "assumed_fields": [
+        "exit[0]",
+        "direction"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "exact",
+      "gaps": [],
+      "audit_majors": []
+    }
+  },
+  "seconds": 36.2
+}

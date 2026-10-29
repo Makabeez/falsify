@@ -1,0 +1,137 @@
+{
+  "id": "c027",
+  "record": {
+    "id": "c027",
+    "url": "https://www.tradingview.com/chart/BTCUSD/fV1dY48o-BTC-Daily-Here-comes-the-Money-Wyckoff-Re-accumulation-Pattern/",
+    "source": "tradingview_idea",
+    "posted": "2025-02-28",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "vague",
+    "excerpt": "This is the potential spring of the Wyckoff re-accumulation pattern playing out \u2026 I Will continue to track this almost textbook looking pattern \u2026 If this pattern plays out there's a +25%climb back to ATH over the coming weeks \u2026 price regularly(not always) will retest the breakout.",
+    "performance_claim": null,
+    "verbatim_confidence": "high",
+    "notes": "Discretionary Wyckoff pattern read; no mechanical entry/exit, compiler should refuse."
+  },
+  "spec": {
+    "claim_summary": "The claim asserts a potential spring of a Wyckoff re-accumulation pattern is playing out with an expected 25% rise back to all-time high over coming weeks after a possible retest of the breakout.",
+    "source_type": "text",
+    "testable": false,
+    "untestable_reason": "No mechanical entry or exit trigger is stated, only a discretionary Wyckoff pattern label and a directional forecast.",
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [],
+    "exit": [],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": null
+    },
+    "assumptions": [
+      "Asset BTCUSDT inferred from page context; claim text names no asset.",
+      "Timeframe 1d inferred from page chart setting; claim text names no timeframe.",
+      "Direction inferred as long from expected +25% climb back to ATH.",
+      "NOT EXPRESSIBLE: Wyckoff re-accumulation pattern and spring / breakout-retest identification has no mechanical definition in the claim and cannot be expressed with available operands.",
+      "No entry trigger, exit condition, stop, target, or holding period is stated, so no testable core can be compiled."
+    ],
+    "evidence": [
+      {
+        "field": "assets",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "timeframe",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "direction",
+        "quote": null,
+        "assumed": true
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 2739,
+          "prompt_tokens": 1114,
+          "total_tokens": 3853,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 2442,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 0,
+      "quoted": 0,
+      "assumed": 0,
+      "quoted_fields": [],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "audits": [
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ]
+  },
+  "report": {
+    "verdict": "UNTESTABLE",
+    "headline": "This claim can't be turned into rules anyone could check.",
+    "reasons": [
+      "No mechanical entry or exit trigger is stated, only a discretionary Wyckoff pattern label and a directional forecast."
+    ],
+    "warnings": [],
+    "asset": null,
+    "timeframe": null,
+    "primary": {},
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {},
+    "sweep": {},
+    "claimed_vs_measured": [],
+    "costs": {},
+    "grounding": {},
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: Wyckoff re-accumulation pattern and spring / breakout-retest identification has no mechanical definition in the claim and cannot be expressed with available operands."
+      ],
+      "audit_majors": []
+    }
+  },
+  "seconds": 21.9
+}

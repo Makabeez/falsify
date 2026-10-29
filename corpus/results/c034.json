@@ -14,10 +14,10 @@
     "notes": "MA system with no periods, asset or entry/exit; claims backtested edge. Compiler should refuse (no parameters)."
   },
   "spec": {
-    "claim_summary": "A system compares price to its slowest moving average across ten timeframes, with more aligned timeframes claimed to increase success.",
+    "claim_summary": "The claim states that price moving against its slowest moving average across ten timeframes predicts moves, with more aligning timeframes giving higher success.",
     "source_type": "text",
     "testable": false,
-    "untestable_reason": "No mechanical rule can be recovered because the moving-average lengths, trade direction, entry trigger and exit are unspecified and the core ten-timeframe alignment rule has no single-timeframe equivalent.",
+    "untestable_reason": "The claim provides no concrete moving-average length, entry trigger, direction, timeframe-alignment rule, or exit, and its core multi-timeframe alignment cannot be reduced to a single-timeframe mechanical rule.",
     "assets": [
       "BTCUSDT"
     ],
@@ -26,7 +26,13 @@
     "entry": [],
     "exit": [],
     "stop_loss_pct": null,
+    "stop_atr_mult": null,
+    "stop_atr_period": 14,
     "take_profit_pct": null,
+    "take_profit_atr_mult": null,
+    "take_profit_r": null,
+    "trailing_stop_pct": null,
+    "trailing_stop_atr_mult": null,
     "max_hold_bars": null,
     "free_parameters": [],
     "claimed": {
@@ -38,10 +44,10 @@
       "other": null
     },
     "assumptions": [
-      "No asset is named, so BTCUSDT is assumed as the default test asset.",
-      "No single timeframe is named, so 1d is assumed for a single-timeframe test.",
-      "No moving-average length, price-versus-average trigger direction, trade direction, or exit is specified.",
-      "NOT EXPRESSIBLE: alignment across 10 different time frames is the heart of the claimed edge and cannot be expressed in a single-timeframe rule."
+      "No asset or timeframe is stated; assumed BTCUSDT on 1d as most natural default reading.",
+      "NOT EXPRESSIBLE: running the system on 10 different time frames where more aligning timeframes means higher chance of success and larger size.",
+      "NOT EXPRESSIBLE: 'lowest Moving average against Price' and 'slowest tracking average' give no moving-average type, length, position vs cross rule, or tradable direction.",
+      "No entry trigger, direction, or exit can be recovered; without an entry core no default exit can be meaningfully assigned."
     ],
     "evidence": [
       {
@@ -70,23 +76,25 @@
     "attempts": [
       {
         "usage": {
-          "completion_tokens": 2801,
-          "prompt_tokens": 1092,
-          "total_tokens": 3893,
+          "completion_tokens": 2444,
+          "prompt_tokens": 1457,
+          "total_tokens": 3901,
           "completion_tokens_details": {
             "accepted_prediction_tokens": null,
             "audio_tokens": null,
-            "reasoning_tokens": 2482,
+            "reasoning_tokens": 2094,
             "rejected_prediction_tokens": null,
             "text_tokens": null
           },
           "prompt_tokens_details": {
             "audio_tokens": null,
             "cache_write_tokens": null,
-            "cached_tokens": 0,
+            "cached_tokens": 1309,
             "image_tokens": null,
             "text_tokens": null
-          }
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
         },
         "grounding_problems": []
       }
@@ -104,13 +112,26 @@
         "faithful": true,
         "issues": []
       }
+    ],
+    "cost": [
+      {
+        "step": "compile",
+        "seconds": 10.9,
+        "tokens": 3901,
+        "quote_repairs": 0
+      },
+      {
+        "step": "audit",
+        "seconds": 7.8,
+        "tokens": 2635
+      }
     ]
   },
   "report": {
     "verdict": "UNTESTABLE",
     "headline": "This claim can't be turned into rules anyone could check.",
     "reasons": [
-      "No mechanical rule can be recovered because the moving-average lengths, trade direction, entry trigger and exit are unspecified and the core ten-timeframe alignment rule has no single-timeframe equivalent."
+      "The claim provides no concrete moving-average length, entry trigger, direction, timeframe-alignment rule, or exit, and its core multi-timeframe alignment cannot be reduced to a single-timeframe mechanical rule."
     ],
     "warnings": [],
     "asset": null,
@@ -127,10 +148,13 @@
     "fidelity": {
       "level": "approximation",
       "gaps": [
-        "NOT EXPRESSIBLE: alignment across 10 different time frames is the heart of the claimed edge and cannot be expressed in a single-timeframe rule."
+        "NOT EXPRESSIBLE: running the system on 10 different time frames where more aligning timeframes means higher chance of success and larger size.",
+        "NOT EXPRESSIBLE: 'lowest Moving average against Price' and 'slowest tracking average' give no moving-average type, length, position vs cross rule, or tradable direction."
       ],
       "audit_majors": []
-    }
+    },
+    "review": {},
+    "series": {}
   },
-  "seconds": 18.6
+  "seconds": 18.8
 }

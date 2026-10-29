@@ -1,0 +1,154 @@
+{
+  "id": "c001",
+  "record": {
+    "id": "c001",
+    "url": "https://www.tradingview.com/chart/BTCUSD/y4z6Xvkd-This-Bitcoin-signal-has-a-71-winrate/",
+    "source": "tradingview_idea",
+    "posted": "2024-07-10",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "backtest_claim",
+    "excerpt": "This Bitcoin signal has a 71% winrate. \u2026 RSI is at the 50 days lowest and is rising for 3 bars, and is lower than the 160 days RSI with 5 (as RSI value) added \u2026 and RSI is below 37.5 \u2026 Total Winners * 100 / Total Trades = 5 * 100 / 7 = 71.4% Winrate \u2026 Average winning trade: +105.8% \u2026 The rarity of the signal (only 7 times) induces that a small amount of backtest data, and should not be used as sole indicator in your trading.",
+    "performance_claim": "71.4% Winrate",
+    "verbatim_confidence": "high",
+    "notes": "Fully mechanical RSI rule on BTC daily with explicit win rate on only 7 trades; no exit stated (compiler must choose holding period)."
+  },
+  "spec": {
+    "claim_summary": "A Bitcoin signal requiring RSI to be at a 50-day low, rising for 3 bars, below a longer RSI plus 5 and below 37.5 is claimed to have a 71% win rate.",
+    "source_type": "text",
+    "testable": false,
+    "untestable_reason": "The core entry requires the 50-day lowest of RSI, three-bar RSI rising momentum, and an RSI versus 160-day RSI comparison with a +5 offset, none of which the schema can express, and no exit is stated.",
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [],
+    "exit": [],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": 71.4,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": "Average winning trade: +105.8%"
+    },
+    "assumptions": [
+      "Asset is BTCUSDT because the claim says Bitcoin.",
+      "Timeframe is 1d from the page chart timeframe, not stated by the claimant.",
+      "Direction is long because winning trades are positive-gain trades with no short language.",
+      "RSI length is never stated; usual default would be 14.",
+      "No exit, stop-loss, take-profit or max hold is stated.",
+      "NOT EXPRESSIBLE: lowest value of RSI over 50 days (schema has lowest_low for price only, not lowest of RSI).",
+      "NOT EXPRESSIBLE: RSI rising for 3 consecutive bars (multi-bar RSI momentum).",
+      "NOT EXPRESSIBLE: RSI compared to 160-day/period RSI plus 5 as a value offset (additive offset and RSI-vs-RSI comparison)."
+    ],
+    "evidence": [
+      {
+        "field": "assets",
+        "quote": "Bitcoin",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "direction",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "claimed.win_rate_pct",
+        "quote": "5 * 100 / 7 = 71.4% Winrate",
+        "assumed": false
+      },
+      {
+        "field": "claimed.other",
+        "quote": "Average winning trade: +105.8%",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 3663,
+          "prompt_tokens": 1180,
+          "total_tokens": 4843,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 3149,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 0,
+      "quoted": 0,
+      "assumed": 0,
+      "quoted_fields": [],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "audits": [
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ]
+  },
+  "report": {
+    "verdict": "UNTESTABLE",
+    "headline": "This claim can't be turned into rules anyone could check.",
+    "reasons": [
+      "The core entry requires the 50-day lowest of RSI, three-bar RSI rising momentum, and an RSI versus 160-day RSI comparison with a +5 offset, none of which the schema can express, and no exit is stated."
+    ],
+    "warnings": [],
+    "asset": null,
+    "timeframe": null,
+    "primary": {},
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {},
+    "sweep": {},
+    "claimed_vs_measured": [],
+    "costs": {},
+    "grounding": {},
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: lowest value of RSI over 50 days (schema has lowest_low for price only, not lowest of RSI).",
+        "NOT EXPRESSIBLE: RSI rising for 3 consecutive bars (multi-bar RSI momentum).",
+        "NOT EXPRESSIBLE: RSI compared to 160-day/period RSI plus 5 as a value offset (additive offset and RSI-vs-RSI comparison)."
+      ],
+      "audit_majors": []
+    }
+  },
+  "seconds": 30.6
+}

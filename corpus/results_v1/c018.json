@@ -1,0 +1,283 @@
+{
+  "id": "c018",
+  "record": {
+    "id": "c018",
+    "url": "https://www.tradingview.com/script/h0ePZA90/",
+    "source": "tradingview_script",
+    "posted": "2025-04-09",
+    "asset_hint": "NIKKEI225",
+    "timeframe_hint": "1d",
+    "category": "other_asset",
+    "excerpt": "Target Stocks: All components of the Nikkei 225 \u2026 Only daily charts are used. \u2026 Period: Fixed at 80 days \u2026 Upper and lower bands: Fixed at \u00b11\u03c3 \u2026 Setup: Price crosses above the +1\u03c3 line from below \u2026 Buy at the next day\u2019s open using a market order \u2026 If the price crosses below the middle band, sell at the next day\u2019s open using a market order \u2026 Test Period: January 4, 2000 \u2013 December 30, 2024 \u2026 Win Rate: 33.45%",
+    "performance_claim": "Win Rate: 33.45%",
+    "verbatim_confidence": "high",
+    "notes": "Bollinger 80/1\u03c3 breakout on Japanese equities; mechanical but out of asset universe."
+  },
+  "spec": {
+    "claim_summary": "A daily strategy on Nikkei 225 components that buys when price crosses above the 80-day +1\u03c3 Bollinger upper band and sells when price crosses below the 80-day middle band.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "NIKKEI225"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_above",
+        "right": {
+          "kind": "bb_upper",
+          "period": 80,
+          "value": null,
+          "multiplier": 1.0,
+          "param": 1.0
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "sma",
+          "period": 80,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": 33.45,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": "2000-01-04",
+      "period_end": "2024-12-30",
+      "other": null
+    },
+    "assumptions": [
+      "Middle band interpreted as the standard Bollinger middle band, an 80-period simple moving average.",
+      "Bollinger settings mapped as period 80 with std width 1.0 from 'Period: Fixed at 80 days' and 'Upper and lower bands: Fixed at \u00b11\u03c3'.",
+      "Rules evaluated on daily bar closes with fills at the next bar's open, matching the claim's next-day open market-order execution.",
+      "Direction inferred as long from buy-then-sell wording.",
+      "No stop-loss, take-profit or time exit stated; exit is only the middle-band cross.",
+      "NOT EXPRESSIBLE: Claim requires trading all components of the Nikkei 225 individually as a constituent basket; the spec can only hold a single NIKKEI225 ticker placeholder, so testing the index is not equivalent to testing the constituent basket."
+    ],
+    "evidence": [
+      {
+        "field": "assets",
+        "quote": "All components of the Nikkei 225",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": "Only daily charts are used.",
+        "assumed": false
+      },
+      {
+        "field": "entry[0]",
+        "quote": "Price crosses above the +1\u03c3 line from below",
+        "assumed": false
+      },
+      {
+        "field": "direction",
+        "quote": "Buy at the next day\u2019s open using a market order",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": "If the price crosses below the middle band, sell at the next day\u2019s open using a market order",
+        "assumed": false
+      },
+      {
+        "field": "claimed.win_rate_pct",
+        "quote": "Win Rate: 33.45%",
+        "assumed": false
+      },
+      {
+        "field": "claimed.period_start",
+        "quote": "January 4, 2000",
+        "assumed": false
+      },
+      {
+        "field": "claimed.period_end",
+        "quote": "December 30, 2024",
+        "assumed": false
+      }
+    ]
+  },
+  "audit": {
+    "faithful": false,
+    "issues": [
+      {
+        "field": "assets",
+        "problem": "Claim requires buying/selling all components of the Nikkei 225 individually as a basket; spec substitutes a single NIKKEI225 ticker. Testing the index is not equivalent to testing the constituent basket and could change the verdict.",
+        "severity": "major"
+      }
+    ]
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 2723,
+          "prompt_tokens": 1913,
+          "total_tokens": 4636,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 2150,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 1053,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 5,
+      "assumed": 0,
+      "quoted_fields": [
+        "entry[0]",
+        "exit[0]",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 5791,
+            "prompt_tokens": 1169,
+            "total_tokens": 6960,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 5117,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            }
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 5,
+        "quoted": 5,
+        "assumed": 0,
+        "quoted_fields": [
+          "entry[0]",
+          "exit[0]",
+          "assets",
+          "timeframe",
+          "direction"
+        ],
+        "assumed_fields": [],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "assets",
+            "problem": "Claim requires 'All components of the Nikkei 225' traded individually; spec encodes single ticker NIKKEI225 (the index). Testing the index is not equivalent to testing the constituent basket and could change the verdict.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "assets",
+            "problem": "Claim requires buying/selling all components of the Nikkei 225 individually as a basket; spec substitutes a single NIKKEI225 ticker. Testing the index is not equivalent to testing the constituent basket and could change the verdict.",
+            "severity": "major"
+          }
+        ]
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "UNTESTABLE",
+    "headline": "No bundled history for the asset/timeframe this claim needs.",
+    "reasons": [
+      "wanted ['NIKKEI225'] on 1d; bundled universe is ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'LINKUSDT', 'LTCUSDT', 'DOTUSDT', 'TRXUSDT']"
+    ],
+    "warnings": [],
+    "asset": null,
+    "timeframe": "1d",
+    "primary": {},
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {},
+    "sweep": {},
+    "claimed_vs_measured": [],
+    "costs": {},
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 5,
+      "assumed": 0,
+      "quoted_fields": [
+        "entry[0]",
+        "exit[0]",
+        "assets",
+        "timeframe",
+        "direction"
+      ],
+      "assumed_fields": [],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: Claim requires trading all components of the Nikkei 225 individually as a constituent basket; the spec can only hold a single NIKKEI225 ticker placeholder, so testing the index is not equivalent to testing the constituent basket."
+      ],
+      "audit_majors": [
+        "assets: Claim requires buying/selling all components of the Nikkei 225 individually as a basket; spec substitutes a single NIKKEI225 ticker. Testing the index is not equivalent to testing the constituent basket and could change the verdict."
+      ]
+    }
+  },
+  "seconds": 52.3
+}

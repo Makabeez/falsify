@@ -1,0 +1,377 @@
+{
+  "id": "c011",
+  "record": {
+    "id": "c011",
+    "url": "https://northbit.substack.com/p/when-to-buy-crypto",
+    "source": "substack",
+    "posted": "2024-07-04",
+    "asset_hint": "BTC",
+    "timeframe_hint": "1d",
+    "category": "backtest_claim",
+    "excerpt": "When Bitcoin's price falls below its 200-week moving average, it often indicates a potential buying opportunity \u2026 Investors can set buy orders to trigger automatically when Bitcoin's price drops below this threshold. \u2026 Investing $10,000 during the March 2020 dip would have resulted in a 1.8 BTC / $105,000 portfolio today \u2026 but if you missed that opportunity, you would have had to wait until June 2022",
+    "performance_claim": "Investing $10,000 during the March 2020 dip would have resulted in a 1.8 BTC / $105,000 portfolio today",
+    "verbatim_confidence": "high",
+    "notes": "Buy below 200-week MA (1400 daily bars), no exit; anecdotal single-trade claim. Same post also mentions fear&greed/rainbow (excluded from excerpt)."
+  },
+  "spec": {
+    "claim_summary": "Buying Bitcoin when its price falls below its 200-week moving average is presented as a buying opportunity.",
+    "source_type": "text",
+    "testable": true,
+    "untestable_reason": null,
+    "assets": [
+      "BTCUSDT"
+    ],
+    "timeframe": "1d",
+    "direction": "long",
+    "entry": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "crosses_below",
+        "right": {
+          "kind": "sma",
+          "period": 1400,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "exit": [
+      {
+        "left": {
+          "kind": "close",
+          "period": null,
+          "value": null,
+          "multiplier": 1.0,
+          "param": null
+        },
+        "op": "lt",
+        "right": {
+          "kind": "const",
+          "period": null,
+          "value": 0.0,
+          "multiplier": 1.0,
+          "param": null
+        }
+      }
+    ],
+    "stop_loss_pct": null,
+    "take_profit_pct": null,
+    "max_hold_bars": null,
+    "free_parameters": [],
+    "claimed": {
+      "win_rate_pct": null,
+      "total_return_pct": null,
+      "avg_return_per_trade_pct": null,
+      "period_start": null,
+      "period_end": null,
+      "other": "Investing $10,000 during the March 2020 dip would have resulted in a 1.8 BTC / $105,000 portfolio today"
+    },
+    "assumptions": [
+      "Asset is Bitcoin, compiled as BTCUSDT spot.",
+      "Timeframe not stated in claim; set to 1d as most natural reading.",
+      "Moving average type not specified; assumed to be simple moving average (SMA).",
+      "200-week MA on 1d timeframe compiled as 1400-bar SMA of close (200*7).",
+      "Entry phrases 'falls below' / 'drops below' compiled as close crosses_below SMA on bar close.",
+      "NOT EXPRESSIBLE: Claim states no exit and implies buy-and-hold to 'today' (March 2020 dip held for $105,000 portfolio); engine requires an exit, so a never-triggering exit (close < 0) is used as closest proxy to hold to end of data.",
+      "March 2020 and June 2022 mentions treated as illustrative examples of signals, not as test window; engine tests over all history."
+    ],
+    "evidence": [
+      {
+        "field": "assets",
+        "quote": "When Bitcoin's price",
+        "assumed": false
+      },
+      {
+        "field": "timeframe",
+        "quote": null,
+        "assumed": true
+      },
+      {
+        "field": "direction",
+        "quote": "potential buying opportunity",
+        "assumed": false
+      },
+      {
+        "field": "entry[0]",
+        "quote": "When Bitcoin's price falls below its 200-week moving average",
+        "assumed": false
+      },
+      {
+        "field": "exit[0]",
+        "quote": null,
+        "assumed": true
+      }
+    ]
+  },
+  "audit": {
+    "faithful": true,
+    "issues": []
+  },
+  "trace": {
+    "model": "muse-spark-1.3",
+    "attempts": [
+      {
+        "usage": {
+          "completion_tokens": 3254,
+          "prompt_tokens": 1791,
+          "total_tokens": 5045,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 2808,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 1053,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "error": "1 validation error for ClaimSpec\n  Value error, testable claim needs an exit rule (condition, stop, target or time exit) [type=value_error, input_value={'assets': ['BTCUSDT'], '...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+      },
+      {
+        "usage": {
+          "completion_tokens": 3395,
+          "prompt_tokens": 2325,
+          "total_tokens": 5720,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": null,
+            "reasoning_tokens": 2919,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null
+          },
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cache_write_tokens": null,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null
+          }
+        },
+        "grounding_problems": []
+      }
+    ],
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 3,
+      "assumed": 2,
+      "quoted_fields": [
+        "entry[0]",
+        "assets",
+        "direction"
+      ],
+      "assumed_fields": [
+        "exit[0]",
+        "timeframe"
+      ],
+      "problems": []
+    },
+    "first_pass": {
+      "attempts": [
+        {
+          "usage": {
+            "completion_tokens": 5952,
+            "prompt_tokens": 1141,
+            "total_tokens": 7093,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 5431,
+              "rejected_prediction_tokens": null,
+              "text_tokens": null
+            },
+            "prompt_tokens_details": {
+              "audio_tokens": null,
+              "cache_write_tokens": null,
+              "cached_tokens": 0,
+              "image_tokens": null,
+              "text_tokens": null
+            }
+          },
+          "grounding_problems": []
+        }
+      ],
+      "grounding": {
+        "rule_elements": 5,
+        "quoted": 3,
+        "assumed": 2,
+        "quoted_fields": [
+          "entry[0]",
+          "assets",
+          "direction"
+        ],
+        "assumed_fields": [
+          "exit[0]",
+          "timeframe"
+        ],
+        "problems": []
+      }
+    },
+    "audits": [
+      {
+        "faithful": false,
+        "issues": [
+          {
+            "field": "exit[0]",
+            "problem": "No exit is stated in claim; example implies buy-and-hold to 'today' (March 2020 dip held for $105,000 portfolio). Spec invents exit when close is back above the 200-week MA, which would cut the illustrated holding period short and change tested returns.",
+            "severity": "major"
+          }
+        ]
+      },
+      {
+        "faithful": true,
+        "issues": []
+      }
+    ],
+    "audit_repair": true
+  },
+  "report": {
+    "verdict": "INCONCLUSIVE",
+    "headline": "Tested an approximation of the claim. Only 1 trades from 2017-08-17 to 2026-10-26 -- too few to tell skill from luck.",
+    "reasons": [
+      "1 trades < 30 minimum"
+    ],
+    "warnings": [
+      "the last trade is still open at the end of the data; it is marked at the last close",
+      "just holding did better: +261% vs buy-and-hold +1781%",
+      "left out: Claim states no exit and implies buy-and-hold to 'today' (March 2020 dip held for $105,000 portfolio); engine requires an exit, so a never-triggering exit (close < 0) is used as closest proxy to hold to end of data."
+    ],
+    "asset": "BTCUSDT",
+    "timeframe": "1d",
+    "primary": {
+      "trades": 1,
+      "win_rate_pct": 100.0,
+      "avg_net_pct": 261.20759008432464,
+      "total_net_pct": 261.20759008432464,
+      "total_gross_pct": 262.07552982821977,
+      "max_drawdown_pct": 0.0,
+      "avg_bars": 1594.0,
+      "open_at_end": 1,
+      "buy_hold_pct": 1780.815115875236,
+      "window": [
+        "2017-08-17",
+        "2026-10-26"
+      ],
+      "exposure_pct": 47.46873138773079
+    },
+    "null_test": {},
+    "out_of_sample": {},
+    "halves": {},
+    "cross_asset": {
+      "assets": [
+        {
+          "asset": "ETHUSDT",
+          "trades": 1,
+          "total_net_pct": 117.03114334861806,
+          "avg_net_pct": 117.03114334861806
+        },
+        {
+          "asset": "SOLUSDT",
+          "trades": 1,
+          "total_net_pct": -0.0714324394374466,
+          "avg_net_pct": -0.0714324394374466
+        },
+        {
+          "asset": "BNBUSDT",
+          "trades": 1,
+          "total_net_pct": 219.30169105130713,
+          "avg_net_pct": 219.30169105130713
+        },
+        {
+          "asset": "XRPUSDT",
+          "trades": 1,
+          "total_net_pct": 168.0750586980352,
+          "avg_net_pct": 168.0750586980352
+        },
+        {
+          "asset": "DOGEUSDT",
+          "trades": 1,
+          "total_net_pct": -17.569511571239882,
+          "avg_net_pct": -17.569511571239882
+        },
+        {
+          "asset": "ADAUSDT",
+          "trades": 1,
+          "total_net_pct": -60.23823475077113,
+          "avg_net_pct": -60.23823475077113
+        },
+        {
+          "asset": "AVAXUSDT",
+          "trades": 1,
+          "total_net_pct": -69.96486041029772,
+          "avg_net_pct": -69.96486041029772
+        },
+        {
+          "asset": "LINKUSDT",
+          "trades": 1,
+          "total_net_pct": -15.305854782969043,
+          "avg_net_pct": -15.305854782969043
+        },
+        {
+          "asset": "LTCUSDT",
+          "trades": 1,
+          "total_net_pct": -42.346063665615496,
+          "avg_net_pct": -42.346063665615496
+        },
+        {
+          "asset": "DOTUSDT",
+          "trades": 0,
+          "total_net_pct": 0.0,
+          "avg_net_pct": null
+        },
+        {
+          "asset": "TRXUSDT",
+          "trades": 0,
+          "total_net_pct": 0.0,
+          "avg_net_pct": null
+        }
+      ],
+      "tested": 0,
+      "positive": 0,
+      "positive_share_pct": null
+    },
+    "sweep": {
+      "readings": 1,
+      "note": "claim fixes every parameter"
+    },
+    "claimed_vs_measured": [],
+    "costs": {
+      "fee_bps_per_side": 10.0,
+      "slippage_bps_per_side": 2.0
+    },
+    "grounding": {
+      "rule_elements": 5,
+      "quoted": 3,
+      "assumed": 2,
+      "quoted_fields": [
+        "entry[0]",
+        "assets",
+        "direction"
+      ],
+      "assumed_fields": [
+        "exit[0]",
+        "timeframe"
+      ],
+      "problems": []
+    },
+    "fidelity": {
+      "level": "approximation",
+      "gaps": [
+        "NOT EXPRESSIBLE: Claim states no exit and implies buy-and-hold to 'today' (March 2020 dip held for $105,000 portfolio); engine requires an exit, so a never-triggering exit (close < 0) is used as closest proxy to hold to end of data."
+      ],
+      "audit_majors": []
+    }
+  },
+  "seconds": 59.0
+}

@@ -14,10 +14,10 @@
     "notes": "Accumulation rule (save $1/day, deploy on >5%/>10% dip from recent high) vs daily DCA; a negative claim, nice contrast. Bold markers removed from table cells."
   },
   "spec": {
-    "claim_summary": "Waiting to buy bitcoin only when price is more than 5% below the most recent high underperforms daily dollar-cost averaging.",
+    "claim_summary": "Buying only on days more than 5% below the recent high accumulates less bitcoin than buying $1 every day.",
     "source_type": "text",
     "testable": false,
-    "untestable_reason": "Rule 2 requires buying on every day price is more than 5% below the recent high and holding all lots, which is a DCA/pyramiding accumulation the single-position engine cannot express.",
+    "untestable_reason": "The claim compares repeated overlapping $1 daily versus dip-only accumulation by total BTC accumulated, which requires a DCA ladder with differing capital that the single-position engine cannot replicate.",
     "assets": [
       "BTCUSDT"
     ],
@@ -30,34 +30,35 @@
           "period": null,
           "value": null,
           "multiplier": 1.0,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         },
         "op": "lt",
         "right": {
           "kind": "highest_high",
-          "period": 90,
+          "period": 365,
           "value": null,
           "multiplier": 0.95,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         }
       }
     ],
     "exit": [],
     "stop_loss_pct": null,
+    "stop_atr_mult": null,
+    "stop_atr_period": 14,
     "take_profit_pct": null,
+    "take_profit_atr_mult": null,
+    "take_profit_r": null,
+    "trailing_stop_pct": null,
+    "trailing_stop_atr_mult": null,
     "max_hold_bars": null,
-    "free_parameters": [
-      {
-        "name": "recent high lookback (bars)",
-        "target": "entry[0].right.period",
-        "candidates": [
-          30.0,
-          90.0,
-          180.0,
-          365.0
-        ]
-      }
-    ],
+    "free_parameters": [],
     "claimed": {
       "win_rate_pct": null,
       "total_return_pct": null,
@@ -67,19 +68,13 @@
       "other": "$1/Day \u2013 >5% Dips (Rule 2) | $2943 | 4.639"
     },
     "assumptions": [
-      "Asset is Bitcoin mapped to BTCUSDT.",
-      "Timeframe 1d chosen as most natural reading for daily purchase cadence; claim states no bar timeframe.",
-      "Most Recent High Price has no lookback stated; approximated as 90-day highest_high for closest testable core.",
-      "Dip Greater Than 5% encoded as close < 0.95 * highest_high for closest testable core.",
-      "No exit stated; Rule 2 holds all lots with no sale, so closest core has no exit.",
-      "NOT EXPRESSIBLE: repeated $1 purchases on every dip day and holding all lots as a DCA ladder / pyramiding / position sizing accumulation; single-position engine holds one position at a time so repeated dip buying cannot be tested."
+      "Asset BTCUSDT chosen for Bitcoin named in claim.",
+      "Timeframe 1d assumed; claim states daily purchases but no bar timeframe.",
+      "Direction long because rule describes buying.",
+      "'Most Recent High Price' lookback is vague; 365 bars used as placeholder only.",
+      "NOT EXPRESSIBLE: repeated $1-per-day accumulation versus $1-only-on-dip-days accumulation, overlapping positions, differing total dollars deployed, and comparison by total BTC accumulated cannot be expressed in single-position one-at-a-time engine."
     ],
     "evidence": [
-      {
-        "field": "entry[0]",
-        "quote": "Don't Buy Until There's a Dip Greater Than 5% from the Most Recent High Price",
-        "assumed": false
-      },
       {
         "field": "assets",
         "quote": "spent $1 on Bitcoin every day",
@@ -92,17 +87,22 @@
       },
       {
         "field": "direction",
-        "quote": "Don't Buy Until There's a Dip Greater Than 5% from the Most Recent High Price",
+        "quote": "Don't Buy Until There's a Dip",
+        "assumed": false
+      },
+      {
+        "field": "entry[0]",
+        "quote": "Dip Greater Than 5% from the Most Recent High Price",
         "assumed": false
       },
       {
         "field": "claimed.period_start",
-        "quote": "May 1, 2013",
+        "quote": "from May 1, 2013 until May 23, 2021",
         "assumed": false
       },
       {
         "field": "claimed.period_end",
-        "quote": "May 23, 2021",
+        "quote": "from May 1, 2013 until May 23, 2021",
         "assumed": false
       },
       {
@@ -121,23 +121,25 @@
     "attempts": [
       {
         "usage": {
-          "completion_tokens": 4500,
-          "prompt_tokens": 1907,
-          "total_tokens": 6407,
+          "completion_tokens": 3814,
+          "prompt_tokens": 2419,
+          "total_tokens": 6233,
           "completion_tokens_details": {
             "accepted_prediction_tokens": null,
             "audio_tokens": null,
-            "reasoning_tokens": 3883,
+            "reasoning_tokens": 3268,
             "rejected_prediction_tokens": null,
             "text_tokens": null
           },
           "prompt_tokens_details": {
             "audio_tokens": null,
             "cache_write_tokens": null,
-            "cached_tokens": 1053,
+            "cached_tokens": 1437,
             "image_tokens": null,
             "text_tokens": null
-          }
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
         },
         "grounding_problems": []
       }
@@ -154,13 +156,13 @@
       "attempts": [
         {
           "usage": {
-            "completion_tokens": 7934,
-            "prompt_tokens": 1168,
-            "total_tokens": 9102,
+            "completion_tokens": 5593,
+            "prompt_tokens": 1533,
+            "total_tokens": 7126,
             "completion_tokens_details": {
               "accepted_prediction_tokens": null,
               "audio_tokens": null,
-              "reasoning_tokens": 7326,
+              "reasoning_tokens": 4841,
               "rejected_prediction_tokens": null,
               "text_tokens": null
             },
@@ -170,29 +172,9 @@
               "cached_tokens": 0,
               "image_tokens": null,
               "text_tokens": null
-            }
-          },
-          "error": "1 validation error for ClaimSpec\n  Value error, testable claim needs an exit rule (condition, stop, target or time exit) [type=value_error, input_value={'assets': ['BTCUSDT'], '...ntestable_reason': None}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
-        },
-        {
-          "usage": {
-            "completion_tokens": 3164,
-            "prompt_tokens": 1864,
-            "total_tokens": 5028,
-            "completion_tokens_details": {
-              "accepted_prediction_tokens": null,
-              "audio_tokens": null,
-              "reasoning_tokens": 2525,
-              "rejected_prediction_tokens": null,
-              "text_tokens": null
             },
-            "prompt_tokens_details": {
-              "audio_tokens": null,
-              "cache_write_tokens": null,
-              "cached_tokens": 0,
-              "image_tokens": null,
-              "text_tokens": null
-            }
+            "reasoning_effort": "medium",
+            "calls": 1
           },
           "grounding_problems": []
         }
@@ -218,8 +200,8 @@
         "faithful": false,
         "issues": [
           {
-            "field": "exit",
-            "problem": "Spec holds a single position to end (empty exit + max_hold_bars 5000) after first >5% dip. Claim's Rule 2 buys on every dip day ('Don't Buy Until There's a Dip Greater Than 5% from the Most Recent High Price' with same $2943 total) and holds all lots. Single-entry encoding prevents repeated dip purchases and tests a one-time timing trade, not the accumulation rule.",
+            "field": "entry",
+            "problem": "Claim is repeated accumulation: $1 on Bitcoin every day vs $1 only on >5% dip days, judged by total BTC accumulated. Spec compiles this to a single one-at-a-time long entry held via max_hold_bars, omitting repeated overlapping buys and differing total dollars deployed. Single-trade timing is not the claimed DCA accumulation comparison and could flip the verdict. Marking it NOT EXPRESSIBLE in assumptions does not fix the change in what is tested.",
             "severity": "major"
           }
         ]
@@ -229,13 +211,37 @@
         "issues": []
       }
     ],
-    "audit_repair": true
+    "audit_repair": true,
+    "cost": [
+      {
+        "step": "compile",
+        "seconds": 24.4,
+        "tokens": 7126,
+        "quote_repairs": 0
+      },
+      {
+        "step": "audit",
+        "seconds": 17.7,
+        "tokens": 5299
+      },
+      {
+        "step": "audit repair",
+        "seconds": 15.9,
+        "tokens": 6233,
+        "quote_repairs": 0
+      },
+      {
+        "step": "audit",
+        "seconds": 27.1,
+        "tokens": 7513
+      }
+    ]
   },
   "report": {
     "verdict": "UNTESTABLE",
     "headline": "This claim can't be turned into rules anyone could check.",
     "reasons": [
-      "Rule 2 requires buying on every day price is more than 5% below the recent high and holding all lots, which is a DCA/pyramiding accumulation the single-position engine cannot express."
+      "The claim compares repeated overlapping $1 daily versus dip-only accumulation by total BTC accumulated, which requires a DCA ladder with differing capital that the single-position engine cannot replicate."
     ],
     "warnings": [],
     "asset": null,
@@ -252,10 +258,12 @@
     "fidelity": {
       "level": "approximation",
       "gaps": [
-        "NOT EXPRESSIBLE: repeated $1 purchases on every dip day and holding all lots as a DCA ladder / pyramiding / position sizing accumulation; single-position engine holds one position at a time so repeated dip buying cannot be tested."
+        "NOT EXPRESSIBLE: repeated $1-per-day accumulation versus $1-only-on-dip-days accumulation, overlapping positions, differing total dollars deployed, and comparison by total BTC accumulated cannot be expressed in single-position one-at-a-time engine."
       ],
       "audit_majors": []
-    }
+    },
+    "review": {},
+    "series": {}
   },
-  "seconds": 87.8
+  "seconds": 85.2
 }

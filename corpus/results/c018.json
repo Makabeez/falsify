@@ -14,7 +14,7 @@
     "notes": "Bollinger 80/1\u03c3 breakout on Japanese equities; mechanical but out of asset universe."
   },
   "spec": {
-    "claim_summary": "A daily strategy on Nikkei 225 components that buys when price crosses above the 80-day +1\u03c3 Bollinger upper band and sells when price crosses below the 80-day middle band.",
+    "claim_summary": "A daily strategy buys when price crosses above the 80-day +1-sigma band and exits when price crosses below the middle band.",
     "source_type": "text",
     "testable": true,
     "untestable_reason": null,
@@ -30,7 +30,10 @@
           "period": null,
           "value": null,
           "multiplier": 1.0,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         },
         "op": "crosses_above",
         "right": {
@@ -38,7 +41,10 @@
           "period": 80,
           "value": null,
           "multiplier": 1.0,
-          "param": 1.0
+          "param": 1.0,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         }
       }
     ],
@@ -49,7 +55,10 @@
           "period": null,
           "value": null,
           "multiplier": 1.0,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         },
         "op": "crosses_below",
         "right": {
@@ -57,12 +66,21 @@
           "period": 80,
           "value": null,
           "multiplier": 1.0,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         }
       }
     ],
     "stop_loss_pct": null,
+    "stop_atr_mult": null,
+    "stop_atr_period": 14,
     "take_profit_pct": null,
+    "take_profit_atr_mult": null,
+    "take_profit_r": null,
+    "trailing_stop_pct": null,
+    "trailing_stop_atr_mult": null,
     "max_hold_bars": null,
     "free_parameters": [],
     "claimed": {
@@ -74,12 +92,12 @@
       "other": null
     },
     "assumptions": [
-      "Middle band interpreted as the standard Bollinger middle band, an 80-period simple moving average.",
-      "Bollinger settings mapped as period 80 with std width 1.0 from 'Period: Fixed at 80 days' and 'Upper and lower bands: Fixed at \u00b11\u03c3'.",
-      "Rules evaluated on daily bar closes with fills at the next bar's open, matching the claim's next-day open market-order execution.",
-      "Direction inferred as long from buy-then-sell wording.",
-      "No stop-loss, take-profit or time exit stated; exit is only the middle-band cross.",
-      "NOT EXPRESSIBLE: Claim requires trading all components of the Nikkei 225 individually as a constituent basket; the spec can only hold a single NIKKEI225 ticker placeholder, so testing the index is not equivalent to testing the constituent basket."
+      "NOT EXPRESSIBLE: claim requires testing all 225 Nikkei 225 components as a universe; the spec uses single ticker NIKKEI225 as the closest placeholder and testing that ticker cannot replicate the claimed universe result.",
+      "Middle band interpreted as the 80-period simple moving average, the standard Bollinger middle band for Period 80.",
+      "Upper +1\u03c3 line interpreted as bb_upper with period 80 and param 1.",
+      "Buy-then-sell wording interpreted as long direction.",
+      "'Buy at the next day's open' and 'sell at the next day's open' matches engine default of evaluating on bar closes and filling at next bar open, so no extra rule needed.",
+      "Test Period cited is stored in claimed and is not part of the rule; engine tests over all available history."
     ],
     "evidence": [
       {
@@ -93,13 +111,13 @@
         "assumed": false
       },
       {
-        "field": "entry[0]",
-        "quote": "Price crosses above the +1\u03c3 line from below",
+        "field": "direction",
+        "quote": "Buy at the next day\u2019s open using a market order",
         "assumed": false
       },
       {
-        "field": "direction",
-        "quote": "Buy at the next day\u2019s open using a market order",
+        "field": "entry[0]",
+        "quote": "Price crosses above the +1\u03c3 line from below",
         "assumed": false
       },
       {
@@ -114,12 +132,12 @@
       },
       {
         "field": "claimed.period_start",
-        "quote": "January 4, 2000",
+        "quote": "Test Period: January 4, 2000 \u2013 December 30, 2024",
         "assumed": false
       },
       {
         "field": "claimed.period_end",
-        "quote": "December 30, 2024",
+        "quote": "Test Period: January 4, 2000 \u2013 December 30, 2024",
         "assumed": false
       }
     ]
@@ -129,7 +147,7 @@
     "issues": [
       {
         "field": "assets",
-        "problem": "Claim requires buying/selling all components of the Nikkei 225 individually as a basket; spec substitutes a single NIKKEI225 ticker. Testing the index is not equivalent to testing the constituent basket and could change the verdict.",
+        "problem": "Claim requires universe of 'All components of the Nikkei 225' but spec tests single ticker NIKKEI225. Single index cannot replicate 225-stock universe result.",
         "severity": "major"
       }
     ]
@@ -139,23 +157,25 @@
     "attempts": [
       {
         "usage": {
-          "completion_tokens": 2723,
-          "prompt_tokens": 1913,
-          "total_tokens": 4636,
+          "completion_tokens": 3005,
+          "prompt_tokens": 2392,
+          "total_tokens": 5397,
           "completion_tokens_details": {
             "accepted_prediction_tokens": null,
             "audio_tokens": null,
-            "reasoning_tokens": 2150,
+            "reasoning_tokens": 2387,
             "rejected_prediction_tokens": null,
             "text_tokens": null
           },
           "prompt_tokens_details": {
             "audio_tokens": null,
             "cache_write_tokens": null,
-            "cached_tokens": 1053,
+            "cached_tokens": 1437,
             "image_tokens": null,
             "text_tokens": null
-          }
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
         },
         "grounding_problems": []
       }
@@ -178,13 +198,13 @@
       "attempts": [
         {
           "usage": {
-            "completion_tokens": 5791,
-            "prompt_tokens": 1169,
-            "total_tokens": 6960,
+            "completion_tokens": 3231,
+            "prompt_tokens": 1534,
+            "total_tokens": 4765,
             "completion_tokens_details": {
               "accepted_prediction_tokens": null,
               "audio_tokens": null,
-              "reasoning_tokens": 5117,
+              "reasoning_tokens": 2592,
               "rejected_prediction_tokens": null,
               "text_tokens": null
             },
@@ -194,7 +214,9 @@
               "cached_tokens": 0,
               "image_tokens": null,
               "text_tokens": null
-            }
+            },
+            "reasoning_effort": "medium",
+            "calls": 1
           },
           "grounding_problems": []
         }
@@ -220,7 +242,7 @@
         "issues": [
           {
             "field": "assets",
-            "problem": "Claim requires 'All components of the Nikkei 225' traded individually; spec encodes single ticker NIKKEI225 (the index). Testing the index is not equivalent to testing the constituent basket and could change the verdict.",
+            "problem": "Claim requires 'All components of the Nikkei 225' - a 225-stock universe. Spec encodes assets as single ticker NIKKEI225 index. Testing the index is not the same as testing all constituents and could change the verdict. The listed assumption does not cure this because it is clearly not what the claimant meant.",
             "severity": "major"
           }
         ]
@@ -230,13 +252,37 @@
         "issues": [
           {
             "field": "assets",
-            "problem": "Claim requires buying/selling all components of the Nikkei 225 individually as a basket; spec substitutes a single NIKKEI225 ticker. Testing the index is not equivalent to testing the constituent basket and could change the verdict.",
+            "problem": "Claim requires universe of 'All components of the Nikkei 225' but spec tests single ticker NIKKEI225. Single index cannot replicate 225-stock universe result.",
             "severity": "major"
           }
         ]
       }
     ],
-    "audit_repair": true
+    "audit_repair": true,
+    "cost": [
+      {
+        "step": "compile",
+        "seconds": 13.3,
+        "tokens": 4765,
+        "quote_repairs": 0
+      },
+      {
+        "step": "audit",
+        "seconds": 10.6,
+        "tokens": 3578
+      },
+      {
+        "step": "audit repair",
+        "seconds": 12.2,
+        "tokens": 5397,
+        "quote_repairs": 0
+      },
+      {
+        "step": "audit",
+        "seconds": 8.0,
+        "tokens": 3516
+      }
+    ]
   },
   "report": {
     "verdict": "UNTESTABLE",
@@ -272,12 +318,14 @@
     "fidelity": {
       "level": "approximation",
       "gaps": [
-        "NOT EXPRESSIBLE: Claim requires trading all components of the Nikkei 225 individually as a constituent basket; the spec can only hold a single NIKKEI225 ticker placeholder, so testing the index is not equivalent to testing the constituent basket."
+        "NOT EXPRESSIBLE: claim requires testing all 225 Nikkei 225 components as a universe; the spec uses single ticker NIKKEI225 as the closest placeholder and testing that ticker cannot replicate the claimed universe result."
       ],
       "audit_majors": [
-        "assets: Claim requires buying/selling all components of the Nikkei 225 individually as a basket; spec substitutes a single NIKKEI225 ticker. Testing the index is not equivalent to testing the constituent basket and could change the verdict."
+        "assets: Claim requires universe of 'All components of the Nikkei 225' but spec tests single ticker NIKKEI225. Single index cannot replicate 225-stock universe result."
       ]
-    }
+    },
+    "review": {},
+    "series": {}
   },
-  "seconds": 52.3
+  "seconds": 44.0
 }

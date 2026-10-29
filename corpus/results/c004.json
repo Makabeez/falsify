@@ -14,12 +14,12 @@
     "notes": "Fully mechanical 8/21 EMA rule on gold (not in asset list); date is the stated backtest run date, no publish date shown."
   },
   "spec": {
-    "claim_summary": "A long-only 8/21 EMA crossover on 1-hour XAU/USD with a 1.5% stop-loss and 4.5% take-profit.",
+    "claim_summary": "Long-only 1-hour XAU/USD strategy that buys when EMA 8 crosses above EMA 21 with a 1.5% stop and 4.5% target.",
     "source_type": "text",
     "testable": true,
     "untestable_reason": null,
     "assets": [
-      "XAUUSD"
+      "XAUUSDT"
     ],
     "timeframe": "1h",
     "direction": "long",
@@ -30,7 +30,10 @@
           "period": 8,
           "value": null,
           "multiplier": 1.0,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         },
         "op": "crosses_above",
         "right": {
@@ -38,13 +41,22 @@
           "period": 21,
           "value": null,
           "multiplier": 1.0,
-          "param": null
+          "param": null,
+          "window_fn": null,
+          "window": null,
+          "offset": 0
         }
       }
     ],
     "exit": [],
     "stop_loss_pct": 1.5,
+    "stop_atr_mult": null,
+    "stop_atr_period": 14,
     "take_profit_pct": 4.5,
+    "take_profit_atr_mult": null,
+    "take_profit_r": null,
+    "trailing_stop_pct": null,
+    "trailing_stop_atr_mult": null,
     "max_hold_bars": null,
     "free_parameters": [],
     "claimed": {
@@ -53,16 +65,13 @@
       "avg_return_per_trade_pct": null,
       "period_start": null,
       "period_end": null,
-      "other": "took 251 trades"
+      "other": "251 trades"
     },
     "assumptions": [
-      "Asset is XAU/USD as named in the claim.",
-      "Timeframe is 1-hour as named in the claim.",
-      "Entry uses EMA(8) crossing above EMA(21) evaluated on bar closes.",
-      "No indicator exit condition is stated; position exits only via the 1.5% stop-loss or 4.5% take-profit.",
-      "Stop-loss is 1.5% below entry and take-profit is 4.5% above entry, giving 1:3 risk-reward.",
-      "Direction is long-only with no short side.",
-      "The cited ten-year window is performance context recorded in claimed, not a rule; the engine tests all available history."
+      "Mapped XAU/USD to XAUUSDT as the engine symbol proxy; no substitution of a different market.",
+      "No indicator-based exit stated, so position is held until the fixed stop or target hits.",
+      "Ten-year lookback cited is the test window, not part of the rule, per engine convention.",
+      "Rules evaluated on bar closes with fills at the next bar open per engine convention."
     ],
     "evidence": [
       {
@@ -77,7 +86,7 @@
       },
       {
         "field": "direction",
-        "quote": "There is no short side.",
+        "quote": "There is no short side",
         "assumed": false
       },
       {
@@ -87,7 +96,7 @@
       },
       {
         "field": "stop_loss_pct",
-        "quote": "1.5% below the entry price.",
+        "quote": "1.5% below the entry price",
         "assumed": false
       },
       {
@@ -121,13 +130,13 @@
     "attempts": [
       {
         "usage": {
-          "completion_tokens": 6230,
-          "prompt_tokens": 1170,
-          "total_tokens": 7400,
+          "completion_tokens": 3310,
+          "prompt_tokens": 1535,
+          "total_tokens": 4845,
           "completion_tokens_details": {
             "accepted_prediction_tokens": null,
             "audio_tokens": null,
-            "reasoning_tokens": 5636,
+            "reasoning_tokens": 2788,
             "rejected_prediction_tokens": null,
             "text_tokens": null
           },
@@ -137,7 +146,9 @@
             "cached_tokens": 0,
             "image_tokens": null,
             "text_tokens": null
-          }
+          },
+          "reasoning_effort": "medium",
+          "calls": 1
         },
         "grounding_problems": []
       }
@@ -162,13 +173,26 @@
         "faithful": true,
         "issues": []
       }
+    ],
+    "cost": [
+      {
+        "step": "compile",
+        "seconds": 13.6,
+        "tokens": 4845,
+        "quote_repairs": 0
+      },
+      {
+        "step": "audit",
+        "seconds": 7.6,
+        "tokens": 2937
+      }
     ]
   },
   "report": {
     "verdict": "UNTESTABLE",
     "headline": "No bundled history for the asset/timeframe this claim needs.",
     "reasons": [
-      "wanted ['XAUUSD'] on 1h; bundled universe is ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'LINKUSDT', 'LTCUSDT', 'DOTUSDT', 'TRXUSDT']"
+      "wanted ['XAUUSDT'] on 1h; bundled universe is ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'LINKUSDT', 'LTCUSDT', 'DOTUSDT', 'TRXUSDT']"
     ],
     "warnings": [],
     "asset": null,
@@ -200,7 +224,9 @@
       "level": "exact",
       "gaps": [],
       "audit_majors": []
-    }
+    },
+    "review": {},
+    "series": {}
   },
-  "seconds": 30.4
+  "seconds": 29.2
 }
