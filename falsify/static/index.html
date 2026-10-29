@@ -497,7 +497,9 @@ function render(res, animate) {
   if (rv.needs_human && !so) {
     const items = [...gapItems, ...(rv.reasons || []).map(r => r.replace(/^(audit still disagrees|quote check):\s*/, ""))];
     box.append(el("div", {class: "approx escal"}, el("p", {}, el("strong", {}, "Needs a human check. "),
-      "The rules were sent back for repair, and the independent checks still disagree with them. The tests ran, but treat the verdict as provisional until a person confirms the rules."),
+      v === "UNTESTABLE"
+        ? "The independent audit disagrees with how this claim was read. A person should check before it's written off."
+        : "The rules were sent back for repair, and the independent checks still disagree with them. The tests ran, but treat the verdict as provisional until a person confirms the rules."),
       items.length ? el("details", {class: "more"}, el("summary", {}, "What the checks disagree on"), el("ul", {}, items.map(t => el("li", {}, t)))) : null));
   } else if (fid.level === "approximation" && v !== "UNTESTABLE") {
     const items = [...gapItems, ...(fid.audit_majors || [])];
@@ -588,7 +590,10 @@ function render(res, animate) {
   const audits = res.trace?.audits || (res.audit ? [res.audit] : []);
   if (audits.length) {
     const last = audits[audits.length - 1];
-    const intro = res.trace?.audit_repair_failed
+    const n0 = audits[0].issues.length === 1 ? "one problem" : audits[0].issues.length + " problems";
+    const intro = res.trace?.audit_repair_rejected
+      ? `The first read found ${n0}. The rules were sent back once, but the repaired version came back worse, so the first version was tested.`
+      : res.trace?.audit_repair_failed
       ? `The first read found ${audits[0].issues.length === 1 ? "one problem" : audits[0].issues.length + " problems"}; the rules were sent back once, but the repair never produced a valid spec, so the first version was tested.`
       : res.trace?.audit_repair
       ? `The first read found ${audits[0].issues.length === 1 ? "one problem" : audits[0].issues.length + " problems"}; the rules were sent back once and checked again.`
@@ -598,7 +603,7 @@ function render(res, animate) {
   }
 
   // human sign-off on live results
-  if (!/^c\d{3}$/.test(res.key || "") && !so && spec.testable) box.append(voteBox(res));
+  if (!/^c\d{3}$/.test(res.key || "") && !so && (spec.testable || rv.needs_human)) box.append(voteBox(res));
 
   // share
   const link = location.origin + location.pathname;

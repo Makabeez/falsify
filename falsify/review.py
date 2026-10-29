@@ -35,11 +35,9 @@ def _now() -> str:
 
 
 def review_state(report: dict) -> dict:
-    """Recompute the escalation flag for results stored before it existed."""
-    if report.get("review"):
-        return report["review"]
-    if report.get("verdict") == "UNTESTABLE":
-        return {"needs_human": False, "reasons": []}
+    """Escalation flag, always recomputed from the report so stored results follow the current rule.
+
+    An UNTESTABLE verdict the auditor disagrees with is escalated too: "can't be tested" can be the misreading."""
     reasons = [f"audit still disagrees: {m}" for m in (report.get("fidelity") or {}).get("audit_majors", [])]
     reasons += [f"quote check: {p}" for p in (report.get("grounding") or {}).get("problems", [])]
     if (report.get("primary") or {}).get("trades") == 0:

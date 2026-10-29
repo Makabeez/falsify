@@ -27,7 +27,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from . import grounding, sanity
 from .data import UNIVERSE
-from .spec import ClaimSpec, SourceType, model_json_schema
+from .spec import ClaimSpec, SourceType, model_json_schema, text_problems
 
 BASE_URL = os.environ.get("MODEL_API_BASE", "https://api.meta.ai/v1")
 MODEL = os.environ.get("FALSIFY_MODEL", "muse-spark-1.3")
@@ -125,7 +125,11 @@ NOT issues (other checks cover the claimant's period). Interpretation choices th
 lists in `assumptions` are not issues unless the choice is clearly not what the claimant meant. A part of the
 claim marked "NOT EXPRESSIBLE" is still an issue if leaving it out changes what is being tested. severity is
 "major" when the difference could change the verdict, else "minor". faithful=true only if a neutral reader
-would accept the spec as a fair encoding of the claim."""
+would accept the spec as a fair encoding of the claim.
+
+If the spec says testable=false, the rule fields are left empty on purpose: do not list empty assets, entry or
+exits as issues. Judge only the decision. If a mechanical core of the claim could be tested and the stated
+reason does not hold, report ONE major issue on field "testable" saying what could be tested."""
 
 
 class Transcript(BaseModel):
@@ -285,6 +289,17 @@ def compile_claim(source: Source, model: str | None = None, client=None,
         raw, usage = _structured(client, model, messages, "ClaimSpec", model_json_schema())
         trace["attempts"].append({"usage": usage})
         try:
+            raw_obj = json.loads(raw)
+        except json.JSONDecodeError:
+            raw_obj = {}
+        long = text_problems(raw_obj) if isinstance(raw_obj, dict) else []
+        if long and attempt < MAX_REPAIRS:
+            trace["attempts"][-1]["error"] = "; ".join(long)
+            messages += [{"role": "assistant", "content": raw[:4000]},
+                         {"role": "user", "content": "That ClaimSpec has runaway text:\n- " + "\n- ".join(long)
+                          + "\nReturn the corrected ClaimSpec."}]
+            continue
+        try:
             spec = ClaimSpec.model_validate_json(raw)
         except ValidationError as e:
             trace["attempts"][-1]["error"] = str(e)
@@ -380,6 +395,16 @@ def compile_and_audit(source: Source, model: str | None = None, client=None,
         ledger.append(_compile_cost("audit repair", trace2, t1))
         on_stage("audit")
         audit2 = audit_claim(source, spec2, model=model, client=client, ledger=ledger)
+        majors2 = major_issues(audit2)
+        if len(majors2) > len(majors):
+            # The repair made it worse by the auditor's own count (c026 on 29 Oct: a testable Turtle rule was
+            # flipped to untestable and the second audit found 5 major issues instead of 3). Keep the first version.
+            trace["audit_repair"] = True
+            trace["audit_repair_rejected"] = (f"the repaired version had {len(majors2)} major issues against "
+                                              f"{len(majors)} before, so the first version was kept")
+            trace["rejected_repair"] = {"spec": spec2.model_dump(mode="json"), "audit": audit2.model_dump()}
+            trace["cost"] = ledger
+            return spec, audit, trace
         trace2["first_pass"] = {"attempts": trace["attempts"], "grounding": trace.get("grounding")}
         trace2["audits"] = trace["audits"] + [audit2.model_dump()]
         trace2["audit_repair"] = True

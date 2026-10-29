@@ -411,14 +411,9 @@ def escalate(rep: Report) -> Report:
     """Bounded retries, then a human. The compiler gets two schema/quote repairs and one audit repair;
     if the independent audit or the quote check still disagrees after that, the result is routed
     to a person instead of being presented as settled."""
-    if rep.verdict == Verdict.UNTESTABLE:
-        return rep
-    reasons = [f"audit still disagrees: {m}" for m in (rep.fidelity or {}).get("audit_majors", [])]
-    reasons += [f"quote check: {p}" for p in (rep.grounding or {}).get("problems", [])]
-    if (rep.primary or {}).get("trades") == 0:
-        reasons.append("the rules never trigger on the full price history, which usually means they misread the claim")
-    rep.review = {"needs_human": bool(reasons), "reasons": reasons}
-    if reasons:
+    from .review import review_state
+    rep.review = review_state({"fidelity": rep.fidelity, "grounding": rep.grounding, "primary": rep.primary})
+    if rep.review["needs_human"]:
         rep.warnings.insert(0, "needs a human check: the automatic checks still disagree with the compiled rules "
                                "after the repair rounds, so treat the verdict as provisional")
     return rep

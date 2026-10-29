@@ -108,3 +108,43 @@ def test_zero_trades_escalates():
     from falsify.battery import Report, Verdict, escalate
     rep = escalate(Report(verdict=Verdict.INCONCLUSIVE, headline="x", primary={"trades": 0}))
     assert rep.review["needs_human"] and "never trigger" in rep.review["reasons"][0]
+
+
+def test_worse_repair_is_rejected():
+    """c026 on 29 Oct: the repair flipped a testable rule to untestable and the re-audit found more problems."""
+    worse = {"faithful": False, "issues": [MAJOR["issues"][0]] * 3}
+
+    class Untestable(FakeClient):
+        def create(self, **kw):
+            r = super().create(**kw)
+            if kw["response_format"]["json_schema"]["name"] == "ClaimSpec" and self.calls.count("ClaimSpec") > 1:
+                r.choices[0].message.content = json.dumps(
+                    {"claim_summary": "x", "source_type": "text", "testable": False, "untestable_reason": "portfolio"})
+            return r
+
+    client = Untestable([MAJOR, worse])
+    spec, audit, trace = compile_and_audit(Source.from_text("btc above 100, hold a week"), model="m", client=client)
+    assert spec.testable and len(audit.issues) == 1
+    assert "first version was kept" in trace["audit_repair_rejected"]
+    assert trace["rejected_repair"]["spec"]["testable"] is False
+
+
+def test_runaway_text_is_sent_back_and_clipped():
+    from falsify.spec import ClaimSpec, model_json_schema
+    looped = dict(SPEC, assumptions=["ok", "FINAL. " * 400])
+
+    class Loop(FakeClient):
+        def create(self, **kw):
+            r = super().create(**kw)
+            if kw["response_format"]["json_schema"]["name"] == "ClaimSpec" and self.calls.count("ClaimSpec") == 1:
+                r.choices[0].message.content = json.dumps(looped)
+            return r
+
+    client = Loop([{"faithful": True, "issues": []}])
+    spec, audit, trace = compile_and_audit(Source.from_text("btc above 100, hold a week"), model="m", client=client)
+    assert "over 500 characters" in trace["attempts"][0]["error"] and len(trace["attempts"]) == 2
+
+    s = ClaimSpec.model_validate(dict(SPEC, testable=False, untestable_reason="Portfolio total. " + "STOP. " * 5000))
+    assert s.untestable_reason == "Portfolio total."
+    schema = model_json_schema()
+    assert "assets" in schema["required"] and "entry" in schema["required"]

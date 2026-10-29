@@ -146,8 +146,10 @@ def report(out_dir: str | Path) -> str:
     lines.append(f"| Still flagged unfaithful after repair | {len(unfaithful)}/{len(ok)} |")
     lines.append(f"| Verdicts on an approximation (disclosed gap or unresolved audit issue) | {len(approx)}/{len(tested)} |")
     from .review import review_state
-    escalated = [r for r in tested if review_state(r["report"])["needs_human"]]
-    lines.append(f"| Escalated to a human (audit or quote check still failing after the repairs) | {len(escalated)}/{len(tested)} |")
+    escalated = [r for r in ok if review_state(r["report"])["needs_human"]]
+    esc_u = sum(r["report"]["verdict"] == "UNTESTABLE" for r in escalated)
+    lines.append(f"| Escalated to a human: checks still disagree after the repairs ({esc_u} of them UNTESTABLE verdicts "
+                 f"the audit disputes) | {len(escalated)}/{len(ok)} |")
     tok = sum(_tokens(r) for r in ok)
     if ok:
         lines.append(f"| Mean tokens per claim (transcribe + compile, excl. audit) | {tok // len(ok):,} |")

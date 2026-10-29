@@ -263,6 +263,10 @@ class ClaimSpec(BaseModel):
 
     @model_validator(mode="after")
     def _check(self) -> "ClaimSpec":
+        # A model that loops can write 30k characters into one field; keep what is shown to people readable.
+        self.claim_summary = clip(self.claim_summary, TEXT_LIMITS["claim_summary"])
+        self.untestable_reason = clip(self.untestable_reason, TEXT_LIMITS["untestable_reason"])
+        self.assumptions = [clip(a, TEXT_LIMITS["assumption"]) for a in self.assumptions]
         if not self.testable:
             if not self.untestable_reason:
                 raise ValueError("untestable_reason required when testable=false")
@@ -294,6 +298,44 @@ class ClaimSpec(BaseModel):
         return self
 
 
+TEXT_LIMITS = {"claim_summary": 300, "untestable_reason": 300, "assumption": 500}
+
+
+def clip(text: str | None, limit: int) -> str | None:
+    """Over the limit means the model ran away: keep its first sentence only, capped at `limit`."""
+    if text is None or len(text) <= limit:
+        return text
+    import re
+    m = re.search(r"[.!?](?![\d.])", text[10:limit])
+    return text[:10 + m.start()].rstrip(". ") + "." if m else text[:limit - 1].rstrip() + "…"
+
+
 def model_json_schema() -> dict:
-    """Schema handed to Meta Model API structured output."""
-    return ClaimSpec.model_json_schema()
+    """Schema handed to Meta Model API structured output.
+
+    Every field is listed as required so constrained decoding always writes it (an optional `assets` was left
+    out on testable claims); Python-side validation keeps the defaults. Free-text fields get a maxLength."""
+    s = ClaimSpec.model_json_schema()
+    s["required"] = list(s["properties"])
+    for name in ("claim_summary", "untestable_reason"):
+        prop = s["properties"][name]
+        for branch in prop.get("anyOf", [prop]):
+            if branch.get("type") == "string":
+                branch["maxLength"] = TEXT_LIMITS[name]
+    items = s["properties"]["assumptions"].get("items", {})
+    if items.get("type") == "string":
+        items["maxLength"] = TEXT_LIMITS["assumption"]
+    return s
+
+
+def text_problems(raw: dict) -> list[str]:
+    """Over-long free text in a raw model output, reported back like a schema error."""
+    out = []
+    for name in ("claim_summary", "untestable_reason"):
+        v = raw.get(name)
+        if isinstance(v, str) and len(v) > TEXT_LIMITS[name]:
+            out.append(f"{name} is {len(v):,} characters; write one plain sentence under {TEXT_LIMITS[name]} characters")
+    long = [i for i, a in enumerate(raw.get("assumptions") or []) if isinstance(a, str) and len(a) > TEXT_LIMITS["assumption"]]
+    if long:
+        out.append(f"assumptions {long} are over {TEXT_LIMITS['assumption']} characters; one short sentence each")
+    return out

@@ -29,7 +29,7 @@ from fastapi.responses import FileResponse, JSONResponse, Response
 from . import data as data_mod
 from . import review as review_mod
 from .battery import attach_fidelity, attach_grounding, falsify
-from .spec import ClaimSpec
+from .spec import TEXT_LIMITS, ClaimSpec, clip
 
 ROOT = Path(__file__).resolve().parent.parent
 STATIC = Path(__file__).resolve().parent / "static"
@@ -157,7 +157,7 @@ def _run_job(key: str, kind: str, text: str | None, blob: bytes | None, ext: str
                        "transcript": trace.get("transcript"), "media": f"/api/media/{key}" if kind == "image" else None},
             "spec": spec.model_dump(mode="json"),
             "audit": audit.model_dump(),
-            "trace": {k: trace.get(k) for k in ("model", "grounding", "audit_repair", "audit_repair_failed", "audits", "cost")},
+            "trace": {k: trace.get(k) for k in ("model", "grounding", "audit_repair", "audit_repair_failed", "audit_repair_rejected", "audits", "cost")},
             "report": report,
         }
         CACHE.mkdir(parents=True, exist_ok=True)
@@ -299,7 +299,7 @@ def corpus_list() -> JSONResponse:
         rec, rp = d["record"], d["report"]
         items.append({
             "id": d["id"], "url": rec["url"], "source": rec["source"], "posted": rec.get("posted"),
-            "category": rec["category"], "summary": d["spec"]["claim_summary"],
+            "category": rec["category"], "summary": clip(d["spec"]["claim_summary"], TEXT_LIMITS["claim_summary"]),
             "claimed": rec.get("performance_claim"), "verdict": rp["verdict"],
             "headline": rp["headline"].replace("Tested an approximation of the claim. ", ""),
             "approximation": (rp.get("fidelity") or {}).get("level") == "approximation" and rp["verdict"] != "UNTESTABLE",
@@ -332,8 +332,8 @@ def corpus_item(cid: str) -> JSONResponse:
             "key": cid,
             "source": {"kind": "text", "text": rec["excerpt"], "note": None, "posted": rec.get("posted"),
                        "url": rec["url"], "origin": rec["source"], "transcript": None, "media": None},
-            "spec": d["spec"], "audit": d.get("audit"),
-            "trace": {k: (d.get("trace") or {}).get(k) for k in ("model", "grounding", "audit_repair", "audit_repair_failed", "audits", "cost")},
+            "spec": spec.model_dump(mode="json"), "audit": d.get("audit"),
+            "trace": {k: (d.get("trace") or {}).get(k) for k in ("model", "grounding", "audit_repair", "audit_repair_failed", "audit_repair_rejected", "audits", "cost")},
             "report": report,
             "review": review_mod.review_state(report),
         }
