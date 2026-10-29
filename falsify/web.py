@@ -27,6 +27,7 @@ from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response
 
 from . import data as data_mod
+from . import review as review_mod
 from .battery import attach_fidelity, attach_grounding, falsify
 from .spec import ClaimSpec
 
@@ -52,6 +53,8 @@ _jobs: dict[str, dict] = {}
 _ip_hits: dict[str, deque] = defaultdict(deque)
 _day = {"date": date.today().isoformat(), "count": 0}
 _corpus_cache: dict[str, dict] = {}
+_flag_hits: dict[str, deque] = defaultdict(deque)
+FLAGS_PER_IP_PER_HOUR = 20
 
 
 # ---------------------------------------------------------------- helpers
@@ -154,7 +157,7 @@ def _run_job(key: str, kind: str, text: str | None, blob: bytes | None, ext: str
                        "transcript": trace.get("transcript"), "media": f"/api/media/{key}" if kind == "image" else None},
             "spec": spec.model_dump(mode="json"),
             "audit": audit.model_dump(),
-            "trace": {k: trace.get(k) for k in ("model", "grounding", "audit_repair", "audits")},
+            "trace": {k: trace.get(k) for k in ("model", "grounding", "audit_repair", "audits", "cost")},
             "report": report,
         }
         CACHE.mkdir(parents=True, exist_ok=True)
@@ -227,14 +230,46 @@ def result(key: str) -> JSONResponse:
         raise HTTPException(404, "No result with that link.")
     p = _result_path(key)
     if p.exists():
-        return JSONResponse({"status": "done", "result": json.loads(p.read_text(encoding="utf-8"))})
+        return JSONResponse({"status": "done", "result": _with_review(json.loads(p.read_text(encoding="utf-8")))})
     job = _jobs.get(key)
     if not job:
         raise HTTPException(404, "No result with that link. It may have expired; test the claim again.")
     out = {k: job.get(k) for k in ("status", "stage", "stages", "kind", "error")}
     if job["status"] == "done":
-        out["result"] = job["result"]
+        out["result"] = _with_review(job["result"])
     return JSONResponse(out)
+
+
+def _with_review(res: dict) -> dict:
+    res = dict(res)
+    res["review"] = review_mod.review_state(res["report"])
+    res["flags"] = review_mod.flag_counts(res["key"], CACHE)
+    return res
+
+
+@app.post("/api/review/{key}")
+async def flag(key: str, request: Request) -> JSONResponse:
+    """A visitor says whether the compiled rules match the claim. Logged for the reviewer; never changes a verdict."""
+    if not KEY_RE.match(key) or not _result_path(key).exists():
+        raise HTTPException(404, "No result with that link.")
+    try:
+        body = await request.json()
+    except ValueError:
+        raise HTTPException(400, "Send JSON: {\"agree\": true|false, \"note\": \"...\"}")
+    if not isinstance(body, dict) or not isinstance(body.get("agree"), bool):
+        raise HTTPException(400, "Say whether the rules match the claim.")
+    note = body.get("note")
+    note = note if isinstance(note, str) else None
+    ip, now = _client_ip(request), time.time()
+    with _lock:
+        hits = _flag_hits[ip]
+        while hits and now - hits[0] > 3600:
+            hits.popleft()
+        if len(hits) >= FLAGS_PER_IP_PER_HOUR:
+            raise HTTPException(429, "Thanks, that's plenty of feedback for this hour.")
+        hits.append(now)
+    review_mod.add_flag(key, body["agree"], note, ip, CACHE)
+    return JSONResponse({"ok": True, "flags": review_mod.flag_counts(key, CACHE)})
 
 
 @app.get("/api/media/{key}")
@@ -268,6 +303,7 @@ def corpus_list() -> JSONResponse:
             "claimed": rec.get("performance_claim"), "verdict": rp["verdict"],
             "headline": rp["headline"].replace("Tested an approximation of the claim. ", ""),
             "approximation": (rp.get("fidelity") or {}).get("level") == "approximation" and rp["verdict"] != "UNTESTABLE",
+            "trader": review_mod.trader_signoff(d["id"], d["spec"], rp["verdict"]),
         })
     md = (CORPUS / "results" / "scoreboard.md")
     bh = []
@@ -297,10 +333,13 @@ def corpus_item(cid: str) -> JSONResponse:
             "source": {"kind": "text", "text": rec["excerpt"], "note": None, "posted": rec.get("posted"),
                        "url": rec["url"], "origin": rec["source"], "transcript": None, "media": None},
             "spec": d["spec"], "audit": d.get("audit"),
-            "trace": {k: (d.get("trace") or {}).get(k) for k in ("model", "grounding", "audit_repair", "audits")},
+            "trace": {k: (d.get("trace") or {}).get(k) for k in ("model", "grounding", "audit_repair", "audits", "cost")},
             "report": report,
+            "review": review_mod.review_state(report),
         }
-    return JSONResponse({"status": "done", "result": _corpus_cache[cid]})
+    item = _corpus_cache[cid]  # sign-off is read fresh so a trader's edit to ground_truth.yaml shows without a restart
+    out = dict(item, signoff=review_mod.trader_signoff(cid, item["spec"], item["report"]["verdict"]))
+    return JSONResponse({"status": "done", "result": out})
 
 
 # ---------------------------------------------------------------- meta + pages

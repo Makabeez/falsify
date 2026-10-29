@@ -19,6 +19,7 @@ import base64
 import json
 import mimetypes
 import os
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -65,8 +66,17 @@ Rules:
   param = slow, signal 9), supertrend (period = ATR length, param = multiplier; close above it = uptrend),
   day_of_week, hour_utc, day_of_month (1-31), days_left_in_month (0 = last day of the month). Use the claim's settings; when it gives none, use the indicator's usual default and
   list that setting in free_parameters. Never swap one indicator for another (WMA is not SMA).
-- If the claim uses something the schema cannot express (an averaging / DCA ladder, position sizing, trailing
-  stops, pyramiding, an indicator not listed above, a proprietary score), compile the closest testable core
+- Exits: stop_loss_pct (fixed %), stop_atr_mult (k x ATR(stop_atr_period) at the signal bar), take_profit_pct,
+  take_profit_atr_mult, take_profit_r ("2R", "1:2 risk-reward": a multiple of the initial stop distance, needs a
+  stop), trailing_stop_pct / trailing_stop_atr_mult (from the best close since entry), max_hold_bars. Use one stop
+  type and one target type.
+- Operand extras: offset = value N bars ago ("previous RSI" is offset 1; "rising for 3 bars" is x > x[1] AND
+  x[1] > x[2] AND x[2] > x[3]); window_fn min/max with window = lowest/highest of that operand over the last N bars
+  including the current one ("RSI at its 50-bar low": rsi le min(rsi, 50)). Comparisons: gt, lt, ge, le,
+  crosses_above, crosses_below.
+- If the claim uses something the schema cannot express (an averaging / DCA ladder, position sizing, partial
+  exits, moving a stop to breakeven, pyramiding, multi-timeframe conditions, an indicator not listed above, a
+  proprietary score), compile the closest testable core
   and add an assumption that starts with "NOT EXPRESSIBLE:" naming exactly what was left out. If what is left
   out is the heart of the strategy, set testable=false instead.
 - Every exit must be expressible: a condition, stop_loss_pct, take_profit_pct or max_hold_bars. If the claim
@@ -217,12 +227,16 @@ def _structured(client, model: str, messages: list[dict], name: str, schema: dic
     raise RuntimeError(f"model ran out of output budget ({MAX_TOKENS} tokens) twice, even at low reasoning effort")
 
 
-def transcribe(source: Source, model: str | None = None, client=None) -> Transcript:
+def transcribe(source: Source, model: str | None = None, client=None, ledger: list | None = None) -> Transcript:
     """Media -> verbatim transcript. The quotes in a compiled spec are checked against this."""
     client = client or _client()
     model = model or (VIDEO_MODEL if source.kind == SourceType.VIDEO else MODEL)
-    raw, _ = _structured(client, model, [{"role": "user", "content": source.content(TRANSCRIBE_PROMPT)}],
+    t0 = time.time()
+    raw, usage = _structured(client, model, [{"role": "user", "content": source.content(TRANSCRIBE_PROMPT)}],
                          "Transcript", Transcript.model_json_schema())
+    if ledger is not None:
+        ledger.append({"step": "transcribe", "seconds": round(time.time() - t0, 1),
+                       "tokens": (usage or {}).get("total_tokens") or 0})
     return Transcript.model_validate_json(raw)
 
 
@@ -287,13 +301,23 @@ def compile_claim(source: Source, model: str | None = None, client=None,
     return last_spec, trace
 
 
-def audit_claim(source: Source, spec: ClaimSpec, model: str | None = None, client=None) -> Audit:
+def audit_claim(source: Source, spec: ClaimSpec, model: str | None = None, client=None,
+                ledger: list | None = None) -> Audit:
     client = client or _client()
+    t0 = time.time()
     model = model or (VIDEO_MODEL if source.kind == SourceType.VIDEO else MODEL)
     content = source.content(AUDIT_PROMPT)
     content.append({"type": "text", "text": "COMPILED SPEC:\n" + spec.model_dump_json(indent=2)})
-    raw, _ = _structured(client, model, [{"role": "user", "content": content}], "Audit", Audit.model_json_schema())
+    raw, usage = _structured(client, model, [{"role": "user", "content": content}], "Audit", Audit.model_json_schema())
+    if ledger is not None:
+        ledger.append({"step": "audit", "seconds": round(time.time() - t0, 1), "tokens": (usage or {}).get("total_tokens") or 0})
     return Audit.model_validate_json(raw)
+
+
+def _compile_cost(step: str, trace: dict, t0: float) -> dict:
+    tokens = sum(((a.get("usage") or {}).get("total_tokens") or 0) for a in trace.get("attempts", []))
+    return {"step": step, "seconds": round(time.time() - t0, 1), "tokens": tokens,
+            "quote_repairs": max(0, len(trace.get("attempts", [])) - 1)}
 
 
 def major_issues(audit: Audit) -> list[AuditIssue]:
@@ -308,9 +332,15 @@ def compile_and_audit(source: Source, model: str | None = None, client=None,
     issues after one repair round, the spec is kept but reported as an approximation.
     """
     client = client or _client()
+    ledger: list[dict] = []  # what verification costs: seconds and tokens per step
+    if source.kind != SourceType.TEXT and source.transcript is None:
+        on_stage("transcribe")
+        source.transcript = transcribe(source, model=model, client=client, ledger=ledger)
+    t0 = time.time()
     spec, trace = compile_claim(source, model=model, client=client, on_stage=on_stage)
+    ledger.append(_compile_cost("compile", trace, t0))
     on_stage("audit")
-    audit = audit_claim(source, spec, model=model, client=client)
+    audit = audit_claim(source, spec, model=model, client=client, ledger=ledger)
     trace["audits"] = [audit.model_dump()]
     majors = major_issues(audit)
     if majors:
@@ -319,14 +349,17 @@ def compile_and_audit(source: Source, model: str | None = None, client=None,
                     + "\nFix every issue the schema can express. For anything it cannot express, keep the closest "
                       "testable core and say so in an assumption starting with \"NOT EXPRESSIBLE:\" -- or set "
                       "testable=false if that part is the heart of the strategy. Return the full corrected ClaimSpec.")
+        t1 = time.time()
         spec2, trace2 = compile_claim(source, model=model, client=client, prior=(spec.model_dump_json(), feedback),
                                       on_stage=on_stage)
+        ledger.append(_compile_cost("audit repair", trace2, t1))
         on_stage("audit")
-        audit2 = audit_claim(source, spec2, model=model, client=client)
+        audit2 = audit_claim(source, spec2, model=model, client=client, ledger=ledger)
         trace2["first_pass"] = {"attempts": trace["attempts"], "grounding": trace.get("grounding")}
         trace2["audits"] = trace["audits"] + [audit2.model_dump()]
         trace2["audit_repair"] = True
         spec, audit, trace = spec2, audit2, trace2
+    trace["cost"] = ledger
     return spec, audit, trace
 
 

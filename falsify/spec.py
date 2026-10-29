@@ -60,6 +60,11 @@ DEFAULT_PARAM = {OperandKind.BB_UPPER: 2.0, OperandKind.BB_LOWER: 2.0, OperandKi
                  OperandKind.MACD_SIGNAL: 26.0, OperandKind.MACD_HIST: 26.0, OperandKind.SUPERTREND: 3.0}
 
 
+class WindowFn(str, Enum):
+    MIN = "min"
+    MAX = "max"
+
+
 class Operand(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -78,6 +83,15 @@ class Operand(BaseModel):
                                   "(default 26, fast = period default 12, signal fixed 9), Supertrend ATR "
                                   "multiplier (default 3, ATR length = period default 10). Null otherwise."
     )
+    window_fn: Optional[WindowFn] = Field(
+        default=None, description="Rolling extreme of this operand: 'min' or 'max' over the last `window` bars "
+                                  "INCLUDING the current one. E.g. RSI at its 50-bar low: rsi(14) le min(rsi(14), 50)."
+    )
+    window: Optional[int] = Field(default=None, description="Bars for window_fn.")
+    offset: int = Field(
+        default=0, description="Value this many bars ago: 1 = previous bar. 'RSI rising for 3 bars' is "
+                               "rsi > rsi[1] AND rsi[1] > rsi[2] AND rsi[2] > rsi[3]."
+    )
 
     @model_validator(mode="after")
     def _check(self) -> "Operand":
@@ -94,6 +108,14 @@ class Operand(BaseModel):
             raise ValueError("MACD slow length (param) must exceed fast length (period)")
         if self.period is not None and self.period > 2000:
             raise ValueError("period above 2000 bars is not supported")
+        if (self.window_fn is None) != (self.window is None):
+            raise ValueError("window_fn and window go together")
+        if self.window is not None and not 1 <= self.window <= 2000:
+            raise ValueError("window must be 1..2000 bars")
+        if not 0 <= self.offset <= 500:
+            raise ValueError("offset must be 0..500 bars")
+        if self.kind == OperandKind.CONST and (self.window_fn is not None or self.offset):
+            raise ValueError("a constant has no window or offset")
         return self
 
     def label(self) -> str:
@@ -102,6 +124,10 @@ class Operand(BaseModel):
             base = f"{self.value:g}"
         elif self.period is not None:
             base = f"{base}({self.period}{f',{self.param:g}' if self.param is not None else ''})"
+        if self.window_fn is not None:
+            base = f"{self.window_fn.value}({base}, {self.window})"
+        if self.offset:
+            base = f"{base}[{self.offset}]"
         if self.multiplier != 1.0:
             base = f"{self.multiplier:g}*{base}"
         return base
@@ -110,6 +136,8 @@ class Operand(BaseModel):
 class Op(str, Enum):
     GT = "gt"
     LT = "lt"
+    GE = "ge"
+    LE = "le"
     CROSSES_ABOVE = "crosses_above"
     CROSSES_BELOW = "crosses_below"
 
@@ -122,7 +150,7 @@ class Condition(BaseModel):
     right: Operand
 
     def label(self) -> str:
-        sym = {"gt": ">", "lt": "<", "crosses_above": "x^", "crosses_below": "xv"}[self.op.value]
+        sym = {"gt": ">", "lt": "<", "ge": ">=", "le": "<=", "crosses_above": "x^", "crosses_below": "xv"}[self.op.value]
         return f"{self.left.label()} {sym} {self.right.label()}"
 
 
@@ -165,7 +193,9 @@ class FreeParameter(BaseModel):
 
     name: str = Field(description="Human label, e.g. 'fast MA length'")
     target: str = Field(
-        description="Path into the spec: 'entry[0].left.period', 'exit[1].right.value', 'stop_loss_pct', 'take_profit_pct' or 'max_hold_bars'"
+        description="Path into the spec: 'entry[0].left.period', 'exit[1].right.value', 'entry[0].left.window', "
+                    "'stop_loss_pct', 'stop_atr_mult', 'take_profit_pct', 'take_profit_atr_mult', 'take_profit_r', "
+                    "'trailing_stop_pct', 'trailing_stop_atr_mult' or 'max_hold_bars'"
     )
     candidates: list[float] = Field(description="2-6 plausible values a reader could reasonably have meant")
 
@@ -174,8 +204,9 @@ class Evidence(BaseModel):
     """Where a rule element comes from. Checked against the source by falsify.grounding."""
     model_config = ConfigDict(extra="forbid")
 
-    field: str = Field(description="entry[i], exit[i], stop_loss_pct, take_profit_pct, max_hold_bars, assets, "
-                                   "timeframe, direction, or claimed.<name>")
+    field: str = Field(description="entry[i], exit[i], any exit field that is set (stop_loss_pct, stop_atr_mult, "
+                                   "take_profit_pct, take_profit_atr_mult, take_profit_r, trailing_stop_pct, "
+                                   "trailing_stop_atr_mult, max_hold_bars), assets, timeframe, direction, or claimed.<name>")
     quote: Optional[str] = Field(default=None, description="The claimant's exact words that state this, copied "
                                                            "verbatim from the source or transcript. Null if assumed.")
     assumed: bool = Field(description="True if the claim never states this and you chose it")
@@ -195,8 +226,20 @@ class ClaimSpec(BaseModel):
 
     entry: list[Condition] = Field(default_factory=list, description="ALL must be true on a bar close to enter")
     exit: list[Condition] = Field(default_factory=list, description="ANY true on a bar close exits")
-    stop_loss_pct: Optional[float] = Field(default=None, description="e.g. 3 for a 3% stop")
-    take_profit_pct: Optional[float] = None
+    stop_loss_pct: Optional[float] = Field(default=None, description="Fixed stop, % from entry: 3 = 3%")
+    stop_atr_mult: Optional[float] = Field(
+        default=None, description="Fixed stop at entry minus mult x ATR(stop_atr_period) (plus, for shorts), "
+                                  "ATR taken at the signal bar. Use instead of stop_loss_pct, not with it.")
+    stop_atr_period: int = Field(default=14, description="ATR length for every ATR-based stop, target or trail")
+    take_profit_pct: Optional[float] = Field(default=None, description="Fixed target, % from entry")
+    take_profit_atr_mult: Optional[float] = Field(default=None, description="Target at entry + mult x ATR")
+    take_profit_r: Optional[float] = Field(
+        default=None, description="Target as a multiple of the initial stop distance ('2R', '1.8:1 reward to "
+                                  "risk'). Needs stop_loss_pct or stop_atr_mult.")
+    trailing_stop_pct: Optional[float] = Field(
+        default=None, description="Trailing stop, % below the highest close since entry (above the lowest, for shorts)")
+    trailing_stop_atr_mult: Optional[float] = Field(
+        default=None, description="Trailing stop, mult x ATR below the highest close since entry")
     max_hold_bars: Optional[int] = Field(default=None, description="Time exit in bars")
 
     free_parameters: list[FreeParameter] = Field(default_factory=list)
@@ -207,8 +250,8 @@ class ClaimSpec(BaseModel):
     )
     evidence: list[Evidence] = Field(
         default_factory=list,
-        description="One row per rule element: every entry[i], every exit[i], each of stop_loss_pct / "
-                    "take_profit_pct / max_hold_bars that is set, plus assets, timeframe and direction.",
+        description="One row per rule element: every entry[i], every exit[i], every exit field that is set "
+                    "(stops, targets, trailing stops, max_hold_bars), plus assets, timeframe and direction.",
     )
 
     @model_validator(mode="after")
@@ -221,8 +264,25 @@ class ClaimSpec(BaseModel):
             raise ValueError("testable claim needs at least one asset")
         if not self.entry:
             raise ValueError("testable claim needs at least one entry condition")
-        if not self.exit and self.stop_loss_pct is None and self.take_profit_pct is None and self.max_hold_bars is None:
-            raise ValueError("testable claim needs an exit rule (condition, stop, target or time exit)")
+        exits = (self.stop_loss_pct, self.stop_atr_mult, self.take_profit_pct, self.take_profit_atr_mult,
+                 self.take_profit_r, self.trailing_stop_pct, self.trailing_stop_atr_mult, self.max_hold_bars)
+        if not self.exit and all(x is None for x in exits):
+            raise ValueError("testable claim needs an exit rule (condition, stop, target, trailing stop or time exit)")
+        if self.stop_loss_pct is not None and self.stop_atr_mult is not None:
+            raise ValueError("use stop_loss_pct or stop_atr_mult, not both")
+        if sum(x is not None for x in (self.take_profit_pct, self.take_profit_atr_mult, self.take_profit_r)) > 1:
+            raise ValueError("use one of take_profit_pct, take_profit_atr_mult, take_profit_r")
+        if self.trailing_stop_pct is not None and self.trailing_stop_atr_mult is not None:
+            raise ValueError("use trailing_stop_pct or trailing_stop_atr_mult, not both")
+        if self.take_profit_r is not None and self.stop_loss_pct is None and self.stop_atr_mult is None:
+            raise ValueError("take_profit_r needs an initial stop (stop_loss_pct or stop_atr_mult)")
+        for name in ("stop_loss_pct", "stop_atr_mult", "take_profit_pct", "take_profit_atr_mult", "take_profit_r",
+                     "trailing_stop_pct", "trailing_stop_atr_mult"):
+            v = getattr(self, name)
+            if v is not None and v <= 0:
+                raise ValueError(f"{name} must be positive")
+        if not 1 <= self.stop_atr_period <= 500:
+            raise ValueError("stop_atr_period must be 1..500")
         self.assets = [a.upper().replace("/", "").replace("-", "") for a in self.assets]
         return self
 

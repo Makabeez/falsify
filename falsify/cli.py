@@ -257,6 +257,39 @@ def cmd_corpus(args) -> int:
     return 0
 
 
+def cmd_groundtruth(args) -> int:
+    from . import groundtruth
+    ev = groundtruth.evaluate(reviewed_only=args.reviewed_only)
+    md = groundtruth.to_markdown(ev)
+    print(md)
+    if args.out:
+        Path(args.out).write_text(md, encoding="utf-8")
+        print(f"wrote {args.out}")
+    return 0
+
+
+def cmd_review(args) -> int:
+    from . import review
+    cache = Path(args.cache) if args.cache else review.CACHE
+    if args.action == "queue":
+        items = review.queue(cache)
+        if not items:
+            print("review queue is empty")
+        for it in items:
+            print(f"{it['key']}  {it['verdict']:<13} {it['created'] or ''}  {(it['summary'] or '')[:70]}")
+            for r in it["reasons"]:
+                print(f"    pipeline: {r[:150]}")
+            for f in it["flags"]:
+                print(f"    visitor:  {'rules match' if f['agree'] else 'rules wrong'}" + (f" -- {f['note'][:120]}" if f["note"] else ""))
+        return 0
+    if not args.key or args.agree is None:
+        print("usage: falsify review sign KEY --agree|--disagree [--note TEXT]", file=sys.stderr)
+        return 2
+    so = review.sign(args.key, args.agree, args.note, cache=cache)
+    print(f"signed off {args.key}: {'rules match the claim' if so['agree'] else 'rules do not match the claim'}")
+    return 0
+
+
 def cmd_data(args) -> int:
     if args.action == "fetch":
         data_mod.build(end=args.end)
@@ -316,6 +349,21 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--retry-errors", action="store_true", help="re-run claims that errored last time")
     add_costs(p)
     p.set_defaults(fn=cmd_corpus)
+
+    p = sub.add_parser("groundtruth", help="compare compiled rules with the trader-reviewed reference")
+    p.add_argument("--reviewed-only", action="store_true")
+    p.add_argument("--out", help="write markdown, e.g. docs/ground_truth.md")
+    p.set_defaults(fn=cmd_groundtruth)
+
+    p = sub.add_parser("review", help="human sign-off: list escalated or flagged live results, sign one off")
+    p.add_argument("action", choices=["queue", "sign"])
+    p.add_argument("key", nargs="?")
+    g = p.add_mutually_exclusive_group()
+    g.add_argument("--agree", dest="agree", action="store_true", default=None, help="the compiled rules match the claim")
+    g.add_argument("--disagree", dest="agree", action="store_false", help="the compiled rules misread the claim")
+    p.add_argument("--note", help="what the rules got wrong, shown on the result page")
+    p.add_argument("--cache", help="results directory (default: web_cache or $FALSIFY_CACHE)")
+    p.set_defaults(fn=cmd_review)
 
     p = sub.add_parser("calibrate", help="measure false-positive rate and power on the bundled data")
     p.add_argument("--reps", type=int, default=300, help="coin-flip strategies per setup")

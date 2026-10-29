@@ -121,3 +121,69 @@ def test_spec_validation():
         ClaimSpec.model_validate({"claim_summary": "x", "source_type": "text", "testable": False})
     with pytest.raises(ValueError):
         spec(entry=[{"left": {"kind": "sma"}, "op": "gt", "right": {"kind": "const", "value": 1}}])  # sma w/o period
+
+
+# ---------------------------------------------------------------- DSL v2: ATR / R / trailing exits, windows, offsets
+
+def _px(path):
+    """Bars with open = previous close, high/low = max/min(open, close)."""
+    closes = np.asarray(path, dtype=float)
+    opens = np.concatenate([[closes[0]], closes[:-1]])
+    return frame(opens=opens, closes=closes)
+
+
+def test_trailing_stop_ratchets_on_closes_and_never_loosens():
+    # enter at 101 (open after the 100 -> 101 close), run up to 120, then fall
+    df = _px([100, 101, 105, 110, 120, 115, 107, 100, 90])
+    s = spec(max_hold_bars=None, trailing_stop_pct=10)
+    t = run(s, df, ZERO)
+    tr = t.iloc[0]
+    assert tr.reason == "trailing stop"
+    assert tr.exit_px == pytest.approx(108.0)  # 10% under the best close (120), hit on the way down
+    assert tr.exit_time == df.index[6]
+
+
+def test_atr_stop_and_r_target():
+    n = 60
+    closes = 100 + np.sin(np.arange(n) / 3)  # quiet market -> small ATR
+    closes[40:] = closes[39] + np.arange(1, n - 39) * 0.8  # then a clean run up
+    df = _px(closes)
+    s = spec(max_hold_bars=None, entry=[{"left": {"kind": "close"}, "op": "gt", "right": {"kind": "const", "value": 101.5}}],
+             stop_atr_mult=2, take_profit_r=2)
+    t = run(s, df, ZERO)
+    assert len(t) >= 1 and t.iloc[0].reason == "target"
+    from falsify.engine import _atr
+    atr = _atr(df, 14).to_numpy()
+    sig = int(np.argmax(closes > 101.5))
+    entry = df["open"].iloc[sig + 1]
+    tp = entry + 2 * (2 * atr[sig])          # 2R, R = 2 x ATR at the signal bar
+    exit_open = df["open"].loc[t.iloc[0].exit_time]
+    assert t.iloc[0].exit_px == pytest.approx(max(tp, exit_open))  # fills at the level, or at the open on a gap
+
+
+def test_window_and_offset_operands():
+    from falsify.engine import operand_series
+    from falsify.spec import Operand
+    df = _px([5, 3, 4, 1, 2, 6])
+    lo = operand_series(Operand(kind="close", window_fn="min", window=3), df).tolist()
+    assert lo[2:] == [3, 1, 1, 1]
+    prev = operand_series(Operand(kind="close", offset=1), df).tolist()
+    assert np.isnan(prev[0]) and prev[1:] == [5, 3, 4, 1, 2]
+
+
+def test_ge_le_and_rising_for_three_bars():
+    df = _px([10, 9, 8, 9, 10, 11, 12, 11])
+    up = lambda k: {"left": {"kind": "close", "offset": k}, "op": "gt", "right": {"kind": "close", "offset": k + 1}}
+    s = spec(max_hold_bars=1, entry=[up(0), up(1), up(2)])
+    t = run(s, df, ZERO)
+    # close rises at bars 3,4,5 -> first bar with three consecutive rises is bar 5 -> fill at open of bar 6
+    assert t.iloc[0].entry_time == df.index[6]
+
+
+def test_v2_validation():
+    with pytest.raises(ValueError):
+        spec(max_hold_bars=None, take_profit_r=2)  # R target needs a stop
+    with pytest.raises(ValueError):
+        spec(stop_loss_pct=3, stop_atr_mult=2)
+    with pytest.raises(ValueError):
+        spec(entry=[{"left": {"kind": "close", "window_fn": "min"}, "op": "gt", "right": {"kind": "const", "value": 1}}])

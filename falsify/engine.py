@@ -152,6 +152,17 @@ def operand_series(op: Operand, df: pd.DataFrame, cache: dict | None = None) -> 
             raise ValueError(k)
         cache[key] = s
     s = cache[key]
+    if op.window_fn is not None or op.offset:
+        dkey = key + (op.window_fn, op.window, op.offset)
+        if dkey not in cache:
+            d = s
+            if op.window_fn is not None:  # rolling extreme over the last `window` bars, current bar included
+                r = d.rolling(op.window, min_periods=op.window)
+                d = r.min() if op.window_fn.value == "min" else r.max()
+            if op.offset:
+                d = d.shift(op.offset)
+            cache[dkey] = d
+        s = cache[dkey]
     return s * op.multiplier if op.multiplier != 1.0 else s
 
 
@@ -162,6 +173,10 @@ def condition_mask(cond: Condition, df: pd.DataFrame, cache: dict | None = None)
         m = left > right
     elif cond.op == Op.LT:
         m = left < right
+    elif cond.op == Op.GE:
+        m = left >= right
+    elif cond.op == Op.LE:
+        m = left <= right
     elif cond.op == Op.CROSSES_ABOVE:
         m = (left > right) & (left.shift(1) <= right.shift(1))
     else:
@@ -186,20 +201,39 @@ TRADE_COLUMNS = ["entry_time", "exit_time", "entry_px", "exit_px", "bars", "gros
 
 
 def run(spec: ClaimSpec, df: pd.DataFrame, costs: Costs = Costs()) -> pd.DataFrame:
-    """Simulate the spec on one OHLCV frame. Returns one row per closed trade."""
+    """Simulate the spec on one OHLCV frame. Returns one row per trade (the last one marked if still open).
+
+    Exit model, checked in this order on every bar from the fill bar on:
+      1. stop: the higher (long) of the fixed stop and the trailing stop; gaps fill at the open
+      2. target: fixed %, ATR multiple or R multiple of the initial stop distance
+      3. exit condition or time exit, decided at the close, filled at the next open
+    A stop and a target inside the same bar resolve to the stop (pessimistic). The trailing
+    stop ratchets at each close and applies from the next bar, so it never uses a bar's own
+    high or low before that bar is over.
+    """
     entry_sig, exit_sig = signals(spec, df)
     o, h, l, c = (df[x].to_numpy(dtype=float) for x in ("open", "high", "low", "close"))
     idx = df.index
     n = len(df)
     long = spec.direction == Direction.LONG
-    sl = spec.stop_loss_pct / 100 if spec.stop_loss_pct else None
-    tp = spec.take_profit_pct / 100 if spec.take_profit_pct else None
+    sgn = 1.0 if long else -1.0
+    sl_pct = spec.stop_loss_pct / 100 if spec.stop_loss_pct else None
+    tp_pct = spec.take_profit_pct / 100 if spec.take_profit_pct else None
+    tr_pct = spec.trailing_stop_pct / 100 if spec.trailing_stop_pct else None
+    uses_atr = any(x is not None for x in (spec.stop_atr_mult, spec.take_profit_atr_mult, spec.trailing_stop_atr_mult))
+    atr = _atr(df, spec.stop_atr_period).to_numpy() if uses_atr else None
+    if uses_atr:
+        entry_sig = entry_sig & ~np.isnan(atr)  # an ATR-sized exit needs an ATR at the signal bar
     max_hold = spec.max_hold_bars
+    has_stop = sl_pct is not None or spec.stop_atr_mult is not None
+    has_trail = tr_pct is not None or spec.trailing_stop_atr_mult is not None
+    has_tp = any(x is not None for x in (tp_pct, spec.take_profit_atr_mult, spec.take_profit_r))
 
     trades: list[tuple] = []
     in_pos = False
     entry_t = 0
-    entry_px = stop_px = tp_px = 0.0
+    entry_px = stop_px = trail_px = tp_px = 0.0
+    best_close = 0.0
 
     def close_trade(t_exit: int, px: float, reason: str) -> None:
         gross = (px / entry_px - 1) if long else (entry_px / px - 1)
@@ -207,17 +241,21 @@ def run(spec: ClaimSpec, df: pd.DataFrame, costs: Costs = Costs()) -> pd.DataFra
         trades.append((idx[entry_t], idx[t_exit], entry_px, px, t_exit - entry_t,
                        gross * 100, net * 100, reason))
 
+    def trail_level(ref_close: float, t: int) -> float:
+        dist = ref_close * tr_pct if tr_pct is not None else spec.trailing_stop_atr_mult * atr[t]
+        return ref_close - sgn * dist
+
     for t in range(n):
         exited_on_signal = False
         if in_pos:
-            stop_hit = tp_hit = False
-            if sl is not None:
-                stop_hit = l[t] <= stop_px if long else h[t] >= stop_px
-            if tp is not None:
-                tp_hit = h[t] >= tp_px if long else l[t] <= tp_px
+            levels = ([stop_px] if has_stop else []) + ([trail_px] if has_trail else [])
+            eff_stop = (max(levels) if long else min(levels)) if levels else None
+            stop_hit = eff_stop is not None and (l[t] <= eff_stop if long else h[t] >= eff_stop)
+            tp_hit = has_tp and (h[t] >= tp_px if long else l[t] <= tp_px)
             if stop_hit:  # pessimistic: stop wins a same-bar tie
-                gapped = (o[t] <= stop_px) if long else (o[t] >= stop_px)
-                close_trade(t, o[t] if gapped else stop_px, "stop")
+                gapped = (o[t] <= eff_stop) if long else (o[t] >= eff_stop)
+                is_trail = has_trail and eff_stop == trail_px and (not has_stop or trail_px != stop_px)
+                close_trade(t, o[t] if gapped else eff_stop, "trailing stop" if is_trail else "stop")
                 in_pos = False
             elif tp_hit:
                 gapped = (o[t] >= tp_px) if long else (o[t] <= tp_px)
@@ -231,16 +269,32 @@ def run(spec: ClaimSpec, df: pd.DataFrame, costs: Costs = Costs()) -> pd.DataFra
                 elif max_hold is not None and held >= max_hold:
                     close_trade(t + 1, o[t + 1], "time")
                     in_pos, exited_on_signal = False, True
+            if in_pos and has_trail:  # ratchet at the close; applies from the next bar
+                best_close = max(best_close, c[t]) if long else min(best_close, c[t])
+                lvl = trail_level(best_close, t)
+                trail_px = max(trail_px, lvl) if long else min(trail_px, lvl)
         # Entry decided at the close of t, filled at the open of t+1. After a signal
         # exit the exit fill already sits on t+1, so entering there too would be a
         # free round trip on one open -- skip and re-evaluate from t+1.
         if not in_pos and not exited_on_signal and entry_sig[t] and t + 1 < n:
             entry_t = t + 1
             entry_px = o[t + 1]
-            if sl is not None:
-                stop_px = entry_px * (1 - sl) if long else entry_px * (1 + sl)
-            if tp is not None:
-                tp_px = entry_px * (1 + tp) if long else entry_px * (1 - tp)
+            risk = None
+            if sl_pct is not None:
+                risk = entry_px * sl_pct
+            elif spec.stop_atr_mult is not None:
+                risk = spec.stop_atr_mult * atr[t]
+            if risk is not None:
+                stop_px = entry_px - sgn * risk
+            if tp_pct is not None:
+                tp_px = entry_px * (1 + sgn * tp_pct)
+            elif spec.take_profit_atr_mult is not None:
+                tp_px = entry_px + sgn * spec.take_profit_atr_mult * atr[t]
+            elif spec.take_profit_r is not None:
+                tp_px = entry_px + sgn * spec.take_profit_r * risk
+            if has_trail:
+                best_close = entry_px
+                trail_px = trail_level(entry_px, t)
             in_pos = True
     # A position still open at the end of the data is marked at the last close and kept,
     # flagged reason="open". Dropping it would hide exactly the losers a no-stop rule creates.
@@ -282,7 +336,7 @@ def summarize(trades: pd.DataFrame, df: pd.DataFrame | None = None) -> dict:
 # ---------------------------------------------------------------- overrides
 
 _PATH = re.compile(r"(\w+)(?:\[(\d+)\])?")
-_INT_FIELDS = {"period", "max_hold_bars"}
+_INT_FIELDS = {"period", "max_hold_bars", "window", "offset", "stop_atr_period"}
 
 
 def with_override(spec: ClaimSpec, target: str, value: float) -> ClaimSpec:

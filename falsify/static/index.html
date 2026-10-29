@@ -78,6 +78,14 @@ button{font:600 16px/1 var(--body);border-radius:4px;cursor:pointer}
 .result{margin:34px 0 10px}
 .approx{border-left:4px solid var(--inconclusive);background:#fbf3df;padding:12px 16px;margin:0 0 18px;border-radius:0 4px 4px 0}
 .approx p{margin:0}
+.approx.escal{border-left-color:var(--dies);background:#f8e6e3}
+.signoff{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:15px;padding:6px 12px;border-radius:999px;
+  border:2px solid var(--so);color:var(--so);background:#fff}
+.signoff-note{margin:8px 0 0;font-size:15px;max-width:36em}
+.vote{margin-top:30px;padding:16px 18px;border:1px solid var(--rule);border-radius:6px;background:var(--sheet)}
+.vote h2{font:700 19px/1.2 var(--display);margin:0 0 4px}
+.vote .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.vote textarea{width:100%;min-height:70px;margin-top:10px;font:15px var(--body);padding:8px;border:1px solid var(--rule);border-radius:4px;background:#fff;color:var(--ink)}
 .approx ul{margin:6px 0 0;padding-left:18px}
 .case{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:28px;align-items:start}
 @media (max-width:900px){.case{grid-template-columns:1fr}}
@@ -220,6 +228,7 @@ footer{border-top:1px solid var(--rule);padding:22px 0 40px;color:var(--muted);f
       <li><strong>Compile.</strong> It turns the claim into rules in a small fixed language: indicators, thresholds, exits. No code.</li>
       <li><strong>Check the quotes.</strong> Each rule must quote the claimant's exact words or say it was assumed. Paraphrases are sent back.</li>
       <li><strong>Audit.</strong> A second Muse Spark pass compares the rules with the original and flags anything that changed. If something can't be expressed, the verdict says it tested an approximation.</li>
+      <li><strong>Escalate.</strong> The rules get two repair rounds for quotes and one for the audit. If the checks still disagree after that, the result is marked for a human check instead of being presented as settled. A trader's sign-off shows next to the verdict.</li>
       <li><strong>Try to break it.</strong> Costs, 2,000 random-timing look-alikes, the period after the post, both halves of history, eleven other coins, and every reasonable reading of vague numbers.</li>
     </ol>
   </section>
@@ -342,9 +351,12 @@ function opLabel(o) {
     supertrend: `Supertrend (${p}, ${o.param})`, day_of_week: "day of week", hour_utc: "hour (UTC)",
   };
   if (k === "const") return fmt(o.value, 2).replace(/\.00$/, "");
-  return m + (names[k] || k);
+  let base = names[k] || k;
+  if (o.window_fn) base = `the ${o.window_fn === "min" ? "lowest" : "highest"} ${base} of the last ${o.window} bars`;
+  if (o.offset) base = `${base} ${o.offset === 1 ? "one bar ago" : o.offset + " bars ago"}`;
+  return m + base;
 }
-const OPS = {gt: "is above", lt: "is below", crosses_above: "crosses above", crosses_below: "crosses below"};
+const OPS = {gt: "is above", lt: "is below", ge: "is at or above", le: "is at or below", crosses_above: "crosses above", crosses_below: "crosses below"};
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const condText = c => {
   if (c.left.kind === "day_of_week" && c.right.kind === "const" && (c.op === "gt" || c.op === "lt")) {
@@ -440,8 +452,14 @@ function ruleRows(spec) {
   add("direction", "Side", spec.direction === "short" ? "Short" : "Long");
   (spec.entry || []).forEach((c, i) => add(`entry[${i}]`, i ? "and" : "Enter when", condText(c)));
   (spec.exit || []).forEach((c, i) => add(`exit[${i}]`, i ? "or" : "Exit when", condText(c)));
-  if (spec.stop_loss_pct != null) add("stop_loss_pct", "Stop", `${fmt(spec.stop_loss_pct, 1)}% below entry`.replace("below", spec.direction === "short" ? "above" : "below"));
+  const side = spec.direction === "short" ? "above" : "below", atrN = spec.stop_atr_period || 14;
+  if (spec.stop_loss_pct != null) add("stop_loss_pct", "Stop", `${fmt(spec.stop_loss_pct, 1)}% ${side} entry`);
+  if (spec.stop_atr_mult != null) add("stop_atr_mult", "Stop", `${fmt(spec.stop_atr_mult, 1)} × ATR(${atrN}) ${side} entry`);
+  if (spec.trailing_stop_pct != null) add("trailing_stop_pct", "Trailing stop", `${fmt(spec.trailing_stop_pct, 1)}% ${side} the best close since entry`);
+  if (spec.trailing_stop_atr_mult != null) add("trailing_stop_atr_mult", "Trailing stop", `${fmt(spec.trailing_stop_atr_mult, 1)} × ATR(${atrN}) ${side} the best close`);
   if (spec.take_profit_pct != null) add("take_profit_pct", "Target", `${fmt(spec.take_profit_pct, 1)}% from entry`);
+  if (spec.take_profit_atr_mult != null) add("take_profit_atr_mult", "Target", `${fmt(spec.take_profit_atr_mult, 1)} × ATR(${atrN}) from entry`);
+  if (spec.take_profit_r != null) add("take_profit_r", "Target", `${fmt(spec.take_profit_r, 1)}× the initial risk (${fmt(spec.take_profit_r, 1)}R)`);
   if (spec.max_hold_bars != null) add("max_hold_bars", "Time exit", `after ${spec.max_hold_bars} bars`);
   let n = 0;
   rows.forEach(r => { if (r.ev && !r.ev.assumed && r.ev.quote) r.n = ++n; });
@@ -473,8 +491,15 @@ function render(res, animate) {
   document.title = `${v}: ${spec.claim_summary} — Falsify`;
   const fid = rep.fidelity || {};
 
-  if (fid.level === "approximation" && v !== "UNTESTABLE") {
-    const items = [...(fid.gaps || []).map(g => g.replace(/^NOT EXPRESSIBLE:\s*/i, "")), ...(fid.audit_majors || [])];
+  const rv = res.review || rep.review || {}, so = res.signoff;
+  const gapItems = (fid.gaps || []).map(g => g.replace(/^NOT EXPRESSIBLE:\s*/i, ""));
+  if (rv.needs_human && !so) {
+    const items = [...gapItems, ...(rv.reasons || []).map(r => r.replace(/^(audit still disagrees|quote check):\s*/, ""))];
+    box.append(el("div", {class: "approx escal"}, el("p", {}, el("strong", {}, "Needs a human check. "),
+      "The rules were sent back for repair, and the independent checks still disagree with them. The tests ran, but treat the verdict as provisional until a person confirms the rules."),
+      items.length ? el("details", {class: "more"}, el("summary", {}, "What the checks disagree on"), el("ul", {}, items.map(t => el("li", {}, t)))) : null));
+  } else if (fid.level === "approximation" && v !== "UNTESTABLE") {
+    const items = [...gapItems, ...(fid.audit_majors || [])];
     box.append(el("div", {class: "approx"}, el("p", {}, el("strong", {}, "We tested an approximation of this claim. "), "Part of it can't be expressed yet, so the verdict is about the closest testable version."),
       items.length ? el("details", {class: "more"}, el("summary", {}, "What was left out or changed"), el("ul", {}, items.map(t => el("li", {}, t)))) : null));
   }
@@ -500,7 +525,18 @@ function render(res, animate) {
   // verdict column
   const col = el("div", {});
   const stamp = el("div", {class: "stamp" + (animate ? " land" : ""), style: `--v:${VCOL[v]}`}, v.charAt(0) + v.slice(1).toLowerCase());
-  col.append(el("div", {class: "verdict"}, stamp));
+  const vrow = el("div", {class: "verdict"}, stamp);
+  if (so) {
+    const who = so.by === "trader" ? "a trader" : "a reviewer";
+    vrow.append(el("span", {class: "signoff", style: `--so:${so.agree ? "var(--survives)" : "var(--dies)"}`},
+      so.agree ? `✓ Rules checked by ${who}` : `✗ ${who.charAt(0).toUpperCase() + who.slice(1)} reads the claim differently`));
+  }
+  col.append(vrow);
+  if (so && (!so.agree || so.note)) {
+    const nice = {entry: "entry rules", exit: "exit rules", stop: "stop", target: "target", time_exit: "time exit", routing: "whether it can be tested", asset: "asset", timeframe: "timeframe", direction: "long or short"};
+    const diff = (so.differs_on || []).map(k => nice[k] || k);
+    col.append(el("p", {class: "signoff-note"}, diff.length ? `Differs on: ${diff.join(", ")}. ` : "", so.note ? el("em", {}, so.note) : null));
+  }
   col.append(el("p", {class: "headline"}, rep.headline.replace(/^Tested an approximation of the claim\.\s*/, "")));
   const p = rep.primary || {};
   if (p.trades) {
@@ -558,6 +594,9 @@ function render(res, animate) {
       last.issues?.length ? el("ul", {}, last.issues.map(i => el("li", {}, el("strong", {}, i.severity === "major" ? "Major: " : "Minor: "), i.problem))) : null));
   }
 
+  // human sign-off on live results
+  if (!/^c\d{3}$/.test(res.key || "") && !so && spec.testable) box.append(voteBox(res));
+
   // share
   const link = location.origin + location.pathname;
   const inp = el("input", {value: link, readonly: true, "aria-label": "Link to this result"});
@@ -568,6 +607,35 @@ function render(res, animate) {
   box.scrollIntoView({behavior: animate ? "smooth" : "auto", block: "start"});
 }
 
+function voteBox(res) {
+  const f = res.flags || {agree: 0, disagree: 0};
+  const tally = el("p", {class: "fine", style: "margin:8px 0 0"});
+  const setTally = c => { tally.textContent = (c.agree + c.disagree) ? `So far: ${c.agree} said the rules match, ${c.disagree} said they don't.` : ""; };
+  setTally(f);
+  const note = el("textarea", {id: "vote-note", placeholder: "What did the rules get wrong? (optional)", "aria-label": "What the rules got wrong", maxlength: "500", hidden: true});
+  const yes = el("button", {class: "ghost", type: "button"}, "Yes, they match");
+  const no = el("button", {class: "ghost", type: "button"}, "No, something's wrong");
+  const send = el("button", {class: "ghost", type: "button", hidden: true}, "Send to the reviewer");
+  const msg = el("p", {class: "fine", style: "margin:8px 0 0", role: "status"});
+  const box = el("div", {class: "vote"}, el("h2", {}, "Do these rules say what the claim says?"),
+    el("p", {class: "fine", style: "margin:0"}, "You know what the post meant. If the rules misread it, say so: flagged results go to a human reviewer, and their sign-off shows on this page."),
+    el("div", {class: "row"}, yes, no, send), note, msg, tally);
+  async function post(agree) {
+    [yes, no, send].forEach(b => b.disabled = true);
+    try {
+      const r = await fetch(`/api/review/${res.key}`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({agree, note: note.value || null})});
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.detail || "Couldn't save that. Try again.");
+      msg.textContent = agree ? "Thanks. Logged." : "Thanks. Sent to the reviewer.";
+      setTally(j.flags); note.hidden = true; [yes, no, send].forEach(b => b.hidden = true);
+    } catch (e) { msg.textContent = e.message; [yes, no, send].forEach(b => b.disabled = false); }
+  }
+  yes.addEventListener("click", () => post(true));
+  no.addEventListener("click", () => { note.hidden = false; send.hidden = false; no.hidden = true; note.focus(); });
+  send.addEventListener("click", () => post(false));
+  return box;
+}
+
 /* ------------------------------------------------ examples */
 let corpus = [], filter = "ALL";
 function renderList() {
@@ -576,7 +644,7 @@ function renderList() {
   for (const c of items) {
     const host = new URL(c.url).hostname.replace(/^www\./, "");
     ul.append(el("li", {}, el("a", {href: "/example/" + c.id, "data-id": c.id},
-      el("span", {class: "v", style: `--v:${VCOL[c.verdict]}`}, c.verdict.charAt(0) + c.verdict.slice(1).toLowerCase() + (c.approximation ? "*" : "")),
+      el("span", {class: "v", style: `--v:${VCOL[c.verdict]}`}, c.verdict.charAt(0) + c.verdict.slice(1).toLowerCase() + (c.approximation ? "*" : "") + (c.trader?.agree ? " ✓" : "")),
       el("span", {class: "s"}, c.summary, el("small", {}, c.headline)),
       el("span", {class: "d"}, `${host}${c.posted ? ", " + c.posted.slice(0, 7) : ""}`))));
   }
@@ -594,6 +662,7 @@ async function loadCorpus() {
     mk("ALL", `All ${corpus.length}`);
     order.forEach(v => { const n = corpus.filter(c => c.verdict === v).length; if (n) mk(v, `${v.charAt(0) + v.slice(1).toLowerCase()} ${n}`); });
     if (j.corpus_corrected?.length) $("#examples .fine").append(` After correcting for testing them all at once, ${j.corpus_corrected.length === 1 ? "one claim still survives" : j.corpus_corrected.length + " claims still survive"}. * = tested an approximation.`);
+    if (corpus.some(c => c.trader?.agree)) $("#examples .fine").append(" ✓ = rules checked by a trader.");
     renderList();
   } catch { $("#list").replaceChildren(el("li", {style: "padding:14px 16px"}, "Couldn't load the examples. Reload the page to try again.")); }
 }

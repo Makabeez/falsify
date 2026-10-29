@@ -1,0 +1,727 @@
+# Falsify ground-truth labels (independent draft; pending trader review)
+# Grammar: see task spec. entry = ALL must hold; exit = ANY triggers.
+# For direction "both", entry/exit lists encode the LONG side; the short side is the mirror image.
+
+c001:
+  testable: "partial"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry:
+    - "rsi(14)[3] <= min(rsi(14), 50)"
+    - "rsi(14) > rsi(14)[1]"
+    - "rsi(14)[1] > rsi(14)[2]"
+    - "rsi(14)[2] > rsi(14)[3]"
+    - "rsi(14) < 37.5"
+  exit: []
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "RSI below 160-period RSI plus a 5-point offset (operand arithmetic)"
+  ambiguous:
+    - "rsi settings not stated"
+    - "no exit stated"
+    - "at 50-bar low and rising 3 bars read as: low was 3 bars ago, then 3 consecutive rises"
+    - "160 days RSI plus 5 could mean RSI(160)+5 or the 160-bar RSI low plus 5"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c002:
+  testable: "partial"
+  asset: BTC
+  timeframe: 1d
+  direction: both
+  entry:
+    - "ema(8) crosses_above ema(21)"
+  exit:
+    - "close crosses_below ema(21)"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "undefined entry trigger during 6-day monitoring window after the cross"
+    - "stop placed just beyond the 21 EMA and adjusted daily (price-level stop)"
+  ambiguous:
+    - "direction not stated (cross either way); long side encoded, short mirrored"
+    - "what is monitored during the 6 days is not defined"
+    - "stop offset beyond EMA21 not quantified; encoded as close crossing EMA21"
+    - "no exit other than the EMA21 stop stated"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c003:
+  testable: "partial"
+  asset: BTC
+  timeframe: 4h
+  direction: long
+  entry:
+    - "rsi(14) crosses_below 28"
+  exit: []
+  stop: null
+  target: "3%"
+  time_exit: null
+  not_expressible:
+    - "DCA ladder of five safety orders at -2/-5/-9.5/-16/-25%"
+    - "1.8x size scaling per rung"
+    - "take-profit measured from average entry, not first entry"
+  ambiguous:
+    - "drops below 28 read as cross event rather than state"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c004:
+  testable: "no"
+  asset: XAU
+  timeframe: 1h
+  direction: long
+  entry:
+    - "ema(8) crosses_above ema(21)"
+  exit: []
+  stop: "1.5%"
+  target: "4.5%"
+  time_exit: null
+  not_expressible: []
+  ambiguous: []
+  why_untestable: "Asset is gold (XAU/USD), not a crypto asset; rules themselves are fully mechanical."
+  reviewed: false
+  reviewer_note: ""
+
+c005:
+  testable: "full"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry:
+    - "sma(20) > sma(200)"
+  exit:
+    - "sma(20) < sma(200)"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible: []
+  ambiguous:
+    - "MA type not stated (read as SMA)"
+    - "closes > read as standing state, could be cross event"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c006:
+  testable: "full"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry:
+    - "sma(200) > sma(300)"
+    - "rsi(14)[1] < 35"
+    - "rsi(14)[1] < rsi(14)"
+  exit: []
+  stop: null
+  target: null
+  time_exit: 20
+  not_expressible: []
+  ambiguous:
+    - "rsi settings not stated"
+    - "parameters listed as values to tweak; unclear if these are the final tested set"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c007:
+  testable: "full"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry:
+    - "close crosses_above highest_high(15)"
+    - "adx(14) < 25"
+  exit:
+    - "close crosses_below lowest_low(15)"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible: []
+  ambiguous:
+    - "breakout on close vs intrabar high/low not specified"
+    - "full rules partly paywalled; additional conditions may exist"
+    - "ADX filter may apply to entries only (assumed) or also exits"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c008:
+  testable: "full"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry:
+    - "close crosses_above sma(200)"
+  exit:
+    - "close crosses_below sma(200)"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible: []
+  ambiguous:
+    - "MA type not stated (read as SMA)"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c009:
+  testable: "full"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry:
+    - "sma(50) crosses_above sma(55)"
+  exit:
+    - "sma(50) crosses_below sma(55)"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible: []
+  ambiguous:
+    - "entry and exit rules not stated; crossover of the pair inferred"
+    - "MA type not stated (read as SMA)"
+    - "long-only vs long/short not stated"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c010:
+  testable: "partial"
+  asset: BTC
+  timeframe: 4h
+  direction: long
+  entry:
+    - "close crosses_above supertrend(10,3)"
+  exit:
+    - "close crosses_below supertrend(10,3)"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "partial exit of half position at 0.75R"
+    - "move stop to breakeven after first target"
+  ambiguous:
+    - "supertrend settings not stated"
+    - "ATR stop loss multiple and period not stated"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c011:
+  testable: "full"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry:
+    - "close crosses_below sma(1400)"
+  exit: []
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible: []
+  ambiguous:
+    - "200-week MA approximated as 1400-day SMA on daily bars"
+    - "drops below read as cross event; could be state (any day below)"
+    - "trigger on intrabar touch vs close not specified"
+    - "no exit stated"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c012:
+  testable: "partial"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry:
+    - "days_left_in_month <= 0"
+    - "close > sma(200)"
+  exit:
+    - "close < sma(200)"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "exit evaluated only on the last day of the month (AND within exit rules)"
+  ambiguous: []
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c013:
+  testable: "no"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry: []
+  exit: []
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "cash accumulation of 1 USD per day deployed only on dips"
+    - "comparison against daily DCA (position sizing / averaging)"
+  ambiguous:
+    - "most recent high lookback undefined (all-time, since last buy, or fixed window)"
+    - "no exit stated"
+  why_untestable: "Core is a dollar-accumulation buy-the-dip vs DCA comparison, which needs averaging and sizing outside the grammar."
+  reviewed: false
+  reviewer_note: ""
+
+c014:
+  testable: "partial"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry:
+    - "day_of_week >= 2"
+    - "day_of_week <= 2"
+  exit:
+    - "day_of_week >= 5"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "re-entry filter that price is kinda going up (undefined)"
+  ambiguous:
+    - "going up filter undefined (e.g. close > close[1] is one reading)"
+    - "unclear whether entry is retried after Wednesday if filter fails"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c015:
+  testable: "full"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry:
+    - "close > sma(15)"
+  exit:
+    - "close < sma(15)"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible: []
+  ambiguous: []
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c016:
+  testable: "partial"
+  asset: ETH
+  timeframe: 4h
+  direction: long
+  entry:
+    - "rsi(14) crosses_below 28"
+  exit: []
+  stop: null
+  target: "3%"
+  time_exit: null
+  not_expressible:
+    - "DCA ladder of five safety orders at -2/-5/-9.5/-16/-25%"
+    - "1.8x size scaling per rung"
+    - "take-profit measured from average entry, not first entry"
+  ambiguous:
+    - "drops below 28 read as cross event rather than state"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c017:
+  testable: "full"
+  asset: ETH
+  timeframe: 4h
+  direction: long
+  entry:
+    - "macd_line(12,26) > macd_line(12,26)[1]"
+    - "ema(20) > ema(20)[1]"
+    - "sma(100) > sma(100)[1]"
+    - "sma(200) > sma(200)[1]"
+    - "ema(20) > sma(100)"
+    - "sma(100) > sma(200)"
+  exit:
+    - "ema(20) crosses_below sma(100)"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible: []
+  ambiguous:
+    - "macd settings not stated"
+    - "MACD moving up could mean MACD line rising, histogram rising, or line above signal"
+    - "moving up measured over 1 bar assumed"
+    - "stop loss mentioned but distance not stated"
+    - "claim also covers BTC; ETH labelled"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c018:
+  testable: "no"
+  asset: NIKKEI225
+  timeframe: 1d
+  direction: long
+  entry:
+    - "close crosses_above bb_upper(80,1)"
+  exit:
+    - "close crosses_below sma(80)"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "portfolio across all Nikkei 225 components"
+    - "fill at next day open"
+  ambiguous:
+    - "price cross measured on close vs intrabar not specified"
+  why_untestable: "Asset universe is Japanese equities (Nikkei 225 components), not crypto."
+  reviewed: false
+  reviewer_note: ""
+
+c019:
+  testable: "full"
+  asset: BTC
+  timeframe: 1h
+  direction: long
+  entry:
+    - "close[1] crosses_above ema(20)[1]"
+    - "close > high[1]"
+  exit: []
+  stop: "2*atr(14)"
+  target: "1.8R"
+  time_exit: null
+  not_expressible: []
+  ambiguous:
+    - "moves above EMA20 read as close crossing; could be intrabar"
+    - "confirmation assumed to be strictly the next candle after the cross"
+    - "author says only works on Bybit data"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c020:
+  testable: "full"
+  asset: ETH
+  timeframe: 1d
+  direction: long
+  entry:
+    - "sma(50) crosses_above sma(200)"
+  exit: []
+  stop: null
+  target: null
+  time_exit: 180
+  not_expressible: []
+  ambiguous: []
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c021:
+  testable: "no"
+  asset: ETH
+  timeframe: 4h
+  direction: long
+  entry: []
+  exit: []
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "Ichimoku leading span A/B comparisons for entry and exit"
+  ambiguous:
+    - "Ichimoku periods not stated"
+    - "green/red candle conditions only meaningful relative to Ichimoku lines"
+  why_untestable: "Entry and exit are defined entirely by Ichimoku lead lines, which the grammar cannot express."
+  reviewed: false
+  reviewer_note: ""
+
+c022:
+  testable: "partial"
+  asset: ETH
+  timeframe: 1h
+  direction: long
+  entry:
+    - "ema(20) crosses_above ema(50)"
+    - "rsi(14) < 70"
+  exit:
+    - "ema(20) crosses_below ema(50)"
+  stop: null
+  target: "2R"
+  time_exit: null
+  not_expressible:
+    - "Move SL protection (stop adjustment rule)"
+  ambiguous:
+    - "rsi settings not stated"
+    - "RSI below 70 labelled oversold by author (mislabel)"
+    - "initial stop distance not stated, so 2R target is undefined"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c023:
+  testable: "full"
+  asset: BTC
+  timeframe: 4h
+  direction: long
+  entry:
+    - "rsi(14) > 55"
+    - "rsi(14) < 70"
+    - "close > ema(200)"
+  exit: []
+  stop: null
+  target: "1*atr(14)"
+  time_exit: null
+  not_expressible: []
+  ambiguous:
+    - "rsi settings not stated"
+    - "ATR take-profit multiple and period not stated (read as 1 ATR)"
+    - "optional RSI above 70 exit suggested but not part of the bot"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c024:
+  testable: "no"
+  asset: EURUSD
+  timeframe: 1d
+  direction: both
+  entry:
+    - "ema(5) crosses_above ema(50)"
+    - "rsi(5) crosses_above 50"
+  exit: []
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible: []
+  ambiguous:
+    - "unclear whether both crosses must happen on the same bar"
+    - "direction not stated; long side encoded, short mirrored"
+    - "also used on 4h"
+    - "no exit stated"
+  why_untestable: "Forex pairs (EUR/USD and others), not a crypto asset."
+  reviewed: false
+  reviewer_note: ""
+
+c025:
+  testable: "partial"
+  asset: BTC
+  timeframe: 1h
+  direction: long
+  entry:
+    - "macd_line(12,26) crosses_above macd_signal(12,26)"
+  exit:
+    - "macd_line(12,26) crosses_below macd_signal(12,26)"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "daily MACD line above signal as trend filter on hourly entries (multi-timeframe)"
+  ambiguous:
+    - "exit not in the excerpt; H1 MACD cross down taken from page notes"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c026:
+  testable: "partial"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry:
+    - "close crosses_above highest_high(20)"
+  exit:
+    - "close crosses_below lowest_low(10)"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "result pooled across a 43-market futures portfolio, not per asset"
+  ambiguous:
+    - "ATR stop multiple and period not stated"
+    - "reverses direction for 10 days read as 10-day low exit"
+    - "breakout on close vs intrabar high not specified"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c027:
+  testable: "no"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry: []
+  exit: []
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "Wyckoff re-accumulation spring pattern"
+    - "breakout retest"
+  ambiguous: []
+  why_untestable: "Discretionary Wyckoff chart-pattern read with no mechanical entry or exit."
+  reviewed: false
+  reviewer_note: ""
+
+c028:
+  testable: "partial"
+  asset: BTC
+  timeframe: 1d
+  direction: both
+  entry:
+    - "close < lowest_low(20)"
+  exit: []
+  stop: null
+  target: null
+  time_exit: 6
+  not_expressible:
+    - "previous 20-day extreme must be at least 3 sessions old (bar index of extreme)"
+    - "next-day stop entry at the prior 20-day watermark price"
+    - "stop placed below the signal bar's low (price-level stop)"
+  ambiguous:
+    - "exit window 2-6 bars, no single value; 6 used as upper bound"
+    - "description mixes highs and lows; long side read as fade of a new 20-day low"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c029:
+  testable: "no"
+  asset: SPX
+  timeframe: 1d
+  direction: long
+  entry:
+    - "rsi(2) < 5"
+    - "close > sma(200)"
+  exit:
+    - "close > sma(5)"
+    - "close < sma(200)"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible: []
+  ambiguous: []
+  why_untestable: "Asset is the S&P 500 index, not crypto; rules themselves are fully mechanical."
+  reviewed: false
+  reviewer_note: ""
+
+c030:
+  testable: "no"
+  asset: BTC
+  timeframe: null
+  direction: long
+  entry: []
+  exit: []
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "sentiment / fear-based buying"
+  ambiguous:
+    - "20% pullback is an observation, not a stated rule"
+  why_untestable: "Sentiment exhortation with no mechanical entry, exit, or timeframe."
+  reviewed: false
+  reviewer_note: ""
+
+c031:
+  testable: "full"
+  asset: SOL
+  timeframe: other
+  direction: long
+  entry:
+    - "wma(7) crosses_above wma(25)"
+  exit:
+    - "wma(7) crosses_below wma(25)"
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible: []
+  ambiguous:
+    - "timeframe not stated by author (a reply suggests 8h; 1d also plausible)"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c032:
+  testable: "no"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry:
+    - "close >= max(close, 10)"
+  exit: []
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "proprietary Bitcoin Trend Score > 7 (entry)"
+    - "proprietary Relative Trend Score > 7 (entry)"
+    - "Trend Score falls below 5 (only exit)"
+  ambiguous:
+    - "10-day high read as highest close; could be intrabar high"
+  why_untestable: "Two of three entry conditions and the only exit rely on proprietary undefined Trend Score indicators."
+  reviewed: false
+  reviewer_note: ""
+
+c033:
+  testable: "full"
+  asset: BTC
+  timeframe: 1d
+  direction: long
+  entry:
+    - "rsi(5) > 70"
+  exit: []
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible: []
+  ambiguous:
+    - "no exit stated"
+    - "RSI(5) > 70 read as state; could be cross event"
+  why_untestable: null
+  reviewed: false
+  reviewer_note: ""
+
+c034:
+  testable: "no"
+  asset: null
+  timeframe: null
+  direction: null
+  entry: []
+  exit: []
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "alignment across 10 timeframes (multi-timeframe)"
+  ambiguous:
+    - "no MA periods, asset, entry or exit stated"
+  why_untestable: "No asset, parameters, entry or exit are given; only a vague multi-timeframe MA idea."
+  reviewed: false
+  reviewer_note: ""
+
+c035:
+  testable: "no"
+  asset: BTC
+  timeframe: null
+  direction: both
+  entry: []
+  exit: []
+  stop: null
+  target: null
+  time_exit: null
+  not_expressible:
+    - "RSI/MACD divergence vs price pivots"
+    - "hand-marked signals"
+  ambiguous:
+    - "no definition of divergence, exit or holding horizon"
+  why_untestable: "Signals are hand-marked RSI/MACD divergences, which are discretionary and not expressible."
+  reviewed: false
+  reviewer_note: ""

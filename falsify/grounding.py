@@ -24,7 +24,9 @@ from dataclasses import dataclass, field
 
 from .spec import ClaimSpec
 
-_FIELD = re.compile(r"^(entry|exit)\[(\d+)\]$|^(stop_loss_pct|take_profit_pct|max_hold_bars|assets|timeframe|direction)$"
+EXIT_FIELDS = ("stop_loss_pct", "stop_atr_mult", "take_profit_pct", "take_profit_atr_mult", "take_profit_r",
+               "trailing_stop_pct", "trailing_stop_atr_mult", "max_hold_bars")
+_FIELD = re.compile(r"^(entry|exit)\[(\d+)\]$|^(" + "|".join(EXIT_FIELDS) + r"|assets|timeframe|direction)$"
                     r"|^claimed\.(win_rate_pct|total_return_pct|avg_return_per_trade_pct|period_start|period_end|other)$")
 _TRANSLATE = str.maketrans({"‘": "'", "’": "'", "“": '"', "”": '"', "–": "-", "—": "-",
                             "−": "-", " ": " "})
@@ -39,7 +41,7 @@ def normalize(text: str) -> str:
 
 def required_fields(spec: ClaimSpec) -> list[str]:
     req = [f"entry[{i}]" for i in range(len(spec.entry))] + [f"exit[{i}]" for i in range(len(spec.exit))]
-    for name in ("stop_loss_pct", "take_profit_pct", "max_hold_bars"):
+    for name in EXIT_FIELDS:
         if getattr(spec, name) is not None:
             req.append(name)
     return req + ["assets", "timeframe", "direction"]

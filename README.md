@@ -60,7 +60,9 @@ So Falsify splits the job:
   │ Muse Spark: AUDIT      │── source + spec → every place the spec departs from what was said
   └────────────────────────┘
         │  major issue? → findings go back to the compiler for one repair, then re-audit
-        ▼  still unresolved, or a part of the claim the DSL can't express → verdict is labelled an approximation
+        ▼  a part of the claim the DSL can't express → verdict is labelled an approximation
+        │  audit or quote check still failing after the repairs → NEEDS A HUMAN CHECK
+        │     (visitors flag misread rules → `falsify review queue` → a trader signs off on the permalink)
         │
         ▼
   ┌────────────────────────┐   deterministic, no model in the P&L path
@@ -80,6 +82,9 @@ The model's job is translation, which it is good at. It never gets the last word
 
 - **What the claimant said** is checked by `falsify/grounding.py`. Every entry and exit condition, stop, target, time exit, asset, timeframe and direction needs an evidence row with the claimant's exact words, or an explicit `assumed: true`. A quote that isn't literally in the post (or in the transcript of the screenshot or clip) is refused and sent back. The verdict then tells you how much of what was tested is the claimant's rule and how much is our reading.
 - **Whether we tested their rule or a cousin of it** is decided by the audit. Muse Spark re-reads the source next to the compiled spec and lists every departure (it caught WMA silently compiled as SMA, and a DCA ladder quietly dropped). Major findings go back to the compiler once. If something still can't be expressed, the verdict leads with "Tested an approximation of the claim", in the headline, not a footnote.
+- **When the checks still disagree, a person decides.** Retries are bounded: two repairs for schema and quote errors, one for the audit. After that the result is marked *Needs a human check* rather than presented as settled. Anyone can say the rules misread a claim; those flags and the escalated results form a queue (`falsify review queue`), and a trader's sign-off (`falsify review sign <key>`) is shown next to the verdict on the result's permalink.
+- **How often the compiler reads claims the way a trader does** is measured, not asserted. `corpus/ground_truth.yaml` holds reference rules for all 35 corpus claims, drafted from the claim text by a separate agent that never saw the compiler's output, then reviewed by a trader (`reviewed: true`). `falsify groundtruth` scores routing, asset, timeframe, direction, entry, exit, stop, target and time exit against it ([docs/ground_truth.md](docs/ground_truth.md)); reviewed claims show "Rules checked by a trader" in the app, or where the trader's reading differs.
+- **What verification costs** is logged per claim (seconds and tokens for compile, audit, and the repair round) and reported in the [corpus scoreboard](corpus/results/scoreboard.md).
 - **What the rule does** is computed by code whose timing contract is pinned by tests (`tests/test_engine.py`), including a check that truncating future data never changes a past trade.
 
 ## The battery
@@ -167,7 +172,7 @@ set -a; . ./.env; set +a
 ## Known limits
 
 - **Power.** Measured in [docs/calibration.md](docs/calibration.md): a daily rule with ~30 trades needs about 4.5% per trade of real edge to be caught 80% of the time. Low-frequency claims will mostly come back INCONCLUSIVE or DIES on the null, and that's the honest answer for that sample size, not a verdict that the idea can never work.
-- **Indicators.** sma, ema, wma, rsi, atr, adx, Bollinger, MACD, Supertrend, breakouts, % change, volume, day-of-week, hour. Ichimoku, VWAP, DCA ladders, sizing and trailing stops are not expressible yet; claims that need them are tested on their core and labelled approximations, or come back UNTESTABLE.
+- **Rule language.** Indicators: sma, ema, wma, rsi, atr, adx, Bollinger, MACD, Supertrend, breakouts, % change, volume, day-of-week, hour, plus rolling min/max of any of them and previous-bar values ("RSI was under 30 on the last bar", "three higher closes"). Exits: % or ATR stops, % / ATR / R-multiple targets, % or ATR trailing stops, time exits, signal exits. Ichimoku, VWAP, DCA ladders, position sizing, partial exits, breakeven moves and multi-timeframe rules are not expressible yet; claims that need them are tested on their core and labelled approximations, or come back UNTESTABLE.
 - **Bar-close logic only.** Intrabar claims ("buy the wick") are approximated at the next open.
 - **Spot data.** No funding rates, order flow, sentiment or news; claims that need them are reported UNTESTABLE rather than approximated.
 - Not financial advice. A claim that SURVIVES has passed tests, not earned your money.

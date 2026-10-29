@@ -53,6 +53,7 @@ class Report:
     costs: dict = field(default_factory=dict)
     grounding: dict = field(default_factory=dict)
     fidelity: dict = field(default_factory=dict)
+    review: dict = field(default_factory=dict)
     series: dict = field(default_factory=dict)
 
     def to_dict(self) -> dict:
@@ -403,4 +404,19 @@ def attach_fidelity(rep: Report, fid: dict | None) -> Report:
             rep.warnings.append(f"left out: {g.split(':', 1)[-1].strip()}")
         for m in fid.get("audit_majors", []):
             rep.warnings.append(f"audit: {m}")
+    return escalate(rep)
+
+
+def escalate(rep: Report) -> Report:
+    """Bounded retries, then a human. The compiler gets two schema/quote repairs and one audit repair;
+    if the independent audit or the quote check still disagrees after that, the result is routed
+    to a person instead of being presented as settled."""
+    if rep.verdict == Verdict.UNTESTABLE:
+        return rep
+    reasons = [f"audit still disagrees: {m}" for m in (rep.fidelity or {}).get("audit_majors", [])]
+    reasons += [f"quote check: {p}" for p in (rep.grounding or {}).get("problems", [])]
+    rep.review = {"needs_human": bool(reasons), "reasons": reasons}
+    if reasons:
+        rep.warnings.insert(0, "needs a human check: the automatic checks still disagree with the compiled rules "
+                               "after the repair rounds, so treat the verdict as provisional")
     return rep

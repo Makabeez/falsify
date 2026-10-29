@@ -145,6 +145,9 @@ def report(out_dir: str | Path) -> str:
     lines.append(f"| Audit found major issues and sent the spec back for one repair | {len(repaired)}/{len(ok)} |")
     lines.append(f"| Still flagged unfaithful after repair | {len(unfaithful)}/{len(ok)} |")
     lines.append(f"| Verdicts on an approximation (disclosed gap or unresolved audit issue) | {len(approx)}/{len(tested)} |")
+    from .review import review_state
+    escalated = [r for r in tested if review_state(r["report"])["needs_human"]]
+    lines.append(f"| Escalated to a human (audit or quote check still failing after the repairs) | {len(escalated)}/{len(tested)} |")
     tok = sum(_tokens(r) for r in ok)
     if ok:
         lines.append(f"| Mean tokens per claim (transcribe + compile, excl. audit) | {tok // len(ok):,} |")
@@ -159,6 +162,7 @@ def report(out_dir: str | Path) -> str:
             cutoff_rank = k
     bh_pass = {cid for _, cid in ps[:cutoff_rank]}
     single = [r["id"] for r in ok if r["report"]["verdict"] == "SURVIVES"]
+    lines += _cost_section(ok)
     lines += ["", "## Correcting for testing many claims at once", "",
               f"{m} claims got a random-timing p-value. At p < 0.05 each, about {m * 0.05:.1f} would pass by luck alone. "
               f"Benjamini-Hochberg at a 5% false-discovery rate keeps the ones that still stand when the whole corpus "
@@ -196,3 +200,35 @@ def report(out_dir: str | Path) -> str:
     print(f"\nwrote {out / 'scoreboard.md'}  " + "  ".join(f"{k}={v}" for k, v in verdicts.items())
           + (f"  errors={len(errors)}" if errors else ""))
     return md
+
+
+def _cost_section(ok: list[dict]) -> list[str]:
+    """What verification costs: the audit and its repair round, against compiling alone."""
+    runs = [r["trace"]["cost"] for r in ok if r.get("trace", {}).get("cost")]
+    if not runs:
+        return []
+    steps = ["transcribe", "compile", "audit", "audit repair"]
+    tot = {k: {"n": 0, "s": 0.0, "t": 0} for k in steps}
+    for led in runs:
+        for row in led:
+            k = row["step"] if row["step"] in tot else None
+            if k:
+                tot[k]["n"] += 1
+                tot[k]["s"] += row["seconds"]
+                tot[k]["t"] += row["tokens"]
+    all_s = sum(v["s"] for v in tot.values()) or 1
+    all_t = sum(v["t"] for v in tot.values()) or 1
+    lines = ["", "## What verification costs", "",
+             f"Measured on the {len(runs)} claims with a cost ledger. Audit = the independent Muse Spark read; "
+             "audit repair = the compiler's second pass when the audit finds a major issue.", "",
+             "| Step | Runs | Mean seconds | Mean tokens | Share of time | Share of tokens |", "|---|---|---|---|---|---|"]
+    for k in steps:
+        v = tot[k]
+        if v["n"]:
+            lines.append(f"| {k} | {v['n']} | {v['s'] / v['n']:.0f} | {v['t'] // v['n']:,} | "
+                         f"{v['s'] / all_s * 100:.0f}% | {v['t'] / all_t * 100:.0f}% |")
+    ver_s = tot["audit"]["s"] + tot["audit repair"]["s"]
+    ver_t = tot["audit"]["t"] + tot["audit repair"]["t"]
+    lines += ["", f"Verification (audit + repair) is {ver_s / all_s * 100:.0f}% of model time and "
+                  f"{ver_t / all_t * 100:.0f}% of tokens; mean end-to-end {all_s / len(runs):.0f}s per claim."]
+    return lines
