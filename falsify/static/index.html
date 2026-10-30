@@ -110,6 +110,7 @@ mark.hot{outline:2px solid var(--ink)}
 @keyframes land{from{opacity:0;transform:rotate(-9deg) scale(1.5)}to{opacity:1;transform:rotate(-3deg) scale(1)}}
 @media (prefers-reduced-motion:reduce){.stamp.land{animation:none}.progress li.now .dot{animation:none}}
 .headline{font-size:20px;line-height:1.4;margin:14px 0 18px;max-width:36em}
+.why{font-size:18px;line-height:1.5;margin:0 0 18px;max-width:36em;padding-left:14px;border-left:3px solid var(--untestable)}
 .nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:4px 22px;margin:0 0 6px;padding:14px 0;
   border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
 .nums div{display:flex;flex-direction:column}
@@ -511,7 +512,7 @@ function render(res, animate) {
   }
 
   const rows = ruleRows(spec);
-  const ev = rows.filter(r => r.n).map(r => ({...r.ev, n: r.n}));
+  const ev = spec.testable ? rows.filter(r => r.n).map(r => ({...r.ev, n: r.n})) : [];  // no rules, nothing to highlight
 
   // exhibit
   const ex = el("div", {class: "exhibit"}, el("h2", {}, src.kind === "image" ? "The screenshot" : src.kind === "video" ? "The clip" : "The claim"));
@@ -553,7 +554,10 @@ function render(res, animate) {
       el("div", {}, el("dt", {}, `Total, ${p.window?.[0]?.slice(0, 4)}–${p.window?.[1]?.slice(0, 4)}`), el("dd", {}, pct(p.total_net_pct, 0))),
       el("div", {}, el("dt", {}, "Win rate"), el("dd", {}, p.win_rate_pct == null ? "–" : fmt(p.win_rate_pct, 0) + "%"))));
   }
-  if (v === "UNTESTABLE") col.append(el("p", {}, (rep.reasons || [])[0] || spec.untestable_reason || ""));
+  if (v === "UNTESTABLE") {
+    const why = (rep.reasons || [])[0] || spec.untestable_reason || "";
+    col.append(el("p", {class: "why"}, why.charAt(0).toUpperCase() + why.slice(1)));
+  }
 
   // rules
   if (spec.testable) {

@@ -277,15 +277,17 @@ def _buy_hold_warning(spec: ClaimSpec, rep: Report) -> None:
 def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = True,
             posted: str | None = None) -> Report:
     if not spec.testable:
-        return Report(Verdict.UNTESTABLE, "This claim can't be turned into rules anyone could check.",
+        return Report(Verdict.UNTESTABLE, "This claim can't be tested as stated.",
                       reasons=[spec.untestable_reason or "no mechanical rules"])
 
     tf = spec.timeframe.value
     have = data_mod.available()
     primary_asset = next((a for a in spec.assets if (a, tf) in have), None)
     if primary_asset is None:
-        return Report(Verdict.UNTESTABLE, "No bundled history for the asset/timeframe this claim needs.",
-                      reasons=[f"wanted {spec.assets} on {tf}; bundled universe is {data_mod.UNIVERSE}"],
+        coins = ", ".join(a.removesuffix("USDT") for a in data_mod.UNIVERSE)
+        return Report(Verdict.UNTESTABLE, "No price history here for what this claim trades.",
+                      reasons=[f"The claim trades {', '.join(spec.assets)} on {tf} bars. Falsify has Binance spot "
+                               f"history for {coins} on 1h, 4h and 1d only, and never swaps in a different asset."],
                       timeframe=tf)
 
     df = data_mod.load(primary_asset, tf)

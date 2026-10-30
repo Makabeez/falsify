@@ -193,7 +193,8 @@ def report(out_dir: str | Path) -> str:
         quoted = f"{g['quoted']}/{g['rule_elements']}" if g else ""
         flag = " (approx.)" if (rp.get("fidelity") or {}).get("level") == "approximation" \
             and rp["verdict"] != "UNTESTABLE" else ""
-        why = rp["headline"].replace("Tested an approximation of the claim. ", "").replace("|", "/")
+        why = ((rp.get("reasons") or [rp["headline"]])[0][:200] if rp["verdict"] == "UNTESTABLE"
+               else rp["headline"].replace("Tested an approximation of the claim. ", "")).replace("|", "/")
         bh = " ✓ corpus-corrected" if r.get("_bh") and rp["verdict"] == "SURVIVES" else ""
         lines.append(f"| [{rec['id']}]({rec['url']}) | {rec['category']} | {sp['claim_summary'].replace('|', '/')} | "
                      f"{claimed.replace('|', '/')} | {measured} | **{rp['verdict']}**{flag}{bh} | {why} | {quoted} |")
