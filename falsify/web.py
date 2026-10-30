@@ -43,6 +43,7 @@ MAX_IMAGE = 8 * 1024 * 1024
 MAX_VIDEO = 25 * 1024 * 1024
 WORKERS = int(os.environ.get("FALSIFY_WORKERS", "2"))
 MAX_QUEUE = 8
+JOB_TIMEOUT = int(os.environ.get("FALSIFY_JOB_TIMEOUT", "540"))  # seconds before a live check is reported as failed
 KEY_RE = re.compile(r"^[0-9a-f]{20}$")
 STAGES = ["transcribe", "compile", "quote_check", "audit", "repair", "backtest"]
 
@@ -130,6 +131,7 @@ def _run_job(key: str, kind: str, text: str | None, blob: bytes | None, ext: str
 
     job = _jobs[key]
     job["status"] = "running"
+    job["started"] = time.time()
 
     def stage(name: str) -> None:
         job["stage"] = name
@@ -234,7 +236,15 @@ def result(key: str) -> JSONResponse:
     job = _jobs.get(key)
     if not job:
         raise HTTPException(404, "No result with that link. It may have expired; test the claim again.")
+    if job["status"] in ("queued", "running") and time.time() - job["created"] > JOB_TIMEOUT:
+        # The worker thread can't be killed, but the visitor shouldn't wait on it. Its result is still cached if it lands.
+        return JSONResponse({"status": "error", "kind": job.get("kind"), "stages": job.get("stages"),
+                             "error": "the model API is not answering right now; try again in a few minutes"})
     out = {k: job.get(k) for k in ("status", "stage", "stages", "kind", "error")}
+    if job["status"] == "queued":
+        with _lock:
+            out["ahead"] = sum(1 for j in _jobs.values() if j["status"] == "queued" and j["created"] < job["created"])
+            out["running"] = sum(1 for j in _jobs.values() if j["status"] == "running")
     if job["status"] == "done":
         out["result"] = _with_review(job["result"])
     return JSONResponse(out)
@@ -357,7 +367,14 @@ def meta() -> JSONResponse:
 
 @app.get("/api/health")
 def health() -> dict:
-    return {"ok": True, "data_files": len(data_mod.available())}
+    now = time.time()
+    with _lock:
+        live = [j for j in _jobs.values() if j["status"] in ("queued", "running")]
+    return {"ok": True, "data_files": len(data_mod.available()), "live": LIVE and bool(os.environ.get("MODEL_API_KEY")),
+            "workers": WORKERS, "running": sum(j["status"] == "running" for j in live),
+            "queued": sum(j["status"] == "queued" for j in live),
+            "oldest_job_s": round(max((now - j["created"] for j in live), default=0)),
+            "today": _day["count"]}
 
 
 @app.get("/")

@@ -114,3 +114,15 @@ def test_corpus_trader_signoff(client, monkeypatch, tmp_path):
     os.utime(gt, (1, 1))  # new mtime -> reloaded
     r = client.get("/api/corpus/c033").json()["result"]
     assert r["signoff"]["agree"] is False and r["signoff"]["differs_on"] == ["routing"]
+
+
+def test_stuck_job_times_out_and_health_reports_queue(client, monkeypatch):
+    monkeypatch.setattr(web, "_pool", type("P", (), {"submit": staticmethod(lambda f, *a: None)})())  # never runs
+    key = client.post("/api/check", data={"text": "buy sol when rsi < 25"}).json()["key"]
+    r = client.get(f"/api/result/{key}").json()
+    assert r["status"] == "queued" and r["ahead"] == 0
+    h = client.get("/api/health").json()
+    assert h["queued"] == 1 and h["running"] == 0
+    web._jobs[key]["created"] -= web.JOB_TIMEOUT + 1
+    r = client.get(f"/api/result/{key}").json()
+    assert r["status"] == "error" and "not answering" in r["error"]

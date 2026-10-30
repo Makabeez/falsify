@@ -94,6 +94,10 @@ Rules:
   window and the starting position are not part of the rule: do not mark them NOT EXPRESSIBLE, and put any
   period the claimant cites in `claimed`.
 - Record any performance the claimant states (win rate, returns, period) in `claimed`. Dates as YYYY-MM-DD.
+- A one-off trade call (an entry zone, targets and a stop in fixed prices, for this market now) is a forecast, not
+  a repeatable rule: replaying "buy between 74,300 and 84,000" over years of history tests nothing the claimant
+  said. Set testable=false with the reason "one-off price call, not a repeatable rule; it can only be checked
+  forward from the post date". Fixed prices inside a repeatable rule are different and fine.
 - testable=false only when no mechanical rule can be recovered (e.g. "buy strong projects", "follow smart
   money", discretionary chart reading with no stated trigger, or rules that need data we don't have such as
   funding rates, order flow, sentiment or news). Give the reason in one sentence.
@@ -210,10 +214,13 @@ def _client():
     key = os.environ.get("MODEL_API_KEY")
     if not key:
         raise RuntimeError("MODEL_API_KEY is not set (Meta Model API key, see .env.example)")
-    return OpenAI(base_url=BASE_URL, api_key=key)
+    # Bounded: a hung Meta API call must not hold a web worker for the SDK's default 10 minutes x 3 tries.
+    return OpenAI(base_url=BASE_URL, api_key=key, timeout=API_TIMEOUT, max_retries=API_RETRIES)
 
 
 MAX_TOKENS = int(os.environ.get("FALSIFY_MAX_TOKENS", "32000"))
+API_TIMEOUT = float(os.environ.get("FALSIFY_API_TIMEOUT", "150"))
+API_RETRIES = int(os.environ.get("FALSIFY_API_RETRIES", "1"))
 REASONING = os.environ.get("FALSIFY_REASONING", "medium")
 
 
