@@ -70,3 +70,11 @@ def test_integer_calendar_ranges_are_equivalent():
     got = [parse_condition("day_of_week > 1.5"), parse_condition("day_of_week < 2.5")]
     assert conditions_match(ref, got, lenient=False)
     assert not conditions_match(ref, [parse_condition("day_of_week > 2.5")] + got[1:], lenient=False)
+
+
+def test_explicit_none_scores_invented_exits():
+    ref = {"testable": "full", "entry": ["rsi(14) < 30"], "stop": "none", "time_exit": "none", "reviewed": True}
+    assert score_claim("c", ref, _spec(stop_loss_pct=None, max_hold_bars=None, exit=[
+        {"left": {"kind": "rsi", "period": 14}, "op": "gt", "right": {"kind": "const", "value": 70}}])).fields["stop"]
+    s = score_claim("c", ref, _spec(stop_loss_pct=None, trailing_stop_pct=2.0))
+    assert s.fields["stop"] is False and s.fields["time_exit"] is False   # invented trailing stop and 5-bar hold
