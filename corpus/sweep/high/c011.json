@@ -1,0 +1,129 @@
+{
+ "id": "c011",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Buying bitcoin when price falls below the 200-week moving average is presented as a buying opportunity.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 1400,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 100000,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "Investing $10,000 during the March 2020 dip would have resulted in a 1.8 BTC / $105,000 portfolio today"
+  },
+  "assumptions": [
+   "Asset BTCUSDT interpreted from Bitcoin in the claim.",
+   "Timeframe 1d chosen as the page chart timeframe; weekly bars unavailable so 200-week average approximated as 1400-day average on daily bars (200*7, crypto trades 7 days/week).",
+   "'moving average' with no type stated interpreted as simple moving average (SMA).",
+   "'falls below' and 'drops below this threshold' interpreted as a crosses_below trigger for an automatic buy order, not a continuous below state.",
+   "NOT EXPRESSIBLE: claim implies indefinite buy-and-hold with no exit; schema requires an exit so max_hold_bars set to 100000 daily bars to approximate holding to end of available history without forcing a timed sell."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin's price",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "buying opportunity",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "price falls below its 200-week moving average",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Investing $10,000 during the March 2020 dip would have resulted in a 1.8 BTC / $105,000 portfolio today",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 25.6,
+   "tokens": 7922,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 40.6,
+   "tokens": 10892
+  },
+  {
+   "step": "audit repair",
+   "seconds": 12.7,
+   "tokens": 5991,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 14.9,
+   "tokens": 4985
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 93.8
+}

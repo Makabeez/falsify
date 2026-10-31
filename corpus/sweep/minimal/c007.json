@@ -1,0 +1,179 @@
+{
+ "id": "c007",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Buy on a break above the 15-day high when ADX(14) is below 25 and exit on a break below the 15-day low.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "adx",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 25.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "lowest_low",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2015-01-01",
+   "period_end": null,
+   "other": "CAGR of 90%"
+  },
+  "assumptions": [
+   "Asset BTC/USD mapped to Binance spot BTCUSDT.",
+   "Timeframe 1d taken from page chart timeframe; claim states days.",
+   "Direction long assumed: breakout above high then exit below low is long-only Turtle-style core.",
+   "ADX filter applied as entry condition on same bar.",
+   "highest_high / lowest_low already exclude current bar, so offset 0 used."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "Buying when the price breaks above the highest high of the last N days",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "we chose to only allow trades when the ADX(14) was below 25",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "Exiting when the price drops below the lowest low of the last M days",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.other",
+    "quote": "showed a strong Compound Annual Growth Rate (CAGR) of 90%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "Backtest results on daily BTC/USD data from 2015",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 3.6,
+   "tokens": 2785,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.9,
+   "tokens": 2061
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 6.5
+}

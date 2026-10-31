@@ -148,3 +148,32 @@ def test_runaway_text_is_sent_back_and_clipped():
     assert s.untestable_reason == "Portfolio total."
     schema = model_json_schema()
     assert "assets" in schema["required"] and "entry" in schema["required"]
+
+
+def test_effort_reaches_every_call_and_sweep_scores(tmp_path, monkeypatch):
+    from falsify import sweep
+    seen = []
+
+    class Spy(FakeClient):
+        def create(self, **kw):
+            seen.append(kw["reasoning_effort"])
+            return super().create(**kw)
+
+    client = Spy([{"faithful": True, "issues": []}])
+    spec, audit, trace = compile_and_audit(Source.from_text("btc above 100, hold a week"), model="m",
+                                           client=client, effort="low")
+    assert seen == ["low", "low"] and trace["effort"] == "low"
+    import pytest
+    with pytest.raises(ValueError):
+        compile_and_audit(Source.from_text("x"), model="m", client=client, effort="turbo")
+
+    monkeypatch.setattr(sweep, "_verdict", lambda s: "TESTED")
+    (tmp_path / "low").mkdir()
+    (tmp_path / "low" / "c900.json").write_text(json.dumps({
+        "id": "c900", "effort": "low", "spec": spec.model_dump(mode="json"), "verdict": "TESTED",
+        "cost": trace["cost"], "audit_majors": [], "grounding_problems": [], "audit_repair": False, "seconds": 1.0}))
+    gt = tmp_path / "gt.yaml"
+    gt.write_text('c900:\n  testable: "full"\n  asset: BTC\n  timeframe: 1d\n  entry:\n    - "close > 100"\n  reviewed: true\n')
+    rows = sweep.evaluate(tmp_path, gt)
+    assert rows[0]["effort"] == "low" and rows[0]["rule_elements"] == (3, 3) and rows[0]["tokens_mean"] == 1400
+    assert "| low |" in sweep.to_markdown(rows)

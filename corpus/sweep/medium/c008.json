@@ -1,0 +1,145 @@
+{
+ "id": "c008",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buy when the daily close crosses above the 200-day moving average and liquidate when it falls below it.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "most recent trade started after March 2020 crash returned 388%"
+  },
+  "assumptions": [
+   "Asset not named in claim text; BTCUSDT chosen as most natural reading from page about BTC.",
+   "Timeframe 1d inferred from daily close and checking price once a day.",
+   "'Moving average' and '200 DMA' interpreted as 200-period simple moving average (SMA), the standard meaning of 200 DMA.",
+   "Entry cross and exit cross are evaluated on bar closes with fill at next bar open per engine rules.",
+   "No stop, target, trailing stop or max hold stated; exit is the opposite cross below the 200 DMA.",
+   "388% is a single-trade return starting after March 2020 crash, recorded as claimed.other not total return."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "Buy when the daily close is crossing above the 200 days moving average.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "Liquidate the position when the daily close falls back down below the 200 DMA.",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": "daily close",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "Buy",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "returned 388%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 11.2,
+   "tokens": 4929,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 5.5,
+   "tokens": 2661
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 16.7
+}

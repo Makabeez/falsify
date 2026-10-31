@@ -1,0 +1,80 @@
+{
+ "id": "c027",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "The claim anticipates a Wyckoff re-accumulation spring leading to a 25% rise back to all-time highs.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No mechanical entry trigger, stop, or exit is stated; Wyckoff spring pattern reading is discretionary.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "+25% climb back to ATH over the coming weeks"
+  },
+  "assumptions": [
+   "Chart page context indicates BTC and 1d timeframe; used for assets and timeframe.",
+   "Direction assumed long because claim anticipates +25% climb back to ATH.",
+   "NOT EXPRESSIBLE: Wyckoff re-accumulation spring / breakout-retest pattern identification requires discretionary chart reading with no stated mechanical trigger, stop, or exit."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.other",
+    "quote": "+25%climb back to ATH over the coming weeks",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 2.9,
+   "tokens": 2451,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.0,
+   "tokens": 1268
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 4.9
+}

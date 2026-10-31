@@ -1,0 +1,75 @@
+{
+ "id": "c030",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "The claim encourages buying Bitcoin pullbacks of 20% or more on the view they commonly rebound to new highs.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No mechanical entry trigger, lookback, timeframe, or exit is stated, only general advice to buy 20% pullbacks and fear.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Claim is general encouragement to buy fear / 20% Bitcoin pullbacks with no defined lookback, entry trigger, timeframe, or exit.",
+   "20% pullback has no reference point stated (from what high over what period) so no mechanical entry can be recovered without inventing the rule.",
+   "No exit, stop, target, or holding period is stated."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 5.5,
+   "tokens": 3030,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 4.7,
+   "tokens": 1922
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 10.2
+}

@@ -1,0 +1,163 @@
+{
+ "id": "c002",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Enter when the 8-day EMA crosses the 21-day EMA and exit if price crosses the 21-day EMA or after 6 days.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 8,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 6,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "produced much more profit than loss."
+  },
+  "assumptions": [
+   "Asset is BTCUSDT from page context, not named in claim text.",
+   "Timeframe is 1d from chart timeframe on the page, not named in claim text.",
+   "Direction compiled as long: entry is 8-day EMA crossing above 21-day EMA; short-side cross not encoded because schema allows one direction.",
+   "max_hold_bars 6 equals maximum of 6 days on 1d bars.",
+   "NOT EXPRESSIBLE: claim describes 8/21 EMA crosses in both directions with stop just the other side implying long and short trades, but schema allows only one direction; only the long side (8 crosses above 21) is compiled and the short side is omitted.",
+   "NOT EXPRESSIBLE: dynamic stop loss just the other side of the 21-day EMA adjusted daily and intrabar price touch/cross of the 21-day EMA left out; rules evaluate on bar closes so exit is approximated as close crosses_below the 21-day EMA with no offset."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "The 8 day and 21 day EMAs cross.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "If price crosses the 21 day EMA , your setup has failed.",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "then monitor for a maximum of 6 days.",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.other",
+    "quote": "produced much more profit than loss.",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 15.9,
+   "tokens": 5977,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 20.8,
+   "tokens": 6850
+  },
+  {
+   "step": "audit repair",
+   "seconds": 10.0,
+   "tokens": 5496,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 16.3,
+   "tokens": 5361
+  }
+ ],
+ "audit_majors": [
+  "direction: Claim is direction-agnostic: '8 day and 21 day EMAs cross' with 'stop loss just the other side' and 'If price crosses the 21 day EMA, your setup has failed' implies both long and short setups. Spec encodes only long (8 crosses_above 21, exit crosses_below 21) and omits the short side, which changes trade count and P&L vs claimed 6 positions."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 62.9
+}

@@ -1,0 +1,154 @@
+{
+ "id": "c015",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buy and hold Bitcoin while the daily close is above its 15-period simple moving average, selling to cash when the moving average is above the close.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 130.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2017-12-01",
+   "period_end": "2018-05-15",
+   "other": null
+  },
+  "assumptions": [
+   "BTC/USD interpreted as BTCUSDT spot symbol.",
+   "15-periods Moving Average of the Closing Price interpreted as 15-bar SMA of close.",
+   "'15-days moving average' confirms daily bars, so timeframe is 1d.",
+   "Strategy is long-only spot hold while close is above SMA; sell means exit to cash, not short.",
+   "No stop, target, trailing stop or max hold stated, so the moving-average cross is the only exit."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "BTC/USD",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "15-days moving average",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "buying and hodling",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "buying and hodling when the closing price is above a moving average",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "As soon as the moving average is above the closing price, it's time to sell",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "would have generated 130% return on investment",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "December 1st, 2017",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "May 15th, 2018",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 16.8,
+   "tokens": 6248,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 5.7,
+   "tokens": 3148
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 22.5
+}

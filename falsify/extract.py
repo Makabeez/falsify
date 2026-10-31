@@ -16,6 +16,7 @@ non-Meta model.
 from __future__ import annotations
 
 import base64
+import contextvars
 import json
 import mimetypes
 import os
@@ -224,11 +225,16 @@ API_RETRIES = int(os.environ.get("FALSIFY_API_RETRIES", "1"))
 REASONING = os.environ.get("FALSIFY_REASONING", "medium")
 
 
+EFFORTS = ("minimal", "low", "medium", "high", "xhigh", "max")
+_effort = contextvars.ContextVar("falsify_effort", default=None)  # set per pipeline run by compile_and_audit(effort=...)
+
+
 def _structured(client, model: str, messages: list[dict], name: str, schema: dict) -> tuple[str, dict]:
     """One schema-constrained call. Reasoning shares max_tokens with the JSON, so if the
     budget runs out we retry once with reasoning dialled down before giving up."""
     usage_all: list[dict] = []
-    for effort in (REASONING, "low"):
+    first = _effort.get() or REASONING
+    for effort in (first, "minimal" if first in ("minimal", "low") else "low"):
         resp = client.chat.completions.create(
             model=model,
             messages=messages,
@@ -363,7 +369,21 @@ def major_issues(audit: Audit) -> list[AuditIssue]:
 
 
 def compile_and_audit(source: Source, model: str | None = None, client=None,
-                      on_stage=_noop) -> tuple[ClaimSpec, Audit, dict]:
+                      on_stage=_noop, effort: str | None = None) -> tuple[ClaimSpec, Audit, dict]:
+    """Run the whole model side at one reasoning effort (default FALSIFY_REASONING, medium)."""
+    if effort is not None and effort not in EFFORTS:
+        raise ValueError(f"effort must be one of {EFFORTS}")
+    token = _effort.set(effort)
+    try:
+        spec, audit, trace = _compile_and_audit(source, model, client, on_stage)
+        trace["effort"] = effort or REASONING
+        return spec, audit, trace
+    finally:
+        _effort.reset(token)
+
+
+def _compile_and_audit(source: Source, model: str | None = None, client=None,
+                       on_stage=_noop) -> tuple[ClaimSpec, Audit, dict]:
     """Compile, audit, and give the compiler one chance to fix what the auditor found.
 
     The verifier runs outside the compiler's control. If the audit still finds major

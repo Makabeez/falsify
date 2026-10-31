@@ -1,0 +1,76 @@
+{
+ "id": "c034",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "A system that trades price against its slowest moving average with higher success when ten timeframes align.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No mechanical entry direction, moving-average setting, or exit can be recovered and the claimed edge depends on 10-timeframe alignment the schema cannot express.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "No asset is named; BTCUSDT is assumed as proxy.",
+   "No single timeframe is named; the claim relies on 10 timeframes, 1d is assumed for representation.",
+   "No moving-average type, length, alignment definition, trade direction, or exit is stated.",
+   "NOT EXPRESSIBLE: confluence/alignment across 10 different time frames cannot be expressed in the single-timeframe schema and was left out, and it is the heart of the claimed edge."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 11.9,
+   "tokens": 4606,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.2,
+   "tokens": 3277
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 22.1
+}

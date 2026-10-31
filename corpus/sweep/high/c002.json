@@ -1,0 +1,149 @@
+{
+ "id": "c002",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Buy when the 8-day EMA crosses above the 21-day EMA and exit if price crosses below the 21-day EMA or after 6 days.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 8,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 6,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "6 positions were taken in 10 months (304 days), an average of one every 51 days."
+  },
+  "assumptions": [
+   "Direction assumed long: claim says 'EMAs cross' without naming long or short; compiled as bullish cross with exit on price crossing below the 21-day EMA.",
+   "Timeframe 1d chosen as most natural reading: claim uses 'day' EMAs and page chart timeframe is 1d.",
+   "Asset BTCUSDT chosen: claim text alone names no asset; page is about BTC.",
+   "Maximum of 6 days compiled as max_hold_bars 6.",
+   "NOT EXPRESSIBLE: dynamic stop 'just the other side of the 21 day EMA and adjust daily' cannot be encoded as fixed stop_loss_pct or stop_atr_mult; compiled as exit on bar close crossing the 21-day EMA, which is the closest testable core on closes."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "The 8 day and 21 day EMAs cross.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "If price crosses the 21 day EMA , your setup has failed.",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "then monitor for a maximum of 6 days.",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "6 positions were taken in 10 months (304 days), an average of one every 51 days.",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 19.0,
+   "tokens": 7228,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 22.2,
+   "tokens": 6499
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 41.2
+}

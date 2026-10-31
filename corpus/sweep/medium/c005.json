@@ -1,0 +1,163 @@
+{
+ "id": "c005",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buy Bitcoin when its 20-period moving average closes above its 200-period moving average and sell when it closes below.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 53.33,
+   "total_return_pct": 321940.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2011-01-01",
+   "period_end": "2026-05-13",
+   "other": "Annualized Return: 69.10% \u2026 Profit Factor: 7.183"
+  },
+  "assumptions": [
+   "Interpreted 'ma' as simple moving average (SMA); EMA vs SMA not specified.",
+   "Timeframe 1d chosen as most natural reading for 20ma/200ma on Bitcoin; claim does not state timeframe.",
+   "Entry compiled as close above condition: sma(20) gt sma(200) on same bar close, filled next open per engine.",
+   "Exit compiled as opposite condition: sma(20) lt sma(200); no stop, target, trailing or max hold stated."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin\u2019s",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "Buy market on close",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Bitcoin\u2019s 20ma closes > its 200ma",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "Sell if Bitcoin\u2019s 20ma closes < its 200ma",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Hit Rate: 53.33%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "Total Return: 321,940%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "2011-01-01 to 2026-05-13",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "2011-01-01 to 2026-05-13",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Annualized Return: 69.10% \u2026 Profit Factor: 7.183",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 11.8,
+   "tokens": 5091,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 6.3,
+   "tokens": 2970
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 18.1
+}

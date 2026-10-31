@@ -1,0 +1,216 @@
+{
+ "id": "c014",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buy Bitcoin on Wednesday when price is rising and sell on Saturday to avoid Sunday weakness on a daily chart.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 1.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 2.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "pct_change",
+     "period": 1,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 4.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 3,
+  "free_parameters": [
+   {
+    "name": "uptrend threshold pct",
+    "target": "entry[2].right.value",
+    "candidates": [
+     0.0,
+     0.5,
+     1.0,
+     2.0,
+     3.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "BTC mapped to BTCUSDT Binance spot symbol.",
+   "Interpreted 'sells on Saturday, and buys back the next Wednesday' as a long cycle: buy Wednesday, sell Saturday to sit out Sunday weakness; a short Sat-Wed reading is possible but 'buys back' was read as reopening long.",
+   "Encoded vague 'kinda going up' as 1-bar pct_change > 0% on daily close.",
+   "Encoded Wednesday as day_of_week between 1.5 and 2.5; encoded Saturday exit as day_of_week > 4.5 plus max_hold_bars 3 so a Wednesday entry exits on Saturday.",
+   "Timeframe 1d taken from the claim's chart-period note."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "set your chart time period to 1 day",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "the next Wednesday",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "the next Wednesday",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "if the price is kinda going up",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "sells on Saturday",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 25.2,
+   "tokens": 8308,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 19.0,
+   "tokens": 6039
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 44.2
+}

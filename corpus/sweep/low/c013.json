@@ -1,0 +1,88 @@
+{
+ "id": "c013",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "Buying bitcoin only when price is more than 5% below the most recent high underperforms buying $1 every day.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "DCA ladder with daily $1 sizing cannot be expressed as a single-position rule and is the heart of the claim.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: daily $1 DCA ladder with averaging, position sizing, and cumulative spend/value comparison left out; single-position engine cannot replicate it.",
+   "The 5% dip filter is the heart of Rule 2 but without the DCA sizing there is no mechanical single-position equivalent.",
+   "Most recent high has no defined lookback (all-time high vs trailing high)."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 6.1,
+   "tokens": 3468,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.4,
+   "tokens": 1889
+  },
+  {
+   "step": "audit repair",
+   "seconds": 11.1,
+   "tokens": 4910,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.8,
+   "tokens": 4150
+  }
+ ],
+ "audit_majors": [
+  "testable: Mechanical core is testable as single-position long BTC 1d entry when price is >5% below most recent high; daily $1 DCA sizing/compounding/position-size cannot justify testable=false per audit scope."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 31.5
+}

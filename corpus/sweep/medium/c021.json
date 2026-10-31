@@ -1,0 +1,92 @@
+{
+ "id": "c021",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Long ETH/USDT on 4-hour closes using Ichimoku green and red lead lines, claimed to beat buy-and-hold since 2017.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "The strategy requires Ichimoku green and red lead lines which are not in the available indicator set.",
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2017-01-01",
+   "period_end": "2021-06-02",
+   "other": "you would make more profit with this strategy than holding the coin"
+  },
+  "assumptions": [
+   "Timeframe read as 4h from 'four hour chart'.",
+   "Direction assumed long: close above green line taken as entry and close below as exit; no short entry stated.",
+   "Period start 'beginning of 2017' interpreted as 2017-01-01.",
+   "Period end 'until today' interpreted as posting date 2021-06-02.",
+   "NOT EXPRESSIBLE: Ichimoku green/red lead lines (Senkou Span A/B) are not in the available indicator set, so entry and exit conditions cannot be encoded and no substitution was made."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "crypto pair ETH/USDT",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "four hour chart",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "beginning of 2017",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "until today",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "you would make more profit with this strategy than holding the coin",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 17.6,
+   "tokens": 6433,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 15.0,
+   "tokens": 4938
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 32.7
+}

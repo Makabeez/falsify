@@ -1,0 +1,75 @@
+{
+ "id": "c021",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Long ETH/USDT on 4h when the green Ichimoku lead line is above the red lead line and price closes above the green line, exiting when price closes below the green line.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Requires Ichimoku lead lines which are not available indicators in the schema.",
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2017-01-01",
+   "period_end": null,
+   "other": "more profit with this strategy than holding the coin"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: Ichimoku Senkou Span A (green lead line) and Senkou Span B (red lead line) are not available indicators, and they are the heart of entry and exit triggers.",
+   "Entry interpreted as long when bullish cloud and close above Span A; exit when close below Span A.",
+   "Timeframe 4h taken from claim text."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "crypto pair ETH/USDT",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "four hour chart",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "A green candle must closed above the green lead line",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 2.6,
+   "tokens": 2546,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.7,
+   "tokens": 1481
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 5.4
+}

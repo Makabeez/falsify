@@ -1,0 +1,249 @@
+{
+ "id": "c028",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Bitcoin daily breakout strategy buys a new 20-day high after at least three sessions since the prior marker and exits within a few days with a stop below the trigger.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "le",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    },
+    "op": "le",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    },
+    "op": "le",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 4
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": 3.0,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 4,
+  "free_parameters": [
+   {
+    "name": "holding period within 2-6 bars",
+    "target": "max_hold_bars",
+    "candidates": [
+     2.0,
+     3.0,
+     4.0,
+     5.0,
+     6.0
+    ]
+   },
+   {
+    "name": "stop distance approximating watermark stop",
+    "target": "stop_loss_pct",
+    "candidates": [
+     1.0,
+     2.0,
+     3.0,
+     5.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Asset BTC mapped to Binance spot BTCUSDT.",
+   "Timeframe 1d chosen from page chart; not stated in claim text.",
+   "Direction long per Buy entry wording.",
+   "Entry evaluated on bar closes with fill at next open approximates Buy entry placed on the next day at the watermark.",
+   "Prior 20-day watermark referenced excluding current bar via highest_high offset 1; close beyond it defines new high.",
+   "3-session filter encoded as no breakout close in prior 3 bars: close[1] <= watermark[2] AND close[2] <= watermark[3] AND close[3] <= watermark[4].",
+   "Holding period set to 4 bars as representative value within stated 2-6 interval range.",
+   "Stop approximated as fixed 3% because schema allows only fixed-pct or ATR stops.",
+   "NOT EXPRESSIBLE: claim triggers long on a new 20-day high OR a new 20-day low; schema entry is AND-only with single direction so only the high-breakout long side is tested and the low-breakout long side is omitted.",
+   "NOT EXPRESSIBLE: true stop is price-based below the latest triggering high/low watermark varying per trade and cannot be expressed as fixed-pct; fixed 3% is an approximation for testability."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "The close of the new high/low must be greater than (beyond) the previous high/low price marker.",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "previous high/low marker must have been at least 3 trading sessions prior",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "previous high/low marker must have been at least 3 trading sessions prior",
+    "assumed": false
+   },
+   {
+    "field": "entry[3]",
+    "quote": "previous high/low marker must have been at least 3 trading sessions prior",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "OHLCV historical data for Bitcoin (BTC) from Binance exchange.",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "Buy entry is placed on the next day at the previous 20 day high/low watermark",
+    "assumed": false
+   },
+   {
+    "field": "stop_loss_pct",
+    "quote": "Stop entries for failed trades are placed below the latest high/low that triggered the signal",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "Profits/exits should be taken within 2-6 candlestick intervals",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 18.8,
+   "tokens": 6742,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 21.1,
+   "tokens": 7063
+  },
+  {
+   "step": "audit repair",
+   "seconds": 28.8,
+   "tokens": 9890,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 15.3,
+   "tokens": 5881
+  }
+ ],
+ "audit_majors": [
+  "entry: Claim triggers Buy on new 20-day high OR new 20-day low; spec tests only high-breakout longs and omits the low-breakout long leg admitted as NOT EXPRESSIBLE, removing half the claimed signals.",
+  "stop_loss_pct: Claim stop is price-based below the latest triggering high/low watermark varying per trade; spec invents fixed 3% stop (candidates 1/2/3/5%) not in claim, which differs from watermark distance."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 84.0
+}

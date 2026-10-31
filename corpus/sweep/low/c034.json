@@ -1,0 +1,77 @@
+{
+ "id": "c034",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "A system compares price to its slowest moving average across ten timeframes where more aligned timeframes means higher success.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No mechanical rule can be recovered because MA length, alignment definition, entry trigger, exit, asset and direction are unstated and 10-timeframe alignment is not expressible.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "No asset stated; using BTCUSDT as default proxy.",
+   "No single timeframe stated; using 1d as default single timeframe.",
+   "No moving-average length, type, or alignment definition stated.",
+   "No entry trigger, exit, or direction stated; defaulting direction to long for schema completeness.",
+   "NOT EXPRESSIBLE: alignment across 10 different time frames and scaling success/position by count of aligned timeframes; multi-timeframe conditions cannot be expressed."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 6.9,
+   "tokens": 3269,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.9,
+   "tokens": 1731
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 10.8
+}

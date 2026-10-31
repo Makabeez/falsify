@@ -1,0 +1,154 @@
+{
+ "id": "c009",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "A 50-day / 55-day moving-average crossover strategy on Bitcoin generated about 7,830% profit over the past five years.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "sma",
+     "period": 55,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 55,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 7830.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2014-10-29",
+   "period_end": "2019-10-29",
+   "other": "could be up closer to 8,000%"
+  },
+  "assumptions": [
+   "Interpreted '50-day and 55-day pair' as 50-period SMA crossing 55-period SMA on daily closes.",
+   "Entry is long when fast MA crosses above slow MA; exit is opposite cross, the standard moving-average crossover reading.",
+   "Timeframe 1d taken from page chart timeframe, not claimant text.",
+   "Asset BTC taken from page topic.",
+   "NOT EXPRESSIBLE: fees, position sizing and starting position are not part of the rule."
+  ],
+  "evidence": [
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "generated a profit of about 7,830%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "could be up closer to 8,000%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "over the past five years",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "The 50-day and 55-day pair has generated the largest returns",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.7,
+   "tokens": 2830,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.2,
+   "tokens": 1736
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 6.9
+}

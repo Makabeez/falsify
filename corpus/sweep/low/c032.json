@@ -1,0 +1,117 @@
+{
+ "id": "c032",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "Bitcoin long entry when trend scores exceed 7 with a 10-day high close, exiting when trend score falls below 5.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Entry and exit depend on proprietary Bitcoin Trend Score and Relative Trend Score which cannot be expressed with available indicators.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 10,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 70.0,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2011-01-01",
+   "period_end": null,
+   "other": "ten buy signals with average gain of 1436.28% per win, while losses averaged -18.78%"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: Bitcoin Trend Score and Bitcoin Relative Trend Score are proprietary scores with no definition in available indicators; 2 of 3 entry filters and the sole exit trigger depend on them.",
+   "Timeframe 1d chosen from page chart timeframe, not stated in claim text.",
+   "Direction interpreted as long from buy signals.",
+   "Entry shown is closest testable core (10-day high close) only; full rule cannot be mechanically recovered because proprietary scores are the heart of the strategy."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "buy signals",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Bitcoin closed at a 10-day high",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "70% success rate",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "Since 2011",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 8.5,
+   "tokens": 3969,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 6.3,
+   "tokens": 2705
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 14.8
+}

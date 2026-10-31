@@ -1,0 +1,156 @@
+{
+ "id": "c019",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "Long BTCUSDT on 1H when price crosses above the 20 EMA and the next candle closes above the prior high, with 2x ATR(14) stop and 1.8R target.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "high",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": 2.0,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": 1.8,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 494.47,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2021-01-01",
+   "period_end": "2023-03-15",
+   "other": "almost 300 trades since January 2021"
+  },
+  "assumptions": [
+   "Timeframe is 1h as stated: 1H EMA / 1H chart.",
+   "Asset BTCUSDT maps Bybit BTC/USDT to Binance spot BTCUSDT; exchange feed difference is ignored.",
+   "NOT EXPRESSIBLE: Bybit-specific price feed; tested on Binance proxy.",
+   "'moves above the 20 EMA' compiled as close crosses_above 20-period EMA rather than just close above EMA.",
+   "Two-bar sequence compiled with offsets so all conditions can hold on same entry bar: cross occurred on prior bar (offset 1) and confirmation close above prior high on entry bar.",
+   "Stop ATR length 14 from ATR instruction; stop multiplier 2 and 1.8R target from SL/TP formulas.",
+   "No indicator exit stated; exit is via ATR stop and R-multiple target only.",
+   "Claimed period 2021-01-01 to 2023-03-15 uses explicit January 2021 backtest start and 2023-03-15 post date as end of 'last 2 years' window."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "BTC/USDT on Bybit",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "on the 1H chart of BTC/USDT on Bybit",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "you long",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Every time the price moves above the 20 EMA on the 1H chart of BTC/USDT on Bybit",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "If the next candle closed above the previous candle's high",
+    "assumed": false
+   },
+   {
+    "field": "stop_atr_mult",
+    "quote": "SL will be at the current price - (2 * ATR indicator)",
+    "assumed": false
+   },
+   {
+    "field": "take_profit_r",
+    "quote": "TP will be at the current price + 1.8 * (current price - SL price )",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "made 494.47% in the last 2 years",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 19.6,
+   "tokens": 9529,
+   "quote_repairs": 1
+  },
+  {
+   "step": "audit",
+   "seconds": 4.9,
+   "tokens": 2771
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 24.6
+}

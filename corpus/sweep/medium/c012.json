@@ -1,0 +1,217 @@
+{
+ "id": "c012",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buy Bitcoin at month-end when price is above the 200-day SMA and sell when price is below it.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "days_left_in_month",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "days_left_in_month",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "profitable so far"
+  },
+  "assumptions": [
+   "Asset BTC-USD mapped to BTCUSDT spot symbol.",
+   "Timeframe 1d chosen as most natural reading for 200-day SMA and last-day-of-month rule.",
+   "Direction is long-only: buying above and selling below implies holding long or flat, no shorting.",
+   "Entry requires last-day-of-month and close above 200-day SMA on the same bar close.",
+   "Exit requires last-day-of-month and close below 200-day SMA on the same bar close; both exit conditions must hold together to exit.",
+   "No stop, target, trailing stop or max hold stated, so position is held until the exit signal.",
+   "Profitability statement is qualitative with no quantified return, win rate or period."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "price of BTC-USD",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "buying when the price is above the 200-day simple moving average (SMA) \u2026 and selling when it is below",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "on the last day of the month",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "buying when the price is above the 200-day simple moving average (SMA)",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "selling when it is below",
+    "assumed": false
+   },
+   {
+    "field": "exit[1]",
+    "quote": "on the last day of the month",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "profitable so far",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 31.1,
+   "tokens": 8525,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 8.0,
+   "tokens": 3283
+  },
+  {
+   "step": "audit repair",
+   "seconds": 25.1,
+   "tokens": 8326,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 8.4,
+   "tokens": 3643
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 72.8
+}

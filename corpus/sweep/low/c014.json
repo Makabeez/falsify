@@ -1,0 +1,155 @@
+{
+ "id": "c014",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "Short Bitcoin on Saturday and cover on the following Wednesday if price is rising, using daily bars.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "short",
+  "entry": [
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 4.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 5.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 4,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Asset is BTC mapped to BTCUSDT.",
+   "Saturday encoded as day_of_week gt 4.5 AND day_of_week lt 5.5 on entry, where entry conditions are AND.",
+   "Wednesday timing encoded as max_hold_bars 4 (Saturday close -> Wednesday close on daily bars).",
+   "NOT EXPRESSIBLE: exit conjunction (Wednesday AND price kinda going up) cannot be expressed because exits are OR-only; the price-rising filter is omitted and the timing-only core is tested."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "sells on Saturday, and buys back the next Wednesday",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "sells on Saturday",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "on Saturday",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "buys back the next Wednesday",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "set your chart time period to 1 day",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 13.3,
+   "tokens": 4867,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 6.5,
+   "tokens": 2954
+  },
+  {
+   "step": "audit repair",
+   "seconds": 10.4,
+   "tokens": 5073,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 5.9,
+   "tokens": 2647
+  }
+ ],
+ "audit_majors": [
+  "exit: Claim exits the Saturday short on the next Wednesday only 'if the price is kinda going up'. Spec omits this price-rising filter and exits unconditionally on Wednesday via max_hold_bars 4. Testing timing-only exit changes what is being tested."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 36.1
+}

@@ -1,0 +1,147 @@
+{
+ "id": "c003",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "A 4h RSI(14) ladder buys when RSI drops below 28 with five scaled averaging orders and takes profit 3% above average entry with no stop loss.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "The core is a five-rung DCA averaging ladder with 1.8x size scaling that cannot be expressed as single-position rules.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 28.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 70.97,
+   "total_return_pct": 3.08,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2024-01-01",
+   "period_end": "2026-06-29",
+   "other": "Net Profit: +3,078.29 USDT; Profit Factor: 4.028"
+  },
+  "assumptions": [
+   "Asset not named in claim text; assumed BTCUSDT from page context about BTC.",
+   "Direction not stated; assumed long because averaging orders are below entry and take-profit is above average entry.",
+   "Entry phrase 'drops below 28' compiled as RSI(14) crosses_below 28 on bar close.",
+   "NOT EXPRESSIBLE: five averaging orders at -2%, -5%, -9.5%, -16%, -25% with 1.8x size scaling per rung and take-profit 3% above average entry; single-position engine cannot average down or compute average entry.",
+   "NOT EXPRESSIBLE: Stop Loss None with ladder allocation as structural risk cap means no fixed stop; left as no stop.",
+   "Test window and starting flat position are not part of the rule; cited period stored in claimed."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": "4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "when 4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "Test Period: January 1, 2024 \u2014 June 29, 2026 (~30 months).",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "Test Period: January 1, 2024 \u2014 June 29, 2026 (~30 months).",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "Net Profit: +3,078.29 USDT (+3.08%)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Percent Profitable: 70.97% (44 / 62)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Net Profit: +3,078.29 USDT (+3.08%) \u2026 Percent Profitable: 70.97% (44 / 62) \u2026 Profit Factor: 4.028",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 24.8,
+   "tokens": 8878,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 19.8,
+   "tokens": 6309
+  },
+  {
+   "step": "audit repair",
+   "seconds": 16.7,
+   "tokens": 7567,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 17.3,
+   "tokens": 5888
+  }
+ ],
+ "audit_majors": [
+  "testable: Marks claim untestable because five-rung DCA ladder with 1.8x scaling cannot be expressed, but a mechanical single-position core could be tested: 4h RSI(14) crosses_below 28 entry with 3% take-profit above entry and no stop-loss; 1.8x scaling is position sizing which is out of scope and averaging rungs could be simplified via assumptions."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 78.6
+}

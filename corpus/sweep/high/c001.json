@@ -1,0 +1,284 @@
+{
+ "id": "c001",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Bitcoin daily long signal requiring RSI at its 50-bar low then rising for three bars while below 37.5 and below RSI 160 bars ago plus 5.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    },
+    "op": "le",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": "min",
+     "window": 50,
+     "offset": 3
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "gt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    },
+    "op": "gt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 5.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 160
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 37.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 365,
+  "free_parameters": [
+   {
+    "name": "RSI length",
+    "target": "entry[5].left.period",
+    "candidates": [
+     7.0,
+     14.0,
+     21.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": 71.4,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "Average winning trade: +105.8%"
+  },
+  "assumptions": [
+   "Asset interpreted as BTCUSDT from Bitcoin; no exchange or quote currency stated.",
+   "Timeframe 1d chosen as most natural reading of 50 days / 160 days wording; claim never states timeframe explicitly.",
+   "Direction assumed long; claim never says long or short, but oversold bounce with +105.8% average winning trade implies long.",
+   "RSI period not stated, used usual default 14 for all RSI operands.",
+   "To allow at-50-bar-low and rising-for-3-bars to hold on same bar, the low is placed 3 bars before the signal with three successive rises after it; same-bar low plus rise would never fire.",
+   "No exit stated, assumed max_hold_bars 365 to allow large moves to develop as most common reading for an unexited daily signal."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "RSI is at the 50 days lowest",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "is rising for 3 bars",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "is rising for 3 bars",
+    "assumed": false
+   },
+   {
+    "field": "entry[3]",
+    "quote": "is rising for 3 bars",
+    "assumed": false
+   },
+   {
+    "field": "entry[4]",
+    "quote": "is lower than the 160 days RSI with 5 (as RSI value) added",
+    "assumed": false
+   },
+   {
+    "field": "entry[5]",
+    "quote": "RSI is below 37.5",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "71.4% Winrate",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Average winning trade: +105.8%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 32.2,
+   "tokens": 9923,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 18.0,
+   "tokens": 6892
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 50.2
+}

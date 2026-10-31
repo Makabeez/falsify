@@ -1,0 +1,183 @@
+{
+ "id": "c014",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Bitcoin short strategy sells Saturday and buys back Wednesday to avoid weak Sundays, covering when price is rising.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "short",
+  "entry": [
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 4.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 5.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 2.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Asset BTC from page context; chart timeframe 1d stated in claim.",
+   "Compiled 'sells on Saturday, and buys back the next Wednesday' as a short held over the weekend: short entry Saturday, cover after the weekend.",
+   "NOT EXPRESSIBLE: cover requires Wednesday AND price rising on the same bar, but exit conditions are OR so an AND cover cannot be expressed; exit is approximated by weekday alone and the 'kinda going up' trend filter on the cover is omitted from the test.",
+   "NOT EXPRESSIBLE: exact Wednesday cover cannot be expressed with OR exits (gt plus lt would be a tautology), so exit uses day_of_week lt 2.5 (Monday-Wednesday) to hold through Sunday and exit at the next weekday opportunity.",
+   "'kinda going up' would be close above SMA(20) with sweep, but it is left out of the executable rule for the reason above."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "sells on Saturday, and buys back the next Wednesday",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "sells on Saturday",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "sells on Saturday",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "buys back the next Wednesday",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "set your chart time period to 1 day",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 9.2,
+   "tokens": 4037,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 5.4,
+   "tokens": 3069
+  },
+  {
+   "step": "audit repair",
+   "seconds": 9.2,
+   "tokens": 4699,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.8,
+   "tokens": 2122
+  }
+ ],
+ "audit_majors": [
+  "exit[0]: Claim says cover 'next Wednesday' - single weekday. Spec encodes day_of_week lt 2.5 which triggers on Monday-Tuesday-Wednesday, exiting early.",
+  "exit: Claim conditions cover on 'if the price is kinda going up'. Spec omits any price-trend filter and covers on weekday alone, changing what is tested."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 26.7
+}

@@ -1,0 +1,127 @@
+{
+ "id": "c033",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "A daily Bitcoin strategy that buys when 5-period RSI exceeds 70, claimed to outperform buy-and-hold since 2015.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No exit, stop, target, or holding period is stated, so the holding period needed to test outperformance cannot be recovered.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 70.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2015-01-01",
+   "period_end": null,
+   "other": "Outperforms Buy & Hold on Bitcoin"
+  },
+  "assumptions": [
+   "Asset Bitcoin mapped to BTCUSDT spot symbol.",
+   "Direction assumed long-only because comparison to buy-and-hold implies long exposure.",
+   "NOT EXPRESSIBLE: claim states entry RSI(5) > 70 only and gives no exit, stop, target, or holding period, so total return, drawdown, and outperformance versus buy-and-hold cannot be reproduced without inventing a holding period."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "Works on the daily (1D) timeframe",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "RSI(5) > 70",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "(Full Backtest / 2015 - Now)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Outperforms Buy & Hold on Bitcoin",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 11.6,
+   "tokens": 5272,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 13.1,
+   "tokens": 4870
+  },
+  {
+   "step": "audit repair",
+   "seconds": 11.2,
+   "tokens": 5743,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.4,
+   "tokens": 3523
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 47.2
+}

@@ -1,0 +1,121 @@
+{
+ "id": "c016",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Long DCA strategy that averages down after 4-hour RSI(14) falls below 28 and targets 3% above average entry with no stop-loss.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "The heart of the strategy is the five-rung averaging ladder with 1.8x scaling and a 3% target on average entry, which the schema cannot express.",
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 28.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 68.82,
+   "total_return_pct": 5.79,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2024-01-01",
+   "period_end": "2026-06-28",
+   "other": "Net Profit: +5,790.33 USDT; Profit Factor: 5.019"
+  },
+  "assumptions": [
+   "Asset not named in claim text; ETHUSDT chosen from page context that page is about ETH.",
+   "Direction inferred as long from averaging down after dips and take profit above entry; no explicit long/short stated.",
+   "'drops below 28' compiled as crosses_below rather than holding below 28.",
+   "NOT EXPRESSIBLE: Five averaging orders at -2%, -5%, -9.5%, -16%, -25% with 1.8x size scaling per rung and resulting average entry pricing are omitted; only base RSI signal is compiled.",
+   "NOT EXPRESSIBLE: Take profit 3% above average (DCA) entry cannot be expressed because average entry depends on the unmodeled ladder; no fixed-percentage target from base entry is used.",
+   "NOT EXPRESSIBLE: No stop-loss with ladder allocation as structural risk cap cannot be modeled; holding without a stop omits the defined risk structure.",
+   "Closest testable core of base entry alone would test a different, harder target and omit defining risk structure, so testable is false."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": "4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "A base order fires when 4h RSI(14) drops below 28",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 18.4,
+   "tokens": 6901,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 15.2,
+   "tokens": 5232
+  },
+  {
+   "step": "audit repair",
+   "seconds": 15.8,
+   "tokens": 7054,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.6,
+   "tokens": 4714
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 61.0
+}

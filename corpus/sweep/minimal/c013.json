@@ -1,0 +1,91 @@
+{
+ "id": "c013",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Buying Bitcoin only on days with more than a 5% dip from the most recent high underperforms daily dollar-cost averaging.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "DCA ladder with daily $1 sizing and no exit cannot be reduced to a single-position entry-exit rule.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2013-05-01",
+   "period_end": "2021-05-23",
+   "other": "$1/Day ->5% Dips (Rule 2) | $2943 | 4.639"
+  },
+  "assumptions": [
+   "Timeframe 1d taken from page context, not claimant text.",
+   "NOT EXPRESSIBLE: $1-per-day DCA ladder with multiple overlapping concurrent $1 positions and cumulative holdings cannot be expressed; engine holds one position at a time.",
+   "NOT EXPRESSIBLE: no exit / holding period is stated except the backtest end date; exit cannot be recovered.",
+   "Most-recent high lookback is ambiguous and no exit rule exists, so no mechanical single-position rule can be recovered."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.other",
+    "quote": "$1/Day \u2013 >5% Dips (Rule 2) | $2943 | 4.639",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "every day from May 1, 2013 until May 23, 2021",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Dip Greater Than 5% from the Most Recent High Price",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 5.3,
+   "tokens": 3045,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.2,
+   "tokens": 1444
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 7.5
+}

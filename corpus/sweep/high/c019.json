@@ -1,0 +1,165 @@
+{
+ "id": "c019",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Long BTCUSDT on 1-hour closes when price crosses above the 20 EMA and the next candle closes above the prior high, with a 2-times ATR stop and 1.8R target.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "high",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": 2.0,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": 1.8,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 494.47,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2021-01-01",
+   "period_end": null,
+   "other": "almost 300 trades"
+  },
+  "assumptions": [
+   "Mapped Bybit BTC/USDT to BTCUSDT spot; venue difference ignored.",
+   "'Price moves above the 20 EMA' compiled as close crossing above EMA(20), evaluated one bar before entry to preserve next-candle sequence on the same entry bar.",
+   "'Next candle closed above the previous candle's high' compiled as close > high[1] on the entry bar.",
+   "'Current price' for SL/TP compiled as signal-bar close with ATR(14) taken at the signal bar.",
+   "TP formula compiled as 1.8R multiple of the initial stop distance.",
+   "No exit condition or time limit stated; position held until stop or target.",
+   "Claimed start January 2021 normalized to 2021-01-01."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "BTC/USDT on Bybit",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "on the 1H chart of BTC/USDT on Bybit",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "you long",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "price moves above the 20 EMA",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "If the next candle closed above the previous candle's high",
+    "assumed": false
+   },
+   {
+    "field": "stop_atr_mult",
+    "quote": "SL will be at the current price - (2 * ATR indicator)",
+    "assumed": false
+   },
+   {
+    "field": "take_profit_r",
+    "quote": "TP will be at the current price + 1.8 * (current price - SL price )",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "made 494.47% in the last 2 years",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "since January 2021",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "over a sample size of almost 300 trades",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 22.7,
+   "tokens": 8498,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 12.0,
+   "tokens": 4629
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 34.7
+}

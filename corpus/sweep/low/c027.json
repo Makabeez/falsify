@@ -1,0 +1,76 @@
+{
+ "id": "c027",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "A Wyckoff re-accumulation spring is forming with an expected 25% rise back to ATH over coming weeks after a possible breakout retest.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Wyckoff re-accumulation spring with breakout-retest expectation states no mechanical entry, exit, or level that can be compiled into repeatable bar-close rules.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 25.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Asset is BTC from page context, not named in claim text.",
+   "Timeframe 1d from page chart timeframe, not stated in claim text.",
+   "Direction inferred as long from expected +25% climb back to ATH.",
+   "NOT EXPRESSIBLE: Wyckoff re-accumulation pattern and spring / breakout-retest identification has no mechanical definition in the schema."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "+25%climb back to ATH",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 5.0,
+   "tokens": 2998,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 4.6,
+   "tokens": 1864
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 9.7
+}

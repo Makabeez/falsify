@@ -1,0 +1,156 @@
+{
+ "id": "c003",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "Base long entry when 4h RSI(14) drops below 28 with DCA averaging ladder and 3% take profit above average entry.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 28.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": 3.0,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 70.97,
+   "total_return_pct": 3.08,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2024-01-01",
+   "period_end": "2026-06-29",
+   "other": "Net Profit: +3,078.29 USDT (+3.08%); Profit Factor: 4.028"
+  },
+  "assumptions": [
+   "Timeframe is 4h from '4h RSI(14)'.",
+   "Direction is long: base order in a DCA ladder is a buy.",
+   "Asset is BTCUSDT from page context; claim text names no asset.",
+   "Entry compiled as RSI(14) crosses_below 28 on bar close; fill at next open per engine rules.",
+   "NOT EXPRESSIBLE: Five averaging orders at fixed deviations (-2%, -5%, -9.5%, -16%, -25%) after base entry - averaging / DCA ladder and pyramiding cannot be expressed; only the base RSI entry is compiled.",
+   "NOT EXPRESSIBLE: 1.8x size scaling per rung is position sizing and is not part of the testable rule.",
+   "NOT EXPRESSIBLE: Take Profit is 3% above average entry of the filled ladder; schema has only fixed target from single entry, so compiled as take_profit_pct 3.0 which differs once any averaging order fills.",
+   "NOT EXPRESSIBLE: 'Stop Loss: None - ladder allocation is the structural risk cap' - no stop compiled.",
+   "Test window cited is recorded in claimed only; engine tests all available history."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": "4h RSI(14)",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "when 4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "take_profit_pct",
+    "quote": "Take Profit: 3% above average entry.",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "January 1, 2024",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "June 29, 2026",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "+3,078.29 USDT (+3.08%)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "70.97% (44 / 62)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Profit Factor: 4.028",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 7.2,
+   "tokens": 3870,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 7.3,
+   "tokens": 3186
+  },
+  {
+   "step": "audit repair",
+   "seconds": 9.2,
+   "tokens": 4966,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 5.1,
+   "tokens": 2836
+  }
+ ],
+ "audit_majors": [
+  "entry: Claim requires five averaging/DCA orders at -2%, -5%, -9.5%, -16%, -25% after base entry. Spec compiles only the base RSI entry and omits the ladder, which defines position averaging and therefore entries tested.",
+  "take_profit_pct: Claim take profit is 3% above average entry of the filled ladder. Spec compiles take_profit_pct 3.0 from single entry, which the spec itself notes differs once any averaging order fills, changing exit level and verdict."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 28.9
+}

@@ -1,0 +1,186 @@
+{
+ "id": "c024",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "A 5-period EMA crossing the 50-period EMA together with 5-period RSI crossing 50 on bar close generates a signal.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "USDCAD",
+   "EURUSD",
+   "GBPUSD",
+   "EURJPY"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 50.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: claim says 'crosses' with no long/short direction, implying both bullish and bearish signals, but schema allows only long or short; compiled long-side only (5EMA crosses above 50EMA and RSI crosses above 50) as closest testable core, short side omitted.",
+   "NOT EXPRESSIBLE: no exit was stated and schema requires an exit; opposite cross (5EMA crosses below 50EMA) used as placeholder exit, not from claimant.",
+   "Chose timeframe 1d from the two stated options (daily and 4 hour charts); 4h variant not tested.",
+   "Waiting for the candle to close matches the engine's bar-close evaluation.",
+   "Assets are spot forex outside the bundled Binance universe; kept testable, engine will report lack of data."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "5ema crosses your 50ema",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "RSI cross the 50 line",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "assets",
+    "quote": "on USD/CAD, EUR/USD, GBP/USD, and also EUR/JPY",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "on the daily and 4 hour charts",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 18.9,
+   "tokens": 6752,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 15.7,
+   "tokens": 5224
+  },
+  {
+   "step": "audit repair",
+   "seconds": 12.6,
+   "tokens": 5712,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 14.5,
+   "tokens": 5534
+  }
+ ],
+ "audit_majors": [
+  "direction: Claim says '5ema crosses your 50ema and RSI cross the 50 line' with no long/short qualifier, implying both bullish and bearish signals. Spec encodes long-only (crosses_above) and omits short side.",
+  "exit[0]: No exit was stated in claim. Spec invents 5EMA crosses_below 50EMA as exit, which controls holding period and was not from claimant."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 61.7
+}

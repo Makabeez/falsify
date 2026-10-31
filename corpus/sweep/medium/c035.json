@@ -1,0 +1,86 @@
+{
+ "id": "c035",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "RSI and MACD bullish and bearish divergences are claimed to predict profitable moves with over 85% and 90% success rates.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No mechanical definition of divergence pivots, indicator settings, entry trigger, or exit is given; profitability is asserted from discretionary arrow reading.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 85.0,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "Instances of Bearish Divergences (Red Arrows) 17 instances, probability of profitability > 90%"
+  },
+  "assumptions": [
+   "Claim text names no asset; BTC from page context mapped to BTCUSDT.",
+   "Claim text names no timeframe; 1d assumed as default daily reading.",
+   "Direction set to long to represent bullish-divergence side; claim asserts both bullish and bearish divergences.",
+   "NOT EXPRESSIBLE: mechanical definition of divergence pivots, RSI/MACD settings, confirmation trigger and exit - only discretionary arrows and counts are given."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "probability of profitability > 85%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Instances of Bearish Divergences (Red Arrows) 17 instances, probability of profitability > 90%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 12.1,
+   "tokens": 5040,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 9.0,
+   "tokens": 3244
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 21.0
+}

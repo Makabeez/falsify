@@ -1,0 +1,186 @@
+{
+ "id": "c006",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "A long BTC daily strategy buys when short SMA is above long SMA with prior RSI below oversold and rising, holding 20 bars.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 300,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 35.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "lt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 20,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Short-term SMA mapped to SMA(200) of close and long-term SMA mapped to SMA(300) of close from short_len = 200, long_len = 300.",
+   "Oversold level mapped to rsi_us = 35 rather than rsi_ov = 65.",
+   "RSI period not stated so standard 14 used for both RSI operands.",
+   "Previous RSI below current RSI encoded as RSI with offset 1 < RSI with offset 0.",
+   "Exit is time-based liquidation after 20 bars via max_hold_bars from holding_period definition; no stop, target or trailing stop stated.",
+   "BTCUSD mapped to BTCUSDT spot symbol; daily values mapped to 1d timeframe.",
+   "initial_capital ignored as position sizing is not part of the rule."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "daily values of BTCUSD",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "daily values of BTCUSD",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "A bullish trade is generated",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "current short-term SMA is above the current long-term SMA",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "previous RSI is below the oversold level",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "below the current RSI",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "holding_period = 20",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 14.7,
+   "tokens": 5880,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 15.3,
+   "tokens": 5258
+  },
+  {
+   "step": "audit repair",
+   "seconds": 7.4,
+   "tokens": 4918,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 6.9,
+   "tokens": 3322
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 44.4
+}

@@ -1,0 +1,187 @@
+{
+ "id": "c006",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Go long when 200-period SMA is above 300-period SMA and prior RSI was below 35 and below current RSI, holding 20 daily bars.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 300,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 35.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "lt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 20,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Mapped BTCUSD to Binance spot symbol BTCUSDT for testing.",
+   "Timeframe 1d from daily values.",
+   "SMAs are on close using short_len 200 as short period and long_len 300 as long period.",
+   "Oversold level is rsi_us = 35; rsi_ov = 65 is not used in the stated entry.",
+   "RSI length not stated so used standard 14 for all RSI operands in entry[1] and entry[2].",
+   "holding_period 20 interpreted as max_hold_bars 20.",
+   "No stop, target or trailing stop stated; exit is time-based liquidation only.",
+   "NOT EXPRESSIBLE: initial_capital position sizing left out; engine uses its own sizing."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "daily values of BTCUSD",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "daily values of BTCUSD",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "A bullish trade is generated",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "the current short-term SMA is above the current long-term SMA",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "the previous RSI is below the oversold level",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "below the current RSI",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "holding_period = 20",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 26.4,
+   "tokens": 8490,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 24.4,
+   "tokens": 7412
+  },
+  {
+   "step": "audit repair",
+   "seconds": 7.6,
+   "tokens": 5032,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 9.8,
+   "tokens": 4012
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 68.2
+}

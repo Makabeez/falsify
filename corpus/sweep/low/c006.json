@@ -1,0 +1,186 @@
+{
+ "id": "c006",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "Go long when short SMA is above long SMA and prior RSI is below oversold and below current RSI, holding 20 bars.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 300,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 35.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "lt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 20,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "BTCUSD mapped to Binance spot symbol BTCUSDT.",
+   "Daily values mapped to timeframe 1d.",
+   "Bullish trade mapped to direction long.",
+   "rsi_us = 35 is the oversold level referenced for previous RSI.",
+   "RSI length not stated so RSI 14 default used for all RSI operands.",
+   "holding_period mapped to max_hold_bars time exit on bar closes.",
+   "rsi_ov = 65 and initial_capital = 100000 stated but not part of entry/exit rule and not used."
+  ],
+  "evidence": [
+   {
+    "field": "direction",
+    "quote": "A bullish trade is generated",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "BTCUSD",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "daily values of BTCUSD",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "current short-term SMA is above the current long-term SMA",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "previous RSI is below the oversold level",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "below the current RSI",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "holding_period = 20",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 11.2,
+   "tokens": 4809,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 7.2,
+   "tokens": 3322
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.7,
+   "tokens": 3907,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.6,
+   "tokens": 2431
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 25.7
+}

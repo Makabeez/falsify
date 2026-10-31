@@ -1,0 +1,160 @@
+{
+ "id": "c031",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buying Solana when WMA7 crosses above WMA25 and selling when WMA7 crosses below WMA25 would have turned 1x into 85x over 4 years in 36 trades.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "SOLUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "wma",
+     "period": 7,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "wma",
+     "period": 25,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "wma",
+     "period": 7,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "wma",
+     "period": 25,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 8400.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2020-08-14",
+   "period_end": "2024-08-14",
+   "other": "36 risk-free deals spread over 4 years"
+  },
+  "assumptions": [
+   "Asset mapped from 'Solana' to Binance spot SOLUSDT.",
+   "Timeframe not stated; assumed 1d as the most natural reading for 4-year holding with 36 round-trip crossover trades.",
+   "Direction is long from 'bought Solana' and 'reinvested'.",
+   "Claimed period 2020-08-14 to 2024-08-14 derived from '4 years ago' to 'until today' using the post date 2024-08-14 from context.",
+   "'Reinvested all' treated as the engine's standard one-position-at-a-time compounding; position sizing not encoded separately.",
+   "NOT EXPRESSIBLE: nothing material left out; 'risk-free' is descriptive and not encoded as a rule."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Solana",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "bought Solana",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "when WMA7 crossed up over WMA25",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "WMA7 crossed down over WMA25",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "you would have made 85 times your money",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "4 years ago",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "until today",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "36 risk-free deals spread over 4 years",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 15.3,
+   "tokens": 5571,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 7.5,
+   "tokens": 3316
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 22.9
+}

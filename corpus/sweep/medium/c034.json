@@ -1,0 +1,77 @@
+{
+ "id": "c034",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "The claim describes trading price against its slowest/lowest moving average across ten timeframes where more alignment means higher success.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No mechanical entry trigger, moving-average lengths, alignment definition, direction, or exits are stated so no repeatable rule can be recovered.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "No asset is named so BTCUSDT is used only as a schema placeholder.",
+   "No timeframe is named; 1d is used only as a schema placeholder despite mention of 10 different time frames.",
+   "No entry trigger is defined: MA length, lowest/slowest MA meaning, above/below versus cross, and long versus short direction are not stated.",
+   "No exit, stop, target, or holding rule is stated.",
+   "NOT EXPRESSIBLE: alignment of signals across 10 different time frames and what counts as alignment, which is described as the heart of the system."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 10.5,
+   "tokens": 4488,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 4.9,
+   "tokens": 2329
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 15.4
+}

@@ -1,0 +1,145 @@
+{
+ "id": "c008",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "Buy when the daily close crosses above the 200-day moving average and sell when the daily close falls below it.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 388.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Asset is BTCUSDT from page context; claim text itself names no symbol.",
+   "Timeframe is 1d from 'daily close' and once-a-day check.",
+   "200 days moving average / 200 DMA interpreted as simple moving average SMA(200) with close as price.",
+   "Entry 'crossing above' compiled as close crosses_above SMA(200).",
+   "Exit 'falls back down below' compiled as close crosses_below SMA(200).",
+   "388% return is a single-trade return starting after March 2020 crash, not annualized; no exact start/end dates given so claimed period left null."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "Buy when the daily close is crossing above the 200 days moving average.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "Liquidate the position when the daily close falls back down below the 200 DMA.",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": "daily close",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "Buy when the daily close is crossing above the 200 days moving average.",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "returned 388%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 6.2,
+   "tokens": 3625,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 5.3,
+   "tokens": 2486
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 11.6
+}

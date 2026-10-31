@@ -1,0 +1,188 @@
+{
+ "id": "c024",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Enter when 5-period EMA crosses 50-period EMA and 5-period RSI crosses the 50 line on candle close.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "USDCAD",
+   "EURUSD",
+   "GBPUSD",
+   "EURJPY"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 50.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Direction assumed long: '5ema crosses your 50ema' does not state up/down.",
+   "NOT EXPRESSIBLE: strategy implies both long and short crosses but schema direction allows only long or short; short side is omitted and only the long side is tested.",
+   "NOT EXPRESSIBLE: entry EMA cross has no stated side so both crosses_above and crosses_below are claimed; encoded as crosses_above as closest testable core.",
+   "NOT EXPRESSIBLE: RSI cross of 50 line has no stated side; encoded as crosses_above 50 to align with long side.",
+   "Timeframe chosen as 1d from page chart timeframe though claimant mentions daily and 4 hour charts.",
+   "No exit stated; opposite EMA cross used as most common exit for EMA-cross setup.",
+   "RSI period taken as 5 from 'I set my RSI to 5'. EMA lengths taken as 5 and 50 as stated."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "once your 5ema crosses your 50ema",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "RSI cross the 50 line",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "on USD/CAD, EUR/USD, GBP/USD, and also EUR/JPY",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "exit[0]",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 5.1,
+   "tokens": 3071,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 4.2,
+   "tokens": 2395
+  },
+  {
+   "step": "audit repair",
+   "seconds": 2.8,
+   "tokens": 3668,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 4.8,
+   "tokens": 2636
+  }
+ ],
+ "audit_majors": [
+  "direction: Claim says '5ema crosses your 50ema' and 'RSI cross the 50 line' with no side stated, implying both long and short signals. Spec encodes only crosses_above / long and omits the short side, which changes what is tested.",
+  "exit[0]: Claim states no exit. Spec invents exit as 5EMA crosses_below 50EMA."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 16.9
+}

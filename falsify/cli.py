@@ -290,6 +290,20 @@ def cmd_review(args) -> int:
     return 0
 
 
+def cmd_sweep(args) -> int:
+    from . import sweep
+    if args.action == "run":
+        efforts = [e.strip() for e in args.efforts.split(",") if e.strip()]
+        sweep.run(efforts, ids=args.ids.split(",") if args.ids else None, workers=args.workers, model=args.model)
+        return 0
+    md = sweep.to_markdown(sweep.evaluate())
+    print(md)
+    if args.out:
+        Path(args.out).write_text(md, encoding="utf-8")
+        print(f"wrote {args.out}")
+    return 0
+
+
 def cmd_data(args) -> int:
     if args.action == "fetch":
         data_mod.build(end=args.end)
@@ -364,6 +378,15 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--note", help="what the rules got wrong, shown on the result page")
     p.add_argument("--cache", help="results directory (default: web_cache or $FALSIFY_CACHE)")
     p.set_defaults(fn=cmd_review)
+
+    p = sub.add_parser("sweep", help="the dial: corpus at several reasoning efforts, scored against the ground truth")
+    p.add_argument("action", choices=["run", "report"])
+    p.add_argument("--efforts", default="low,medium,high", help="comma-separated: minimal,low,medium,high,xhigh,max")
+    p.add_argument("--ids", help="comma-separated claim ids (default: all)")
+    p.add_argument("--workers", type=int, default=4)
+    p.add_argument("--model", help="override the Muse Spark model id")
+    p.add_argument("--out", help="report: write markdown, e.g. docs/effort_sweep.md")
+    p.set_defaults(fn=cmd_sweep)
 
     p = sub.add_parser("calibrate", help="measure false-positive rate and power on the bundled data")
     p.add_argument("--reps", type=int, default=300, help="coin-flip strategies per setup")

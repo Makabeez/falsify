@@ -1,0 +1,193 @@
+{
+ "id": "c026",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "Long-only 20-day breakout entries with 10-day exits and ATR stops tested over 2007-2025 across 43 markets including Bitcoin and Ethereum.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT",
+   "ETHUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "lowest_low",
+     "period": 10,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": 2.0,
+  "stop_atr_period": 20,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "ATR stop multiplier",
+    "target": "stop_atr_mult",
+    "candidates": [
+     1.5,
+     2.0,
+     2.5,
+     3.0
+    ]
+   },
+   {
+    "name": "ATR length",
+    "target": "stop_atr_period",
+    "candidates": [
+     14.0,
+     20.0,
+     22.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2007-01-01",
+   "period_end": "2025-12-31",
+   "other": "Total profit across all 43 markets: $1,147,318"
+  },
+  "assumptions": [
+   "Timeframe 1d taken from page chart, not stated in claim text.",
+   "Exit interpreted as classic Turtle long exit: close below 10-day lowest low.",
+   "ATR stop interpreted as classic Turtle 2x ATR(20); claim only says 'ATR stops'.",
+   "NOT EXPRESSIBLE: full 43-market portfolio test; compiled core tested only on BTC and ETH from bundled universe."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Including: Bitcoin & Ethereum",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "pure long-side Turtle code",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Buy when price breaks above the highest high of the last 20 days.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "Exit when price reverses direction for 10 days.",
+    "assumed": false
+   },
+   {
+    "field": "stop_atr_mult",
+    "quote": "ATR stops",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Total profit across all 43 markets: $1,147,318",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "18 years of data (2007-2025)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "18 years of data (2007-2025)",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 9.7,
+   "tokens": 7450,
+   "quote_repairs": 1
+  },
+  {
+   "step": "audit",
+   "seconds": 6.9,
+   "tokens": 3204
+  },
+  {
+   "step": "audit repair",
+   "seconds": 9.4,
+   "tokens": 8756,
+   "quote_repairs": 1
+  },
+  {
+   "step": "audit",
+   "seconds": 9.1,
+   "tokens": 3813
+  }
+ ],
+ "audit_majors": [
+  "assets: Claimed result is total profit across all 43 markets; spec tests only BTC and ETH. Omitting 41 markets changes what is being tested and makes portfolio profit unverifiable.",
+  "free_parameters: Claim describes fixed Turtle code with ATR stops; spec invents optimization grids for ATR multiplier and length with no basis in claim."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 35.1
+}

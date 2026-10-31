@@ -1,0 +1,173 @@
+{
+ "id": "c026",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Long-only Turtle-style strategy buys 20-day breakouts, exits on 10-day reversals, and uses ATR stops.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT",
+   "ETHUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "lowest_low",
+     "period": 10,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": 2.0,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "ATR stop multiplier",
+    "target": "stop_atr_mult",
+    "candidates": [
+     1.0,
+     1.5,
+     2.0,
+     2.5,
+     3.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2007-01-01",
+   "period_end": "2025-12-31",
+   "other": "Total profit across all 43 markets: $1,147,318"
+  },
+  "assumptions": [
+   "Timeframe not stated explicitly; 20-day and 10-day references imply daily bars so 1d used.",
+   "Assets limited to BTCUSDT and ETHUSDT from named markets; full 43-market list not enumerated so remainder not tested.",
+   "Exit phrase interpreted as classic Turtle 10-day low: close below lowest low of previous 10 bars.",
+   "ATR stop details not specified; assumed 2 x ATR(14) with multiplier varied in free_parameters.",
+   "No profit target or time exit given; exit relies on 10-day reversal condition plus ATR stop.",
+   "NOT EXPRESSIBLE: simultaneous portfolio aggregation, position sizing and compounding behind the dollar total across 43 markets; closest testable core is single-position rule on named assets."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin & Ethereum",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "pure long-side Turtle code",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Buy when price breaks above the highest high of the last 20 days.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "Exit when price reverses direction for 10 days.",
+    "assumed": false
+   },
+   {
+    "field": "stop_atr_mult",
+    "quote": "ATR stops",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Total profit across all 43 markets: $1,147,318",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "18 years of data (2007-2025)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "18 years of data (2007-2025)",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 45.7,
+   "tokens": 16768,
+   "quote_repairs": 1
+  },
+  {
+   "step": "audit",
+   "seconds": 26.4,
+   "tokens": 7952
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 72.1
+}

@@ -1,0 +1,287 @@
+{
+ "id": "c001",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "Bitcoin daily long signal combining 50-day RSI low with 3-bar rise, 160-day comparison and oversold threshold claims 71% win rate.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No exit is stated so winners, win rate and average winning trade cannot be mechanically reproduced.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    },
+    "op": "le",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": "min",
+     "window": 50,
+     "offset": 3
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "gt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    },
+    "op": "gt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 5.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 160
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 37.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "RSI length",
+    "target": "entry[0].left.period",
+    "candidates": [
+     7.0,
+     10.0,
+     14.0,
+     21.0,
+     28.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": 71.4,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "Average winning trade: +105.8%"
+  },
+  "assumptions": [
+   "Direction not stated; assumed long as oversold RSI bounce implies long.",
+   "Timeframe not stated in claim text; assumed 1d from page chart timeframe.",
+   "RSI length not stated; assumed standard 14.",
+   "Sequence interpretation: 50-bar low occurred 3 bars ago then RSI rose for 3 bars to current bar to allow all conditions on same bar.",
+   "'lower than the 160 days RSI with 5 added' read as current RSI < RSI 160 bars ago + 5 RSI points.",
+   "NOT EXPRESSIBLE: claim states no exit rule, so winners, 71.4% win rate and +105.8% average winning trade cannot be mechanically reproduced; no exit is assumed."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "This Bitcoin signal",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "RSI is at the 50 days lowest",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "is rising for 3 bars",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "is rising for 3 bars",
+    "assumed": false
+   },
+   {
+    "field": "entry[3]",
+    "quote": "is rising for 3 bars",
+    "assumed": false
+   },
+   {
+    "field": "entry[4]",
+    "quote": "is lower than the 160 days RSI with 5 (as RSI value) added",
+    "assumed": false
+   },
+   {
+    "field": "entry[5]",
+    "quote": "RSI is below 37.5",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Total Winners * 100 / Total Trades = 5 * 100 / 7 = 71.4% Winrate",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 10.7,
+   "tokens": 5111,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 7.2,
+   "tokens": 4077
+  },
+  {
+   "step": "audit repair",
+   "seconds": 8.6,
+   "tokens": 5646,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 5.5,
+   "tokens": 3531
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 32.1
+}

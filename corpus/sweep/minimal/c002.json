@@ -1,0 +1,163 @@
+{
+ "id": "c002",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Trade 8-day and 21-day EMA crosses with 6-day monitoring and failure if price crosses the 21-day EMA.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 8,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 6,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "much more profit than loss; 6 positions were taken in 10 months (304 days)"
+  },
+  "assumptions": [
+   "Direction assumed long-only because schema allows only long or short: undirected 'cross' implies both long on 8 crossing above 21 and short on 8 crossing below 21, short side is omitted.",
+   "NOT EXPRESSIBLE: strategy is direction-agnostic / both sides; engine tests only the long side.",
+   "NOT EXPRESSIBLE: failure / stop uses any intrabar price touch of the 21-day EMA 'just the other side' adjusted daily; schema evaluates on bar closes so compiled as close crosses below the 21-day EMA.",
+   "Entry triggers on the cross bar close; 'monitor for a maximum of 6 days' compiled as max_hold_bars 6.",
+   "Timeframe 1d taken from page chart timeframe, not claimant words.",
+   "Asset BTCUSDT from page subject BTC."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "The 8 day and 21 day EMAs cross.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "If price crosses the 21 day EMA",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "monitor for a maximum of 6 days.",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.other",
+    "quote": "produced much more profit than loss.",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 5.2,
+   "tokens": 3006,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 6.8,
+   "tokens": 2678
+  },
+  {
+   "step": "audit repair",
+   "seconds": 4.1,
+   "tokens": 3712,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 4.2,
+   "tokens": 2418
+  }
+ ],
+ "audit_majors": [
+  "direction: Claim says '8 day and 21 day EMAs cross' undirected, implying both long on cross up and short on cross down. Spec encodes direction long-only and omits short side, testing only half the claimed rule."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 29.5
+}

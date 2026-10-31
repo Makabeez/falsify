@@ -1,0 +1,153 @@
+{
+ "id": "c003",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "A long ladder buys when 4h RSI(14) drops below 28 and targets 3% above average entry with no stop loss.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 28.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": 3.0,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 70.97,
+   "total_return_pct": 3.08,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2024-01-01",
+   "period_end": "2026-06-29",
+   "other": "Profit Factor: 4.028"
+  },
+  "assumptions": [
+   "Assets assumed as BTCUSDT from page context; claim text names no symbol.",
+   "Direction inferred as long from averaging down at negative deviations and take-profit above average entry; claim never says long or short.",
+   "Entry encoded as RSI(14) crosses_below 28 on bar close; holding below 28 is another possible reading of drops below.",
+   "NOT EXPRESSIBLE: Five averaging orders at fixed deviations (-2%, -5%, -9.5%, -16%, -25%) with 1.8x size scaling per rung and ladder allocation as structural risk cap are omitted; spec tests only the single base RSI trigger, which changes position size, exposure and average entry.",
+   "NOT EXPRESSIBLE: Take-profit 3% above average (ladder) entry cannot be expressed; take_profit_pct is fixed 3% from base entry, so the exit level differs whenever any averaging order would have filled.",
+   "No stop-loss, trailing stop or max_hold_bars set per Stop Loss: None; take_profit_pct is the only exit and satisfies the exit requirement as closest testable core."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "when 4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "when 4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "take_profit_pct",
+    "quote": "Take Profit: 3% above average entry.",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "Net Profit: +3,078.29 USDT (+3.08%)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Percent Profitable: 70.97% (44 / 62)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "Test Period: January 1, 2024 \u2014 June 29, 2026 (~30 months).",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "Test Period: January 1, 2024 \u2014 June 29, 2026 (~30 months).",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Profit Factor: 4.028",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 14.8,
+   "tokens": 6543,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.3,
+   "tokens": 4326
+  },
+  {
+   "step": "audit repair",
+   "seconds": 14.3,
+   "tokens": 6682,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.6,
+   "tokens": 4497
+  }
+ ],
+ "audit_majors": [
+  "entry: Omits the five averaging orders at -2%, -5%, -9.5%, -16%, -25% with 1.8x size scaling per rung. Spec tests only the single base RSI trigger, which changes position size, exposure and average entry.",
+  "take_profit_pct: Claim requires 3% above average (ladder) entry; spec encodes 3% from base entry. Exit level differs whenever any averaging order would have filled."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 51.1
+}

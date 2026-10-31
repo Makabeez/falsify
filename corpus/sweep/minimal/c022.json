@@ -1,0 +1,240 @@
+{
+ "id": "c022",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Long when 20 EMA crosses above 50 EMA while RSI is below 70, with 2:1 reward-to-risk, trailing stop protection, and exit on reverse EMA crossover.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "AVAXUSDT",
+   "ADAUSDT",
+   "BNBUSDT",
+   "BTCUSDT",
+   "DOGEUSDT",
+   "DOTUSDT",
+   "ETHUSDT",
+   "LINKUSDT",
+   "LTCUSDT",
+   "SOLUSDT",
+   "TRXUSDT",
+   "XRPUSDT"
+  ],
+  "timeframe": "1h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 70.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": 2.0,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": 2.0,
+  "trailing_stop_pct": 1.0,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "RSI period",
+    "target": "entry[1].left.period",
+    "candidates": [
+     7.0,
+     14.0,
+     21.0
+    ]
+   },
+   {
+    "name": "stop loss pct",
+    "target": "stop_loss_pct",
+    "candidates": [
+     1.0,
+     2.0,
+     3.0
+    ]
+   },
+   {
+    "name": "trailing stop pct",
+    "target": "trailing_stop_pct",
+    "candidates": [
+     0.5,
+     1.0,
+     1.5,
+     2.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: claim also cites 15m timeframe which schema cannot express (timeframe enum is 1h/4h/1d only); spec tests 1h core only.",
+   "Asset list maps 'ETH and other currencies' to ETH plus the bundled USDT universe as closest testable core, since specific other currencies are unnamed.",
+   "RSI period not stated so 14 used.",
+   "Fixed stop distance not stated but required for 2R target, so 2% stop used.",
+   "\"Move SL\" read as trailing stop percent; 1% used.",
+   "Reverse crossover used as exit condition; stop, R-target and trailing stop act as additional exits.",
+   "Entry evaluated on bar closes with fill at next open per engine rules."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "with ETH and other currencies",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "I tested it on 1H and 15m",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "crossing of the 20 EMA above the 50 EMA",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "crossing of the 20 EMA above the 50 EMA",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "RSI is below 70",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "reverse crossover of the EMAs",
+    "assumed": false
+   },
+   {
+    "field": "take_profit_r",
+    "quote": "RR is 2:1",
+    "assumed": false
+   },
+   {
+    "field": "trailing_stop_pct",
+    "quote": "Move SL as protection",
+    "assumed": false
+   },
+   {
+    "field": "stop_loss_pct",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 6.8,
+   "tokens": 3505,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 6.0,
+   "tokens": 2991
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.6,
+   "tokens": 4248,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.0,
+   "tokens": 2628
+  }
+ ],
+ "audit_majors": [
+  "assets: Claim says only 'ETH and other currencies' with others unnamed. Spec expands to 12 named USDT pairs (AVAX, ADA, BNB, BTC, DOGE, DOT, LINK, LTC, SOL, TRX, XRP plus ETH) which were never named by claimant.",
+  "timeframe: Claim explicitly tests '1H and 15m'. Spec tests 1h only. Leaving out 15m changes what is being tested, even though listed as NOT EXPRESSIBLE in assumptions."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 19.5
+}

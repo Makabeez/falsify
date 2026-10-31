@@ -1,0 +1,345 @@
+{
+ "id": "c017",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Long on 4-hour bars when MACD, EMA 20, SMA 100 and SMA 200 are rising with EMA 20 above SMA 100 above SMA 200, exiting on EMA 20 crossing below SMA 100.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "ETHUSDT",
+   "BTCUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "macd_line",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "macd_line",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "sma",
+     "period": 100,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 100,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 100,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "sma",
+     "period": 100,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 100,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "MACD fast length",
+    "target": "entry[0].left.period",
+    "candidates": [
+     8.0,
+     12.0,
+     19.0,
+     21.0
+    ]
+   },
+   {
+    "name": "MACD slow length",
+    "target": "entry[0].left.param",
+    "candidates": [
+     20.0,
+     26.0,
+     30.0,
+     35.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": 60.0,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2020-01-01",
+   "period_end": "2020-11-22",
+   "other": "ETH/USD: +144% in 8 trades. \u2026 BTC/USD: +120% in 7 trades."
+  },
+  "assumptions": [
+   "Assets are spot equivalents ETHUSDT and BTCUSDT for the stated ETH/USD and BTC/USD results.",
+   "Timeframe is 4h from the statement about 4H candles.",
+   "Direction is long, inferred from bullish alignment and stop-loss; the claim does not use the word long or short.",
+   "MACD moving up is compiled as MACD line greater than prior bar MACD line, using standard 12,26,9 because no settings are given.",
+   "EMA (20), SMA (100), SMA (200) moving up is compiled as each MA greater than its own prior bar value.",
+   "NOT EXPRESSIBLE: stoploss level is stated only as 'Stoploss is reached' with no pct or ATR value, so only the EMA cross-under exit is tested."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "ETH/USD: +144% in 8 trades. \u2026 BTC/USD: +120% in 7 trades.",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "4H candles instead of 2H candles",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Entry in position is based on MACD, EMA (20), SMA (100), SMA (200) moving up",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "EMA (20), SMA (100), SMA (200) moving up",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "EMA (20), SMA (100), SMA (200) moving up",
+    "assumed": false
+   },
+   {
+    "field": "entry[3]",
+    "quote": "EMA (20), SMA (100), SMA (200) moving up",
+    "assumed": false
+   },
+   {
+    "field": "entry[4]",
+    "quote": "EMA (20) > SMA (100)",
+    "assumed": false
+   },
+   {
+    "field": "entry[5]",
+    "quote": "SMA (100) > SMA (200)",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "EMA (20) crossUnder SMA (100)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "wining rate close to 60%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "from 01/01/2020 until now (22/11/2020)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "from 01/01/2020 until now (22/11/2020)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "ETH/USD: +144% in 8 trades. \u2026 BTC/USD: +120% in 7 trades.",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 24.6,
+   "tokens": 9335,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 18.7,
+   "tokens": 7224
+  },
+  {
+   "step": "audit repair",
+   "seconds": 11.8,
+   "tokens": 7411,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 17.5,
+   "tokens": 6893
+  }
+ ],
+ "audit_majors": [
+  "stop_loss_pct: Claim requires exit if 'Stoploss is reached OR EMA (20) crossUnder SMA (100)' but spec tests only the cross-under with stop_loss_pct null / no stop. Omitting the stop-loss leg changes trades, win-rate and returns versus the claimed strategy that used a stop."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 72.7
+}

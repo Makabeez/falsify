@@ -1,0 +1,77 @@
+{
+ "id": "c021",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Long ETH/USDT on 4h when price closes above the Ichimoku green lead line while it is above the red lead line, exiting when price closes below the green lead line.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "The entry and exit depend entirely on Ichimoku lead lines, which cannot be expressed in the schema.",
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2017-01-01",
+   "period_end": "2021-06-02",
+   "other": "you would make more profit with this strategy than holding the coin"
+  },
+  "assumptions": [
+   "Asset ETHUSDT from claim phrase ETH/USDT.",
+   "Timeframe 4h from claim phrase four hour chart.",
+   "Direction interpreted as long from green-candle entry above lead line and red-candle exit below; claim never states long or short.",
+   "NOT EXPRESSIBLE: Ichimoku green and red lead lines and conditions based on them (green above red, closes above/below green lead line) - Ichimoku is not an available indicator and no substitute was used.",
+   "Claimed period 'beginning of 2017 until today' recorded as 2017-01-01 to 2021-06-02 posting date for context only; engine tests over all history."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "ETH/USDT",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "four hour chart",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 16.6,
+   "tokens": 6576,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 23.2,
+   "tokens": 6532
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 39.8
+}

@@ -1,0 +1,146 @@
+{
+ "id": "c016",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "A 4h RSI(14) base entry below 28 with five scaled averaging orders down to -25% takes profit 3% above average entry with no stop.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "The heart of the strategy is the five-rung averaging ladder with scaled sizing and a 3% profit above average entry, which cannot be expressed as a single-entry rule.",
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 28.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 68.82,
+   "total_return_pct": 5.79,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2024-01-01",
+   "period_end": "2026-06-28",
+   "other": "Profit Factor: 5.019"
+  },
+  "assumptions": [
+   "Assets default to ETHUSDT from page context; claim text names no asset.",
+   "Direction is long because averaging orders at negative deviations and profit above average entry imply buying dips.",
+   "Base entry 'drops below 28' compiled as RSI(14) crosses_below 28.",
+   "NOT EXPRESSIBLE: Five averaging orders at -2%, -5%, -9.5%, -16%, -25% with 1.8x size scaling per rung, averaging/DCA ladder, position sizing and average-entry calculation; without the ladder there is no average entry.",
+   "NOT EXPRESSIBLE: Take Profit 3% above average entry requires the ladder average entry and cannot be encoded as take_profit_pct from a single base entry, so no fixed target is set.",
+   "NOT EXPRESSIBLE: Stop Loss None with ladder allocation as structural risk cap leaves single-entry core with no stop, target, or time exit.",
+   "Claimed test period recorded in claimed; engine tests over all available history."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": "4h RSI(14)",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "when 4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "Net Profit: +5,790.33 USDT (+5.79%)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Percent Profitable: 68.82% (64 / 93)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Profit Factor: 5.019",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "Test Period: January 1, 2024 \u2014 June 28, 2026",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "Test Period: January 1, 2024 \u2014 June 28, 2026",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 18.3,
+   "tokens": 7073,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 13.3,
+   "tokens": 4644
+  },
+  {
+   "step": "audit repair",
+   "seconds": 12.0,
+   "tokens": 6242,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.9,
+   "tokens": 3893
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 54.4
+}

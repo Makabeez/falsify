@@ -1,0 +1,135 @@
+{
+ "id": "c004",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "Long-only 1-hour XAU/USD strategy buys when EMA 8 crosses above EMA 21 with a 1.5% stop and 4.5% target.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "XAUUSD"
+  ],
+  "timeframe": "1h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 8,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": 1.5,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": 4.5,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 34.0,
+   "total_return_pct": 119.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "took 251 trades; buying and holding gold returned +218%"
+  },
+  "assumptions": [
+   "Asset is XAU/USD spot gold vs US dollar, represented as XAUUSD.",
+   "Timeframe is 1-hour as stated.",
+   "Direction is long-only; no short entries.",
+   "Stop is fixed 1.5% below entry price.",
+   "Target is fixed 4.5% above entry price, which equals 3x the stop distance.",
+   "No indicator exit condition stated; exit is by fixed stop/target only.",
+   "Test covers all available history; cited ten-year period recorded only in claimed performance, not as rule filter."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "gold against the US dollar (XAU/USD)",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "1-hour candles",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "There is no short side",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "buy when EMA(8) crosses above EMA(21)",
+    "assumed": false
+   },
+   {
+    "field": "stop_loss_pct",
+    "quote": "1.5% below the entry price",
+    "assumed": false
+   },
+   {
+    "field": "take_profit_pct",
+    "quote": "4.5% above the entry price",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "returned +119%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "won 34% of them",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "took 251 trades",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 7.7,
+   "tokens": 3975,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.1,
+   "tokens": 2356
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 10.8
+}

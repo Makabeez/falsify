@@ -1,0 +1,166 @@
+{
+ "id": "c018",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buy Nikkei 225 stocks when daily close crosses above the 80-day +1 sigma Bollinger upper band, exiting when close crosses below the 80-day middle band.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Aggregate portfolio backtest across all 225 Nikkei constituents cannot be replicated by a single-asset one-position-at-a-time test.",
+  "assets": [
+   "NIKKEI225"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "bb_upper",
+     "period": 80,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 1.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 80,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 33.45,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2000-01-04",
+   "period_end": "2024-12-30",
+   "other": null
+  },
+  "assumptions": [
+   "Timeframe 1d from daily-charts statement.",
+   "Upper +1 sigma line is Bollinger bb_upper with period 80 and width param 1; middle band is the 80-day SMA middle line per standard Bollinger definition.",
+   "Entry and exit fill at the next bar's open per engine default, matching next-day open market orders.",
+   "NOT EXPRESSIBLE: claim requires an aggregate portfolio backtest across all 225 Nikkei 225 constituents with potentially concurrent positions; the engine tests a single asset one position at a time, so the single NIKKEI225 ticker is a placeholder only and testing it would not replicate the claimed diversified-constituents result."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "All components of the Nikkei 225",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "Only daily charts are used.",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "Buy at the next day\u2019s open using a market order",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Period: Fixed at 80 days \u2026 Upper and lower bands: Fixed at \u00b11\u03c3 \u2026 Setup: Price crosses above the +1\u03c3 line from below",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "If the price crosses below the middle band, sell at the next day\u2019s open using a market order",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Win Rate: 33.45%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "Test Period: January 4, 2000 \u2013 December 30, 2024",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "Test Period: January 4, 2000 \u2013 December 30, 2024",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 17.0,
+   "tokens": 6691,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.2,
+   "tokens": 4158
+  },
+  {
+   "step": "audit repair",
+   "seconds": 14.3,
+   "tokens": 7022,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.8,
+   "tokens": 4695
+  }
+ ],
+ "audit_majors": [
+  "testable: Mechanical core is fully specified and could be tested: daily long Bollinger(80, +/-1 sigma) close crosses above upper for entry, close crosses below middle/SMA80 for exit. Portfolio aggregation across 225 constituents affects exact win-rate replication but does not make the rule untestable on a single asset like NIKKEI225 daily."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 53.3
+}

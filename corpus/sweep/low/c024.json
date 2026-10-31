@@ -1,0 +1,171 @@
+{
+ "id": "c024",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "Buy when 5 EMA crosses 50 EMA and 5-period RSI crosses above 50, after the daily candle closes.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "USDCAD",
+   "EURUSD",
+   "GBPUSD",
+   "EURJPY"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 50.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Cross direction assumed bullish: 'crosses' interpreted as crosses above for both EMA cross and RSI cross, direction long.",
+   "Timeframe chose 1d from the two mentioned (daily and 4 hour) based on page context; 4h alternative not tested.",
+   "No exit stated; opposite EMA cross used as most common exit for MA-cross setup.",
+   "Entry requires both crosses on the same bar close; trades fill next bar open per engine."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "on USD/CAD, EUR/USD, GBP/USD, and also EUR/JPY.",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "since this week I started using it on the daily and 4 hour charts",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "So basically I use 5EMA and also use a 50EMA ( for trend basically ) then I set my RSI to 5 also\u2026 \u2026 So once your 5ema crosses your 50ema and RSI cross the 50 line, boom there is your signal,",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "So basically I use 5EMA and also use a 50EMA ( for trend basically ) then I set my RSI to 5 also\u2026 \u2026 So once your 5ema crosses your 50ema and RSI cross the 50 line, boom there is your signal,",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 12.2,
+   "tokens": 4917,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 9.4,
+   "tokens": 3714
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 21.6
+}

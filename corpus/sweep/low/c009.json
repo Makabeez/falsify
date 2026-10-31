@@ -1,0 +1,159 @@
+{
+ "id": "c009",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "An optimized 50-day / 55-day moving-average strategy on Bitcoin generated about 7,830% profit over the past five years.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "sma",
+     "period": 55,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 55,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 7830.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2014-10-29",
+   "period_end": "2019-10-29",
+   "other": "could be up closer to 8,000%"
+  },
+  "assumptions": [
+   "MA type not stated; compiled as SMA, the usual default for 'day' moving-average pairs.",
+   "Crossover logic not stated; 'pair' + 'moving-average strategy' compiled as buy when 50 crosses above 55 and sell when 50 crosses below 55, the standard MA-pair rule.",
+   "Direction not stated; compiled as long-only, the most natural reading for a Bitcoin profit claim.",
+   "Timeframe compiled as 1d from '50-day' / '55-day'.",
+   "Claim cites past five years ending at post date 2019-10-29, so claimed period compiled as 2014-10-29 to 2019-10-29."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "By trading Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "50-day",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "exit[0]",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "profit of about 7,830%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "could be up closer to 8,000%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "over the past five years",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "over the past five years",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 7.5,
+   "tokens": 3960,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.2,
+   "tokens": 2201
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 10.7
+}

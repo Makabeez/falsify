@@ -1,0 +1,182 @@
+{
+ "id": "c012",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Buy BTC on the last day of the month when price is above the 200-day SMA and sell when it is below.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "days_left_in_month",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "profitable so far"
+  },
+  "assumptions": [
+   "Asset BTC-USD mapped to BTCUSDT.",
+   "Timeframe 1d from chart context; claim uses 200-day SMA and last day of month, requiring daily bars.",
+   "Entry requires both conditions on same bar close on the last day of the month.",
+   "NOT EXPRESSIBLE: sell rule should require last day of the month AND close below 200-day SMA together, but exit array is OR-only so multiple exit conditions cannot be ANDed; exit compiled as close below 200-day SMA alone.",
+   "No exit stop/target/hold given; indicator-cross exit used as stated sell rule."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "price of BTC-USD",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "buying when the price is above",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "on the last day of the month",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "above the 200-day simple moving average",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "selling when it is below",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.8,
+   "tokens": 2945,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.1,
+   "tokens": 1886
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.7,
+   "tokens": 3555,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.4,
+   "tokens": 1886
+  }
+ ],
+ "audit_majors": [
+  "exit: Claim evaluates both buy and sell on the last day of the month, but exit omits the last-day-of-month condition and exits on any daily close below 200-day SMA. Marking it NOT EXPRESSIBLE in assumptions does not excuse the change in tested logic."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 13.1
+}

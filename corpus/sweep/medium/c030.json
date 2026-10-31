@@ -1,0 +1,76 @@
+{
+ "id": "c030",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buying Bitcoin during fear-driven pullbacks of over 20% will recover to new highs.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No mechanical bar-close entry trigger, exit, or timeframe is defined; buy the blood is discretionary.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Timeframe not stated; daily bars assumed as most natural for 20% pullback discussion.",
+   "Asset mapped to BTCUSDT from mention of Bitcoin.",
+   "'Buy the blood' and 'Stack SATs' define no bar-close entry trigger.",
+   "Mention of 20% pullbacks is a historical observation, not a defined entry with lookback or exit."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "Buy the blood.",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 12.3,
+   "tokens": 4471,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.8,
+   "tokens": 4035
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 24.0
+}

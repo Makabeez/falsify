@@ -1,0 +1,154 @@
+{
+ "id": "c015",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "A 15-day simple moving average rule for BTC buys and holds when close is above the average and sells to cash when the average is above close, said to have made 130% from December 2017 to May 2018.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "sma",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 130.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2017-12-01",
+   "period_end": "2018-05-15",
+   "other": null
+  },
+  "assumptions": [
+   "BTC/USD mapped to BTCUSDT spot for testing; no substitution.",
+   "Timeframe is 1d inferred from '15-days' and '15-periods' of Closing Price; daily bars.",
+   "Entry compiled as close gt 15-period SMA on bar close per buying when close is above MA; hold while condition holds.",
+   "Exit compiled as close lt 15-period SMA per selling when MA is above close and waiting for next signal.",
+   "No stop, target, trailing stop or max hold stated; position held until opposite signal."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "BTC/USD closing price between December 1st, 2017 and May 15th, 2018",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "15-days moving average strategy",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "buying and hodling when the closing price is above a moving average",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "buying and hodling when the closing price is above a moving average",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "As soon as the moving average is above the closing price, it's time to sell",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "would have generated 130% return on investment",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "between December 1st, 2017 and May 15th, 2018",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "between December 1st, 2017 and May 15th, 2018",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 20.3,
+   "tokens": 7501,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 7.8,
+   "tokens": 3240
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 28.1
+}

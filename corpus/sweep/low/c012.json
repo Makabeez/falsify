@@ -1,0 +1,188 @@
+{
+ "id": "c012",
+ "effort": "low",
+ "spec": {
+  "claim_summary": "Buy BTC on the last day of the month when price is above the 200-day SMA and sell when below.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "days_left_in_month",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "has been profitable so far"
+  },
+  "assumptions": [
+   "Mapped BTC-USD to Binance spot BTCUSDT.",
+   "Timeframe 1d chosen because 200-day SMA and last-day-of-month check require daily bars.",
+   "Entry requires both last-day-of-month and close above 200-day SMA on the same daily close.",
+   "NOT EXPRESSIBLE: claim makes both buy and sell decisions on the last day of the month, but exit conditions are OR across elements so a conjunctive last-day-of-month AND close below 200-day SMA exit cannot be expressed; exit was compiled as close below 200-day SMA on any bar, which allows mid-month exits.",
+   "Selling means exiting the long position, not opening a short.",
+   "No exit stop/target given; price-cross exit used as the stated sell rule."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "price of BTC-USD",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "buying when the price is above the 200-day simple moving average (SMA)",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "on the last day of the month",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "buying when the price is above the 200-day simple moving average (SMA)",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "selling when it is below",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "has been profitable so far",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 9.8,
+   "tokens": 4144,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.9,
+   "tokens": 2403
+  },
+  {
+   "step": "audit repair",
+   "seconds": 4.4,
+   "tokens": 3844,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 4.9,
+   "tokens": 2683
+  }
+ ],
+ "audit_majors": [
+  "exit: Claim restricts both buy and sell decisions to the last day of the month, but exit is compiled as close below 200-day SMA on any bar, allowing mid-month exits. Spec admits this in assumptions as NOT EXPRESSIBLE, but omitting it changes what is tested."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 22.9
+}
