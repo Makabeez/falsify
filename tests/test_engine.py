@@ -76,7 +76,15 @@ def test_short_side_pnl_sign():
     df = frame(opens=[90, 90, 110, 100, 100], closes=[90, 101, 110, 100, 100])
     t = run(spec(direction="short"), df, ZERO)
     assert t.iloc[0].entry_px == 110 and t.iloc[0].exit_px == 100
+    assert t.iloc[0].gross_pct == pytest.approx((1 - 100 / 110) * 100)  # spot short: 9.09%, not the inverse 10%
+
+
+def test_short_costs_and_symmetry():
+    """A spot short that falls 10% earns what a long that rises 10% earns, before costs; costs hit both sides."""
+    df = frame(opens=[90, 90, 100, 90, 90], closes=[90, 101, 100, 90, 90])
+    t = run(spec(direction="short"), df, Costs(fee_bps=10, slippage_bps=0))
     assert t.iloc[0].gross_pct == pytest.approx(10.0)
+    assert t.iloc[0].net_pct == pytest.approx(((1 - 0.001) - 0.9 * (1 + 0.001)) * 100)
 
 
 def test_costs_are_charged_both_sides():

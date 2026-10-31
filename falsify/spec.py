@@ -193,8 +193,8 @@ class ClaimedPerformance(BaseModel):
 class FreeParameter(BaseModel):
     """A number the claim leaves vague ('a short MA', 'oversold').
 
-    The engine sweeps `candidates` and charges a multiple-testing penalty for
-    every extra variant tried -- vagueness is not free.
+    The battery runs every candidate and reports the share that makes money (a warning below 50%);
+    the verdict itself uses the value the spec states, never the best candidate.
     """
     model_config = ConfigDict(extra="forbid")
 

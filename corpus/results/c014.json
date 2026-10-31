@@ -286,10 +286,10 @@
     "primary": {
       "trades": 255,
       "win_rate_pct": 52.54901960784314,
-      "avg_net_pct": 0.8007630075388812,
-      "total_net_pct": 359.80632767131084,
+      "avg_net_pct": 0.8007630075388806,
+      "total_net_pct": 359.80632767130993,
       "total_gross_pct": 747.9364295132584,
-      "max_drawdown_pct": -62.40783724929293,
+      "max_drawdown_pct": -62.40783724929295,
       "avg_bars": 3.0,
       "open_at_end": 0,
       "buy_hold_pct": 1780.815115875236,
@@ -301,7 +301,7 @@
     },
     "null_test": {
       "p_value": 0.06096951524237881,
-      "strategy_mean_log_pct": 0.5982883090340712,
+      "strategy_mean_log_pct": 0.5982883090340776,
       "null_median_log_pct": 0.01745511679383981,
       "null_p95_log_pct": 0.6230336544816001,
       "beat_by_random_pct": 6.05,
@@ -406,20 +406,20 @@
       "in_window": {
         "trades": 16,
         "win_rate_pct": 62.5,
-        "avg_net_pct": 3.4938929722380863,
-        "total_net_pct": 49.6034934514608,
+        "avg_net_pct": 3.4938929722380827,
+        "total_net_pct": 49.60349345146076,
         "total_gross_pct": 55.45999562316912,
-        "max_drawdown_pct": -38.82480884785443,
+        "max_drawdown_pct": -38.82480884785448,
         "avg_bars": 3.0,
         "open_at_end": 0
       },
       "after_window": {
         "trades": 239,
         "win_rate_pct": 51.88284518828452,
-        "avg_net_pct": 0.6204697881447921,
-        "total_net_pct": 207.34999368213002,
+        "avg_net_pct": 0.6204697881447918,
+        "total_net_pct": 207.34999368212988,
         "total_gross_pct": 445.43705994218203,
-        "max_drawdown_pct": -47.54847580885118,
+        "max_drawdown_pct": -47.54847580885115,
         "avg_bars": 3.0,
         "open_at_end": 0
       },
@@ -430,20 +430,20 @@
       "first": {
         "trades": 125,
         "win_rate_pct": 56.8,
-        "avg_net_pct": 1.1853538749788968,
-        "total_net_pct": 203.39106340620035,
+        "avg_net_pct": 1.1853538749788963,
+        "total_net_pct": 203.39106340620012,
         "total_gross_pct": 309.5351580518217,
-        "max_drawdown_pct": -62.40783724929293,
+        "max_drawdown_pct": -62.40783724929295,
         "avg_bars": 3.0,
         "open_at_end": 0
       },
       "second": {
         "trades": 130,
         "win_rate_pct": 48.46153846153846,
-        "avg_net_pct": 0.43096409653886586,
-        "total_net_pct": 51.555659718193716,
+        "avg_net_pct": 0.43096409653886564,
+        "total_net_pct": 51.555659718193844,
         "total_gross_pct": 107.04850678680002,
-        "max_drawdown_pct": -31.36540008070937,
+        "max_drawdown_pct": -31.365400080709406,
         "avg_bars": 3.0,
         "open_at_end": 0
       },
@@ -454,68 +454,68 @@
         {
           "asset": "ETHUSDT",
           "trades": 249,
-          "total_net_pct": 272.35408494120276,
-          "avg_net_pct": 0.8433909017580569
+          "total_net_pct": 272.35408494120435,
+          "avg_net_pct": 0.8433909017580579
         },
         {
           "asset": "SOLUSDT",
           "trades": 159,
-          "total_net_pct": 879.4463390036652,
-          "avg_net_pct": 2.1004700786762225
+          "total_net_pct": 879.4463390036681,
+          "avg_net_pct": 2.1004700786762247
         },
         {
           "asset": "BNBUSDT",
           "trades": 252,
-          "total_net_pct": 2361.2384684170124,
-          "avg_net_pct": 1.838753886012766
+          "total_net_pct": 2361.2384684170233,
+          "avg_net_pct": 1.8387538860127677
         },
         {
           "asset": "XRPUSDT",
           "trades": 194,
           "total_net_pct": -71.59321891804275,
-          "avg_net_pct": -0.239826254251136
+          "avg_net_pct": -0.23982625425113613
         },
         {
           "asset": "DOGEUSDT",
           "trades": 162,
-          "total_net_pct": 4048.5052611862807,
+          "total_net_pct": 4048.505261186284,
           "avg_net_pct": 5.535915399085313
         },
         {
           "asset": "ADAUSDT",
           "trades": 186,
-          "total_net_pct": 245.48699618616735,
-          "avg_net_pct": 1.155656860311312
+          "total_net_pct": 245.48699618616686,
+          "avg_net_pct": 1.1556568603113122
         },
         {
           "asset": "AVAXUSDT",
           "trades": 139,
-          "total_net_pct": 463.44096572331716,
-          "avg_net_pct": 2.1540384633280554
+          "total_net_pct": 463.44096572331813,
+          "avg_net_pct": 2.1540384633280563
         },
         {
           "asset": "LINKUSDT",
           "trades": 208,
-          "total_net_pct": 473.3560535742549,
-          "avg_net_pct": 1.4749633574864318
+          "total_net_pct": 473.3560535742556,
+          "avg_net_pct": 1.4749633574864323
         },
         {
           "asset": "LTCUSDT",
           "trades": 213,
-          "total_net_pct": -54.73611431061789,
-          "avg_net_pct": 0.027470552868553485
+          "total_net_pct": -54.736114310617936,
+          "avg_net_pct": 0.02747055286855351
         },
         {
           "asset": "DOTUSDT",
           "trades": 122,
-          "total_net_pct": 13.634367161911797,
-          "avg_net_pct": 0.746092505230417
+          "total_net_pct": 13.634367161911953,
+          "avg_net_pct": 0.7460925052304179
         },
         {
           "asset": "TRXUSDT",
           "trades": 242,
-          "total_net_pct": 18.78996366196073,
-          "avg_net_pct": 0.3007559586136972
+          "total_net_pct": 18.78996366196086,
+          "avg_net_pct": 0.3007559586136973
         }
       ],
       "tested": 11,
@@ -531,8 +531,8 @@
           "uptrend SMA length": 50.0
         },
         "trades": 255,
-        "avg_net_pct": 0.8007630075388812,
-        "total_net_pct": 359.80632767131084,
+        "avg_net_pct": 0.8007630075388806,
+        "total_net_pct": 359.80632767130993,
         "p_value": 0.06986027944111776
       },
       "best_p_bonferroni": 0.27944111776447106,
@@ -542,8 +542,8 @@
             "uptrend SMA length": 20.0
           },
           "trades": 251,
-          "avg_net_pct": 0.34996282462623096,
-          "total_net_pct": 44.78852662095336,
+          "avg_net_pct": 0.34996282462623035,
+          "total_net_pct": 44.788526620953164,
           "p_value": 0.38323353293413176
         },
         {
@@ -551,8 +551,8 @@
             "uptrend SMA length": 50.0
           },
           "trades": 255,
-          "avg_net_pct": 0.8007630075388812,
-          "total_net_pct": 359.80632767131084,
+          "avg_net_pct": 0.8007630075388806,
+          "total_net_pct": 359.80632767130993,
           "p_value": 0.06986027944111776
         },
         {
@@ -560,8 +560,8 @@
             "uptrend SMA length": 100.0
           },
           "trades": 248,
-          "avg_net_pct": 0.5680466700385663,
-          "total_net_pct": 164.94117042155932,
+          "avg_net_pct": 0.5680466700385659,
+          "total_net_pct": 164.94117042155887,
           "p_value": 0.17964071856287425
         },
         {
@@ -569,8 +569,8 @@
             "uptrend SMA length": 200.0
           },
           "trades": 241,
-          "avg_net_pct": 0.2563573566206959,
-          "total_net_pct": 31.15853351617366,
+          "avg_net_pct": 0.25635735662069564,
+          "total_net_pct": 31.158533516173414,
           "p_value": 0.4291417165668663
         }
       ]

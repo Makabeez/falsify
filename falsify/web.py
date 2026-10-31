@@ -64,6 +64,9 @@ def _client_ip(request: Request) -> str:
     return request.headers.get("cf-connecting-ip") or (request.client.host if request.client else "unknown")
 
 
+_MP4_BRANDS = {b"isom", b"iso2", b"iso4", b"iso5", b"iso6", b"mp41", b"mp42", b"avc1", b"dash", b"M4V ", b"mmp4"}
+
+
 def _sniff(blob: bytes) -> str | None:
     if blob[:8] == b"\x89PNG\r\n\x1a\n":
         return ".png"
@@ -73,7 +76,7 @@ def _sniff(blob: bytes) -> str | None:
         return ".webp"
     if blob[:6] in (b"GIF87a", b"GIF89a"):
         return ".gif"
-    if blob[4:8] == b"ftyp":
+    if blob[4:8] == b"ftyp" and blob[8:12] in _MP4_BRANDS:  # not HEIC/AVIF/QuickTime, which share the box
         return ".mp4"
     return None
 
@@ -95,6 +98,10 @@ def _check_quota(ip: str) -> None:
             _day.update(date=today, count=0)
         if _day["count"] >= DAILY_LIMIT:
             raise HTTPException(429, "Today's live checks are used up. The examples below still work; try again tomorrow.")
+        for k in [k for k, d in _ip_hits.items() if not d or now - d[-1] > 3600]:
+            del _ip_hits[k]
+        for k in [k for k, d in _flag_hits.items() if not d or now - d[-1] > 3600]:
+            del _flag_hits[k]
         hits = _ip_hits[ip]
         while hits and now - hits[0] > 3600:
             hits.popleft()
@@ -103,7 +110,10 @@ def _check_quota(ip: str) -> None:
                                      f"or open one of the examples.")
         for k in [k for k, j in _jobs.items() if j["status"] in ("done", "error") and now - j["created"] > 3600]:
             del _jobs[k]  # finished results live on disk; keep memory bounded
-        running = sum(1 for j in _jobs.values() if j["status"] in ("queued", "running"))
+        # A job past JOB_TIMEOUT has already been reported to its visitor as failed; its thread may still be
+        # finishing, but it must not hold a queue slot and lock everyone else out.
+        running = sum(1 for j in _jobs.values()
+                      if j["status"] in ("queued", "running") and now - j["created"] <= JOB_TIMEOUT)
         if running >= MAX_QUEUE:
             raise HTTPException(503, "A lot of claims are being tested right now. Try again in a minute.")
         hits.append(now)
@@ -262,22 +272,27 @@ async def flag(key: str, request: Request) -> JSONResponse:
     """A visitor says whether the compiled rules match the claim. Logged for the reviewer; never changes a verdict."""
     if not KEY_RE.match(key) or not _result_path(key).exists():
         raise HTTPException(404, "No result with that link.")
-    try:
-        body = await request.json()
-    except ValueError:
-        raise HTTPException(400, "Send JSON: {\"agree\": true|false, \"note\": \"...\"}")
-    if not isinstance(body, dict) or not isinstance(body.get("agree"), bool):
-        raise HTTPException(400, "Say whether the rules match the claim.")
-    note = body.get("note")
-    note = note if isinstance(note, str) else None
     ip, now = _client_ip(request), time.time()
-    with _lock:
+    with _lock:  # rate limit before reading anything
         hits = _flag_hits[ip]
         while hits and now - hits[0] > 3600:
             hits.popleft()
         if len(hits) >= FLAGS_PER_IP_PER_HOUR:
             raise HTTPException(429, "Thanks, that's plenty of feedback for this hour.")
         hits.append(now)
+    raw = b""
+    async for chunk in request.stream():  # a vote is a few hundred bytes; never buffer more than 4 KB
+        raw += chunk
+        if len(raw) > 4096:
+            raise HTTPException(413, "Keep the note under 500 characters.")
+    try:
+        body = json.loads(raw or b"null")
+    except ValueError:
+        raise HTTPException(400, "Send JSON: {\"agree\": true|false, \"note\": \"...\"}")
+    if not isinstance(body, dict) or not isinstance(body.get("agree"), bool):
+        raise HTTPException(400, "Say whether the rules match the claim.")
+    note = body.get("note")
+    note = note if isinstance(note, str) else None
     review_mod.add_flag(key, body["agree"], note, ip, CACHE)
     return JSONResponse({"ok": True, "flags": review_mod.flag_counts(key, CACHE)})
 

@@ -126,3 +126,15 @@ def test_stuck_job_times_out_and_health_reports_queue(client, monkeypatch):
     web._jobs[key]["created"] -= web.JOB_TIMEOUT + 1
     r = client.get(f"/api/result/{key}").json()
     assert r["status"] == "error" and "not answering" in r["error"]
+
+
+def test_sniff_rejects_heic_and_review_body_is_capped(client, monkeypatch):
+    assert web._sniff(b"\x00\x00\x00\x18ftypmp42" + b"\x00" * 20) == ".mp4"
+    assert web._sniff(b"\x00\x00\x00\x18ftypheic" + b"\x00" * 20) is None
+    assert web._sniff(b"\x00\x00\x00\x18ftypqt  " + b"\x00" * 20) is None
+    key = "0123456789abcdef0123"
+    (web.CACHE / f"{key}.json").write_text("{}")
+    web._flag_hits.clear()
+    r = client.post(f"/api/review/{key}", content=b'{"agree": true, "note": "' + b"x" * 10000 + b'"}',
+                    headers={"Content-Type": "application/json"})
+    assert r.status_code == 413

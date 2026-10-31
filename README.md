@@ -92,19 +92,19 @@ The model's job is translation, which it is good at. It never gets the last word
 
 | Test | Question it asks | Effect on verdict |
 |---|---|---|
-| Costs | Does it make money after 10 bps fee + 2 bps slippage per side? | Fatal if not |
+| Costs | Does it make money after 10 bps fee + 2 bps slippage per side? | Fatal if not (with 30+ trades) |
 | Random-entry null | Do random entries with the same number of trades, holding times and side do as well? Strips out market drift: a long-only rule in a bull market beats zero but not random longs. 2,000 simulations. | SURVIVES needs p < 0.05. Fatal if p ≥ 0.5 (worse than the median coin flip). In between: INCONCLUSIVE |
-| Post-claim window | If the claim shows a period, what happened after it? The only truly out-of-sample data. | Fatal if it loses (≥ 10 trades) |
-| Sample size | At least 30 trades? | INCONCLUSIVE below |
+| Post-claim window | What happened after the later of the claim's period and the post date? The posting day itself counts as in-sample. The only truly out-of-sample data. | Fatal if it loses (≥ 10 trades) |
+| Sample size | At least 30 trades? | INCONCLUSIVE below, whatever the other numbers say |
 | Halves | Is the edge positive in both halves of history? | Warning |
 | Cross-asset | Does it work on the other 11 bundled assets? | Warning |
-| Vague parameters | "Oversold" could mean 20, 25, 30 or 35. Every reading is run; picking the best one pays a Bonferroni penalty. | Warning |
+| Vague parameters | "Oversold" could mean 20, 25, 30 or 35. Every reading is run and the share that makes money is shown; the verdict uses the reading the claim states or implies, never the best one. | Warning below 50% |
 | Claimed vs measured | Claimed 80% win rate, measured 61%. | Warning |
 | Buy-and-hold | Would just holding have done better? | Warning |
 | Open at the end | A no-stop rule's last position is often a loser that never closed. It is marked at the last close and counted, never dropped. | Counted |
 | History coverage | Does the claim's period start before our data? | Warning |
 
-**Verdicts.** **DIES** means evidence against the claim: it loses money after costs, loses after the post date, or random timing does at least as well more often than not. **INCONCLUSIVE** means the data can't tell it from luck: it makes money, but not convincingly enough (0.05 ≤ p < 0.5), or there are fewer than 30 trades. **SURVIVES** needs p < 0.05 and no fatal test. **UNTESTABLE** means no mechanical rule could be recovered, or the asset isn't in the data.
+**Verdicts.** **DIES** means evidence against the claim: it loses money after costs, loses after the post date, or random timing does at least as well more often than not. **INCONCLUSIVE** means the data can't tell it from luck: it makes money, but not convincingly enough (0.05 ≤ p < 0.5), or there are fewer than 30 trades. Below 30 trades the verdict is INCONCLUSIVE even when the rule lost money: one losing trade refutes a rule no more than one winner proves it, and the numbers are still shown. **SURVIVES** needs p < 0.05 and no fatal test. **UNTESTABLE** means no mechanical rule could be recovered, or the asset isn't in the data.
 
 **Claims that name several coins** are tested on each coin on its own, and the verdict is the weakest one. "Works on BTC and ETH" is a claim about both.
 
@@ -184,7 +184,7 @@ High costs 22% more tokens and 33% more time than medium, and buys nothing that 
 |---|---|
 | Price history | **Real.** Binance spot klines from the public market-data API, 12 assets × 1h/4h/1d from each asset's listing (BTC/ETH from Aug 2017), pinned snapshot + SHA-256 manifest |
 | Costs | **Modeled.** 10 bps fee + 2 bps slippage per side (Binance spot taker), configurable |
-| Shorts | **Modeled.** Priced as spot short with no borrow or funding cost |
+| Shorts | **Modeled.** Priced as a spot short (return = 1 − exit/entry, costs on both legs) with no borrow or funding cost. The random-timing test compares shorts on the signed log price change, the same quantity it simulates |
 | Example claims in `claims/` | **Hand-compiled** paraphrases of common retail setups. No real posts, no authors |
 | Battery calibration | **Measured** on the bundled data with coin-flip strategies and planted edges (`falsify calibrate`) |
 | Muse Spark transcribe/compile/audit | **Live** on Meta Model API (`muse-spark-1.3`). Repair loops (schema, quote check, audit) also pinned against a mock client in `tests/`. Corpus results: `corpus/results/scoreboard.md` |

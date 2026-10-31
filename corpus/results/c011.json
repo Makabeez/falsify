@@ -337,14 +337,14 @@
         {
           "asset": "SOLUSDT",
           "trades": 1,
-          "total_net_pct": -0.0714324394374466,
-          "avg_net_pct": -0.0714324394374466
+          "total_net_pct": -0.07143243943743549,
+          "avg_net_pct": -0.07143243943743549
         },
         {
           "asset": "BNBUSDT",
           "trades": 1,
-          "total_net_pct": 219.30169105130713,
-          "avg_net_pct": 219.30169105130713
+          "total_net_pct": 219.30169105130716,
+          "avg_net_pct": 219.30169105130716
         },
         {
           "asset": "XRPUSDT",
@@ -355,8 +355,8 @@
         {
           "asset": "DOGEUSDT",
           "trades": 1,
-          "total_net_pct": -17.569511571239882,
-          "avg_net_pct": -17.569511571239882
+          "total_net_pct": -17.56951157123987,
+          "avg_net_pct": -17.56951157123987
         },
         {
           "asset": "ADAUSDT",
@@ -379,8 +379,8 @@
         {
           "asset": "LTCUSDT",
           "trades": 1,
-          "total_net_pct": -42.346063665615496,
-          "avg_net_pct": -42.346063665615496
+          "total_net_pct": -42.34606366561551,
+          "avg_net_pct": -42.34606366561551
         },
         {
           "asset": "DOTUSDT",

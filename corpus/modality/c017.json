@@ -390,10 +390,10 @@
     "primary": {
       "trades": 87,
       "win_rate_pct": 31.03448275862069,
-      "avg_net_pct": 4.671559051553595,
-      "total_net_pct": 1562.4517829705167,
+      "avg_net_pct": 4.671559051553599,
+      "total_net_pct": 1562.4517829705226,
       "total_gross_pct": 1948.4708554236781,
-      "max_drawdown_pct": -49.40848447511619,
+      "max_drawdown_pct": -49.40848447511611,
       "avg_bars": 78.50574712643679,
       "open_at_end": 0,
       "buy_hold_pct": 1780.815115875236,
@@ -405,7 +405,7 @@
     },
     "null_test": {
       "p_value": 0.06946526736631684,
-      "strategy_mean_log_pct": 3.230894923444632,
+      "strategy_mean_log_pct": 3.230894923444642,
       "null_median_log_pct": 0.9575469798270844,
       "null_p95_log_pct": 3.4086990265788373,
       "beat_by_random_pct": 6.9,
@@ -510,20 +510,20 @@
       "in_window": {
         "trades": 10,
         "win_rate_pct": 50.0,
-        "avg_net_pct": 10.0751984745351,
+        "avg_net_pct": 10.075198474535101,
         "total_net_pct": 130.5223012092331,
         "total_gross_pct": 136.12176390660812,
-        "max_drawdown_pct": -7.4007712248185475,
+        "max_drawdown_pct": -7.400771224818559,
         "avg_bars": 104.7,
         "open_at_end": 0
       },
       "after_window": {
         "trades": 62,
         "win_rate_pct": 25.806451612903224,
-        "avg_net_pct": 1.564766127275628,
-        "total_net_pct": 58.33283241262151,
+        "avg_net_pct": 1.5647661272756317,
+        "total_net_pct": 58.33283241262202,
         "total_gross_pct": 83.73590415629462,
-        "max_drawdown_pct": -49.40848447511623,
+        "max_drawdown_pct": -49.40848447511611,
         "avg_bars": 68.19354838709677,
         "open_at_end": 0
       },
@@ -534,20 +534,20 @@
       "first": {
         "trades": 43,
         "win_rate_pct": 37.2093023255814,
-        "avg_net_pct": 8.209646057443212,
-        "total_net_pct": 1149.4082522703632,
+        "avg_net_pct": 8.209646057443216,
+        "total_net_pct": 1149.4082522703661,
         "total_gross_pct": 1285.235402053278,
-        "max_drawdown_pct": -37.6277274967571,
+        "max_drawdown_pct": -37.62772749675701,
         "avg_bars": 84.0,
         "open_at_end": 0
       },
       "second": {
         "trades": 44,
         "win_rate_pct": 25.0,
-        "avg_net_pct": 1.2138831139796509,
-        "total_net_pct": 33.059132589335015,
+        "avg_net_pct": 1.2138831139796535,
+        "total_net_pct": 33.05913258933521,
         "total_gross_pct": 47.878898589172096,
-        "max_drawdown_pct": -23.950948337638945,
+        "max_drawdown_pct": -23.950948337638913,
         "avg_bars": 73.13636363636364,
         "open_at_end": 0
       },
@@ -558,68 +558,68 @@
         {
           "asset": "ETHUSDT",
           "trades": 83,
-          "total_net_pct": 5504.232393963776,
-          "avg_net_pct": 6.614033616983712
+          "total_net_pct": 5504.2323939637845,
+          "avg_net_pct": 6.614033616983714
         },
         {
           "asset": "SOLUSDT",
           "trades": 66,
-          "total_net_pct": 11659.908544046399,
-          "avg_net_pct": 13.891496798971161
+          "total_net_pct": 11659.908544046446,
+          "avg_net_pct": 13.891496798971165
         },
         {
           "asset": "BNBUSDT",
           "trades": 97,
-          "total_net_pct": 18614.718067081223,
+          "total_net_pct": 18614.718067081292,
           "avg_net_pct": 11.696981768803582
         },
         {
           "asset": "XRPUSDT",
           "trades": 98,
-          "total_net_pct": 197.75708992920747,
-          "avg_net_pct": 3.5413663597511746
+          "total_net_pct": 197.7570899292092,
+          "avg_net_pct": 3.5413663597511795
         },
         {
           "asset": "DOGEUSDT",
           "trades": 77,
-          "total_net_pct": 7864.54065088062,
-          "avg_net_pct": 15.663007689166003
+          "total_net_pct": 7864.5406508806445,
+          "avg_net_pct": 15.663007689166008
         },
         {
           "asset": "ADAUSDT",
           "trades": 82,
-          "total_net_pct": 2752.8036351927663,
-          "avg_net_pct": 7.022546716837404
+          "total_net_pct": 2752.8036351927726,
+          "avg_net_pct": 7.022546716837405
         },
         {
           "asset": "AVAXUSDT",
           "trades": 68,
-          "total_net_pct": 2424.180660424556,
-          "avg_net_pct": 10.149472226385688
+          "total_net_pct": 2424.180660424566,
+          "avg_net_pct": 10.149472226385695
         },
         {
           "asset": "LINKUSDT",
           "trades": 106,
-          "total_net_pct": 739.0182241917934,
-          "avg_net_pct": 3.8418313011138503
+          "total_net_pct": 739.0182241917977,
+          "avg_net_pct": 3.8418313011138556
         },
         {
           "asset": "LTCUSDT",
           "trades": 107,
-          "total_net_pct": -41.616634616223436,
-          "avg_net_pct": 0.016252644481709884
+          "total_net_pct": -41.61663461622308,
+          "avg_net_pct": 0.01625264448171523
         },
         {
           "asset": "DOTUSDT",
           "trades": 66,
-          "total_net_pct": 123.27952900904889,
-          "avg_net_pct": 3.246899670122301
+          "total_net_pct": 123.27952900904987,
+          "avg_net_pct": 3.2468996701223065
         },
         {
           "asset": "TRXUSDT",
           "trades": 107,
-          "total_net_pct": 176.9780019812519,
-          "avg_net_pct": 1.8252167605449312
+          "total_net_pct": 176.97800198125302,
+          "avg_net_pct": 1.8252167605449339
         }
       ],
       "tested": 11,
@@ -638,7 +638,7 @@
         },
         "trades": 98,
         "avg_net_pct": 4.835701744508496,
-        "total_net_pct": 3135.6635456723807,
+        "total_net_pct": 3135.6635456723757,
         "p_value": 0.00998003992015968
       },
       "best_p_bonferroni": 0.6387225548902196,
@@ -651,7 +651,7 @@
           },
           "trades": 93,
           "avg_net_pct": 4.780721547753373,
-          "total_net_pct": 2428.0905039595746,
+          "total_net_pct": 2428.0905039595723,
           "p_value": 0.015968063872255488
         },
         {
@@ -661,8 +661,8 @@
             "stoploss percent": 5.0
           },
           "trades": 83,
-          "avg_net_pct": 4.920530692344468,
-          "total_net_pct": 1627.6820509252811,
+          "avg_net_pct": 4.920530692344471,
+          "total_net_pct": 1627.6820509252836,
           "p_value": 0.05189620758483034
         },
         {
@@ -673,7 +673,7 @@
           },
           "trades": 72,
           "avg_net_pct": 5.871646722846655,
-          "total_net_pct": 1853.0428897956717,
+          "total_net_pct": 1853.042889795674,
           "p_value": 0.03992015968063872
         },
         {
@@ -683,8 +683,8 @@
             "stoploss percent": 10.0
           },
           "trades": 71,
-          "avg_net_pct": 5.911019862758051,
-          "total_net_pct": 1780.0532977821542,
+          "avg_net_pct": 5.9110198627580495,
+          "total_net_pct": 1780.0532977821533,
           "p_value": 0.0658682634730539
         },
         {
@@ -694,8 +694,8 @@
             "stoploss percent": 3.0
           },
           "trades": 102,
-          "avg_net_pct": 4.510648033332384,
-          "total_net_pct": 2712.7198398524515,
+          "avg_net_pct": 4.510648033332382,
+          "total_net_pct": 2712.719839852447,
           "p_value": 0.023952095808383235
         },
         {
@@ -705,8 +705,8 @@
             "stoploss percent": 5.0
           },
           "trades": 83,
-          "avg_net_pct": 5.514552339862574,
-          "total_net_pct": 2614.4906621193963,
+          "avg_net_pct": 5.514552339862578,
+          "total_net_pct": 2614.490662119406,
           "p_value": 0.029940119760479042
         },
         {
@@ -717,7 +717,7 @@
           },
           "trades": 71,
           "avg_net_pct": 6.80835363442422,
-          "total_net_pct": 3376.7178449282724,
+          "total_net_pct": 3376.7178449282737,
           "p_value": 0.029940119760479042
         },
         {
@@ -728,7 +728,7 @@
           },
           "trades": 71,
           "avg_net_pct": 6.700420822216715,
-          "total_net_pct": 3087.4436425531862,
+          "total_net_pct": 3087.4436425531803,
           "p_value": 0.03592814371257485
         },
         {
@@ -738,8 +738,8 @@
             "stoploss percent": 3.0
           },
           "trades": 99,
-          "avg_net_pct": 4.727333605950705,
-          "total_net_pct": 2948.266689769636,
+          "avg_net_pct": 4.727333605950704,
+          "total_net_pct": 2948.266689769634,
           "p_value": 0.02594810379241517
         },
         {
@@ -749,8 +749,8 @@
             "stoploss percent": 5.0
           },
           "trades": 82,
-          "avg_net_pct": 5.643849067071667,
-          "total_net_pct": 2759.6233720068585,
+          "avg_net_pct": 5.64384906707167,
+          "total_net_pct": 2759.6233720068694,
           "p_value": 0.03792415169660679
         },
         {
@@ -761,7 +761,7 @@
           },
           "trades": 71,
           "avg_net_pct": 6.814414105174764,
-          "total_net_pct": 3392.11122553973,
+          "total_net_pct": 3392.1112255397334,
           "p_value": 0.029940119760479042
         },
         {
@@ -771,8 +771,8 @@
             "stoploss percent": 10.0
           },
           "trades": 71,
-          "avg_net_pct": 6.706481292967258,
-          "total_net_pct": 3101.5562439651644,
+          "avg_net_pct": 6.706481292967256,
+          "total_net_pct": 3101.5562439651617,
           "p_value": 0.03592814371257485
         },
         {
@@ -782,8 +782,8 @@
             "stoploss percent": 3.0
           },
           "trades": 97,
-          "avg_net_pct": 4.888607872474034,
-          "total_net_pct": 3146.2660832303927,
+          "avg_net_pct": 4.888607872474032,
+          "total_net_pct": 3146.266083230392,
           "p_value": 0.017964071856287425
         },
         {
@@ -793,8 +793,8 @@
             "stoploss percent": 5.0
           },
           "trades": 81,
-          "avg_net_pct": 5.7794286589030515,
-          "total_net_pct": 2919.408270579656,
+          "avg_net_pct": 5.779428658903052,
+          "total_net_pct": 2919.408270579664,
           "p_value": 0.017964071856287425
         },
         {
@@ -805,7 +805,7 @@
           },
           "trades": 70,
           "avg_net_pct": 7.019784410302465,
-          "total_net_pct": 3676.85620213062,
+          "total_net_pct": 3676.856202130621,
           "p_value": 0.013972055888223553
         },
         {
@@ -815,8 +815,8 @@
             "stoploss percent": 10.0
           },
           "trades": 70,
-          "avg_net_pct": 6.938812640107657,
-          "total_net_pct": 3439.5563929640693,
+          "avg_net_pct": 6.938812640107654,
+          "total_net_pct": 3439.5563929640657,
           "p_value": 0.015968063872255488
         },
         {
@@ -826,8 +826,8 @@
             "stoploss percent": 3.0
           },
           "trades": 66,
-          "avg_net_pct": 3.905896138993239,
-          "total_net_pct": 486.067624506032,
+          "avg_net_pct": 3.9058961389932376,
+          "total_net_pct": 486.06762450603156,
           "p_value": 0.08982035928143713
         },
         {
@@ -837,8 +837,8 @@
             "stoploss percent": 5.0
           },
           "trades": 56,
-          "avg_net_pct": 4.571560240450875,
-          "total_net_pct": 468.2336973053244,
+          "avg_net_pct": 4.571560240450877,
+          "total_net_pct": 468.2336973053257,
           "p_value": 0.10778443113772455
         },
         {
@@ -848,8 +848,8 @@
             "stoploss percent": 8.0
           },
           "trades": 53,
-          "avg_net_pct": 4.615731465382235,
-          "total_net_pct": 395.24478217242205,
+          "avg_net_pct": 4.615731465382237,
+          "total_net_pct": 395.2447821724225,
           "p_value": 0.1377245508982036
         },
         {
@@ -859,8 +859,8 @@
             "stoploss percent": 10.0
           },
           "trades": 52,
-          "avg_net_pct": 4.703298345299305,
-          "total_net_pct": 392.202622210498,
+          "avg_net_pct": 4.703298345299307,
+          "total_net_pct": 392.20262221049813,
           "p_value": 0.16367265469061876
         },
         {
@@ -870,8 +870,8 @@
             "stoploss percent": 3.0
           },
           "trades": 110,
-          "avg_net_pct": 3.72531349131645,
-          "total_net_pct": 1641.5490507807533,
+          "avg_net_pct": 3.7253134913164496,
+          "total_net_pct": 1641.5490507807508,
           "p_value": 0.03992015968063872
         },
         {
@@ -881,8 +881,8 @@
             "stoploss percent": 5.0
           },
           "trades": 87,
-          "avg_net_pct": 4.671559051553595,
-          "total_net_pct": 1562.4517829705167,
+          "avg_net_pct": 4.671559051553599,
+          "total_net_pct": 1562.4517829705226,
           "p_value": 0.06786427145708583
         },
         {
@@ -893,7 +893,7 @@
           },
           "trades": 72,
           "avg_net_pct": 6.2665243229312955,
-          "total_net_pct": 2469.738269060931,
+          "total_net_pct": 2469.7382690609356,
           "p_value": 0.02594810379241517
         },
         {
@@ -903,8 +903,8 @@
             "stoploss percent": 10.0
           },
           "trades": 71,
-          "avg_net_pct": 6.306247409947425,
-          "total_net_pct": 2363.161704616714,
+          "avg_net_pct": 6.306247409947423,
+          "total_net_pct": 2363.1617046167135,
           "p_value": 0.041916167664670656
         },
         {
@@ -914,8 +914,8 @@
             "stoploss percent": 3.0
           },
           "trades": 99,
-          "avg_net_pct": 4.781216975426686,
-          "total_net_pct": 3115.9633104723966,
+          "avg_net_pct": 4.781216975426685,
+          "total_net_pct": 3115.963310472394,
           "p_value": 0.01996007984031936
         },
         {
@@ -925,8 +925,8 @@
             "stoploss percent": 5.0
           },
           "trades": 82,
-          "avg_net_pct": 5.71581914553542,
-          "total_net_pct": 2938.7943534182764,
+          "avg_net_pct": 5.715819145535424,
+          "total_net_pct": 2938.7943534182855,
           "p_value": 0.03592814371257485
         },
         {
@@ -936,8 +936,8 @@
             "stoploss percent": 8.0
           },
           "trades": 71,
-          "avg_net_pct": 6.87932086456594,
-          "total_net_pct": 3565.320829146668,
+          "avg_net_pct": 6.879320864565937,
+          "total_net_pct": 3565.32082914667,
           "p_value": 0.029940119760479042
         },
         {
@@ -948,7 +948,7 @@
           },
           "trades": 71,
           "avg_net_pct": 6.799489541838661,
-          "total_net_pct": 3335.028785515235,
+          "total_net_pct": 3335.028785515236,
           "p_value": 0.029940119760479042
         },
         {
@@ -959,7 +959,7 @@
           },
           "trades": 98,
           "avg_net_pct": 4.835701744508496,
-          "total_net_pct": 3135.6635456723807,
+          "total_net_pct": 3135.6635456723757,
           "p_value": 0.00998003992015968
         },
         {
@@ -969,8 +969,8 @@
             "stoploss percent": 5.0
           },
           "trades": 81,
-          "avg_net_pct": 5.789827983835259,
-          "total_net_pct": 2948.6071476214975,
+          "avg_net_pct": 5.789827983835263,
+          "total_net_pct": 2948.6071476215034,
           "p_value": 0.017964071856287425
         },
         {
@@ -981,7 +981,7 @@
           },
           "trades": 70,
           "avg_net_pct": 6.994447916649392,
-          "total_net_pct": 3610.9102367030446,
+          "total_net_pct": 3610.9102367030473,
           "p_value": 0.015968063872255488
         },
         {
@@ -991,8 +991,8 @@
             "stoploss percent": 10.0
           },
           "trades": 70,
-          "avg_net_pct": 6.82398779784034,
-          "total_net_pct": 3150.938150085454,
+          "avg_net_pct": 6.823987797840338,
+          "total_net_pct": 3150.938150085451,
           "p_value": 0.01996007984031936
         },
         {
@@ -1002,8 +1002,8 @@
             "stoploss percent": 3.0
           },
           "trades": 66,
-          "avg_net_pct": 1.97924204665094,
-          "total_net_pct": 113.40614579976314,
+          "avg_net_pct": 1.9792420466509377,
+          "total_net_pct": 113.40614579976291,
           "p_value": 0.3253493013972056
         },
         {
@@ -1013,8 +1013,8 @@
             "stoploss percent": 5.0
           },
           "trades": 56,
-          "avg_net_pct": 2.269406270832367,
-          "total_net_pct": 103.29147845451332,
+          "avg_net_pct": 2.26940627083237,
+          "total_net_pct": 103.29147845451368,
           "p_value": 0.3532934131736527
         },
         {
@@ -1024,8 +1024,8 @@
             "stoploss percent": 8.0
           },
           "trades": 50,
-          "avg_net_pct": 2.724482411744277,
-          "total_net_pct": 119.370714265481,
+          "avg_net_pct": 2.724482411744278,
+          "total_net_pct": 119.3707142654811,
           "p_value": 0.3253493013972056
         },
         {
@@ -1035,8 +1035,8 @@
             "stoploss percent": 10.0
           },
           "trades": 49,
-          "avg_net_pct": 2.9986071394184406,
-          "total_net_pct": 145.00687851892957,
+          "avg_net_pct": 2.9986071394184393,
+          "total_net_pct": 145.00687851892948,
           "p_value": 0.3013972055888224
         },
         {
@@ -1047,7 +1047,7 @@
           },
           "trades": 88,
           "avg_net_pct": 2.9111618174870424,
-          "total_net_pct": 445.2604053459821,
+          "total_net_pct": 445.2604053459819,
           "p_value": 0.1536926147704591
         },
         {
@@ -1057,8 +1057,8 @@
             "stoploss percent": 5.0
           },
           "trades": 73,
-          "avg_net_pct": 3.255320289083572,
-          "total_net_pct": 343.5623480866827,
+          "avg_net_pct": 3.2553202890835764,
+          "total_net_pct": 343.5623480866842,
           "p_value": 0.20359281437125748
         },
         {
@@ -1068,8 +1068,8 @@
             "stoploss percent": 8.0
           },
           "trades": 65,
-          "avg_net_pct": 3.5918417055071643,
-          "total_net_pct": 313.4176681599789,
+          "avg_net_pct": 3.5918417055071665,
+          "total_net_pct": 313.41766815998,
           "p_value": 0.23552894211576847
         },
         {
@@ -1079,8 +1079,8 @@
             "stoploss percent": 10.0
           },
           "trades": 62,
-          "avg_net_pct": 3.861211396256455,
-          "total_net_pct": 336.10910985423305,
+          "avg_net_pct": 3.8612113962564565,
+          "total_net_pct": 336.1091098542337,
           "p_value": 0.22954091816367264
         },
         {
@@ -1090,8 +1090,8 @@
             "stoploss percent": 3.0
           },
           "trades": 102,
-          "avg_net_pct": 3.9548077332925584,
-          "total_net_pct": 1656.739448068426,
+          "avg_net_pct": 3.9548077332925557,
+          "total_net_pct": 1656.7394480684236,
           "p_value": 0.03992015968063872
         },
         {
@@ -1101,8 +1101,8 @@
             "stoploss percent": 5.0
           },
           "trades": 83,
-          "avg_net_pct": 4.704221547403119,
-          "total_net_pct": 1410.1414483006315,
+          "avg_net_pct": 4.704221547403122,
+          "total_net_pct": 1410.1414483006372,
           "p_value": 0.06187624750499002
         },
         {
@@ -1112,8 +1112,8 @@
             "stoploss percent": 8.0
           },
           "trades": 70,
-          "avg_net_pct": 5.88694402113242,
-          "total_net_pct": 1744.0543863872088,
+          "avg_net_pct": 5.886944021132419,
+          "total_net_pct": 1744.054386387209,
           "p_value": 0.05788423153692615
         },
         {
@@ -1123,8 +1123,8 @@
             "stoploss percent": 10.0
           },
           "trades": 69,
-          "avg_net_pct": 5.8858060456777626,
-          "total_net_pct": 1619.3793850410643,
+          "avg_net_pct": 5.885806045677759,
+          "total_net_pct": 1619.3793850410625,
           "p_value": 0.05788423153692615
         },
         {
@@ -1134,8 +1134,8 @@
             "stoploss percent": 3.0
           },
           "trades": 101,
-          "avg_net_pct": 4.376629405707563,
-          "total_net_pct": 2309.156010942674,
+          "avg_net_pct": 4.376629405707559,
+          "total_net_pct": 2309.156010942672,
           "p_value": 0.031936127744510975
         },
         {
@@ -1145,8 +1145,8 @@
             "stoploss percent": 5.0
           },
           "trades": 80,
-          "avg_net_pct": 5.531614345762713,
-          "total_net_pct": 2326.883288687299,
+          "avg_net_pct": 5.531614345762718,
+          "total_net_pct": 2326.8832886873074,
           "p_value": 0.03792415169660679
         },
         {
@@ -1157,7 +1157,7 @@
           },
           "trades": 68,
           "avg_net_pct": 6.821789545398578,
-          "total_net_pct": 2874.0022956097537,
+          "total_net_pct": 2874.002295609752,
           "p_value": 0.029940119760479042
         },
         {
@@ -1167,8 +1167,8 @@
             "stoploss percent": 10.0
           },
           "trades": 68,
-          "avg_net_pct": 6.6502199694843345,
-          "total_net_pct": 2512.743966213601,
+          "avg_net_pct": 6.650219969484334,
+          "total_net_pct": 2512.743966213599,
           "p_value": 0.03992015968063872
         },
         {
@@ -1210,8 +1210,8 @@
             "stoploss percent": 3.0
           },
           "trades": 69,
-          "avg_net_pct": 2.045759697639545,
-          "total_net_pct": 135.3045166513905,
+          "avg_net_pct": 2.0457596976395442,
+          "total_net_pct": 135.30451665139026,
           "p_value": 0.32335329341317365
         },
         {
@@ -1221,8 +1221,8 @@
             "stoploss percent": 5.0
           },
           "trades": 59,
-          "avg_net_pct": 2.176583090429798,
-          "total_net_pct": 103.59676440400625,
+          "avg_net_pct": 2.1765830904298014,
+          "total_net_pct": 103.59676440400656,
           "p_value": 0.37924151696606784
         },
         {
@@ -1232,8 +1232,8 @@
             "stoploss percent": 8.0
           },
           "trades": 53,
-          "avg_net_pct": 2.5396000912121903,
-          "total_net_pct": 112.6705152934786,
+          "avg_net_pct": 2.539600091212193,
+          "total_net_pct": 112.67051529347883,
           "p_value": 0.38323353293413176
         },
         {
@@ -1243,8 +1243,8 @@
             "stoploss percent": 10.0
           },
           "trades": 52,
-          "avg_net_pct": 2.717615818698908,
-          "total_net_pct": 127.30881373490179,
+          "avg_net_pct": 2.7176158186989094,
+          "total_net_pct": 127.30881373490193,
           "p_value": 0.3712574850299401
         },
         {
@@ -1254,8 +1254,8 @@
             "stoploss percent": 3.0
           },
           "trades": 84,
-          "avg_net_pct": 2.8889450616924965,
-          "total_net_pct": 408.26744273074115,
+          "avg_net_pct": 2.8889450616924957,
+          "total_net_pct": 408.26744273074087,
           "p_value": 0.13373253493013973
         },
         {
@@ -1265,8 +1265,8 @@
             "stoploss percent": 5.0
           },
           "trades": 70,
-          "avg_net_pct": 3.296902470117387,
-          "total_net_pct": 342.12409333312144,
+          "avg_net_pct": 3.296902470117391,
+          "total_net_pct": 342.12409333312337,
           "p_value": 0.2315369261477046
         },
         {
@@ -1276,8 +1276,8 @@
             "stoploss percent": 8.0
           },
           "trades": 64,
-          "avg_net_pct": 3.3955174717511882,
-          "total_net_pct": 274.17641040931596,
+          "avg_net_pct": 3.395517471751192,
+          "total_net_pct": 274.17641040931653,
           "p_value": 0.23353293413173654
         },
         {
@@ -1288,7 +1288,7 @@
           },
           "trades": 61,
           "avg_net_pct": 3.861429040643404,
-          "total_net_pct": 349.9614178047739,
+          "total_net_pct": 349.9614178047743,
           "p_value": 0.22355289421157684
         },
         {
@@ -1298,8 +1298,8 @@
             "stoploss percent": 3.0
           },
           "trades": 90,
-          "avg_net_pct": 4.349085428229648,
-          "total_net_pct": 1643.4727837131934,
+          "avg_net_pct": 4.349085428229647,
+          "total_net_pct": 1643.4727837131898,
           "p_value": 0.043912175648702596
         },
         {
@@ -1309,8 +1309,8 @@
             "stoploss percent": 5.0
           },
           "trades": 75,
-          "avg_net_pct": 5.103434781542156,
-          "total_net_pct": 1474.7622195151348,
+          "avg_net_pct": 5.10343478154216,
+          "total_net_pct": 1474.7622195151396,
           "p_value": 0.041916167664670656
         },
         {
@@ -1320,8 +1320,8 @@
             "stoploss percent": 8.0
           },
           "trades": 64,
-          "avg_net_pct": 6.336384144215317,
-          "total_net_pct": 1854.28486815529,
+          "avg_net_pct": 6.336384144215318,
+          "total_net_pct": 1854.2848681552912,
           "p_value": 0.04790419161676647
         },
         {
@@ -1331,8 +1331,8 @@
             "stoploss percent": 10.0
           },
           "trades": 63,
-          "avg_net_pct": 6.437281558120081,
-          "total_net_pct": 1846.353914674135,
+          "avg_net_pct": 6.437281558120082,
+          "total_net_pct": 1846.3539146741336,
           "p_value": 0.029940119760479042
         }
       ]
@@ -1384,14 +1384,14 @@
         "asset": "BTCUSDT",
         "verdict": "INCONCLUSIVE",
         "trades": 87,
-        "avg_net_pct": 4.671559051553595,
+        "avg_net_pct": 4.671559051553599,
         "p_value": 0.06946526736631684
       },
       {
         "asset": "ETHUSDT",
         "verdict": "SURVIVES",
         "trades": 83,
-        "avg_net_pct": 6.614033616983712,
+        "avg_net_pct": 6.614033616983714,
         "p_value": 0.00849575212393803
       }
     ],

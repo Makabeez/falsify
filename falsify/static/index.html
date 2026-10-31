@@ -489,7 +489,7 @@ function testRows(rep) {
   if (ca.tested) R("Other coins", `${ca.positive} of ${ca.tested}`, ca.positive_share_pct >= 50 ? "ok" : "warn", "same rules on the other bundled coins with 30+ trades, profitable after costs");
   if (sw.readings > 1) {
     if (sw.positive_share_pct == null) R("Vague numbers", `${sw.readings} readings`, "na", "every reasonable value for the numbers the claim left vague; none produced 30+ trades, so none can be judged");
-    else R("Vague numbers", `${fmt(sw.positive_share_pct, 0)}% of ${sw.readings} readings`, sw.positive_share_pct >= 50 ? "ok" : "warn", "share of reasonable values for the vague numbers that make money; the best one pays a search penalty");
+    else R("Vague numbers", `${fmt(sw.positive_share_pct, 0)}% of ${sw.readings} readings`, sw.positive_share_pct >= 50 ? "ok" : "warn", "share of reasonable values for the vague numbers that make money; the verdict uses the claim's own value, never the best one");
   }
   if (p.buy_hold_pct != null && rep.verdict !== "UNTESTABLE") R("Versus just holding", `${pct(p.total_net_pct, 0)} vs ${pct(p.buy_hold_pct, 0)}`, p.total_net_pct >= p.buy_hold_pct ? "ok" : "warn", "the rule against buying at the start and holding");
   (rep.claimed_vs_measured || []).forEach(c => R(`Claimed ${c.metric}`, `${fmt(c.claimed, 0)} → ${fmt(c.measured, 0)}`, Math.abs(c.gap) <= 10 ? "ok" : "warn", "what the post says against what the data says"));

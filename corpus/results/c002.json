@@ -314,9 +314,9 @@
       "trades": 72,
       "win_rate_pct": 47.22222222222222,
       "avg_net_pct": 0.9078017617978962,
-      "total_net_pct": 60.16109205747098,
+      "total_net_pct": 60.16109205747095,
       "total_gross_pct": 90.37203127981009,
-      "max_drawdown_pct": -39.577825549026336,
+      "max_drawdown_pct": -39.57782554902637,
       "avg_bars": 4.5,
       "open_at_end": 0,
       "buy_hold_pct": 1780.815115875236,
@@ -328,7 +328,7 @@
     },
     "null_test": {
       "p_value": 0.28535732133933034,
-      "strategy_mean_log_pct": 0.6541804834669807,
+      "strategy_mean_log_pct": 0.6541804834669861,
       "null_median_log_pct": 0.19043917093338109,
       "null_p95_log_pct": 1.555304874578641,
       "beat_by_random_pct": 28.499999999999996,
@@ -433,8 +433,8 @@
       "in_window": {
         "trades": 6,
         "win_rate_pct": 50.0,
-        "avg_net_pct": -2.6178338656623334,
-        "total_net_pct": -16.363322471091703,
+        "avg_net_pct": -2.6178338656623352,
+        "total_net_pct": -16.363322471091713,
         "total_gross_pct": -15.15024050422843,
         "max_drawdown_pct": -23.015246131458543,
         "avg_bars": 4.833333333333333,
@@ -443,10 +443,10 @@
       "after_window": {
         "trades": 66,
         "win_rate_pct": 46.96969696969697,
-        "avg_net_pct": 1.228314091567008,
-        "total_net_pct": 91.49623919734586,
+        "avg_net_pct": 1.2283140915670083,
+        "total_net_pct": 91.49623919734591,
         "total_gross_pct": 124.3636663334292,
-        "max_drawdown_pct": -29.304906658523823,
+        "max_drawdown_pct": -29.304906658523855,
         "avg_bars": 4.46969696969697,
         "open_at_end": 0
       },
@@ -457,18 +457,18 @@
       "first": {
         "trades": 35,
         "win_rate_pct": 40.0,
-        "avg_net_pct": 0.4365757258457283,
-        "total_net_pct": 2.946236694115578,
+        "avg_net_pct": 0.436575725845727,
+        "total_net_pct": 2.9462366941155116,
         "total_gross_pct": 11.967306051928283,
-        "max_drawdown_pct": -39.577825549026336,
+        "max_drawdown_pct": -39.57782554902637,
         "avg_bars": 4.314285714285714,
         "open_at_end": 0
       },
       "second": {
         "trades": 37,
         "win_rate_pct": 54.054054054054056,
-        "avg_net_pct": 1.353556120131028,
-        "total_net_pct": 55.577413221386585,
+        "avg_net_pct": 1.3535561201310293,
+        "total_net_pct": 55.57741322138674,
         "total_gross_pct": 70.02465986947945,
         "max_drawdown_pct": -14.34375383940656,
         "avg_bars": 4.675675675675675,
@@ -481,68 +481,68 @@
         {
           "asset": "ETHUSDT",
           "trades": 62,
-          "total_net_pct": -3.1479281387438496,
-          "avg_net_pct": 0.15032411249910724
+          "total_net_pct": -3.147928138743783,
+          "avg_net_pct": 0.15032411249910838
         },
         {
           "asset": "SOLUSDT",
           "trades": 51,
-          "total_net_pct": 15.380234631677414,
-          "avg_net_pct": 1.1047854624102804
+          "total_net_pct": 15.380234631677482,
+          "avg_net_pct": 1.1047854624102822
         },
         {
           "asset": "BNBUSDT",
           "trades": 68,
-          "total_net_pct": 15.010752688243922,
-          "avg_net_pct": 0.5019962934076007
+          "total_net_pct": 15.010752688243656,
+          "avg_net_pct": 0.5019962934075987
         },
         {
           "asset": "XRPUSDT",
           "trades": 68,
-          "total_net_pct": 17.35109156441372,
-          "avg_net_pct": 0.6251794113021127
+          "total_net_pct": 17.351091564413746,
+          "avg_net_pct": 0.6251794113021122
         },
         {
           "asset": "DOGEUSDT",
           "trades": 50,
           "total_net_pct": 8.914064365431628,
-          "avg_net_pct": 1.1984039233801584
+          "avg_net_pct": 1.1984039233801576
         },
         {
           "asset": "ADAUSDT",
           "trades": 64,
           "total_net_pct": -75.64239934457288,
-          "avg_net_pct": -1.6048932537191092
+          "avg_net_pct": -1.6048932537191085
         },
         {
           "asset": "AVAXUSDT",
           "trades": 49,
-          "total_net_pct": 12.94426683521619,
-          "avg_net_pct": 0.9728334457106047
+          "total_net_pct": 12.944266835216144,
+          "avg_net_pct": 0.9728334457106038
         },
         {
           "asset": "LINKUSDT",
           "trades": 65,
-          "total_net_pct": 114.02211015179442,
-          "avg_net_pct": 1.8524938164272415
+          "total_net_pct": 114.02211015179438,
+          "avg_net_pct": 1.8524938164272413
         },
         {
           "asset": "LTCUSDT",
           "trades": 73,
           "total_net_pct": -4.737509413648622,
-          "avg_net_pct": 0.3753513605054981
+          "avg_net_pct": 0.37535136050549933
         },
         {
           "asset": "DOTUSDT",
           "trades": 43,
-          "total_net_pct": -16.273951553270237,
-          "avg_net_pct": 0.37893894906822634
+          "total_net_pct": -16.273951553270305,
+          "avg_net_pct": 0.37893894906822423
         },
         {
           "asset": "TRXUSDT",
           "trades": 75,
-          "total_net_pct": -23.576809509855824,
-          "avg_net_pct": -0.12533514006280422
+          "total_net_pct": -23.576809509855977,
+          "avg_net_pct": -0.12533514006280616
         }
       ],
       "tested": 11,

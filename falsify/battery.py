@@ -99,7 +99,12 @@ def random_entry_null(trades: pd.DataFrame, df: pd.DataFrame, direction: Directi
     null_means = null_distribution(df, trades["bars"].to_numpy(dtype=int), direction, costs, sims, seed)
     if null_means is None:
         return {"p_value": None, "note": "holding periods longer than the data"}
-    strat = np.log1p(trades["net_pct"].to_numpy() / 100).mean()
+    # Same quantity the null measures, from the trade prices: signed log price change minus the round-trip
+    # log cost. For longs this equals log1p(net); for shorts it is the timing component of the trade, which
+    # is what random timing is compared on (a spot short's money P&L is reported separately, in net_pct).
+    sign = 1.0 if direction == Direction.LONG else -1.0
+    strat = float((sign * np.log(trades["exit_px"].to_numpy(dtype=float) / trades["entry_px"].to_numpy(dtype=float))
+                   - round_trip_log_cost(costs)).mean())
     p = (np.sum(null_means >= strat) + 1) / (sims + 1)
     return {
         "p_value": float(p),
@@ -144,9 +149,10 @@ def out_of_sample(spec: ClaimSpec, trades: pd.DataFrame, posted: str | None = No
     if not candidates:
         return {"available": False, "note": "claim names no period and has no post date; nothing is strictly out-of-sample"}
     end = max(candidates)
+    cutoff = end + pd.Timedelta(days=1)  # the author may have seen the whole posting day, so it stays in-sample
     start = _parse_date(spec.claimed.period_start)
-    after = trades[trades["entry_time"] > end]
-    during = trades[(trades["entry_time"] <= end) & ((trades["entry_time"] >= start) if start is not None else True)]
+    after = trades[trades["entry_time"] >= cutoff]
+    during = trades[(trades["entry_time"] < cutoff) & ((trades["entry_time"] >= start) if start is not None else True)]
     return {
         "available": True,
         "boundary": end.date().isoformat(),
@@ -201,7 +207,7 @@ def sweep(spec: ClaimSpec, df: pd.DataFrame, costs: Costs) -> dict:
         try:
             for fp, v in zip(fps, combo):
                 s = with_override(s, fp.target, v)
-        except (ValueError, KeyError, IndexError) as e:
+        except (ValueError, KeyError, IndexError, TypeError, AttributeError) as e:
             results.append({"params": dict(zip([f.name for f in fps], combo)), "error": str(e)})
             continue
         t = run(s, df, costs)
@@ -286,6 +292,7 @@ def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = Tr
     # Order-independent: the same claim must not get a different verdict because the model listed
     # "BTC, ETH" instead of "ETH, BTC" (it did, on c017, between the text and the screenshot runs).
     named = sorted({a for a in spec.assets if (a, tf) in have}, key=data_mod.UNIVERSE.index)
+    missing = [a for a in dict.fromkeys(spec.assets) if (a, tf) not in have]
     primary_asset = named[0] if named else None
     if primary_asset is None:
         coins = ", ".join(a.removesuffix("USDT") for a in data_mod.UNIVERSE)
@@ -294,9 +301,22 @@ def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = Tr
                                f"history for {coins} on 1h, 4h and 1d only, and never swaps in a different asset."],
                       timeframe=tf)
 
-    if len(named) > 1:
-        return _weakest_of(spec, named, costs, with_cross_asset, posted)
-    return _falsify_one(spec, primary_asset, costs, with_cross_asset, posted)
+    rep = (_weakest_of(spec, named, costs, with_cross_asset, posted) if len(named) > 1
+           else _falsify_one(spec, primary_asset, costs, with_cross_asset, posted))
+    if missing:
+        # Part of the claim can't be tested here. Say so up front instead of passing it on the coins we have.
+        if not rep.per_asset:
+            rep.per_asset = [{"asset": primary_asset, "verdict": rep.verdict.value,
+                              "trades": rep.primary.get("trades"), "avg_net_pct": rep.primary.get("avg_net_pct"),
+                              "p_value": rep.null_test.get("p_value")}]
+        rep.per_asset += [{"asset": a, "verdict": "NO DATA", "trades": None, "avg_net_pct": None, "p_value": None}
+                          for a in missing]
+        tested = ", ".join(a.removesuffix("USDT") for a in named)
+        absent = ", ".join(a.removesuffix("USDT") for a in missing)
+        rep.warnings.insert(0, f"the claim also names {absent}, which has no price history here; only {tested} was "
+                               f"tested, so the verdict covers part of the claim")
+        rep.headline = f"Tested on {tested} only (no data for {absent}). " + rep.headline
+    return rep
 
 
 _RANK = {Verdict.DIES: 0, Verdict.INCONCLUSIVE: 1, Verdict.SURVIVES: 2}

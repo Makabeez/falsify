@@ -36,7 +36,8 @@ def test_null_does_not_reward_drift():
     entries = np.sort(rng.choice(np.arange(10, n - 20), 60, replace=False))
     hold = 5
     gross = opens[entries + hold] / opens[entries] - 1
-    trades = pd.DataFrame({"bars": hold, "net_pct": gross * 100})
+    trades = pd.DataFrame({"bars": hold, "net_pct": gross * 100,
+                           "entry_px": opens[entries], "exit_px": opens[entries + hold]})
     res = random_entry_null(trades, df, Direction.LONG, Costs(0, 0))
     assert res["p_value"] > 0.05
 
@@ -51,7 +52,7 @@ def test_null_flags_real_timing_edge():
     fwd = np.log(opens[5:]) - np.log(opens[:-5])
     entries = np.argsort(fwd)[-80:]
     gross = opens[entries + 5] / opens[entries] - 1
-    trades = pd.DataFrame({"bars": 5, "net_pct": gross * 100})
+    trades = pd.DataFrame({"bars": 5, "net_pct": gross * 100, "entry_px": opens[entries], "exit_px": opens[entries + 5]})
     res = random_entry_null(trades, df, Direction.LONG, Costs(0, 0))
     assert res["p_value"] < 0.01
 
@@ -148,3 +149,54 @@ def test_multi_asset_verdict_is_order_independent_and_weakest():
     rank = {"DIES": 0, "INCONCLUSIVE": 1, "SURVIVES": 2}
     assert rank[a.verdict.value] == min(rank[x["verdict"]] for x in a.per_asset)
     assert a.headline.startswith("Weakest of the 2 coins")
+
+
+def test_missing_coin_is_reported_not_dropped():
+    import pytest
+    from falsify import data as data_mod
+    from falsify.battery import falsify
+    from falsify.spec import ClaimSpec
+    if ("SOLUSDT", "1d") not in data_mod.available():
+        pytest.skip("bundled data missing")
+    s = ClaimSpec.model_validate({
+        "claim_summary": "t", "source_type": "text", "testable": True, "assets": ["SOLUSDT", "PEPEUSDT"],
+        "timeframe": "1d", "direction": "long", "max_hold_bars": 2,
+        "entry": [{"left": {"kind": "day_of_week"}, "op": "gt", "right": {"kind": "const", "value": 3.5}},
+                  {"left": {"kind": "day_of_week"}, "op": "lt", "right": {"kind": "const", "value": 4.5}}]})
+    rep = falsify(s, with_cross_asset=False)
+    assert rep.headline.startswith("Tested on SOL only (no data for PEPE).")
+    assert [x["verdict"] for x in rep.per_asset][-1] == "NO DATA" and "PEPE" in rep.warnings[0]
+
+
+def test_bad_free_parameter_path_never_crashes_the_verdict():
+    import pytest
+    from falsify import data as data_mod
+    from falsify.battery import falsify
+    from falsify.sanity import entry_problems
+    from falsify.spec import ClaimSpec
+    if ("BTCUSDT", "1d") not in data_mod.available():
+        pytest.skip("bundled data missing")
+    s = ClaimSpec.model_validate({
+        "claim_summary": "t", "source_type": "text", "testable": True, "assets": ["BTCUSDT"],
+        "timeframe": "1d", "direction": "long", "max_hold_bars": 5,
+        "entry": [{"left": {"kind": "rsi", "period": 14}, "op": "lt", "right": {"kind": "const", "value": 30}}],
+        "free_parameters": [{"name": "len", "target": "entry.left.period", "candidates": [7, 14, 21]}]})
+    assert "not a valid path" in entry_problems(s)[0]   # sent back to the compiler
+    rep = falsify(s, with_cross_asset=False)             # and if it slips through, the verdict still stands
+    assert rep.verdict is not None and all("error" in r for r in rep.sweep["results"])
+
+
+def test_post_day_itself_is_in_sample():
+    import pandas as pd
+    from falsify.battery import out_of_sample
+    from falsify.spec import ClaimSpec
+    s = ClaimSpec.model_validate({
+        "claim_summary": "t", "source_type": "text", "testable": True, "assets": ["BTCUSDT"],
+        "timeframe": "4h", "direction": "long", "max_hold_bars": 1,
+        "entry": [{"left": {"kind": "close"}, "op": "gt", "right": {"kind": "const", "value": 1}}]})
+    t = pd.DataFrame({"entry_time": pd.to_datetime(["2024-03-15 08:00", "2024-03-16 00:00"], utc=True),
+                      "net_pct": [1.0, 2.0], "gross_pct": [1.0, 2.0], "bars": [1, 1],
+                      "exit_time": pd.to_datetime(["2024-03-15 12:00", "2024-03-16 04:00"], utc=True),
+                      "entry_px": [1.0, 1.0], "exit_px": [1.01, 1.02], "reason": ["time", "time"]})
+    oos = out_of_sample(s, t, posted="2024-03-15")
+    assert oos["boundary"] == "2024-03-15" and oos["after_window"]["trades"] == 1   # the 08:00 trade on the post day is not OOS

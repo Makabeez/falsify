@@ -296,10 +296,10 @@
     "primary": {
       "trades": 604,
       "win_rate_pct": 86.75496688741721,
-      "avg_net_pct": 0.008848397738537806,
-      "total_net_pct": -65.93790026539816,
+      "avg_net_pct": 0.00884839773853788,
+      "total_net_pct": -65.93790026539811,
       "total_gross_pct": 45.15266015673296,
-      "max_drawdown_pct": -89.07329926802325,
+      "max_drawdown_pct": -89.07329926802323,
       "avg_bars": 27.24503311258278,
       "open_at_end": 1,
       "buy_hold_pct": 1780.815115875236,
@@ -311,7 +311,7 @@
     },
     "null_test": {
       "p_value": 0.8575712143928036,
-      "strategy_mean_log_pct": -0.17830875240802038,
+      "strategy_mean_log_pct": -0.17830875240801347,
       "null_median_log_pct": 0.1520689466825886,
       "null_p95_log_pct": 0.6756147693448079,
       "beat_by_random_pct": 85.75,
@@ -416,20 +416,20 @@
       "in_window": {
         "trades": 480,
         "win_rate_pct": 87.08333333333333,
-        "avg_net_pct": 0.06019359585844884,
-        "total_net_pct": -52.09529352653595,
+        "avg_net_pct": 0.06019359585844886,
+        "total_net_pct": -52.095293526535905,
         "total_gross_pct": 51.59527554652485,
-        "max_drawdown_pct": -87.49397811778559,
+        "max_drawdown_pct": -87.49397811778556,
         "avg_bars": 26.139583333333334,
         "open_at_end": 0
       },
       "after_window": {
         "trades": 124,
         "win_rate_pct": 85.48387096774194,
-        "avg_net_pct": -0.18990720788692417,
-        "total_net_pct": -28.896131002347623,
+        "avg_net_pct": -0.18990720788692397,
+        "total_net_pct": -28.89613100234759,
         "total_gross_pct": -4.249878742306001,
-        "max_drawdown_pct": -49.72925088726641,
+        "max_drawdown_pct": -49.729250887266375,
         "avg_bars": 31.524193548387096,
         "open_at_end": 1
       },
@@ -440,20 +440,20 @@
       "first": {
         "trades": 333,
         "win_rate_pct": 87.68768768768768,
-        "avg_net_pct": 0.14841141150348014,
-        "total_net_pct": -29.704234151238474,
+        "avg_net_pct": 0.14841141150348042,
+        "total_net_pct": -29.704234151238328,
         "total_gross_pct": 56.321057129653404,
-        "max_drawdown_pct": -86.75715454142406,
+        "max_drawdown_pct": -86.75715454142404,
         "avg_bars": 25.00900900900901,
         "open_at_end": 0
       },
       "second": {
         "trades": 271,
         "win_rate_pct": 85.60885608856088,
-        "avg_net_pct": -0.16264416161100378,
+        "avg_net_pct": -0.16264416161100403,
         "total_net_pct": -51.54459258913967,
         "total_gross_pct": -7.144524978267963,
-        "max_drawdown_pct": -53.97535743490314,
+        "max_drawdown_pct": -53.97535743490316,
         "avg_bars": 29.99261992619926,
         "open_at_end": 1
       },
@@ -464,68 +464,68 @@
         {
           "asset": "ETHUSDT",
           "trades": 584,
-          "total_net_pct": -75.20272323373104,
-          "avg_net_pct": 0.1708191258603056
+          "total_net_pct": -75.202723233731,
+          "avg_net_pct": 0.17081912586030584
         },
         {
           "asset": "SOLUSDT",
           "trades": 430,
-          "total_net_pct": 198.51598480250297,
-          "avg_net_pct": 0.7737808688280935
+          "total_net_pct": 198.51598480250394,
+          "avg_net_pct": 0.7737808688280943
         },
         {
           "asset": "BNBUSDT",
           "trades": 611,
-          "total_net_pct": 430.94480186784807,
-          "avg_net_pct": 0.509371753265415
+          "total_net_pct": 430.9448018678506,
+          "avg_net_pct": 0.5093717532654155
         },
         {
           "asset": "XRPUSDT",
           "trades": 416,
-          "total_net_pct": -95.01694667844748,
-          "avg_net_pct": -0.22443494161761116
+          "total_net_pct": -95.01694667844752,
+          "avg_net_pct": -0.22443494161761204
         },
         {
           "asset": "DOGEUSDT",
           "trades": 372,
           "total_net_pct": -86.5955875476889,
-          "avg_net_pct": 0.07329588780087375
+          "avg_net_pct": 0.07329588780087361
         },
         {
           "asset": "ADAUSDT",
           "trades": 485,
           "total_net_pct": -92.56765454668205,
-          "avg_net_pct": 0.023169028138608647
+          "avg_net_pct": 0.02316902813860906
         },
         {
           "asset": "AVAXUSDT",
           "trades": 391,
-          "total_net_pct": -86.3092811422668,
-          "avg_net_pct": 0.28327133124054427
+          "total_net_pct": -86.30928114226683,
+          "avg_net_pct": 0.28327133124054354
         },
         {
           "asset": "LINKUSDT",
           "trades": 557,
-          "total_net_pct": 903.4567061810827,
-          "avg_net_pct": 0.8293408668184525
+          "total_net_pct": 903.4567061810815,
+          "avg_net_pct": 0.8293408668184522
         },
         {
           "asset": "LTCUSDT",
           "trades": 535,
-          "total_net_pct": -92.84822747275277,
-          "avg_net_pct": 0.011994713412701655
+          "total_net_pct": -92.84822747275274,
+          "avg_net_pct": 0.011994713412702402
         },
         {
           "asset": "DOTUSDT",
           "trades": 356,
           "total_net_pct": -87.59577920588913,
-          "avg_net_pct": -0.04834069739600894
+          "avg_net_pct": -0.04834069739600863
         },
         {
           "asset": "TRXUSDT",
           "trades": 609,
-          "total_net_pct": 8.015537889786994,
-          "avg_net_pct": 0.24846452058320373
+          "total_net_pct": 8.015537889785751,
+          "avg_net_pct": 0.24846452058320243
         }
       ],
       "tested": 11,
@@ -542,8 +542,8 @@
           "ATR take-profit multiple": 2.0
         },
         "trades": 423,
-        "avg_net_pct": 0.2123570650286523,
-        "total_net_pct": -25.427979261028412,
+        "avg_net_pct": 0.21235706502865304,
+        "total_net_pct": -25.4279792610282,
         "p_value": 0.7904191616766467
       },
       "best_p_bonferroni": 1.0,
@@ -554,8 +554,8 @@
             "ATR take-profit multiple": 1.0
           },
           "trades": 586,
-          "avg_net_pct": -0.04382631319369092,
-          "total_net_pct": -74.83633310132014,
+          "avg_net_pct": -0.04382631319369072,
+          "total_net_pct": -74.8363331013201,
           "p_value": 0.8762475049900199
         },
         {
@@ -564,8 +564,8 @@
             "ATR take-profit multiple": 1.5
           },
           "trades": 455,
-          "avg_net_pct": -0.024705004095503743,
-          "total_net_pct": -71.33498432582157,
+          "avg_net_pct": -0.024705004095503892,
+          "total_net_pct": -71.33498432582155,
           "p_value": 0.9201596806387226
         },
         {
@@ -574,8 +574,8 @@
             "ATR take-profit multiple": 2.0
           },
           "trades": 413,
-          "avg_net_pct": 0.131089914940396,
-          "total_net_pct": -46.91702449529629,
+          "avg_net_pct": 0.1310899149403965,
+          "total_net_pct": -46.917024495296246,
           "p_value": 0.872255489021956
         },
         {
@@ -584,8 +584,8 @@
             "ATR take-profit multiple": 1.0
           },
           "trades": 604,
-          "avg_net_pct": 0.008848397738537806,
-          "total_net_pct": -65.93790026539816,
+          "avg_net_pct": 0.00884839773853788,
+          "total_net_pct": -65.93790026539811,
           "p_value": 0.8762475049900199
         },
         {
@@ -594,8 +594,8 @@
             "ATR take-profit multiple": 1.5
           },
           "trades": 465,
-          "avg_net_pct": 0.031210715949086212,
-          "total_net_pct": -63.37772056461959,
+          "avg_net_pct": 0.03121071594908643,
+          "total_net_pct": -63.377720564619544,
           "p_value": 0.874251497005988
         },
         {
@@ -604,8 +604,8 @@
             "ATR take-profit multiple": 2.0
           },
           "trades": 422,
-          "avg_net_pct": 0.17620040490501437,
-          "total_net_pct": -35.6591797513822,
+          "avg_net_pct": 0.17620040490501473,
+          "total_net_pct": -35.659179751382034,
           "p_value": 0.8383233532934131
         },
         {
@@ -614,8 +614,8 @@
             "ATR take-profit multiple": 1.0
           },
           "trades": 608,
-          "avg_net_pct": 0.028009396278874773,
-          "total_net_pct": -61.786798755286796,
+          "avg_net_pct": 0.02800939627887488,
+          "total_net_pct": -61.78679875528679,
           "p_value": 0.8403193612774451
         },
         {
@@ -624,8 +624,8 @@
             "ATR take-profit multiple": 1.5
           },
           "trades": 466,
-          "avg_net_pct": 0.07157220942555044,
-          "total_net_pct": -56.07875115336084,
+          "avg_net_pct": 0.07157220942555075,
+          "total_net_pct": -56.07875115336087,
           "p_value": 0.8542914171656687
         },
         {
@@ -634,8 +634,8 @@
             "ATR take-profit multiple": 2.0
           },
           "trades": 423,
-          "avg_net_pct": 0.2123570650286523,
-          "total_net_pct": -25.427979261028412,
+          "avg_net_pct": 0.21235706502865304,
+          "total_net_pct": -25.4279792610282,
           "p_value": 0.7904191616766467
         }
       ]

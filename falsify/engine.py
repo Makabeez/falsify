@@ -238,8 +238,13 @@ def run(spec: ClaimSpec, df: pd.DataFrame, costs: Costs = Costs()) -> pd.DataFra
     best_close = 0.0
 
     def close_trade(t_exit: int, px: float, reason: str) -> None:
-        gross = (px / entry_px - 1) if long else (entry_px / px - 1)
-        net = (1 + gross) * (1 - costs.per_side) / (1 + costs.per_side) - 1
+        c = costs.per_side
+        if long:   # buy at entry * (1 + c), sell at px * (1 - c)
+            gross = px / entry_px - 1
+            net = px * (1 - c) / (entry_px * (1 + c)) - 1
+        else:      # spot short: sell at entry * (1 - c), buy back at px * (1 + c), per unit of entry notional
+            gross = 1 - px / entry_px
+            net = (1 - c) - px / entry_px * (1 + c)
         trades.append((idx[entry_t], idx[t_exit], entry_px, px, t_exit - entry_t,
                        gross * 100, net * 100, reason))
 

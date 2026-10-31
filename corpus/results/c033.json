@@ -211,10 +211,10 @@
     "primary": {
       "trades": 190,
       "win_rate_pct": 33.68421052631579,
-      "avg_net_pct": 2.1447224580304614,
-      "total_net_pct": 2534.473128806489,
+      "avg_net_pct": 2.144722458030461,
+      "total_net_pct": 2534.4731288064872,
       "total_gross_pct": 4056.5417970370722,
-      "max_drawdown_pct": -22.901087947564804,
+      "max_drawdown_pct": -22.901087947564815,
       "avg_bars": 3.8526315789473684,
       "open_at_end": 0,
       "buy_hold_pct": 1780.815115875236,
@@ -226,7 +226,7 @@
     },
     "null_test": {
       "p_value": 0.0009995002498750624,
-      "strategy_mean_log_pct": 1.7217201599354734,
+      "strategy_mean_log_pct": 1.7217201599354799,
       "null_median_log_pct": 0.0925992467276209,
       "null_p95_log_pct": 0.8990110630514305,
       "beat_by_random_pct": 0.05,
@@ -329,18 +329,18 @@
       "first": {
         "trades": 94,
         "win_rate_pct": 38.297872340425535,
-        "avg_net_pct": 3.5498330538890297,
-        "total_net_pct": 1402.6756845704545,
+        "avg_net_pct": 3.549833053889028,
+        "total_net_pct": 1402.675684570453,
         "total_gross_pct": 1782.9645384943326,
-        "max_drawdown_pct": -15.932064111918088,
+        "max_drawdown_pct": -15.932064111918098,
         "avg_bars": 4.191489361702128,
         "open_at_end": 0
       },
       "second": {
         "trades": 96,
         "win_rate_pct": 29.166666666666668,
-        "avg_net_pct": 0.7688849995856142,
-        "total_net_pct": 75.31881003049337,
+        "avg_net_pct": 0.7688849995856138,
+        "total_net_pct": 75.31881003049345,
         "total_gross_pct": 120.74456061507925,
         "max_drawdown_pct": -22.90108794756479,
         "avg_bars": 3.5208333333333335,
@@ -353,68 +353,68 @@
         {
           "asset": "ETHUSDT",
           "trades": 204,
-          "total_net_pct": 565.7926018106408,
-          "avg_net_pct": 1.3147672755746762
+          "total_net_pct": 565.7926018106391,
+          "avg_net_pct": 1.3147672755746744
         },
         {
           "asset": "SOLUSDT",
           "trades": 131,
           "total_net_pct": 942.8183065298585,
-          "avg_net_pct": 2.9039941465477055
+          "avg_net_pct": 2.903994146547705
         },
         {
           "asset": "BNBUSDT",
           "trades": 211,
-          "total_net_pct": 1281.53753194566,
-          "avg_net_pct": 2.6777494198644947
+          "total_net_pct": 1281.5375319456593,
+          "avg_net_pct": 2.6777494198644956
         },
         {
           "asset": "XRPUSDT",
           "trades": 156,
-          "total_net_pct": 436.50874758711984,
+          "total_net_pct": 436.5087475871194,
           "avg_net_pct": 2.922575584479956
         },
         {
           "asset": "DOGEUSDT",
           "trades": 140,
-          "total_net_pct": 1376.3879341353681,
-          "avg_net_pct": 3.714000546113768
+          "total_net_pct": 1376.3879341353693,
+          "avg_net_pct": 3.7140005461137693
         },
         {
           "asset": "ADAUSDT",
           "trades": 162,
           "total_net_pct": 517.6353243855092,
-          "avg_net_pct": 2.003221140516053
+          "avg_net_pct": 2.0032211405160534
         },
         {
           "asset": "AVAXUSDT",
           "trades": 119,
-          "total_net_pct": 3304.4428274561255,
-          "avg_net_pct": 5.7568190484946316
+          "total_net_pct": 3304.442827456123,
+          "avg_net_pct": 5.756819048494631
         },
         {
           "asset": "LINKUSDT",
           "trades": 182,
-          "total_net_pct": 195.22765816442922,
-          "avg_net_pct": 1.1913869916308095
+          "total_net_pct": 195.2276581644292,
+          "avg_net_pct": 1.1913869916308089
         },
         {
           "asset": "LTCUSDT",
           "trades": 201,
-          "total_net_pct": -74.93393119220624,
-          "avg_net_pct": -0.524632897798057
+          "total_net_pct": -74.93393119220622,
+          "avg_net_pct": -0.5246328977980566
         },
         {
           "asset": "DOTUSDT",
           "trades": 136,
-          "total_net_pct": -9.352975802145625,
-          "avg_net_pct": 0.2586240024984233
+          "total_net_pct": -9.35297580214549,
+          "avg_net_pct": 0.25862400249842415
         },
         {
           "asset": "TRXUSDT",
           "trades": 200,
-          "total_net_pct": 144.97138885945864,
-          "avg_net_pct": 0.7566608740684384
+          "total_net_pct": 144.97138885945827,
+          "avg_net_pct": 0.7566608740684375
         }
       ],
       "tested": 11,
