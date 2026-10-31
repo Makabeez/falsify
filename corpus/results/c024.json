@@ -360,11 +360,13 @@
   },
   "report": {
     "verdict": "UNTESTABLE",
-    "headline": "No bundled history for the asset/timeframe this claim needs.",
+    "headline": "No price history here for what this claim trades.",
     "reasons": [
-      "wanted ['USDCAD', 'EURUSD', 'GBPUSD', 'EURJPY'] on 1d; bundled universe is ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'LINKUSDT', 'LTCUSDT', 'DOTUSDT', 'TRXUSDT']"
+      "The claim trades USDCAD, EURUSD, GBPUSD, EURJPY on 1d bars. Falsify has Binance spot history for BTC, ETH, SOL, BNB, XRP, DOGE, ADA, AVAX, LINK, LTC, DOT, TRX on 1h, 4h and 1d only, and never swaps in a different asset."
     ],
-    "warnings": [],
+    "warnings": [
+      "needs a human check: the automatic checks still disagree with the compiled rules after the repair rounds, so treat the verdict as provisional"
+    ],
     "asset": null,
     "timeframe": "1d",
     "primary": {},
@@ -403,7 +405,15 @@
         "exit[0]: Claimant states no exit rule. Spec invents exit by opposite EMA cross (5EMA crosses_below 50EMA), which adds a holding/exit rule the claimant never gave."
       ]
     },
-    "review": {},
+    "review": {
+      "needs_human": true,
+      "reasons": [
+        "audit still disagrees: direction: Claim says '5ema crosses your 50ema and RSI cross the 50 line' with no long-only limit, implying signals in both directions. Spec restricts to direction=long with crosses_above only and omits the short side (5EMA crosses below 50EMA with RSI crossing below 50).",
+        "audit still disagrees: timeframe: Claim explicitly says strategy used 'on the daily and 4 hour charts'. Spec tests only timeframe 1d and omits the 4h variant.",
+        "audit still disagrees: exit[0]: Claimant states no exit rule. Spec invents exit by opposite EMA cross (5EMA crosses_below 50EMA), which adds a holding/exit rule the claimant never gave."
+      ]
+    },
+    "per_asset": [],
     "series": {}
   },
   "seconds": 75.4

@@ -261,7 +261,7 @@
   },
   "report": {
     "verdict": "UNTESTABLE",
-    "headline": "This claim can't be turned into rules anyone could check.",
+    "headline": "This claim can't be tested as stated.",
     "reasons": [
       "The strategy's edge and risk depend on five scaled averaging orders and TP from averaged entry, which the single-position schema cannot express."
     ],
@@ -285,7 +285,11 @@
       ],
       "audit_majors": []
     },
-    "review": {},
+    "review": {
+      "needs_human": false,
+      "reasons": []
+    },
+    "per_asset": [],
     "series": {}
   },
   "seconds": 72.7

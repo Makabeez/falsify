@@ -135,7 +135,7 @@
   },
   "report": {
     "verdict": "UNTESTABLE",
-    "headline": "This claim can't be turned into rules anyone could check.",
+    "headline": "This claim can't be tested as stated.",
     "reasons": [
       "No mechanical divergence pivot definition, indicator settings, entry timing, or exit is stated, only visual arrow counts, so no reproducible rule can be recovered."
     ],
@@ -162,6 +162,7 @@
       "needs_human": false,
       "reasons": []
     },
+    "per_asset": [],
     "series": {}
   },
   "seconds": 24.7

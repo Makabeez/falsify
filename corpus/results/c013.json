@@ -239,7 +239,7 @@
   },
   "report": {
     "verdict": "UNTESTABLE",
-    "headline": "This claim can't be turned into rules anyone could check.",
+    "headline": "This claim can't be tested as stated.",
     "reasons": [
       "The claim compares repeated overlapping $1 daily versus dip-only accumulation by total BTC accumulated, which requires a DCA ladder with differing capital that the single-position engine cannot replicate."
     ],
@@ -262,7 +262,11 @@
       ],
       "audit_majors": []
     },
-    "review": {},
+    "review": {
+      "needs_human": false,
+      "reasons": []
+    },
+    "per_asset": [],
     "series": {}
   },
   "seconds": 85.2

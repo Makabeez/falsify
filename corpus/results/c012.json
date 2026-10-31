@@ -424,6 +424,7 @@
         "audit still disagrees: exit: Claim restricts both buying and selling decisions to the price on the last day of the month, but spec encodes exit as close below 200-day SMA on any bar. Missing last-day-of-month condition on exit allows intra-month exits, changing what is tested. Spec notes this as NOT EXPRESSIBLE."
       ]
     },
+    "per_asset": [],
     "series": {
       "t": [
         "2017-08-17",

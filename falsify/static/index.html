@@ -474,6 +474,12 @@ function ruleRows(spec) {
 function testRows(rep) {
   const rows = [], p = rep.primary || {}, nt = rep.null_test || {}, oos = rep.out_of_sample || {}, h = rep.halves || {}, ca = rep.cross_asset || {}, sw = rep.sweep || {};
   const R = (name, res, cls, detail) => rows.push({name, res, cls, detail});
+  if ((rep.per_asset || []).length > 1) {
+    const pa = rep.per_asset, lower = v => v.charAt(0) + v.slice(1).toLowerCase();
+    const allSurvive = pa.every(x => x.verdict === "SURVIVES");
+    R("Every coin it names", pa.map(x => `${x.asset.replace("USDT", "")} ${lower(x.verdict)}`).join(", "), allSurvive ? "ok" : "warn",
+      "the claim names several coins, so each is tested on its own and the verdict is the weakest of them");
+  }
   if (p.trades != null) R("Enough trades", `${p.trades} trades`, p.trades >= 30 ? "ok" : "warn", p.trades >= 30 ? "30 or more, so a win rate means something" : "fewer than 30, too few to separate skill from luck");
   if (p.avg_net_pct != null) R("Makes money after costs", `${pct(p.avg_net_pct, 2)} per trade`, p.avg_net_pct > 0 ? "ok" : "bad", `${pct(p.total_net_pct, 0)} total, ${pct(p.total_gross_pct, 0)} before ${rep.costs?.fee_bps_per_side}+${rep.costs?.slippage_bps_per_side} bps a side`);
   if (nt.p_value != null) R("Beats random timing", `p = ${fmt(nt.p_value, 3)}`, nt.p_value < 0.05 ? "ok" : nt.p_value >= 0.5 ? "bad" : "warn", nt.beat_by_random_pct === 0 ? `none of ${nt.sims} random-timing look-alikes did as well` : `random entries with the same holding times did as well ${fmt(nt.beat_by_random_pct, nt.beat_by_random_pct < 1 ? 1 : 0)}% of the time (out of ${nt.sims})`);

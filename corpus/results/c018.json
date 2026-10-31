@@ -286,11 +286,13 @@
   },
   "report": {
     "verdict": "UNTESTABLE",
-    "headline": "No bundled history for the asset/timeframe this claim needs.",
+    "headline": "No price history here for what this claim trades.",
     "reasons": [
-      "wanted ['NIKKEI225'] on 1d; bundled universe is ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'LINKUSDT', 'LTCUSDT', 'DOTUSDT', 'TRXUSDT']"
+      "The claim trades NIKKEI225 on 1d bars. Falsify has Binance spot history for BTC, ETH, SOL, BNB, XRP, DOGE, ADA, AVAX, LINK, LTC, DOT, TRX on 1h, 4h and 1d only, and never swaps in a different asset."
     ],
-    "warnings": [],
+    "warnings": [
+      "needs a human check: the automatic checks still disagree with the compiled rules after the repair rounds, so treat the verdict as provisional"
+    ],
     "asset": null,
     "timeframe": "1d",
     "primary": {},
@@ -324,7 +326,13 @@
         "assets: Claim requires universe of 'All components of the Nikkei 225' but spec tests single ticker NIKKEI225. Single index cannot replicate 225-stock universe result."
       ]
     },
-    "review": {},
+    "review": {
+      "needs_human": true,
+      "reasons": [
+        "audit still disagrees: assets: Claim requires universe of 'All components of the Nikkei 225' but spec tests single ticker NIKKEI225. Single index cannot replicate 225-stock universe result."
+      ]
+    },
+    "per_asset": [],
     "series": {}
   },
   "seconds": 44.0

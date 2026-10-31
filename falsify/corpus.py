@@ -57,6 +57,33 @@ def run_one(rec: dict, costs: Costs, model: str | None = None) -> dict:
     return out
 
 
+def rescore(out_dir: str | Path, costs: Costs = Costs()) -> None:
+    """Recompute every stored verdict from its stored spec, audit and trace. No model calls: the battery is
+    deterministic, so a change to it can be applied to the whole corpus in a minute."""
+    from .extract import fidelity
+    from .spec import ClaimSpec
+    out = Path(out_dir)
+    recs = {r["id"]: r for r in load(Path(__file__).resolve().parent.parent / "corpus" / "claims.jsonl")}
+    changed = 0
+    for f in sorted(out.glob("c*.json")):
+        d = json.loads(f.read_text(encoding="utf-8"))
+        if "error" in d:
+            continue
+        spec = ClaimSpec.model_validate(d["spec"])
+        rec = d.get("record") or recs.get(d["id"], {})
+        rep = falsify(spec, costs, posted=rec.get("posted"))
+        attach_grounding(rep, (d.get("trace") or {}).get("grounding") or d.get("grounding"))
+        if d.get("audit") is not None:
+            attach_fidelity(rep, fidelity(spec, d["audit"]))
+        new = rep.to_dict()
+        if new["verdict"] != d["report"]["verdict"]:
+            changed += 1
+            print(f"  {d['id']}  {d['report']['verdict']} -> {new['verdict']}  {new['headline'][:100]}")
+        d["report"] = new
+        f.write_text(json.dumps(d, indent=2, default=str) + "\n", encoding="utf-8")
+    print(f"rescored; {changed} verdict(s) changed")
+
+
 def run(path: str | Path, out_dir: str | Path, costs: Costs = Costs(), ids: list[str] | None = None,
         limit: int | None = None, workers: int = 4, model: str | None = None, retry_errors: bool = False) -> None:
     out = Path(out_dir)

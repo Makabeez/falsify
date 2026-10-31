@@ -252,6 +252,9 @@ def cmd_corpus(args) -> int:
         ids = args.ids.split(",") if args.ids else None
         corpus.run(args.path, args.out, _costs(args), ids=ids, limit=args.limit, workers=args.workers,
                    model=args.model, retry_errors=args.retry_errors)
+    elif args.action == "rescore":
+        corpus.rescore(args.out, _costs(args))
+        corpus.report(args.out)
     else:
         corpus.report(args.out)
     return 0
@@ -310,6 +313,9 @@ def cmd_modality(args) -> int:
     if args.action == "run":
         modality.run(ids=args.ids.split(",") if args.ids else None, model=args.model)
         return 0
+    if args.action == "rescore":
+        from .corpus import rescore
+        rescore(modality.OUT)
     md = modality.report()
     print(md)
     if args.out:
@@ -367,7 +373,7 @@ def main(argv: list[str] | None = None) -> int:
     p.set_defaults(fn=cmd_extract)
 
     p = sub.add_parser("corpus", help="run a corpus of real claims end to end and build the scoreboard")
-    p.add_argument("action", choices=["run", "report"])
+    p.add_argument("action", choices=["run", "report", "rescore"])
     p.add_argument("path", nargs="?", default="corpus/claims.jsonl")
     p.add_argument("--out", default="corpus/results")
     p.add_argument("--ids", help="comma-separated ids to run, e.g. c003,c005")
@@ -404,7 +410,7 @@ def main(argv: list[str] | None = None) -> int:
     p.set_defaults(fn=cmd_sweep)
 
     p = sub.add_parser("modality", help="same claim as text and as a screenshot: same rules, same verdict?")
-    p.add_argument("action", choices=["run", "report"])
+    p.add_argument("action", choices=["run", "report", "rescore"])
     p.add_argument("--ids", help="comma-separated claim ids (default: every corpus/raw/c*.png)")
     p.add_argument("--model", help="override the Muse Spark model id")
     p.add_argument("--out", help="report: write markdown, e.g. docs/modality.md")

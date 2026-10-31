@@ -282,8 +282,8 @@ c014:
   timeframe: 1d
   direction: long
   entry:
-    - "day_of_week >= 2"
-    - "day_of_week <= 2"
+    - "day_of_week >= 1"
+    - "day_of_week <= 1"
     - "pct_change(1) > 0"
   exit:
     - "day_of_week >= 5"
@@ -296,7 +296,7 @@ c014:
     - "unclear whether entry is retried after Wednesday if filter fails"
   why_untestable: null
   reviewed: true
-  reviewer_note: "'Kinda going up' = Wednesday closes above Tuesday."
+  reviewer_note: "Follows the script's own chart labels ('Buy on good Tuesday', 'Sell on Saturday'): the signal is a Tuesday that closes up, filled at Wednesday's open, which is the 'buys back the next Wednesday' of the text; the exit signal is Saturday's close. Revised 31 Oct after the screenshot run showed the labels."
 
 c015:
   testable: "full"

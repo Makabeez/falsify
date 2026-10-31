@@ -946,6 +946,7 @@
         "audit still disagrees: stop_loss_pct: Claim says 'Stop entries for failed trades are placed below the latest high/low that triggered the signal' with no percent distance; spec invents fixed stop_loss_pct 2.0 with 1-4 candidates as proxy."
       ]
     },
+    "per_asset": [],
     "series": {
       "t": [
         "2017-08-17",

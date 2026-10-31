@@ -106,7 +106,12 @@ The model's job is translation, which it is good at. It never gets the last word
 
 **Verdicts.** **DIES** means evidence against the claim: it loses money after costs, loses after the post date, or random timing does at least as well more often than not. **INCONCLUSIVE** means the data can't tell it from luck: it makes money, but not convincingly enough (0.05 ≤ p < 0.5), or there are fewer than 30 trades. **SURVIVES** needs p < 0.05 and no fatal test. **UNTESTABLE** means no mechanical rule could be recovered, or the asset isn't in the data.
 
-Thresholds are fixed statistical conventions (p < 0.05, n ≥ 30, the median at p = 0.5), stated before any claim is run and never tuned per claim. One change is on the record: until 27 Oct, any p ≥ 0.05 was DIES. A forum claim that beat buy-and-hold after costs came back DIES at p = 0.098, and "can't tell from luck" isn't "refuted". So the split above was made before the full corpus run, and `git log` shows when.
+**Claims that name several coins** are tested on each coin on its own, and the verdict is the weakest one. "Works on BTC and ETH" is a claim about both.
+
+Thresholds are fixed statistical conventions (p < 0.05, n ≥ 30, the median at p = 0.5), stated before any claim is run and never tuned per claim. Two changes are on the record, both visible in `git log`:
+
+- **27 Oct.** Until then, any p ≥ 0.05 was DIES. A forum claim that beat buy-and-hold after costs came back DIES at p = 0.098, and "can't tell from luck" isn't "refuted". The DIES / INCONCLUSIVE split above was made before the full corpus run.
+- **31 Oct.** Until then, a claim naming several coins was tested on whichever one the model listed first. The screenshot test caught it: the same rules for c017 SURVIVED as text (ETH listed first) and came back INCONCLUSIVE as a screenshot (BTC listed first). Each named coin is now tested and the weakest verdict counts. That cost two of the five survivors (c017, c026); each now shows its per-coin result.
 
 ## Is it rigged to kill everything?
 
@@ -158,6 +163,20 @@ set -a; . ./.env; set +a
 |---|---|
 | `muse-spark-1.3` | Transcribes screenshots; compiles text and screenshots into a quote-backed `ClaimSpec` with structured output; audits the spec against the source |
 | `muse-spark-1.2` | Same three passes for video clips (the 1.3 docs flag audio understanding as degraded; pitches live in the speech) |
+
+## Measured, not assumed
+
+**The dial: how much reasoning does the compiler need?** Muse Spark has six reasoning efforts. `falsify sweep` runs all 35 corpus claims through the whole model side of the pipeline at each effort, three times each, and scores every run against the trader-reviewed rules. The grader is Python, not a model. The ranges are the run-to-run noise ([docs/effort_sweep.md](docs/effort_sweep.md)):
+
+| Effort | Rule elements right | Claims fully right | Sent to a human | Tokens / claim | Seconds / claim |
+|---|---|---|---|---|---|
+| minimal | 88% (85–90) | 61% (48–71) | 9 of 35 | 7.7k | 12 |
+| medium | 90% (90–91) | 68% (65–71) | 6 of 35 | 14.5k | 36 |
+| high | 91% (89–93) | 71% (65–81) | 7 of 35 | 17.7k | 48 |
+
+High costs 22% more tokens and 33% more time than medium, and buys nothing that clears the noise. Minimal halves the cost and is three times faster, but it reads rules a little worse, varies more from run to run, and sends more claims to a human. **Falsify stays on medium.** A single run would have pointed the other way: the first sweep had high at 81% fully right against medium's 65%. That gap was noise, which is why the runs are repeated.
+
+**Same claim, two formats.** `falsify modality` runs a page screenshot (chart plus description) through the pipeline with no pasted text, and sets it next to the text run of the same corpus claim ([docs/modality.md](docs/modality.md)). On c014 ("sells on Saturday, buys back the next Wednesday if the price is kinda going up"), Muse Spark read the trade labels off the chart, "Buy on good Tuesday", and compiled the script's actual signal day, which the text alone never states. On c017 the two formats compiled identical rules but got different verdicts, which exposed the coin-order bug described above.
 
 ## Real vs. simulated
 

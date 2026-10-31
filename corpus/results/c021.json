@@ -141,7 +141,7 @@
   },
   "report": {
     "verdict": "UNTESTABLE",
-    "headline": "This claim can't be turned into rules anyone could check.",
+    "headline": "This claim can't be tested as stated.",
     "reasons": [
       "The entry and exit both require Ichimoku lead-line (Senkou Span) values, which the schema has no operands for."
     ],
@@ -164,7 +164,11 @@
       ],
       "audit_majors": []
     },
-    "review": {},
+    "review": {
+      "needs_human": false,
+      "reasons": []
+    },
+    "per_asset": [],
     "series": {}
   },
   "seconds": 26.0

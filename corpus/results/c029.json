@@ -270,9 +270,9 @@
   },
   "report": {
     "verdict": "UNTESTABLE",
-    "headline": "No bundled history for the asset/timeframe this claim needs.",
+    "headline": "No price history here for what this claim trades.",
     "reasons": [
-      "wanted ['SPX500USDT'] on 1d; bundled universe is ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'LINKUSDT', 'LTCUSDT', 'DOTUSDT', 'TRXUSDT']"
+      "The claim trades SPX500USDT on 1d bars. Falsify has Binance spot history for BTC, ETH, SOL, BNB, XRP, DOGE, ADA, AVAX, LINK, LTC, DOT, TRX on 1h, 4h and 1d only, and never swaps in a different asset."
     ],
     "warnings": [],
     "asset": null,
@@ -306,7 +306,11 @@
       "gaps": [],
       "audit_majors": []
     },
-    "review": {},
+    "review": {
+      "needs_human": false,
+      "reasons": []
+    },
+    "per_asset": [],
     "series": {}
   },
   "seconds": 24.9

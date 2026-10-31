@@ -176,7 +176,7 @@
   },
   "report": {
     "verdict": "UNTESTABLE",
-    "headline": "This claim can't be turned into rules anyone could check.",
+    "headline": "This claim can't be tested as stated.",
     "reasons": [
       "No mechanical rule can be recovered because entry and exit depend on proprietary Bitcoin Trend Score and Relative Trend Score values that are not defined."
     ],
@@ -200,7 +200,11 @@
       ],
       "audit_majors": []
     },
-    "review": {},
+    "review": {
+      "needs_human": false,
+      "reasons": []
+    },
+    "per_asset": [],
     "series": {}
   },
   "seconds": 30.1

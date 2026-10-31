@@ -129,7 +129,7 @@
   },
   "report": {
     "verdict": "UNTESTABLE",
-    "headline": "This claim can't be turned into rules anyone could check.",
+    "headline": "This claim can't be tested as stated.",
     "reasons": [
       "The claim provides no concrete moving-average length, entry trigger, direction, timeframe-alignment rule, or exit, and its core multi-timeframe alignment cannot be reduced to a single-timeframe mechanical rule."
     ],
@@ -153,7 +153,11 @@
       ],
       "audit_majors": []
     },
-    "review": {},
+    "review": {
+      "needs_human": false,
+      "reasons": []
+    },
+    "per_asset": [],
     "series": {}
   },
   "seconds": 18.8

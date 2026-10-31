@@ -1198,6 +1198,7 @@
         "audit still disagrees: trailing_stop_pct: Claim requires moving stop loss to break even after the 0.75R partial profit; spec keeps stop at initial ATR stop with no breakeven move. Marked NOT EXPRESSIBLE but omission changes loss outcomes."
       ]
     },
+    "per_asset": [],
     "series": {
       "t": [
         "2017-08-17",

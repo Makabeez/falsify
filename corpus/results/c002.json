@@ -592,6 +592,7 @@
         "audit still disagrees: exit[0]: Claim requires stop 'just the other side of the 21 day EMA' and 'If price crosses the 21 day EMA, your setup has failed' implying intrabar trigger beyond the line adjusted daily; spec tests close crosses_below EMA with fill at next open at the line, delaying exit and missing the 'just' offset."
       ]
     },
+    "per_asset": [],
     "series": {
       "t": [
         "2017-08-17",

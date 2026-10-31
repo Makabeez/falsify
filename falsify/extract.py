@@ -59,6 +59,11 @@ Rules:
 - day_of_week: 0=Monday ... 6=Sunday, UTC. Express "on Friday" as day_of_week gt 3.5 AND day_of_week lt 4.5.
   "On the 4th of the month" is day_of_month gt 3.5 AND day_of_month lt 4.5; "on the last day of the month" is
   days_left_in_month lt 0.5. Calendar rules need daily or shorter bars.
+- Calendar timing: a condition is read at a bar's close and the order fills at the next bar's open. "Buy on
+  Wednesday" with no time given means the position opens at Wednesday's open, so the signal is Tuesday's close
+  (day_of_week gt 0.5 AND lt 1.5); "buy at Friday's close" is a Friday signal. Same for exits ("sell on Saturday"
+  = Friday-close signal). A chart label naming the signal day overrides this reading. Say which you used in
+  assumptions.
 - Do not correct the claimant's text. If a word looks like a typo (e.g. "4th" where "4h" would make sense), compile
   what is written, and say in assumptions which other reading was possible.
 - "Price above X" uses close. Breakouts use highest_high / lowest_low, which already look at the PREVIOUS N bars

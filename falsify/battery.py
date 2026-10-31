@@ -54,6 +54,7 @@ class Report:
     grounding: dict = field(default_factory=dict)
     fidelity: dict = field(default_factory=dict)
     review: dict = field(default_factory=dict)
+    per_asset: list[dict] = field(default_factory=list)
     series: dict = field(default_factory=dict)
 
     def to_dict(self) -> dict:
@@ -282,7 +283,10 @@ def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = Tr
 
     tf = spec.timeframe.value
     have = data_mod.available()
-    primary_asset = next((a for a in spec.assets if (a, tf) in have), None)
+    # Order-independent: the same claim must not get a different verdict because the model listed
+    # "BTC, ETH" instead of "ETH, BTC" (it did, on c017, between the text and the screenshot runs).
+    named = sorted({a for a in spec.assets if (a, tf) in have}, key=data_mod.UNIVERSE.index)
+    primary_asset = named[0] if named else None
     if primary_asset is None:
         coins = ", ".join(a.removesuffix("USDT") for a in data_mod.UNIVERSE)
         return Report(Verdict.UNTESTABLE, "No price history here for what this claim trades.",
@@ -290,6 +294,39 @@ def falsify(spec: ClaimSpec, costs: Costs = Costs(), with_cross_asset: bool = Tr
                                f"history for {coins} on 1h, 4h and 1d only, and never swaps in a different asset."],
                       timeframe=tf)
 
+    if len(named) > 1:
+        return _weakest_of(spec, named, costs, with_cross_asset, posted)
+    return _falsify_one(spec, primary_asset, costs, with_cross_asset, posted)
+
+
+_RANK = {Verdict.DIES: 0, Verdict.INCONCLUSIVE: 1, Verdict.SURVIVES: 2}
+
+
+def _weakest_of(spec: ClaimSpec, named: list[str], costs: Costs, with_cross_asset: bool,
+                posted: str | None) -> Report:
+    """A claim that names several coins claims the rule works on each of them, so each is tested on its own
+    and the verdict is the weakest one. Conservative on purpose: testing more coins can only make a claim
+    harder to pass, never easier."""
+    reps = {a: _falsify_one(spec, a, costs, False, posted) for a in named}
+    worst = min(named, key=lambda a: (_RANK[reps[a].verdict], -(reps[a].null_test.get("p_value") or 1.0)))
+    rep = reps[worst]
+    rep.per_asset = [{"asset": a, "verdict": reps[a].verdict.value, "trades": reps[a].primary.get("trades"),
+                      "avg_net_pct": reps[a].primary.get("avg_net_pct"),
+                      "p_value": reps[a].null_test.get("p_value")} for a in named]
+    if with_cross_asset:
+        rep.cross_asset = cross_asset(spec, worst, costs)
+    parts = ", ".join(f"{a.removesuffix('USDT')} {reps[a].verdict.value.lower()}" +
+                      (f" (p = {reps[a].null_test['p_value']:.3f})" if reps[a].null_test.get("p_value") is not None else "")
+                      for a in named)
+    rep.warnings.insert(0, f"the claim names {len(named)} coins; each was tested on its own and the verdict is the "
+                           f"weakest: {parts}")
+    rep.headline = f"Weakest of the {len(named)} coins it names, {worst.removesuffix('USDT')}: " + rep.headline
+    return rep
+
+
+def _falsify_one(spec: ClaimSpec, primary_asset: str, costs: Costs, with_cross_asset: bool,
+                 posted: str | None) -> Report:
+    tf = spec.timeframe.value
     df = data_mod.load(primary_asset, tf)
     trades = run(spec, df, costs)
     primary = summarize(trades, df)

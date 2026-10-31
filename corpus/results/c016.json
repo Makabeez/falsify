@@ -162,7 +162,7 @@
   },
   "report": {
     "verdict": "UNTESTABLE",
-    "headline": "This claim can't be turned into rules anyone could check.",
+    "headline": "This claim can't be tested as stated.",
     "reasons": [
       "No mechanical single-position rule can replicate the five-rung averaging ladder with 1.8x sizing and average-entry take-profit that defines entries, exits and risk."
     ],
@@ -189,6 +189,7 @@
       "needs_human": false,
       "reasons": []
     },
+    "per_asset": [],
     "series": {}
   },
   "seconds": 42.9

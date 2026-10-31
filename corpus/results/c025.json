@@ -288,7 +288,7 @@
   },
   "report": {
     "verdict": "UNTESTABLE",
-    "headline": "This claim can't be turned into rules anyone could check.",
+    "headline": "This claim can't be tested as stated.",
     "reasons": [
       "Requires hourly entries gated by daily MACD trend state, a multi-timeframe condition the schema cannot express and which is the heart of the strategy."
     ],
@@ -315,6 +315,7 @@
       "needs_human": false,
       "reasons": []
     },
+    "per_asset": [],
     "series": {}
   },
   "seconds": 53.4

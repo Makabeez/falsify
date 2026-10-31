@@ -128,3 +128,23 @@ def test_verdict_split_refuted_vs_cannot_tell():
     assert rsi.verdict.value == "DIES"
     assert weekend.verdict.value == "INCONCLUSIVE" and 0.05 <= weekend.null_test["p_value"] < 0.5
     assert weekend.headline.startswith("Makes money")
+
+
+def test_multi_asset_verdict_is_order_independent_and_weakest():
+    """c017 on 31 Oct: the text run listed ETH first and SURVIVED, the screenshot run listed BTC first and was
+    INCONCLUSIVE, with identical rules. The verdict must not depend on list order."""
+    import json
+    from pathlib import Path
+    import pytest
+    from falsify import data as data_mod
+    from falsify.battery import falsify
+    from falsify.spec import ClaimSpec
+    if ("BTCUSDT", "4h") not in data_mod.available() or ("ETHUSDT", "4h") not in data_mod.available():
+        pytest.skip("bundled data missing")
+    raw = json.loads((Path(__file__).parent.parent / "corpus" / "results" / "c017.json").read_text())["spec"]
+    a = falsify(ClaimSpec.model_validate(dict(raw, assets=["ETHUSDT", "BTCUSDT"])), with_cross_asset=False)
+    b = falsify(ClaimSpec.model_validate(dict(raw, assets=["BTCUSDT", "ETHUSDT"])), with_cross_asset=False)
+    assert a.verdict == b.verdict and a.asset == b.asset and a.per_asset == b.per_asset
+    rank = {"DIES": 0, "INCONCLUSIVE": 1, "SURVIVES": 2}
+    assert rank[a.verdict.value] == min(rank[x["verdict"]] for x in a.per_asset)
+    assert a.headline.startswith("Weakest of the 2 coins")

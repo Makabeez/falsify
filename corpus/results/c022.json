@@ -790,6 +790,7 @@
         "audit still disagrees: take_profit_r: Claim states 'the RR is 2:1' - a take-profit at 2R exit. Spec leaves take_profit_r null/unset, omitting this exit. Leaving it out changes what is tested."
       ]
     },
+    "per_asset": [],
     "series": {
       "t": [
         "2017-08-17",
