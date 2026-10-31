@@ -1,0 +1,99 @@
+{
+ "id": "c021",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Long ETH/USDT on 4h when Senkou Span A is above Senkou Span B and a green candle closes above Span A, exiting when a red candle closes below Span A.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Requires Ichimoku Senkou Span A/B which is not a supported indicator, so no mechanical rule can be recovered.",
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2017-01-01",
+   "period_end": "2021-06-02",
+   "other": "would make more profit with this strategy than holding the coin"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: Ichimoku Senkou Span A (green lead line) and Senkou Span B (red lead line) are not in the supported indicator set and cannot be encoded, and they are the heart of the entry/exit filter.",
+   "Direction assumed long because entry is bullish close above line and exit is bearish close below line.",
+   "Timeframe taken as 4h from chart timeframe."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "crypto pair ETH/USDT",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "four hour chart",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "beginning of 2017 until today",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "you would make more profit with this strategy than holding the coin",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 3.2,
+   "tokens": 2802,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 4.5,
+   "tokens": 1935
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.7,
+   "tokens": 3335,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.5,
+   "tokens": 1790
+  }
+ ],
+ "audit_majors": [
+  "testable: Mechanical core is fully rule-based and could be tested: long when Senkou Span A (green) is above Senkou Span B (red) and green candle closes above Span A, exit when red candle closes below Span A. Reason that Senkou Span A/B is not supported does not hold as untestable - it is standard price-derived Ichimoku logic."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 13.9,
+ "run": "minimal_r2"
+}

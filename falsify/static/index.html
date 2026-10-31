@@ -524,6 +524,7 @@ function render(res, animate) {
   const metaBits = [];
   if (src.posted) metaBits.push(`Posted ${src.posted}`);
   if (src.url) metaBits.push(el("a", {href: src.url, rel: "noopener nofollow", target: "_blank"}, `source (${new URL(src.url).hostname.replace(/^www\./, "")})`));
+  if (src.offline) metaBits.push(`the page is no longer online (checked ${src.offline}); the text above was captured while it was`);
   if (metaBits.length) panel.append(el("p", {class: "meta"}, metaBits.flatMap((b, i) => i ? [", ", b] : [b])));
   if (src.kind !== "text") panel.append(el("p", {class: "meta"}, "Text above is Muse Spark's word-for-word transcript; highlighted words are the ones the rules quote."));
   else if (ev.length) panel.append(el("p", {class: "meta"}, "Highlighted: the claimant's words each rule quotes. The small numbers match the numbered rules."));

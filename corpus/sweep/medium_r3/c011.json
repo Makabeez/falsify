@@ -1,0 +1,115 @@
+{
+ "id": "c011",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buying Bitcoin when price drops below the 200-week moving average is presented as a buying opportunity.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 1400,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 1460,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "Investing $10,000 during the March 2020 dip would have resulted in a 1.8 BTC / $105,000 portfolio today"
+  },
+  "assumptions": [
+   "Asset BTCUSDT mapped from claimant mention of Bitcoin.",
+   "Timeframe 1d taken from page chart context, not stated by claimant.",
+   "Moving-average type not stated, assumed SMA as usual default.",
+   "NOT EXPRESSIBLE: true 200-week average of weekly closes; approximated as daily SMA(1400) (200*7) on 1d bars.",
+   "Entry compiled as crosses_below trigger from falls below / drops below automatic buy-order language.",
+   "Claim gives no exit; using max_hold_bars 1460 (~4 years) as buy-and-hold proxy to mimic March 2020 to 2024 example."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "When Bitcoin's price falls below its 200-week moving average",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "Bitcoin's",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "set buy orders to trigger automatically when Bitcoin's price drops below this threshold",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 19.3,
+   "tokens": 6744,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 14.0,
+   "tokens": 4492
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 33.3,
+ "run": "medium_r3"
+}

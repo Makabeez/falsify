@@ -1,0 +1,161 @@
+{
+ "id": "c030",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buying Bitcoin after pullbacks of 20% or more is expected to be followed by a rebound to new highs.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "highest_high",
+     "period": 100,
+     "value": null,
+     "multiplier": 0.8,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 100,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "pullback high lookback",
+    "target": "entry[0].right.period",
+    "candidates": [
+     50.0,
+     100.0,
+     200.0
+    ]
+   },
+   {
+    "name": "rebound high lookback",
+    "target": "exit[0].right.period",
+    "candidates": [
+     50.0,
+     100.0,
+     200.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Asset is BTCUSDT because the claim is about Bitcoin and the page is about BTC.",
+   "Timeframe is 1d; the claim names no timeframe and daily bars are the most natural reading for Bitcoin pullbacks.",
+   "Direction is long from Buy the blood.",
+   "20% pullback interpreted as close 20% below trailing high: close lt 0.8 * highest_high(100).",
+   "Lookback of 100 bars for what counts as the prior high was chosen; claim does not state it.",
+   "Exit interpreted as close above the trailing 100-bar high to represent rebound to new heights; claim gives no explicit exit trigger.",
+   "NOT EXPRESSIBLE: Stack SATs continuous accumulation / averaging aspect left out; compiled as discrete dip-buy entries with one position at a time."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "Buy the blood.",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "pullbacks upwards of 20%",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "to then rebound to new heights",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 18.7,
+   "tokens": 6823,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.7,
+   "tokens": 4623
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 30.5,
+ "run": "medium_r2"
+}

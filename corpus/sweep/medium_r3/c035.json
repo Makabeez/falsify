@@ -1,0 +1,88 @@
+{
+ "id": "c035",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "RSI and MACD bullish and bearish divergences signal profitable moves with over 85-90% probability.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No mechanical divergence definition with pivot lookback and RSI/MACD settings and no exit or profitability holding period are stated, only retrospective counts of custom arrow signals.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 85.0,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "Instances of Bearish Divergences (Red Arrows) 17 instances, probability of profitability > 90%"
+  },
+  "assumptions": [
+   "Asset is BTCUSDT from page context; claim text itself names no symbol.",
+   "Timeframe is assumed 1d; claim states no bar length.",
+   "Direction set to long to represent the bullish side; claim describes both bullish and bearish divergences but schema allows one direction.",
+   "NOT EXPRESSIBLE: custom arrow divergence detection logic including pivot definition, lookback distance between lows/highs, RSI and MACD lengths, and confirmation rules for blue ascending arrows and green/red arrows.",
+   "NOT EXPRESSIBLE: definition of profitable underlying the 85%/90% counts including target, stop, and holding period; no exit is stated."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "probability of profitability > 85%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Instances of Bearish Divergences (Red Arrows) 17 instances, probability of profitability > 90%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 33.8,
+   "tokens": 7714,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 8.0,
+   "tokens": 3344
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 41.8,
+ "run": "medium_r3"
+}

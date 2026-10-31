@@ -1,0 +1,118 @@
+{
+ "id": "c020",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Ether's 50-day SMA crossing above its 200-day SMA then selling 180 days later averages +59.2% per trade.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 180,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": 59.2,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Asset 'Ether' interpreted as ETHUSDT spot.",
+   "Timeframe 1d chosen because claim uses day-based SMAs and 180-day hold; claim states no timeframe.",
+   "Direction long inferred from buying the Golden Cross and selling 180 days later; claim never says long or buy.",
+   "Exit is time-based only with max_hold_bars 180; no stop-loss, target or trailing stop stated."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Ether's",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "50-day sma crosses above its 200-day sma",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "Sell 180 days later",
+    "assumed": false
+   },
+   {
+    "field": "claimed.avg_return_per_trade_pct",
+    "quote": "average trade of +59.2% in just 180 days",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 8.1,
+   "tokens": 4421,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 15.7,
+   "tokens": 4990
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 23.8,
+ "run": "medium_r2"
+}

@@ -1,0 +1,153 @@
+{
+ "id": "c026",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Long-only 20-day breakout with 10-day exit and ATR stops claimed to make $1,147,318 total profit across 43 markets from 2007-2025.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "The claimed $1,147,318 result is for an unstated 43-market portfolio and cannot be verified by testing only BTC and ETH.",
+  "assets": [
+   "BTCUSDT",
+   "ETHUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "lowest_low",
+     "period": 10,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": 2.0,
+  "stop_atr_period": 20,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2007-01-01",
+   "period_end": "2025-12-31",
+   "other": "Total profit across all 43 markets: $1,147,318"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: claimed total profit is for a 43-market portfolio whose composition and position sizing are not stated, so testing BTC and ETH alone cannot verify the $1,147,318 total."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "Buy when price breaks above the highest high of the last 20 days.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "Exit when price reverses direction for 10 days.",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "Including: Bitcoin & Ethereum",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "pure long-side Turtle code",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Total profit across all 43 markets: $1,147,318",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 7.8,
+   "tokens": 6681,
+   "quote_repairs": 1
+  },
+  {
+   "step": "audit",
+   "seconds": 5.9,
+   "tokens": 2669
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.0,
+   "tokens": 3487,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.6,
+   "tokens": 2067
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 20.3,
+ "run": "minimal_r2"
+}

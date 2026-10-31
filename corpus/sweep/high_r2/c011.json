@@ -1,0 +1,130 @@
+{
+ "id": "c011",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "A drop below Bitcoin's 200-week moving average is presented as a buying opportunity to hold.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 1400,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 3650,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "Investing $10,000 during the March 2020 dip would have resulted in a 1.8 BTC / $105,000 portfolio today"
+  },
+  "assumptions": [
+   "Asset is BTCUSDT because the claim is about Bitcoin.",
+   "Timeframe is 1d from the page chart; the claim itself names no bar length.",
+   "200-week moving average is mapped to a 1400-period SMA on daily bars (200*7) because the schema allows only 1h/4h/1d with no weekly timeframe; SMA assumed as the default meaning of 'moving average'.",
+   "Entry uses crosses_below to encode 'falls below' / 'drops below' as the breakdown event rather than simply being below.",
+   "NOT EXPRESSIBLE: claim describes buying below the average and holding to the present with no exit rule; the schema requires an exit so indefinite hold is approximated with a very long max_hold_bars as the closest testable core."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin's price",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "potential buying opportunity",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "price falls below its 200-week moving average",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Investing $10,000 during the March 2020 dip would have resulted in a 1.8 BTC / $105,000 portfolio today",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 18.7,
+   "tokens": 6915,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 9.5,
+   "tokens": 3663
+  },
+  {
+   "step": "audit repair",
+   "seconds": 14.3,
+   "tokens": 5900,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 16.7,
+   "tokens": 5219
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 59.2,
+ "run": "high_r2"
+}

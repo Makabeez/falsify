@@ -1,0 +1,77 @@
+{
+ "id": "c034",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "The claim describes trading price against its slowest moving average with higher confidence when ten timeframes align.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No mechanical rule can be recovered because MA lengths, signal direction, assets and exits are unspecified and the core alignment across ten timeframes needs multi-timeframe data.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "No asset named; assumed BTCUSDT as default test asset.",
+   "No single timeframe named, only 10 different time frames; assumed 1d to represent a single timeframe.",
+   "No MA length, MA type, signal direction, or exit stated in 'lowest Moving average against Price' and 'average price moves against its slowest tracking average'.",
+   "NOT EXPRESSIBLE: alignment across 10 different time frames requiring multi-timeframe conditions, plus unspecified moving-average parameters and entry/exit triggers left out, which is the heart of the strategy."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 9.0,
+   "tokens": 4376,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 7.6,
+   "tokens": 2996
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 16.6,
+ "run": "medium_r3"
+}

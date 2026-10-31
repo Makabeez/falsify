@@ -1,0 +1,215 @@
+{
+ "id": "c012",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "A monthly rule buys bitcoin on the last day of the month when price is above the 200-day SMA and sells when price is below it.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "days_left_in_month",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "days_left_in_month",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "profitable so far"
+  },
+  "assumptions": [
+   "BTC-USD mapped to Binance spot symbol BTCUSDT.",
+   "Timeframe set to 1d because the rule uses a 200-day SMA and last-day-of-month calendar logic; no explicit bar timeframe is stated.",
+   "Price interpreted as daily close for both the 200-day SMA comparison and the above/below checks.",
+   "Direction is long-only; selling interpreted as exiting to flat, not opening a short position.",
+   "Entry requires both conditions on the same bar close: last day of month and close above 200-day SMA.",
+   "NOT EXPRESSIBLE: the claim requires the sell check only on the last day of the month, i.e. close below 200-day SMA AND last day of month on the same bar, but the schema evaluates exit conditions as OR (ANY true exits) so an AND exit cannot be enforced exactly; both legs are included as exit[0] and exit[1] to document intent.",
+   "No stop, target, trailing stop or max hold stated, so position is held until the exit signal."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "price of BTC-USD",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "buying",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "buying when the price is above the 200-day simple moving average (SMA)",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "on the last day of the month",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "selling when it is below",
+    "assumed": false
+   },
+   {
+    "field": "exit[1]",
+    "quote": "on the last day of the month",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 18.6,
+   "tokens": 6639,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.7,
+   "tokens": 4265
+  },
+  {
+   "step": "audit repair",
+   "seconds": 24.4,
+   "tokens": 8314,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.1,
+   "tokens": 4893
+  }
+ ],
+ "audit_majors": [
+  "exit: Claim requires sell only when close is below 200-day SMA ON the last day of month (AND). Spec encodes them as two separate exit legs which evaluate as OR: exit[0] fires on any bar below SMA without month filter, and exit[1] fires on every last-day-of-month even when above SMA. This invents unconditional monthly exits and intra-month exits."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 64.8,
+ "run": "high_r2"
+}

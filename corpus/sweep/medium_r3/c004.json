@@ -1,0 +1,134 @@
+{
+ "id": "c004",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Long-only 1-hour XAU/USD strategy buying when EMA 8 crosses above EMA 21 with 1.5% stop and 4.5% target.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "XAUUSD"
+  ],
+  "timeframe": "1h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 8,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": 1.5,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": 4.5,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 34.0,
+   "total_return_pct": 119.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "buying and holding gold returned +218%"
+  },
+  "assumptions": [
+   "Asset is gold vs US dollar, compiled as XAUUSD ticker; engine will report lack of data if outside bundled universe.",
+   "Entry evaluated on 1h bar closes with fill at next open per engine convention.",
+   "No indicator-based exit was stated, so position is held until the 1.5% stop or 4.5% target is hit; exit array is empty.",
+   "Stop and target are fixed percentages from entry; 4.5% target is three times the 1.5% risk as stated.",
+   "Claimed 10-year test window is recorded in claimed performance only and is not part of the rule; engine tests over all available history."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "gold against the US dollar (XAU/USD)",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "1-hour candles",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "buy when EMA(8) crosses above EMA(21)",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "There is no short side.",
+    "assumed": false
+   },
+   {
+    "field": "stop_loss_pct",
+    "quote": "1.5% below the entry price",
+    "assumed": false
+   },
+   {
+    "field": "take_profit_pct",
+    "quote": "4.5% above the entry price",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "won 34% of them",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "returned +119%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "buying and holding gold returned +218%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 12.1,
+   "tokens": 5682,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 6.3,
+   "tokens": 3103
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 18.4,
+ "run": "medium_r3"
+}

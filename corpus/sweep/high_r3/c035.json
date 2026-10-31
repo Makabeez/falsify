@@ -1,0 +1,239 @@
+{
+ "id": "c035",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "RSI and MACD bullish divergences and bearish divergences are claimed to predict profitable moves with over 85% and 90% probability.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "lowest_low",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": "min",
+     "window": 20,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "macd_line",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "macd_line",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": "min",
+     "window": 20,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 10,
+  "free_parameters": [
+   {
+    "name": "divergence lookback bars",
+    "target": "entry[0].right.period",
+    "candidates": [
+     14.0,
+     20.0,
+     30.0,
+     50.0
+    ]
+   },
+   {
+    "name": "RSI length",
+    "target": "entry[1].left.period",
+    "candidates": [
+     7.0,
+     14.0,
+     21.0
+    ]
+   },
+   {
+    "name": "MACD fast length",
+    "target": "entry[2].left.period",
+    "candidates": [
+     8.0,
+     12.0,
+     19.0
+    ]
+   },
+   {
+    "name": "max hold bars",
+    "target": "max_hold_bars",
+    "candidates": [
+     5.0,
+     10.0,
+     20.0,
+     30.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": 85.0,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "Instances of Bearish Divergences (Red Arrows) 17 instances, probability of profitability > 90%"
+  },
+  "assumptions": [
+   "Asset not named in claim text; BTCUSDT chosen as most natural reading because the page is about BTC.",
+   "Timeframe not stated; 1d chosen as most natural reading for a divergence idea.",
+   "Bullish divergence formalized as close below prior N-bar low while RSI and MACD line are above their N-bar minima, N=20.",
+   "RSI length 14 and MACD fast 12 slow 26 signal 9 are indicator usual defaults; claim gives no settings.",
+   "Blue ascending arrows interpreted as indicators not making new lows alongside price, i.e. divergence.",
+   "NOT EXPRESSIBLE: exact proprietary blue/green/red arrow detection and pivot-matching logic was left out; approximated with new-low versus indicator-minimum rule.",
+   "NOT EXPRESSIBLE: claim asserts both bullish/long divergences and bearish/short divergences but ClaimSpec direction allows only one side per spec; this spec tests the bullish/long side with 29 instances as the closest testable core, the bearish/short side with 17 instances requires a separate mirrored short spec and is omitted here.",
+   "No exit stated; max_hold_bars 10 used as most common reading for a divergence reversal setup."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Instances of Bullish Divergences (Green Arrows)",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "Blue ascending arrows in RSI & MACD",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "Blue ascending arrows in RSI & MACD",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "probability of profitability > 85%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Instances of Bearish Divergences (Red Arrows) 17 instances, probability of profitability > 90%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 26.5,
+   "tokens": 9722,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 12.0,
+   "tokens": 5321
+  },
+  {
+   "step": "audit repair",
+   "seconds": 15.9,
+   "tokens": 7227,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 20.1,
+   "tokens": 7067
+  }
+ ],
+ "audit_majors": [
+  "direction: Claim asserts both bullish divergences (29 instances, >85%) and bearish divergences (17 instances, >90%). Spec sets direction to long only and tests the bullish side, omitting the bearish/short side. Omitting half the claimed signals changes what is being tested."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 74.5,
+ "run": "high_r3"
+}

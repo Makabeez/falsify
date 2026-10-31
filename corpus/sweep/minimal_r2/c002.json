@@ -1,0 +1,166 @@
+{
+ "id": "c002",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Long when 8-day EMA crosses above 21-day EMA, exit if price crosses the 21-day EMA with a maximum hold of 6 days.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 8,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 6,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "6 positions were taken in 10 months (304 days), an average of one every 51 days; rules produced much more profit than loss"
+  },
+  "assumptions": [
+   "Direction assumed long: bullish 8 EMA crossing above 21 EMA, as typical EMA-cross setup.",
+   "Entry assumed at the bullish cross bar close; no additional trigger stated for the 6-day monitor window.",
+   "'Monitor for a maximum of 6 days' interpreted as max_hold_bars 6.",
+   "'Stop loss just the other side of the 21 day EMA and adjust daily' is a dynamic EMA stop; schema has no EMA stop so exit condition close crossing below 21 EMA is used as closest testable core.",
+   "NOT EXPRESSIBLE: dynamic stop-loss just beyond the 21-day EMA adjusted daily; replaced by fixed exit condition.",
+   "Timeframe 1d taken from page chart timeframe, not claimant words."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "8 day and 21 day EMAs cross",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "If price crosses the 21 day EMA , your setup has failed",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "monitor for a maximum of 6 days",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "Set stop loss just the other side of the 21 day EMA",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.other",
+    "quote": "6 positions were taken in 10 months (304 days), an average of one every 51 days",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.7,
+   "tokens": 3059,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 6.8,
+   "tokens": 2668
+  },
+  {
+   "step": "audit repair",
+   "seconds": 6.0,
+   "tokens": 4022,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 5.2,
+   "tokens": 2569
+  }
+ ],
+ "audit_majors": [
+  "entry[0]: Claim says 'Wait for the cross, then monitor for a maximum of 6 days' - entry is to occur sometime in a 6-day window after the cross, not at the cross bar. Spec enters immediately on the cross and has no delayed trigger condition.",
+  "max_hold_bars: 'monitor for a maximum of 6 days' is a pre-entry waiting/monitoring window, not a maximum position holding period. Spec encodes it as max_hold_bars 6, inventing an exit that claimant did not state and omitting the actual waiting-window condition.",
+  "direction: Claim says '8 day and 21 day EMAs cross' with no long-only qualifier. Spec restricts to long / crosses_above only, omitting the opposite cross direction."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 26.1,
+ "run": "minimal_r2"
+}

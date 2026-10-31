@@ -1,0 +1,199 @@
+{
+ "id": "c010",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Long BTC on 4-hour Supertrend flip from downtrend to uptrend with ATR-based stop, 0.75R partial profit with breakeven move and exit of remainder on opposite Supertrend flip.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "supertrend",
+     "period": 10,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 3.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "supertrend",
+     "period": 10,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 3.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": 2.0,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "Supertrend ATR length",
+    "target": "entry[0].right.period",
+    "candidates": [
+     7.0,
+     10.0,
+     14.0
+    ]
+   },
+   {
+    "name": "Supertrend multiplier",
+    "target": "entry[0].right.param",
+    "candidates": [
+     2.0,
+     3.0,
+     4.0
+    ]
+   },
+   {
+    "name": "ATR stop multiplier",
+    "target": "stop_atr_mult",
+    "candidates": [
+     1.5,
+     2.0,
+     3.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2020-01-02",
+   "period_end": "2023-01-05",
+   "other": null
+  },
+  "assumptions": [
+   "BTCUSD interpreted as BTCUSDT spot for testing.",
+   "Timeframe is 4H as stated in the claim.",
+   "Supertrend settings not stated; using defaults ATR length 10 and multiplier 3 for entry and exit.",
+   "ATR stop-loss multiplier and ATR length not stated; using 2.0 x ATR(14) at the signal bar.",
+   "NOT EXPRESSIBLE: partial exit closing half the position at 0.75 risk/reward and holding the remainder to the opposite Supertrend flip; schema holds the full position to the opposite flip with no intermediate target.",
+   "NOT EXPRESSIBLE: moving the stop loss to breakeven after the 0.75R first target is hit; schema keeps the original ATR stop for the entire trade.",
+   "Entry and exit signals evaluated on bar closes per test harness."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "designed for BTCUSD",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "in 4H timeframe",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "you enter into a long position.",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Once Supertrend changes from a downtrend to a uptrend, you enter into a long position.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "Once Supertrend changes from a uptrend to a downtrend, you close the other half of the initial long position.",
+    "assumed": false
+   },
+   {
+    "field": "stop_atr_mult",
+    "quote": "The stop loss will be defined by the atr stop loss",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "2020-01-02 to 2023-01-05",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "2020-01-02 to 2023-01-05",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 23.6,
+   "tokens": 11945,
+   "quote_repairs": 1
+  },
+  {
+   "step": "audit",
+   "seconds": 14.4,
+   "tokens": 5914
+  },
+  {
+   "step": "audit repair",
+   "seconds": 11.3,
+   "tokens": 6415,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 12.7,
+   "tokens": 5375
+  }
+ ],
+ "audit_majors": [
+  "take_profit_r: Claim requires closing half the position at 0.75 risk/reward; spec sets take_profit_r null and holds the full position to the opposite Supertrend flip with no intermediate target.",
+  "stop_atr_mult: Claim requires moving the stop loss to breakeven after the 0.75R target is hit; spec keeps the original ATR stop for the entire trade."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 62.1,
+ "run": "medium_r2"
+}

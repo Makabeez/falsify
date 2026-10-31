@@ -1,0 +1,110 @@
+{
+ "id": "c003",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "A long DCA system enters when 4h RSI(14) drops below 28, adds five averaging orders down to -25% with scaling, and exits 3% above average entry with no stop.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "The core is a five-rung DCA averaging ladder with 1.8x size scaling and take-profit on average entry, which cannot be expressed as a single-entry rule.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 28.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 70.97,
+   "total_return_pct": 3.08,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2024-01-01",
+   "period_end": "2026-06-29",
+   "other": "Net Profit: +3,078.29 USDT; Profit Factor: 4.028"
+  },
+  "assumptions": [
+   "Assets set to BTCUSDT from page context about BTC; claim text itself names no symbol.",
+   "Direction set to long because averaging down at negative deviations and taking profit above average entry implies long buys.",
+   "Entry compiled as RSI(14) crosses_below 28 on 4h closes from 'drops below 28'.",
+   "NOT EXPRESSIBLE: five averaging/DCA orders at -2%, -5%, -9.5%, -16% and -25% with 1.8x size scaling per rung and 3% take-profit above average entry price; schema has no averaged entry or ladder fills.",
+   "Stop Loss: None per claim; ladder allocation described as structural risk cap, so no price stop encoded.",
+   "Test period and performance figures stored in claimed; engine tests all history starting flat."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "A base order fires when 4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": "4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 23.5,
+   "tokens": 8347,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 14.6,
+   "tokens": 5090
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 38.0,
+ "run": "high_r3"
+}

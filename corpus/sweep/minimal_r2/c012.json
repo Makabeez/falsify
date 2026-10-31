@@ -1,0 +1,182 @@
+{
+ "id": "c012",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Buy BTC at month-end when price is above the 200-day SMA and sell when below.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "days_left_in_month",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "profitable so far"
+  },
+  "assumptions": [
+   "Timeframe chosen as 1d as the most natural reading for 200-day SMA and month-end rule.",
+   "Direction is long-only: buy above SMA, sell below.",
+   "Entry is evaluated only on the last day of the month.",
+   "NOT EXPRESSIBLE: both buy and sell signals apply only on the last day of the month, but exit conditions are evaluated on every bar close (OR logic), so the tested exit on close below 200-day SMA can trigger mid-month, which the claim does not describe."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "price of BTC-USD",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "buying when the price is above",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "last day of the month",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "buying when the price is above the 200-day simple moving average",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "selling when it is below",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 5.2,
+   "tokens": 2991,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.0,
+   "tokens": 1990
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.3,
+   "tokens": 3440,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.3,
+   "tokens": 1842
+  }
+ ],
+ "audit_majors": [
+  "exit[0]: Claim restricts both buy and sell decisions to 'the last day of the month'. Spec evaluates entry only on month-end but evaluates exit on every daily close below 200-day SMA, allowing mid-month exits the claim does not describe. Spec itself flags this in assumptions as NOT EXPRESSIBLE."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 13.8,
+ "run": "minimal_r2"
+}

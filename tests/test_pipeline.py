@@ -174,6 +174,32 @@ def test_effort_reaches_every_call_and_sweep_scores(tmp_path, monkeypatch):
         "cost": trace["cost"], "audit_majors": [], "grounding_problems": [], "audit_repair": False, "seconds": 1.0}))
     gt = tmp_path / "gt.yaml"
     gt.write_text('c900:\n  testable: "full"\n  asset: BTC\n  timeframe: 1d\n  entry:\n    - "close > 100"\n  reviewed: true\n')
+    import shutil
+    shutil.copytree(tmp_path / "low", tmp_path / "low_r2")
     rows = sweep.evaluate(tmp_path, gt)
-    assert rows[0]["effort"] == "low" and rows[0]["rule_elements"] == (3, 3) and rows[0]["tokens_mean"] == 1400
-    assert "| low |" in sweep.to_markdown(rows)
+    run = rows[0]["runs"][0]
+    assert rows[0]["effort"] == "low" and len(rows[0]["runs"]) == 2 and rows[0]["routing_stable"] == (1, 1)
+    assert run["rule_elements"] == (3, 3) and run["tokens_mean"] == 1400
+    assert "| low | 2 | 100% | 100% |" in sweep.to_markdown(rows)
+
+
+def test_modality_same_rules_and_report(tmp_path, monkeypatch):
+    from falsify import modality
+    a = dict(SPEC)
+    assert modality.same_rules(a, dict(a)) == []
+    b = dict(a, max_hold_bars=7, entry=[{"left": {"kind": "close"}, "op": "crosses_above",
+                                          "right": {"kind": "const", "value": 100}}])
+    assert modality.same_rules(a, b) == ["entry (same meaning)", "max_hold_bars"]
+    assert modality.same_rules(a, {"testable": False}) == ["testable"]
+
+    rep = {"verdict": "DIES"}
+    (tmp_path / "out").mkdir(); (tmp_path / "res").mkdir()
+    (tmp_path / "out" / "c900.json").write_text(json.dumps({"id": "c900", "spec": b, "report": rep,
+        "grounding": {"rule_elements": 5, "quoted": 4}, "transcript": {"chart": "BTC daily candles"}}))
+    (tmp_path / "res" / "c900.json").write_text(json.dumps({"id": "c900", "spec": a, "report": rep}))
+    monkeypatch.setattr(modality, "RESULTS", tmp_path / "res")
+    gt = tmp_path / "gt.yaml"
+    gt.write_text('c900:\n  testable: "full"\n  entry:\n    - "close > 100"\n  reviewed: true\n')
+    md = modality.report(tmp_path / "out", gt)
+    assert "| c900 | DIES | DIES | 2/2 | 1/2 (off: entry) | no: entry (same meaning), max_hold_bars | 4/5 |" in md
+    assert "BTC daily candles" in md

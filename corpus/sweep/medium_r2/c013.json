@@ -1,0 +1,131 @@
+{
+ "id": "c013",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buying bitcoin only on days more than 5% below the recent high underperforms daily dollar-cost averaging.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "DCA accumulation with repeated $1 buys and buy-and-hold with no exit cannot be tested as a single-position entry/exit rule.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "highest_high",
+     "period": 365,
+     "value": null,
+     "multiplier": 0.95,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "recent high lookback",
+    "target": "entry[0].right.period",
+    "candidates": [
+     252.0,
+     365.0,
+     500.0,
+     1000.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2013-05-01",
+   "period_end": "2021-05-23",
+   "other": null
+  },
+  "assumptions": [
+   "Asset is Bitcoin mapped to BTCUSDT.",
+   "Timeframe 1d chosen from page chart timeframe; not stated by claimant.",
+   "Direction is long from buying.",
+   "'Most Recent High Price' interpreted as highest_high over previous N daily bars; N is undefined so 365 used as concrete value.",
+   "Dip greater than 5% encoded as close < 0.95 * highest_high.",
+   "NOT EXPRESSIBLE: DCA accumulation with $1 buys on qualifying days, repeated overlapping holdings and position sizing, plus buy-and-hold with no exit; engine tests one position at a time with a single entry/exit rule."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "buying the dip",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Dip Greater Than 5% from the Most Recent High Price",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "May 1, 2013",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "May 23, 2021",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 19.0,
+   "tokens": 7013,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.2,
+   "tokens": 4515
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 30.2,
+ "run": "medium_r2"
+}

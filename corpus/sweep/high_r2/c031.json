@@ -1,0 +1,160 @@
+{
+ "id": "c031",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Buying Solana on WMA7 crossing up over WMA25 and selling on WMA7 crossing down over WMA25 over four years would have made 85 times the money in 36 trades versus 48 times by buy-and-hold.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "SOLUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "wma",
+     "period": 7,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "wma",
+     "period": 25,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "wma",
+     "period": 7,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "wma",
+     "period": 25,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 8500.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2020-08-14",
+   "period_end": "2024-08-14",
+   "other": "36 risk-free deals spread over 4 years"
+  },
+  "assumptions": [
+   "Timeframe not stated; 1d chosen as most natural reading for WMA7/WMA25.",
+   "85 times your money interpreted as 8500% total_return_pct (85x multiple); 48x buy-and-hold is baseline only and not encoded as strategy performance.",
+   "Claimed 4-year period inferred as 2020-08-14 to 2024-08-14 from forum post date 2024-08-14; engine tests over all available history.",
+   "Reinvested all interpreted as full compounding with one position at a time starting flat; initial 4-years-ago buy treated as start of repeatable cross system.",
+   "Risk-free characterization not encoded; entries and exits are only the stated WMA crosses."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "bought Solana",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "bought Solana 4 years ago and sold everything",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "when WMA7 crossed up over WMA25",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "sold everything each time WMA7 crossed down over WMA25",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "you would have made 85 times your money",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "36 risk-free deals spread over 4 years",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 15.8,
+   "tokens": 6519,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 9.2,
+   "tokens": 3993
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 25.0,
+ "run": "high_r2"
+}

@@ -1,0 +1,173 @@
+{
+ "id": "c026",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Long-side Turtle strategy with 20-day breakout entries, 10-day exits and ATR stops tested across many markets including Bitcoin and Ethereum.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT",
+   "ETHUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "lowest_low",
+     "period": 10,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": 2.0,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "ATR stop multiplier",
+    "target": "stop_atr_mult",
+    "candidates": [
+     1.0,
+     1.5,
+     2.0,
+     2.5,
+     3.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2007-01-01",
+   "period_end": "2025-12-31",
+   "other": "Total profit across all 43 markets: $1,147,318"
+  },
+  "assumptions": [
+   "Timeframe not stated in claim; used 1d from page chart timeframe.",
+   "Mapped Bitcoin & Ethereum to BTCUSDT and ETHUSDT; full 43-market universe not enumerated so testing this subset.",
+   "Interpreted \"Exit when price reverses direction for 10 days\" as classic Turtle long exit: close below 10-day lowest low.",
+   "ATR stops gives no multiplier or length; used 2.0 x ATR(14) fixed stop - 2x Turtle standard with usual 14-bar default - and listed multiplier in free_parameters.",
+   "Period 2007-2025 placed in claimed only; engine tests over all available history starting flat."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Including: Bitcoin & Ethereum",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "pure long-side Turtle code",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Buy when price breaks above the highest high of the last 20 days.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "Exit when price reverses direction for 10 days.",
+    "assumed": false
+   },
+   {
+    "field": "stop_atr_mult",
+    "quote": "ATR stops",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Total profit across all 43 markets: $1,147,318",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "18 years of data (2007-2025)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "18 years of data (2007-2025)",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 23.1,
+   "tokens": 8471,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 24.6,
+   "tokens": 7960
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 47.7,
+ "run": "high_r3"
+}

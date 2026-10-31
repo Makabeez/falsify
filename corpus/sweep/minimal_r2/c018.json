@@ -1,0 +1,157 @@
+{
+ "id": "c018",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Daily strategy buys when price crosses above the 80-day +1-sigma band and exits when price crosses below the 80-day middle band.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "NIKKEI225"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "bb_upper",
+     "period": 80,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 1.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 80,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 33.45,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2000-01-04",
+   "period_end": "2024-12-30",
+   "other": null
+  },
+  "assumptions": [
+   "Upper/lower bands at +-1 sigma with 80-day period interpreted as Bollinger Bands with period 80 and 1.0 std width.",
+   "Middle band interpreted as 80-period simple moving average (Bollinger basis).",
+   "Cross conditions evaluated on bar closes with fill at next open per engine convention.",
+   "NOT EXPRESSIBLE: claim trades all Nikkei 225 components as a stock universe with rotation; schema tests a single asset, so NIKKEI225 index is used as the closest testable proxy."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "Price crosses above the +1\u03c3 line from below",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "If the price crosses below the middle band, sell at the next day\u2019s open using a market order",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "Target Stocks: All components of the Nikkei 225",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "Only daily charts are used.",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Win Rate: 33.45%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.1,
+   "tokens": 2861,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.0,
+   "tokens": 1765
+  },
+  {
+   "step": "audit repair",
+   "seconds": 5.1,
+   "tokens": 3788,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 1.6,
+   "tokens": 1634
+  }
+ ],
+ "audit_majors": [
+  "assets: Claim targets all Nikkei 225 components as a stock universe; spec tests single NIKKEI225 index as proxy, which changes what is being tested."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 12.9,
+ "run": "minimal_r2"
+}

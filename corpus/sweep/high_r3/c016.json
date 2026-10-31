@@ -1,0 +1,148 @@
+{
+ "id": "c016",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Base buy when 4-hour RSI(14) drops below 28 with five scaled averaging orders and 3% take-profit on averaged entry with no stop-loss.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Strategy requires a five-rung averaging ladder with size scaling and take-profit on the averaged entry, which needs multiple positions and cannot be tested as a single-position rule.",
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 28.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 68.82,
+   "total_return_pct": 5.79,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2024-01-01",
+   "period_end": "2026-06-28",
+   "other": "Profit Factor: 5.019"
+  },
+  "assumptions": [
+   "Asset is ETHUSDT from page context; the claim text itself names no asset.",
+   "Timeframe is 4h from the claim phrase '4h RSI(14)'.",
+   "Direction is long inferred from base and averaging buy orders with take-profit above entry.",
+   "'drops below 28' compiled as crosses_below 28 rather than holding below 28.",
+   "NOT EXPRESSIBLE: Five averaging orders at -2%, -5%, -9.5%, -16%, -25% with 1.8x size scaling per rung cannot be expressed; the engine tests one position at a time so only the base order is shown.",
+   "NOT EXPRESSIBLE: Take-profit 3% above ladder-averaged entry cannot be expressed as a fixed 3% from base entry, so no target is encoded because the average price depends on which rungs filled.",
+   "No stop-loss per claim; ladder allocation as structural risk cap is position sizing with no stop representation.",
+   "Test period cited in the claim is recorded in claimed and is not part of the rule."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": "when 4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "A base order fires when 4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "Net Profit: +5,790.33 USDT (+5.79%)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Percent Profitable: 68.82% (64 / 93)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Profit Factor: 5.019",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "Test Period: January 1, 2024 \u2014 June 28, 2026 (~30 months).",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "Test Period: January 1, 2024 \u2014 June 28, 2026 (~30 months).",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 18.3,
+   "tokens": 7484,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.0,
+   "tokens": 4579
+  },
+  {
+   "step": "audit repair",
+   "seconds": 20.7,
+   "tokens": 8478,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 15.5,
+   "tokens": 5793
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 64.5,
+ "run": "high_r3"
+}

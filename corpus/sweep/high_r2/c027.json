@@ -1,0 +1,82 @@
+{
+ "id": "c027",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "The claim suggests a potential Wyckoff re-accumulation spring is playing out that could lead to a 25% climb back to all-time highs.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Discretionary Wyckoff pattern reading with no mechanical entry, exit, or indicator thresholds stated.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "+25%climb back to ATH over the coming weeks"
+  },
+  "assumptions": [
+   "Asset not named in claim text; BTCUSDT chosen because page context indicates BTC.",
+   "Timeframe not stated in claim text; 1d chosen because page chart timeframe is 1d.",
+   "Direction inferred as long from expected climb back to ATH.",
+   "NOT EXPRESSIBLE: Wyckoff re-accumulation spring identification, breakout level, retest condition, and entry/exit triggers have no mechanical definitions in the claim."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "there's a +25%climb back to ATH over the coming weeks",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "+25%climb back to ATH over the coming weeks",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 9.6,
+   "tokens": 4999,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 8.7,
+   "tokens": 3251
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 18.2,
+ "run": "high_r2"
+}

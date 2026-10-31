@@ -1,0 +1,143 @@
+{
+ "id": "c013",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Bitcoin is bought only when price is more than 5% below the most recent high, compared against daily dollar-cost averaging.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "highest_high",
+     "period": 365,
+     "value": null,
+     "multiplier": 0.95,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 3650,
+  "free_parameters": [
+   {
+    "name": "recent high lookback",
+    "target": "entry[0].right.period",
+    "candidates": [
+     90.0,
+     180.0,
+     365.0,
+     730.0,
+     1000.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2013-05-01",
+   "period_end": "2021-05-23",
+   "other": "$1/Day \u2013 >5% Dips (Rule 2) | $2943 | 4.639"
+  },
+  "assumptions": [
+   "Asset is BTCUSDT from Bitcoin mention in claim.",
+   "Timeframe 1d is from page context, not stated in claim text; chosen as most natural daily reading.",
+   "Most Recent High Price is vague on lookback; interpreted as highest high of prior 365 daily bars as 1-year high proxy; all-time-high reading was possible.",
+   "Entry uses daily close more than 5% below that high: close < 0.95 * highest_high(365).",
+   "NOT EXPRESSIBLE: daily $1 position sizing and averaging / DCA ladder with multiple concurrent holdings; engine tests single-position entry timing only.",
+   "Claim states no exit; max_hold_bars 3650 used as indefinite buy-and-hold proxy, the most common reading for accumulation setup.",
+   "NOT EXPRESSIBLE: test window May 1, 2013 to May 23, 2021 comparison accounting; engine tests over all available history, period stored in claimed only."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "Don't Buy Until There's a Dip Greater Than 5% from the Most Recent High Price",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "spent $1 on Bitcoin every day",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "Don't Buy Until There's a Dip Greater Than 5% from the Most Recent High Price",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "from May 1, 2013 until May 23, 2021",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "from May 1, 2013 until May 23, 2021",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "$1/Day \u2013 >5% Dips (Rule 2) | $2943 | 4.639",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 20.9,
+   "tokens": 8131,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 20.1,
+   "tokens": 7071
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 41.0,
+ "run": "high_r2"
+}

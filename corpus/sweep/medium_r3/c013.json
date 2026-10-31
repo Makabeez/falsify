@@ -1,0 +1,155 @@
+{
+ "id": "c013",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buying bitcoin only when price is more than 5% below the recent high is compared to daily dollar-cost averaging from May 2013 to May 2021.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "highest_high",
+     "period": 365,
+     "value": null,
+     "multiplier": 0.95,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 1,
+  "free_parameters": [
+   {
+    "name": "recent high lookback",
+    "target": "entry[0].right.period",
+    "candidates": [
+     90.0,
+     180.0,
+     365.0,
+     730.0,
+     1500.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2013-05-01",
+   "period_end": "2021-05-23",
+   "other": "$1/Day \u2013 >5% Dips (Rule 2) | $2943 | 4.639"
+  },
+  "assumptions": [
+   "Asset BTCUSDT interpreted from Bitcoin mention in claim.",
+   "Timeframe 1d assumed from page chart; claim text states no timeframe.",
+   "'Most Recent High Price' interpreted as highest high of prior 365 daily bars excluding current bar.",
+   "Dip Greater Than 5% encoded as close < 0.95 * highest_high(365).",
+   "No exit stated; max_hold_bars 1 chosen to allow re-entry on every dip day to approximate repeated daily buying.",
+   "NOT EXPRESSIBLE: daily $1 accumulation with overlapping holds / pyramiding and position sizing cannot be expressed; engine tests one position at a time starting flat, so repeated dip-day buys are approximated by consecutive 1-bar holds."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "spent $1 on Bitcoin every day",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "Don't Buy Until There's a Dip Greater Than 5% from the Most Recent High Price",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Don't Buy Until There's a Dip Greater Than 5% from the Most Recent High Price",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "from May 1, 2013 until May 23, 2021",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "from May 1, 2013 until May 23, 2021",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "$1/Day \u2013 >5% Dips (Rule 2) | $2943 | 4.639",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 17.6,
+   "tokens": 7118,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 26.0,
+   "tokens": 7961
+  },
+  {
+   "step": "audit repair",
+   "seconds": 10.3,
+   "tokens": 5595,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 23.9,
+   "tokens": 7790
+  }
+ ],
+ "audit_majors": [
+  "max_hold_bars: Claim is buy-dip accumulation held to the end date with no sale stated; spec forces exit after 1 bar to 'allow re-entry', converting long-term buy-and-hold accumulation into repeated 1-day dip-bounce trades. This invented exit changes what is being tested and could flip the verdict."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 77.8,
+ "run": "medium_r3"
+}

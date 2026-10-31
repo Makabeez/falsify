@@ -1,0 +1,76 @@
+{
+ "id": "c013",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Buying daily only when price is more than 5% below the most recent high underperforms plain daily dollar-cost averaging.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "The rule is a DCA accumulation schedule with cash-holding and overlapping buys, not a repeatable single entry-exit rule expressible in the schema.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2013-05-01",
+   "period_end": "2021-05-23",
+   "other": "$1/Day \u2013 >5% Dips (Rule 2) | $2943 | 4.639"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: DCA accumulation / cash-holding schedule ($1 per day saved and deployed only on >5% dips) requires overlapping positions, position sizing and cash management, which the single-position one-at-a-time engine cannot express.",
+   "Most Recent High Price period is undefined; closest core would need a highest_high lookback but no value can be recovered without inventing the rule.",
+   "No exit, stop, or holding rule is stated; dip-buying is an accumulation comparison, not an entry-exit system."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 5.8,
+   "tokens": 3092,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.4,
+   "tokens": 1567
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 9.2,
+ "run": "minimal_r2"
+}

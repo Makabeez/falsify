@@ -1,0 +1,118 @@
+{
+ "id": "c011",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Bitcoin dropping below its 200-week moving average is a buying opportunity, illustrated by buying the March 2020 dip.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 1400,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 1460,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2020-03-01",
+   "period_end": "2024-07-04",
+   "other": "Investing $10,000 during the March 2020 dip would have resulted in a 1.8 BTC / $105,000 portfolio today"
+  },
+  "assumptions": [
+   "Timeframe not stated; used chart timeframe 1d from page.",
+   "200-week moving average on daily bars compiled as SMA(1400) (200*7 days).",
+   "Falls below / drops below compiled as crosses_below (trigger).",
+   "No exit stated; compiled as long-term hold via max_hold_bars 1460 (~4 years) to match March 2020 to 2024 holding narrative."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "When Bitcoin's price falls below",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "potential buying opportunity",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "price falls below its 200-week moving average",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Investing $10,000 during the March 2020 dip would have resulted in a 1.8 BTC / $105,000 portfolio today",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 7.7,
+   "tokens": 6220,
+   "quote_repairs": 1
+  },
+  {
+   "step": "audit",
+   "seconds": 2.9,
+   "tokens": 1818
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 10.6,
+ "run": "minimal_r2"
+}

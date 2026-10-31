@@ -1,0 +1,139 @@
+{
+ "id": "c016",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "A 4-hour RSI(14) base entry below 28 with a five-rung averaging ladder and 3% take-profit above average entry claims profitability over January 2024 to June 2026.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "The core is a five-rung DCA averaging ladder with 1.8x size scaling and average-entry take-profit which the schema cannot express.",
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 28.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": 3.0,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 68.82,
+   "total_return_pct": 5.79,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2024-01-01",
+   "period_end": "2026-06-28",
+   "other": "Profit Factor: 5.019"
+  },
+  "assumptions": [
+   "Asset not named in claim; inferred ETHUSDT from page being about ETH.",
+   "Direction inferred long because deviations are negative and take-profit is above average entry; claim never says long or buy.",
+   "NOT EXPRESSIBLE: five averaging/DCA orders at -2%, -5%, -9.5%, -16%, -25% with 1.8x size scaling per rung and take-profit referenced to average entry price; compiled core uses only single base entry with fixed 3% target.",
+   "'drops below 28' compiled as crosses_below rather than holding below.",
+   "No stop-loss stated so no stop set, matching Stop Loss: None."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": "4h RSI(14)",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "take_profit_pct",
+    "quote": "Take Profit: 3% above average entry.",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "+5,790.33 USDT (+5.79%)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Percent Profitable: 68.82% (64 / 93)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Profit Factor: 5.019",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "January 1, 2024 \u2014 June 28, 2026",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "January 1, 2024 \u2014 June 28, 2026",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 15.7,
+   "tokens": 6939,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.2,
+   "tokens": 4426
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 25.9,
+ "run": "medium_r3"
+}

@@ -1,0 +1,336 @@
+{
+ "id": "c001",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Bitcoin daily long signal requiring RSI at its 50-bar low then rising for 3 bars while below 37.5 and below RSI 160 bars ago plus 5, claimed 71% win rate.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": "min",
+     "window": 50,
+     "offset": 0
+    },
+    "op": "ge",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    },
+    "op": "le",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": "min",
+     "window": 50,
+     "offset": 3
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "gt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    },
+    "op": "gt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 5.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 160
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 37.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 365,
+  "free_parameters": [
+   {
+    "name": "RSI length",
+    "target": "entry[0].left.period",
+    "candidates": [
+     9.0,
+     14.0,
+     21.0,
+     28.0
+    ]
+   },
+   {
+    "name": "time exit length",
+    "target": "max_hold_bars",
+    "candidates": [
+     90.0,
+     180.0,
+     365.0,
+     500.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": 71.4,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "Average winning trade: +105.8%"
+  },
+  "assumptions": [
+   "Direction not stated; long assumed because winners are large positive gains.",
+   "RSI length not stated; 14 (usual default) used.",
+   "Low 3 bars ago used so 'at 50-bar low' and 'rising for 3 bars' can hold on same signal bar.",
+   "'160 days RSI with 5 added' read as RSI 160 bars ago plus 5 RSI points.",
+   "No exit stated; 365-bar time exit used as most common reading for a long outlier setup."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "50 days",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "RSI is at the 50 days lowest",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "RSI is at the 50 days lowest",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "rising for 3 bars",
+    "assumed": false
+   },
+   {
+    "field": "entry[3]",
+    "quote": "rising for 3 bars",
+    "assumed": false
+   },
+   {
+    "field": "entry[4]",
+    "quote": "rising for 3 bars",
+    "assumed": false
+   },
+   {
+    "field": "entry[5]",
+    "quote": "lower than the 160 days RSI with 5 (as RSI value) added",
+    "assumed": false
+   },
+   {
+    "field": "entry[6]",
+    "quote": "RSI is below 37.5",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "5 * 100 / 7 = 71.4% Winrate",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Average winning trade: +105.8%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 5.7,
+   "tokens": 3634,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.8,
+   "tokens": 3074
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.9,
+   "tokens": 4513,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 4.4,
+   "tokens": 3546
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 16.8,
+ "run": "minimal_r3"
+}

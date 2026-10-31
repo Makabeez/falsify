@@ -1,0 +1,83 @@
+{
+ "id": "c027",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "BTC is in the potential spring of a Wyckoff re-accumulation pattern that could lead to a 25% climb back to ATH.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No mechanical entry, exit, or pattern definition is stated and Wyckoff spring identification requires discretionary chart reading.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 25.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Assets set to BTCUSDT from page context; claim text itself names no asset.",
+   "Timeframe set to 1d from page chart timeframe; claim text names no timeframe.",
+   "Direction inferred as long from expected +25% climb back to ATH; claim does not explicitly state long or short.",
+   "NOT EXPRESSIBLE: Wyckoff re-accumulation pattern and spring phase identification, including textbook shape and breakout retest behavior, requires discretionary chart reading not expressible with available indicators.",
+   "Claimed +25% move is a forward forecast over coming weeks with no fixed dates, so no period_start or period_end is set."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "there's a +25%climb back to ATH over the coming weeks",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 16.2,
+   "tokens": 6557,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.0,
+   "tokens": 3765
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 26.2,
+ "run": "high_r3"
+}

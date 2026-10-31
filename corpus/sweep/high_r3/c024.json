@@ -1,0 +1,173 @@
+{
+ "id": "c024",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "A 5-period EMA crossing the 50-period EMA together with a 5-period RSI crossing the 50 level generates a signal.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "USDCAD",
+   "EURUSD",
+   "GBPUSD",
+   "EURJPY"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 50.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Direction interpreted as long: claim says 'crosses' without specifying above/below, compiled as bullish cross above for long.",
+   "RSI signal interpreted as RSI(5) crossing above 50 for long, matching EMA bullish direction.",
+   "Timeframe chosen as 1d from two options mentioned (daily and 4 hour); 4h alternative not tested.",
+   "No exit stated, so exit assumed as opposite cross: 5EMA crosses below 50EMA, the most common reading for EMA-cross setup.",
+   "Both crosses required on the same bar close, as claim says 'once ... and ... there is your signal'."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "once your 5ema crosses your 50ema",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "RSI cross the 50 line",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "assets",
+    "quote": "on USD/CAD, EUR/USD, GBP/USD, and also EUR/JPY",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "on the daily and 4 hour charts",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 22.2,
+   "tokens": 8444,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 31.9,
+   "tokens": 9100
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 54.1,
+ "run": "high_r3"
+}

@@ -1,0 +1,155 @@
+{
+ "id": "c015",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Buy and hold BTC when its close is above its 15-period moving average and sell when the average is above the close.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 130.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2017-12-01",
+   "period_end": "2018-05-15",
+   "other": null
+  },
+  "assumptions": [
+   "Mapped BTC/USD to Binance spot BTCUSDT with no substitution.",
+   "Timeframe read as 1d from 15-days moving average of closing price; rules evaluated on bar closes with fill at next open.",
+   "Entry compiled as close above 15-period SMA of close on the same bar.",
+   "Exit compiled as 15-period SMA above close on the same bar; otherwise position is held with no stop, target, trailing stop or time limit.",
+   "Cited December 2017 to May 2018 period and 130% recorded as claimed performance only; engine tests over all available history."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "BTC/USD closing price",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "15-days moving average",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "buying and hodling when the closing price is above a moving average",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "buying and hodling when the closing price is above a moving average",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "As soon as the moving average is above the closing price, it's time to sell and wait for the next buying signal",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "would have generated 130% return on investment",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "between December 1st, 2017 and May 15th, 2018",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "between December 1st, 2017 and May 15th, 2018",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 20.3,
+   "tokens": 7375,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 8.7,
+   "tokens": 4006
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 29.1,
+ "run": "high_r2"
+}

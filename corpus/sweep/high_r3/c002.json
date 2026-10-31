@@ -1,0 +1,164 @@
+{
+ "id": "c002",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Enter on an 8-day and 21-day EMA cross and exit if price crosses the 21-day EMA, holding at most 6 days.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 8,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 6,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "produced much more profit than loss"
+  },
+  "assumptions": [
+   "Asset not named in claim text; BTCUSDT chosen as most natural reading from page about BTC.",
+   "Timeframe 1d chosen from day-based EMAs and chart timeframe; evaluated on daily bar closes.",
+   "Neutral 'cross' covers both bullish and bearish crosses; only bullish-cross long side is encoded as the testable core.",
+   "NOT EXPRESSIBLE: strategy trades both directions on 8/21 EMA crosses with stop just other side of 21 EMA, but schema allows only one direction so bearish-cross short side is omitted.",
+   "'Monitor for a maximum of 6 days' interpreted as max_hold_bars 6 after entry.",
+   "Stop 'just the other side of the 21 day EMA and adjust daily' compiled as exit when close crosses the 21-day EMA on closes; no buffer and no intrabar trigger."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "The 8 day and 21 day EMAs cross.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "If price crosses the 21 day EMA , your setup has failed.",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "then monitor for a maximum of 6 days.",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.other",
+    "quote": "produced much more profit than loss",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 21.3,
+   "tokens": 7139,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 28.8,
+   "tokens": 8367
+  },
+  {
+   "step": "audit repair",
+   "seconds": 15.0,
+   "tokens": 6536,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 17.9,
+   "tokens": 5624
+  }
+ ],
+ "audit_majors": [
+  "direction: Claim is neutral/bidirectional: '8 day and 21 day EMAs cross' with stop 'just the other side of the 21 day EMA' implying longs on bullish cross and shorts on bearish cross. Spec encodes only long on crosses_above and omits the short side. Testing only half the setups could change the verdict. Listed as NOT EXPRESSIBLE but omission still changes what is tested."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 82.9,
+ "run": "high_r3"
+}

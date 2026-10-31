@@ -1,0 +1,185 @@
+{
+ "id": "c012",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buy BTC on the last day of the month when price is above the 200-day SMA and sell when price is below it.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "days_left_in_month",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "days_left_in_month",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "profitable so far"
+  },
+  "assumptions": [
+   "BTC-USD mapped to Binance spot symbol BTCUSDT.",
+   "Timeframe chosen as 1d as most natural reading for 200-day SMA and last-day-of-month check; claim does not state bar timeframe.",
+   "Entry requires both month-end timing and SMA position on the same daily close.",
+   "Exits are ORed in this schema so 'last day AND below' cannot be written as one exit with two conditions; it is compiled as exit on the last day of the month combined with entry requiring close above 200-day SMA, so a below month-end leaves the strategy flat and an above month-end immediately re-enters, replicating month-end-gated holding without intra-month exits."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "on the last day of the month",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "buying when the price is above the 200-day simple moving average (SMA)",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "on the last day of the month",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "price of BTC-USD",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "buying",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "profitable so far",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 16.5,
+   "tokens": 5999,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 7.6,
+   "tokens": 3349
+  },
+  {
+   "step": "audit repair",
+   "seconds": 17.0,
+   "tokens": 6895,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 9.3,
+   "tokens": 3833
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 50.5,
+ "run": "medium_r2"
+}

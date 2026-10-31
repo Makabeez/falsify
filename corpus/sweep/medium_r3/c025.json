@@ -1,0 +1,172 @@
+{
+ "id": "c025",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Long H1 MACD upward-cross entries taken only when D1 MACD line is above its signal line, ignoring shorts.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Multi-timeframe rule requiring D1 MACD filter with H1 entries cannot be expressed in single-timeframe schema and is the heart of the claimed edge.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "macd_line",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "macd_signal",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "macd_line",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "macd_signal",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "MACD fast length",
+    "target": "entry[0].left.period",
+    "candidates": [
+     8.0,
+     12.0,
+     19.0,
+     21.0
+    ]
+   },
+   {
+    "name": "MACD slow length",
+    "target": "entry[0].left.param",
+    "candidates": [
+     21.0,
+     26.0,
+     50.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2018-12-01",
+   "period_end": null,
+   "other": "Annual return rises to 6.6% (from 4.6%), maximum drawdown improves from \u201323.9% to \u201312.4%, Sharpe ratio increases from 0.33 to 0.80"
+  },
+  "assumptions": [
+   "Asset BTCUSDT assumed from page topic; claim text names no symbol.",
+   "Timeframe 1h from Hourly H1 execution timeframe.",
+   "MACD lengths not stated, used standard 12 fast, 26 slow, 9 signal.",
+   "Exit of opposite H1 MACD cross chosen as closest core; claim states no exit.",
+   "NOT EXPRESSIBLE: D1 MACD line above its signal line trend filter and take trades only in direction of D1 trend omitted; schema is single-timeframe and cannot enforce D1 condition, so H1-only long core is not what was claimed.",
+   "Period start interpreted as 2018-12-01 from begins in December 2018."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": "On the Hourly (H1) timeframe",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "execute long entries only when the H1 MACD crosses upward",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "If D1 shows an uptrend, execute long entries only when the H1 MACD crosses upward.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 22.6,
+   "tokens": 7690,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.9,
+   "tokens": 4376
+  },
+  {
+   "step": "audit repair",
+   "seconds": 11.0,
+   "tokens": 6022,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 7.5,
+   "tokens": 3454
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 52.0,
+ "run": "medium_r3"
+}

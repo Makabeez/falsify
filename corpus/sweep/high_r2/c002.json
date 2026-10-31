@@ -1,0 +1,160 @@
+{
+ "id": "c002",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Enter on an 8-day and 21-day EMA cross and exit if price crosses the 21-day EMA or after 6 days.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 8,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 6,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "much more profit than loss. 6 positions were taken in 10 months (304 days), an average of one every 51 days."
+  },
+  "assumptions": [
+   "Asset is BTCUSDT inferred from page context; claim text names no asset.",
+   "Timeframe is 1d inferred from page chart timeframe and day-based EMA lengths; claim text does not state a timeframe.",
+   "NOT EXPRESSIBLE: claim describes direction-agnostic EMA crosses in both directions with side-dependent stop/exit; schema allows only long or short so spec tests the long side (8 crosses above 21) as closest testable core and omits short-side trades.",
+   "Entry direction narrowed to crosses_above for the long side; generic 'cross' cannot be encoded as either-direction cross.",
+   "Entries evaluated on bar closes with fill at next bar open per engine rules.",
+   "Stop 'just the other side of the 21 day EMA and adjust daily' approximated as exit on daily close crossing the 21 EMA; intrabar touch and exact stop distance not modeled.",
+   "No profit target stated so none used; exit is failure cross or 6-bar time limit."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "The 8 day and 21 day EMAs cross.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "If price crosses the 21 day EMA , your setup has failed.",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "then monitor for a maximum of 6 days.",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 16.7,
+   "tokens": 6326,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 26.3,
+   "tokens": 7433
+  },
+  {
+   "step": "audit repair",
+   "seconds": 13.1,
+   "tokens": 6823,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 29.4,
+   "tokens": 9337
+  }
+ ],
+ "audit_majors": [
+  "direction: Claim states generic cross - 'The 8 day and 21 day EMAs cross' with stop 'just the other side of the 21 day EMA' and failure 'If price crosses the 21 day EMA' - implying both bullish and bearish setups. Spec tests only long side (direction long, 8 crosses_above 21, exit crosses_below) and omits short-side trades, which changes the set of trades tested."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 85.4,
+ "run": "high_r2"
+}

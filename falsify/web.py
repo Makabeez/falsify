@@ -341,7 +341,8 @@ def corpus_item(cid: str) -> JSONResponse:
         _corpus_cache[cid] = {
             "key": cid,
             "source": {"kind": "text", "text": rec["excerpt"], "note": None, "posted": rec.get("posted"),
-                       "url": rec["url"], "origin": rec["source"], "transcript": None, "media": None},
+                       "url": rec["url"], "origin": rec["source"], "offline": rec.get("source_offline"),
+                       "transcript": None, "media": None},
             "spec": spec.model_dump(mode="json"), "audit": d.get("audit"),
             "trace": {k: (d.get("trace") or {}).get(k) for k in ("model", "grounding", "audit_repair", "audit_repair_failed", "audit_repair_rejected", "audits", "cost")},
             "report": report,

@@ -1,0 +1,169 @@
+{
+ "id": "c025",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Hourly MACD long crosses taken only when daily MACD shows an uptrend are said to raise return and Sharpe and lower drawdown.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Requires D1 MACD trend filter for H1 entries, a multi-timeframe condition the single-timeframe schema cannot express.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "macd_line",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "macd_signal",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "macd_line",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "macd_signal",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "H1 MACD fast length",
+    "target": "entry[0].left.period",
+    "candidates": [
+     8.0,
+     12.0,
+     21.0
+    ]
+   },
+   {
+    "name": "H1 MACD slow length",
+    "target": "entry[0].left.param",
+    "candidates": [
+     21.0,
+     26.0,
+     30.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2018-12-01",
+   "period_end": null,
+   "other": "Annual return rises to 6.6% (from 4.6%), maximum drawdown improves from \u201323.9% to \u201312.4%, Sharpe ratio increases from 0.33 to 0.80"
+  },
+  "assumptions": [
+   "Asset not named in claim text; BTCUSDT chosen as most natural reading because page context is about BTC.",
+   "MACD fast/slow/signal lengths not stated; used standard 12 fast, 26 slow, 9 signal for the closest core.",
+   "NOT EXPRESSIBLE: D1 MACD trend filter (D1 MACD line above signal line, H1 longs only in direction of D1 trend) is a multi-timeframe condition that cannot be expressed in the single-timeframe spec; unfiltered H1 crosses alone would be a different strategy, so spec is marked untestable.",
+   "Exit not stated; closest core uses opposite H1 MACD cross, but rule remains untestable due to missing D1 filter."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": "On the Hourly (H1) timeframe",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "execute long entries only",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "when the H1 MACD crosses upward",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 19.2,
+   "tokens": 7635,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 15.2,
+   "tokens": 6061
+  },
+  {
+   "step": "audit repair",
+   "seconds": 14.8,
+   "tokens": 7209,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 9.6,
+   "tokens": 4160
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 58.8,
+ "run": "high_r2"
+}

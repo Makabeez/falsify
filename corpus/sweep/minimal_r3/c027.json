@@ -1,0 +1,81 @@
+{
+ "id": "c027",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "A potential Wyckoff re-accumulation spring is playing out with an expected 25% climb back to ATH over coming weeks.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Discretionary Wyckoff chart reading with no mechanical entry, exit, or level stated.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 25.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Claim describes a discretionary Wyckoff re-accumulation spring pattern with no mechanical trigger, level, or indicator settings given.",
+   "Direction assumed long from expected +25% climb back to ATH.",
+   "Timeframe 1d taken from page chart timeframe, not claimant words."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 3.2,
+   "tokens": 2485,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 1.6,
+   "tokens": 1123
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 4.8,
+ "run": "minimal_r3"
+}

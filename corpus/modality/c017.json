@@ -1,0 +1,2180 @@
+{
+ "id": "c017",
+ "image": "c017.png",
+ "spec": {
+  "claim_summary": "Go long BTC and ETH on 4H when MACD, EMA20, SMA100 and SMA200 are rising with EMA20 above SMA100 above SMA200, exiting on EMA20 crossing below SMA100 or stoploss.",
+  "source_type": "image",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT",
+   "ETHUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "sma",
+     "period": 100,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 100,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "macd_line",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "macd_line",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 100,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "sma",
+     "period": 100,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 100,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": 5.0,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "MACD fast length",
+    "target": "entry[3].left.period",
+    "candidates": [
+     8.0,
+     12.0,
+     15.0,
+     20.0
+    ]
+   },
+   {
+    "name": "MACD slow length",
+    "target": "entry[3].left.param",
+    "candidates": [
+     20.0,
+     26.0,
+     30.0,
+     35.0
+    ]
+   },
+   {
+    "name": "stoploss percent",
+    "target": "stop_loss_pct",
+    "candidates": [
+     3.0,
+     5.0,
+     8.0,
+     10.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": 60.0,
+   "total_return_pct": 144.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2020-01-01",
+   "period_end": "2020-11-22",
+   "other": null
+  },
+  "assumptions": [
+   "Assets are BTC/USD and ETH/USD mapped to Binance spot BTCUSDT and ETHUSDT.",
+   "Timeframe is 4H candles as stated for the version 2 results.",
+   "MACD moving up means macd_line(12,26) on current bar > macd_line(12,26) on previous bar using standard 12,26,9 settings.",
+   "EMA(20), SMA(100), SMA(200) moving up means current value > previous bar value.",
+   "Stoploss level is not stated, so a 5% fixed stop is assumed and varied as a free parameter.",
+   "Claimed performance uses the ETH/USD 2020 result (+144% in 8 trades, 01/01/2020 to 22/11/2020) and the stated ~60% win rate; other asset results in the post are not encoded in claimed."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "BTC and ETH Long strategy - version 2",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "(4H candles instead of 2H candles).",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "BTC and ETH Long strategy - version 2",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "MACD, EMA (20), SMA (100), SMA (200) moving up",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "MACD, EMA (20), SMA (100), SMA (200) moving up",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "MACD, EMA (20), SMA (100), SMA (200) moving up",
+    "assumed": false
+   },
+   {
+    "field": "entry[3]",
+    "quote": "MACD, EMA (20), SMA (100), SMA (200) moving up",
+    "assumed": false
+   },
+   {
+    "field": "entry[4]",
+    "quote": "AND EMA (20) > SMA (100)",
+    "assumed": false
+   },
+   {
+    "field": "entry[5]",
+    "quote": "AND SMA (100) > SMA (200)",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "EMA (20) crossUnder SMA (100)",
+    "assumed": false
+   },
+   {
+    "field": "stop_loss_pct",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "ETH/USD: +144% in 8 trades.",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "from 01/01/2020 until now (22/11/2020)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "from 01/01/2020 until now (22/11/2020)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "I managed to get a wining rate close to 60%.",
+    "assumed": false
+   }
+  ]
+ },
+ "audit": {
+  "faithful": true,
+  "issues": []
+ },
+ "transcript": {
+  "visible_text": "BTC and ETH Long strategy - version 2\nBTC and ETH Long strategy - version 2\nI wrote my first article in May 2020. See below\nBTC and ETH Long strategy - version1\nAfter 6 months, it is now time to check the result of my script for the last 6 months.\nXBTUSD (4H): 14/05/2020 --> 22/11/2020 = +78% in 4 trades\nETHXBT (4H): 14/05/2020 --> 22/11/2020 = +21% in 9 trades\nETHUSD (4H): 14/05/2020 --> 22/11/2020 = +90% in 6 trades\nUsing the signals from this strategy to trade manually has shown that this was a bit frustrating because of the low rate of winning trades.\nIf you have to enter 100 trades and see 75% of them failing and 25% winning, this is frustrating. For sure the strategy makes good money but it is difficult to hold this mentality.\nSo, I have reviewed and modified it to get a higher winning rate.\nAfter few days of work, tests and validation, I managed to get a wining rate close to 60%.\nThe key element was also to decrease the number of trades by using a higher time frame. (4H candles instead of 2H candles).\n- Entry in position is based on\nMACD, EMA (20), SMA (100), SMA (200) moving up\nAND EMA (20) > SMA (100)\nAND SMA (100) > SMA (200)\n- Exit the position if: Stoploss is reached OR EMA (20) crossUnder SMA (100)\nThe goal of this new script is to be able to follow the signals manually and only make few trades per years.\nI have also validated it against some other altcoins where some are giving very good results.\nHere are some results for 2020 (from 01/01/2020 until now (22/11/2020). Those results are the one I get when using 4H candles.\nETH/USD: +144% in 8 trades.\nBTC/USD: +120% in 7 trades.\nETH/BTC: +33% in 9 trades.\nICX/USD: +123% in 10 trades.\nLINK/USD: +155% in 11 trades.\nMLN/USD: +388% in 8 trades.\nADA/USD: +180% in 7 trades.\nLINK/BTC: +97% in 10 trades.\nThe best is that above results are without considering compound effect. If you re-invest all gains done in each new trade, this will give you the below results :)\nETH/USD: +189% in 8 trades.\nBTC/USD: +260% in 7 trades.\nETH/BTC: +29% in 9 trades.\nICX/USD: +112% in 10 trades.\nLINK/USD: +222% in 11 trades.\nMLN/USD: +793% in 8 trades.\nADA/USD: +319% in 7 trades.\nLINK/BTC: +103% in 10 trades.\nAs you can see, the results are good and the number of trades for 11 months is not big, which allows the trader to place orders manually.\nBut still, I'm lazy :), so, I have also coded this strategy in HaasScript language which allows you to automate this strategy using the HaasOnline software specialized in automated crypto trading.\nI hope that this strategy will give you ideas or will be the starting point for your own strategy.\nLet me know if you need more details.",
+  "speech": "",
+  "chart": "The chart shows Ethereum / U.S. Dollar on a 4-hour timeframe with candlesticks, two moving average lines, volume bars at the bottom, and buy and sell markers from early 2020 through November 2020."
+ },
+ "grounding": {
+  "rule_elements": 11,
+  "quoted": 10,
+  "assumed": 1,
+  "quoted_fields": [
+   "entry[0]",
+   "entry[1]",
+   "entry[2]",
+   "entry[3]",
+   "entry[4]",
+   "entry[5]",
+   "exit[0]",
+   "assets",
+   "timeframe",
+   "direction"
+  ],
+  "assumed_fields": [
+   "stop_loss_pct"
+  ],
+  "problems": []
+ },
+ "cost": [
+  {
+   "step": "transcribe",
+   "seconds": 13.5,
+   "tokens": 7835
+  },
+  {
+   "step": "compile",
+   "seconds": 19.7,
+   "tokens": 11952,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 12.7,
+   "tokens": 9438
+  }
+ ],
+ "report": {
+  "verdict": "INCONCLUSIVE",
+  "headline": "Makes money (+4.67% per trade after costs, 87 trades) but can't be told from luck: random timing did as well 7% of the time.",
+  "reasons": [
+   "makes money after costs (+4.67% per trade), but random timing did as well 7% of the time (p = 0.069); needs p < 0.05 to count as an edge"
+  ],
+  "warnings": [
+   "claimed 60% win rate, measured 31%",
+   "just holding did better: +1562% vs buy-and-hold +1781%"
+  ],
+  "asset": "BTCUSDT",
+  "timeframe": "4h",
+  "primary": {
+   "trades": 87,
+   "win_rate_pct": 31.03448275862069,
+   "avg_net_pct": 4.671559051553595,
+   "total_net_pct": 1562.4517829705167,
+   "total_gross_pct": 1948.4708554236781,
+   "max_drawdown_pct": -49.40848447511619,
+   "avg_bars": 78.50574712643679,
+   "open_at_end": 0,
+   "buy_hold_pct": 1780.815115875236,
+   "window": [
+    "2017-08-17",
+    "2026-10-26"
+   ],
+   "exposure_pct": 33.92777308628484
+  },
+  "null_test": {
+   "p_value": 0.06946526736631684,
+   "strategy_mean_log_pct": 3.230894923444632,
+   "null_median_log_pct": 0.9575469798270844,
+   "null_p95_log_pct": 3.4086990265788373,
+   "beat_by_random_pct": 6.9,
+   "sims": 2000,
+   "hist": {
+    "edges": [
+     -3.5502,
+     -3.3193,
+     -3.0884,
+     -2.8575,
+     -2.6266,
+     -2.3957,
+     -2.1648,
+     -1.9339,
+     -1.703,
+     -1.472,
+     -1.2411,
+     -1.0102,
+     -0.7793,
+     -0.5484,
+     -0.3175,
+     -0.0866,
+     0.1443,
+     0.3752,
+     0.6061,
+     0.8371,
+     1.068,
+     1.2989,
+     1.5298,
+     1.7607,
+     1.9916,
+     2.2225,
+     2.4534,
+     2.6843,
+     2.9153,
+     3.1462,
+     3.3771,
+     3.608,
+     3.8389,
+     4.0698,
+     4.3007,
+     4.5316,
+     4.7625,
+     4.9934,
+     5.2244,
+     5.4553,
+     5.6862
+    ],
+    "counts": [
+     0,
+     2,
+     3,
+     7,
+     8,
+     11,
+     11,
+     19,
+     27,
+     32,
+     62,
+     49,
+     82,
+     73,
+     104,
+     93,
+     125,
+     110,
+     119,
+     138,
+     110,
+     138,
+     91,
+     102,
+     98,
+     74,
+     55,
+     61,
+     46,
+     42,
+     38,
+     26,
+     14,
+     12,
+     4,
+     5,
+     6,
+     1,
+     2,
+     0
+    ],
+    "strategy": 3.2309
+   }
+  },
+  "out_of_sample": {
+   "available": true,
+   "boundary": "2020-11-23",
+   "boundary_source": "post date",
+   "claim_window": [
+    "2020-01-01",
+    "2020-11-22"
+   ],
+   "in_window": {
+    "trades": 10,
+    "win_rate_pct": 50.0,
+    "avg_net_pct": 10.0751984745351,
+    "total_net_pct": 130.5223012092331,
+    "total_gross_pct": 136.12176390660812,
+    "max_drawdown_pct": -7.4007712248185475,
+    "avg_bars": 104.7,
+    "open_at_end": 0
+   },
+   "after_window": {
+    "trades": 62,
+    "win_rate_pct": 25.806451612903224,
+    "avg_net_pct": 1.564766127275628,
+    "total_net_pct": 58.33283241262151,
+    "total_gross_pct": 83.73590415629462,
+    "max_drawdown_pct": -49.40848447511623,
+    "avg_bars": 68.19354838709677,
+    "open_at_end": 0
+   },
+   "counts": true
+  },
+  "halves": {
+   "split": "2022-03-24",
+   "first": {
+    "trades": 43,
+    "win_rate_pct": 37.2093023255814,
+    "avg_net_pct": 8.209646057443212,
+    "total_net_pct": 1149.4082522703632,
+    "total_gross_pct": 1285.235402053278,
+    "max_drawdown_pct": -37.6277274967571,
+    "avg_bars": 84.0,
+    "open_at_end": 0
+   },
+   "second": {
+    "trades": 44,
+    "win_rate_pct": 25.0,
+    "avg_net_pct": 1.2138831139796509,
+    "total_net_pct": 33.059132589335015,
+    "total_gross_pct": 47.878898589172096,
+    "max_drawdown_pct": -23.950948337638945,
+    "avg_bars": 73.13636363636364,
+    "open_at_end": 0
+   },
+   "consistent": true
+  },
+  "cross_asset": {
+   "assets": [
+    {
+     "asset": "ETHUSDT",
+     "trades": 83,
+     "total_net_pct": 5504.232393963776,
+     "avg_net_pct": 6.614033616983712
+    },
+    {
+     "asset": "SOLUSDT",
+     "trades": 66,
+     "total_net_pct": 11659.908544046399,
+     "avg_net_pct": 13.891496798971161
+    },
+    {
+     "asset": "BNBUSDT",
+     "trades": 97,
+     "total_net_pct": 18614.718067081223,
+     "avg_net_pct": 11.696981768803582
+    },
+    {
+     "asset": "XRPUSDT",
+     "trades": 98,
+     "total_net_pct": 197.75708992920747,
+     "avg_net_pct": 3.5413663597511746
+    },
+    {
+     "asset": "DOGEUSDT",
+     "trades": 77,
+     "total_net_pct": 7864.54065088062,
+     "avg_net_pct": 15.663007689166003
+    },
+    {
+     "asset": "ADAUSDT",
+     "trades": 82,
+     "total_net_pct": 2752.8036351927663,
+     "avg_net_pct": 7.022546716837404
+    },
+    {
+     "asset": "AVAXUSDT",
+     "trades": 68,
+     "total_net_pct": 2424.180660424556,
+     "avg_net_pct": 10.149472226385688
+    },
+    {
+     "asset": "LINKUSDT",
+     "trades": 106,
+     "total_net_pct": 739.0182241917934,
+     "avg_net_pct": 3.8418313011138503
+    },
+    {
+     "asset": "LTCUSDT",
+     "trades": 107,
+     "total_net_pct": -41.616634616223436,
+     "avg_net_pct": 0.016252644481709884
+    },
+    {
+     "asset": "DOTUSDT",
+     "trades": 66,
+     "total_net_pct": 123.27952900904889,
+     "avg_net_pct": 3.246899670122301
+    },
+    {
+     "asset": "TRXUSDT",
+     "trades": 107,
+     "total_net_pct": 176.9780019812519,
+     "avg_net_pct": 1.8252167605449312
+    }
+   ],
+   "tested": 11,
+   "positive": 11,
+   "positive_share_pct": 100.0
+  },
+  "sweep": {
+   "readings": 64,
+   "truncated": false,
+   "positive_share_pct": 100.0,
+   "best": {
+    "params": {
+     "MACD fast length": 12.0,
+     "MACD slow length": 35.0,
+     "stoploss percent": 3.0
+    },
+    "trades": 98,
+    "avg_net_pct": 4.835701744508496,
+    "total_net_pct": 3135.6635456723807,
+    "p_value": 0.00998003992015968
+   },
+   "best_p_bonferroni": 0.6387225548902196,
+   "results": [
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 93,
+     "avg_net_pct": 4.780721547753373,
+     "total_net_pct": 2428.0905039595746,
+     "p_value": 0.015968063872255488
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 83,
+     "avg_net_pct": 4.920530692344468,
+     "total_net_pct": 1627.6820509252811,
+     "p_value": 0.05189620758483034
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 72,
+     "avg_net_pct": 5.871646722846655,
+     "total_net_pct": 1853.0428897956717,
+     "p_value": 0.03992015968063872
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 71,
+     "avg_net_pct": 5.911019862758051,
+     "total_net_pct": 1780.0532977821542,
+     "p_value": 0.0658682634730539
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 102,
+     "avg_net_pct": 4.510648033332384,
+     "total_net_pct": 2712.7198398524515,
+     "p_value": 0.023952095808383235
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 83,
+     "avg_net_pct": 5.514552339862574,
+     "total_net_pct": 2614.4906621193963,
+     "p_value": 0.029940119760479042
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 71,
+     "avg_net_pct": 6.80835363442422,
+     "total_net_pct": 3376.7178449282724,
+     "p_value": 0.029940119760479042
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 71,
+     "avg_net_pct": 6.700420822216715,
+     "total_net_pct": 3087.4436425531862,
+     "p_value": 0.03592814371257485
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 99,
+     "avg_net_pct": 4.727333605950705,
+     "total_net_pct": 2948.266689769636,
+     "p_value": 0.02594810379241517
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 82,
+     "avg_net_pct": 5.643849067071667,
+     "total_net_pct": 2759.6233720068585,
+     "p_value": 0.03792415169660679
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 71,
+     "avg_net_pct": 6.814414105174764,
+     "total_net_pct": 3392.11122553973,
+     "p_value": 0.029940119760479042
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 71,
+     "avg_net_pct": 6.706481292967258,
+     "total_net_pct": 3101.5562439651644,
+     "p_value": 0.03592814371257485
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 97,
+     "avg_net_pct": 4.888607872474034,
+     "total_net_pct": 3146.2660832303927,
+     "p_value": 0.017964071856287425
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 81,
+     "avg_net_pct": 5.7794286589030515,
+     "total_net_pct": 2919.408270579656,
+     "p_value": 0.017964071856287425
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 70,
+     "avg_net_pct": 7.019784410302465,
+     "total_net_pct": 3676.85620213062,
+     "p_value": 0.013972055888223553
+    },
+    {
+     "params": {
+      "MACD fast length": 8.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 70,
+     "avg_net_pct": 6.938812640107657,
+     "total_net_pct": 3439.5563929640693,
+     "p_value": 0.015968063872255488
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 66,
+     "avg_net_pct": 3.905896138993239,
+     "total_net_pct": 486.067624506032,
+     "p_value": 0.08982035928143713
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 56,
+     "avg_net_pct": 4.571560240450875,
+     "total_net_pct": 468.2336973053244,
+     "p_value": 0.10778443113772455
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 53,
+     "avg_net_pct": 4.615731465382235,
+     "total_net_pct": 395.24478217242205,
+     "p_value": 0.1377245508982036
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 52,
+     "avg_net_pct": 4.703298345299305,
+     "total_net_pct": 392.202622210498,
+     "p_value": 0.16367265469061876
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 110,
+     "avg_net_pct": 3.72531349131645,
+     "total_net_pct": 1641.5490507807533,
+     "p_value": 0.03992015968063872
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 87,
+     "avg_net_pct": 4.671559051553595,
+     "total_net_pct": 1562.4517829705167,
+     "p_value": 0.06786427145708583
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 72,
+     "avg_net_pct": 6.2665243229312955,
+     "total_net_pct": 2469.738269060931,
+     "p_value": 0.02594810379241517
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 71,
+     "avg_net_pct": 6.306247409947425,
+     "total_net_pct": 2363.161704616714,
+     "p_value": 0.041916167664670656
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 99,
+     "avg_net_pct": 4.781216975426686,
+     "total_net_pct": 3115.9633104723966,
+     "p_value": 0.01996007984031936
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 82,
+     "avg_net_pct": 5.71581914553542,
+     "total_net_pct": 2938.7943534182764,
+     "p_value": 0.03592814371257485
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 71,
+     "avg_net_pct": 6.87932086456594,
+     "total_net_pct": 3565.320829146668,
+     "p_value": 0.029940119760479042
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 71,
+     "avg_net_pct": 6.799489541838661,
+     "total_net_pct": 3335.028785515235,
+     "p_value": 0.029940119760479042
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 98,
+     "avg_net_pct": 4.835701744508496,
+     "total_net_pct": 3135.6635456723807,
+     "p_value": 0.00998003992015968
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 81,
+     "avg_net_pct": 5.789827983835259,
+     "total_net_pct": 2948.6071476214975,
+     "p_value": 0.017964071856287425
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 70,
+     "avg_net_pct": 6.994447916649392,
+     "total_net_pct": 3610.9102367030446,
+     "p_value": 0.015968063872255488
+    },
+    {
+     "params": {
+      "MACD fast length": 12.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 70,
+     "avg_net_pct": 6.82398779784034,
+     "total_net_pct": 3150.938150085454,
+     "p_value": 0.01996007984031936
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 66,
+     "avg_net_pct": 1.97924204665094,
+     "total_net_pct": 113.40614579976314,
+     "p_value": 0.3253493013972056
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 56,
+     "avg_net_pct": 2.269406270832367,
+     "total_net_pct": 103.29147845451332,
+     "p_value": 0.3532934131736527
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 50,
+     "avg_net_pct": 2.724482411744277,
+     "total_net_pct": 119.370714265481,
+     "p_value": 0.3253493013972056
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 49,
+     "avg_net_pct": 2.9986071394184406,
+     "total_net_pct": 145.00687851892957,
+     "p_value": 0.3013972055888224
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 88,
+     "avg_net_pct": 2.9111618174870424,
+     "total_net_pct": 445.2604053459821,
+     "p_value": 0.1536926147704591
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 73,
+     "avg_net_pct": 3.255320289083572,
+     "total_net_pct": 343.5623480866827,
+     "p_value": 0.20359281437125748
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 65,
+     "avg_net_pct": 3.5918417055071643,
+     "total_net_pct": 313.4176681599789,
+     "p_value": 0.23552894211576847
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 62,
+     "avg_net_pct": 3.861211396256455,
+     "total_net_pct": 336.10910985423305,
+     "p_value": 0.22954091816367264
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 102,
+     "avg_net_pct": 3.9548077332925584,
+     "total_net_pct": 1656.739448068426,
+     "p_value": 0.03992015968063872
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 83,
+     "avg_net_pct": 4.704221547403119,
+     "total_net_pct": 1410.1414483006315,
+     "p_value": 0.06187624750499002
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 70,
+     "avg_net_pct": 5.88694402113242,
+     "total_net_pct": 1744.0543863872088,
+     "p_value": 0.05788423153692615
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 69,
+     "avg_net_pct": 5.8858060456777626,
+     "total_net_pct": 1619.3793850410643,
+     "p_value": 0.05788423153692615
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 101,
+     "avg_net_pct": 4.376629405707563,
+     "total_net_pct": 2309.156010942674,
+     "p_value": 0.031936127744510975
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 80,
+     "avg_net_pct": 5.531614345762713,
+     "total_net_pct": 2326.883288687299,
+     "p_value": 0.03792415169660679
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 68,
+     "avg_net_pct": 6.821789545398578,
+     "total_net_pct": 2874.0022956097537,
+     "p_value": 0.029940119760479042
+    },
+    {
+     "params": {
+      "MACD fast length": 15.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 68,
+     "avg_net_pct": 6.6502199694843345,
+     "total_net_pct": 2512.743966213601,
+     "p_value": 0.03992015968063872
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 3.0
+     },
+     "error": "1 validation error for ClaimSpec\nentry.3.left\n  Value error, MACD slow length (param) must exceed fast length (period) [type=value_error, input_value={'kind': 'macd_line', 'pe...dow': None, 'offset': 0}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 5.0
+     },
+     "error": "1 validation error for ClaimSpec\nentry.3.left\n  Value error, MACD slow length (param) must exceed fast length (period) [type=value_error, input_value={'kind': 'macd_line', 'pe...dow': None, 'offset': 0}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 8.0
+     },
+     "error": "1 validation error for ClaimSpec\nentry.3.left\n  Value error, MACD slow length (param) must exceed fast length (period) [type=value_error, input_value={'kind': 'macd_line', 'pe...dow': None, 'offset': 0}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 20.0,
+      "stoploss percent": 10.0
+     },
+     "error": "1 validation error for ClaimSpec\nentry.3.left\n  Value error, MACD slow length (param) must exceed fast length (period) [type=value_error, input_value={'kind': 'macd_line', 'pe...dow': None, 'offset': 0}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 69,
+     "avg_net_pct": 2.045759697639545,
+     "total_net_pct": 135.3045166513905,
+     "p_value": 0.32335329341317365
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 59,
+     "avg_net_pct": 2.176583090429798,
+     "total_net_pct": 103.59676440400625,
+     "p_value": 0.37924151696606784
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 53,
+     "avg_net_pct": 2.5396000912121903,
+     "total_net_pct": 112.6705152934786,
+     "p_value": 0.38323353293413176
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 26.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 52,
+     "avg_net_pct": 2.717615818698908,
+     "total_net_pct": 127.30881373490179,
+     "p_value": 0.3712574850299401
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 84,
+     "avg_net_pct": 2.8889450616924965,
+     "total_net_pct": 408.26744273074115,
+     "p_value": 0.13373253493013973
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 70,
+     "avg_net_pct": 3.296902470117387,
+     "total_net_pct": 342.12409333312144,
+     "p_value": 0.2315369261477046
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 64,
+     "avg_net_pct": 3.3955174717511882,
+     "total_net_pct": 274.17641040931596,
+     "p_value": 0.23353293413173654
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 30.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 61,
+     "avg_net_pct": 3.861429040643404,
+     "total_net_pct": 349.9614178047739,
+     "p_value": 0.22355289421157684
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 3.0
+     },
+     "trades": 90,
+     "avg_net_pct": 4.349085428229648,
+     "total_net_pct": 1643.4727837131934,
+     "p_value": 0.043912175648702596
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 5.0
+     },
+     "trades": 75,
+     "avg_net_pct": 5.103434781542156,
+     "total_net_pct": 1474.7622195151348,
+     "p_value": 0.041916167664670656
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 8.0
+     },
+     "trades": 64,
+     "avg_net_pct": 6.336384144215317,
+     "total_net_pct": 1854.28486815529,
+     "p_value": 0.04790419161676647
+    },
+    {
+     "params": {
+      "MACD fast length": 20.0,
+      "MACD slow length": 35.0,
+      "stoploss percent": 10.0
+     },
+     "trades": 63,
+     "avg_net_pct": 6.437281558120081,
+     "total_net_pct": 1846.353914674135,
+     "p_value": 0.029940119760479042
+    }
+   ]
+  },
+  "claimed_vs_measured": [
+   {
+    "metric": "win rate %",
+    "claimed": 60.0,
+    "measured": 31.03,
+    "gap": -28.97
+   }
+  ],
+  "costs": {
+   "fee_bps_per_side": 10.0,
+   "slippage_bps_per_side": 2.0
+  },
+  "grounding": {
+   "rule_elements": 11,
+   "quoted": 10,
+   "assumed": 1,
+   "quoted_fields": [
+    "entry[0]",
+    "entry[1]",
+    "entry[2]",
+    "entry[3]",
+    "entry[4]",
+    "entry[5]",
+    "exit[0]",
+    "assets",
+    "timeframe",
+    "direction"
+   ],
+   "assumed_fields": [
+    "stop_loss_pct"
+   ],
+   "problems": []
+  },
+  "fidelity": {
+   "level": "exact",
+   "gaps": [],
+   "audit_majors": []
+  },
+  "review": {
+   "needs_human": false,
+   "reasons": []
+  },
+  "series": {
+   "t": [
+    "2017-08-17",
+    "2017-08-30",
+    "2017-09-11",
+    "2017-09-24",
+    "2017-10-07",
+    "2017-10-20",
+    "2017-11-02",
+    "2017-11-15",
+    "2017-11-27",
+    "2017-12-10",
+    "2017-12-23",
+    "2018-01-05",
+    "2018-01-18",
+    "2018-01-31",
+    "2018-02-14",
+    "2018-02-26",
+    "2018-03-11",
+    "2018-03-24",
+    "2018-04-06",
+    "2018-04-19",
+    "2018-05-02",
+    "2018-05-14",
+    "2018-05-27",
+    "2018-06-09",
+    "2018-06-22",
+    "2018-07-05",
+    "2018-07-18",
+    "2018-07-31",
+    "2018-08-13",
+    "2018-08-26",
+    "2018-09-07",
+    "2018-09-20",
+    "2018-10-03",
+    "2018-10-16",
+    "2018-10-29",
+    "2018-11-11",
+    "2018-11-24",
+    "2018-12-06",
+    "2018-12-19",
+    "2019-01-01",
+    "2019-01-14",
+    "2019-01-27",
+    "2019-02-09",
+    "2019-02-21",
+    "2019-03-06",
+    "2019-03-19",
+    "2019-04-01",
+    "2019-04-14",
+    "2019-04-27",
+    "2019-05-10",
+    "2019-05-23",
+    "2019-06-05",
+    "2019-06-17",
+    "2019-06-30",
+    "2019-07-13",
+    "2019-07-26",
+    "2019-08-08",
+    "2019-08-21",
+    "2019-09-03",
+    "2019-09-15",
+    "2019-09-28",
+    "2019-10-11",
+    "2019-10-24",
+    "2019-11-06",
+    "2019-11-19",
+    "2019-12-01",
+    "2019-12-14",
+    "2019-12-27",
+    "2020-01-09",
+    "2020-01-22",
+    "2020-02-04",
+    "2020-02-16",
+    "2020-02-29",
+    "2020-03-13",
+    "2020-03-26",
+    "2020-04-08",
+    "2020-04-21",
+    "2020-05-04",
+    "2020-05-16",
+    "2020-05-29",
+    "2020-06-11",
+    "2020-06-24",
+    "2020-07-07",
+    "2020-07-20",
+    "2020-08-01",
+    "2020-08-14",
+    "2020-08-27",
+    "2020-09-09",
+    "2020-09-22",
+    "2020-10-05",
+    "2020-10-17",
+    "2020-10-30",
+    "2020-11-12",
+    "2020-11-25",
+    "2020-12-08",
+    "2020-12-21",
+    "2021-01-02",
+    "2021-01-15",
+    "2021-01-28",
+    "2021-02-10",
+    "2021-02-23",
+    "2021-03-08",
+    "2021-03-20",
+    "2021-04-02",
+    "2021-04-15",
+    "2021-04-28",
+    "2021-05-11",
+    "2021-05-24",
+    "2021-06-05",
+    "2021-06-18",
+    "2021-07-01",
+    "2021-07-14",
+    "2021-07-27",
+    "2021-08-09",
+    "2021-08-21",
+    "2021-09-03",
+    "2021-09-16",
+    "2021-09-29",
+    "2021-10-12",
+    "2021-10-25",
+    "2021-11-06",
+    "2021-11-19",
+    "2021-12-02",
+    "2021-12-15",
+    "2021-12-28",
+    "2022-01-10",
+    "2022-01-22",
+    "2022-02-04",
+    "2022-02-17",
+    "2022-03-02",
+    "2022-03-15",
+    "2022-03-28",
+    "2022-04-09",
+    "2022-04-22",
+    "2022-05-05",
+    "2022-05-18",
+    "2022-05-31",
+    "2022-06-13",
+    "2022-06-25",
+    "2022-07-08",
+    "2022-07-21",
+    "2022-08-03",
+    "2022-08-16",
+    "2022-08-29",
+    "2022-09-10",
+    "2022-09-23",
+    "2022-10-06",
+    "2022-10-19",
+    "2022-11-01",
+    "2022-11-14",
+    "2022-11-26",
+    "2022-12-09",
+    "2022-12-22",
+    "2023-01-04",
+    "2023-01-17",
+    "2023-01-30",
+    "2023-02-11",
+    "2023-02-24",
+    "2023-03-09",
+    "2023-03-22",
+    "2023-04-04",
+    "2023-04-17",
+    "2023-04-29",
+    "2023-05-12",
+    "2023-05-25",
+    "2023-06-07",
+    "2023-06-20",
+    "2023-07-03",
+    "2023-07-15",
+    "2023-07-28",
+    "2023-08-10",
+    "2023-08-23",
+    "2023-09-05",
+    "2023-09-18",
+    "2023-09-30",
+    "2023-10-13",
+    "2023-10-26",
+    "2023-11-08",
+    "2023-11-21",
+    "2023-12-04",
+    "2023-12-16",
+    "2023-12-29",
+    "2024-01-11",
+    "2024-01-24",
+    "2024-02-06",
+    "2024-02-19",
+    "2024-03-02",
+    "2024-03-15",
+    "2024-03-28",
+    "2024-04-10",
+    "2024-04-23",
+    "2024-05-06",
+    "2024-05-18",
+    "2024-05-31",
+    "2024-06-13",
+    "2024-06-26",
+    "2024-07-09",
+    "2024-07-22",
+    "2024-08-03",
+    "2024-08-16",
+    "2024-08-29",
+    "2024-09-11",
+    "2024-09-24",
+    "2024-10-07",
+    "2024-10-19",
+    "2024-11-01",
+    "2024-11-14",
+    "2024-11-27",
+    "2024-12-10",
+    "2024-12-23",
+    "2025-01-04",
+    "2025-01-17",
+    "2025-01-30",
+    "2025-02-12",
+    "2025-02-25",
+    "2025-03-10",
+    "2025-03-22",
+    "2025-04-04",
+    "2025-04-17",
+    "2025-04-30",
+    "2025-05-13",
+    "2025-05-26",
+    "2025-06-07",
+    "2025-06-20",
+    "2025-07-03",
+    "2025-07-16",
+    "2025-07-29",
+    "2025-08-11",
+    "2025-08-23",
+    "2025-09-05",
+    "2025-09-18",
+    "2025-10-01",
+    "2025-10-14",
+    "2025-10-27",
+    "2025-11-08",
+    "2025-11-21",
+    "2025-12-04",
+    "2025-12-17",
+    "2025-12-30",
+    "2026-01-12",
+    "2026-01-24",
+    "2026-02-06",
+    "2026-02-19",
+    "2026-03-04",
+    "2026-03-17",
+    "2026-03-30",
+    "2026-04-11",
+    "2026-04-24",
+    "2026-05-07",
+    "2026-05-20",
+    "2026-06-02",
+    "2026-06-15",
+    "2026-06-27",
+    "2026-07-10",
+    "2026-07-23",
+    "2026-08-05",
+    "2026-08-18",
+    "2026-08-31",
+    "2026-09-12",
+    "2026-09-25",
+    "2026-10-08",
+    "2026-10-21",
+    "2026-10-26"
+   ],
+   "rule": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.34276,
+    1.34276,
+    1.34276,
+    2.30981,
+    2.30981,
+    2.30981,
+    2.30981,
+    2.30981,
+    2.30981,
+    2.18906,
+    2.18906,
+    2.18906,
+    2.18906,
+    1.96617,
+    1.94858,
+    1.94858,
+    1.94858,
+    1.94858,
+    1.94858,
+    1.94858,
+    1.94858,
+    2.1843,
+    2.1843,
+    2.1843,
+    2.1843,
+    2.1843,
+    2.1843,
+    2.10842,
+    2.10842,
+    2.10842,
+    2.10842,
+    2.10842,
+    2.10842,
+    1.9982,
+    1.9982,
+    1.9982,
+    1.9982,
+    2.07901,
+    2.07901,
+    2.07901,
+    2.07901,
+    2.07901,
+    2.07901,
+    2.07901,
+    4.06666,
+    4.06666,
+    4.06666,
+    5.0711,
+    5.0711,
+    5.0711,
+    5.0711,
+    5.0711,
+    5.0711,
+    5.0711,
+    5.0711,
+    5.0711,
+    4.806,
+    4.55476,
+    4.55476,
+    4.55476,
+    4.55476,
+    4.55476,
+    4.55476,
+    5.16309,
+    5.16309,
+    5.53976,
+    5.53976,
+    5.53976,
+    5.53976,
+    5.37617,
+    5.12978,
+    5.12978,
+    6.23034,
+    6.23034,
+    6.12659,
+    5.86408,
+    5.86408,
+    5.86408,
+    5.86408,
+    7.05212,
+    6.68346,
+    6.68346,
+    6.68346,
+    6.68346,
+    6.68346,
+    6.68346,
+    6.68346,
+    10.49973,
+    10.6651,
+    10.6651,
+    10.6651,
+    19.64831,
+    19.64831,
+    19.64831,
+    17.64769,
+    16.72512,
+    15.85077,
+    15.02214,
+    14.23682,
+    14.23682,
+    14.23682,
+    14.23682,
+    14.23682,
+    14.23682,
+    14.23682,
+    14.23682,
+    12.78721,
+    12.78721,
+    14.8871,
+    14.10885,
+    14.10885,
+    14.10885,
+    14.10885,
+    13.64439,
+    12.9311,
+    12.9311,
+    12.9311,
+    12.9311,
+    12.9311,
+    12.9311,
+    12.9311,
+    12.9311,
+    12.2551,
+    12.2551,
+    12.2551,
+    12.49408,
+    12.49408,
+    12.49408,
+    12.49408,
+    12.49408,
+    12.49408,
+    12.49408,
+    12.49408,
+    12.49408,
+    11.84093,
+    11.84093,
+    11.81013,
+    11.81013,
+    11.81013,
+    11.81013,
+    11.81013,
+    11.81013,
+    11.19273,
+    11.19273,
+    11.19273,
+    10.83619,
+    10.83619,
+    10.83619,
+    10.83619,
+    13.07101,
+    11.7401,
+    11.67684,
+    11.67684,
+    10.48789,
+    10.48789,
+    10.60455,
+    10.60455,
+    10.60455,
+    10.60455,
+    10.60455,
+    10.60455,
+    10.27184,
+    10.00544,
+    10.00544,
+    10.00544,
+    10.00544,
+    10.00544,
+    10.00544,
+    9.94038,
+    9.94038,
+    9.94038,
+    9.94038,
+    9.94038,
+    9.94038,
+    13.80634,
+    13.08458,
+    12.40056,
+    12.40056,
+    12.40056,
+    12.40056,
+    12.40056,
+    16.79612,
+    15.91807,
+    15.08591,
+    15.08591,
+    15.08591,
+    15.08591,
+    14.44161,
+    14.44161,
+    14.44161,
+    14.44161,
+    14.08484,
+    14.08484,
+    14.08484,
+    14.08484,
+    14.08484,
+    13.34852,
+    13.34852,
+    13.34852,
+    13.34852,
+    13.34852,
+    13.34852,
+    18.74543,
+    18.74543,
+    18.74543,
+    15.95656,
+    15.80047,
+    15.80047,
+    15.80047,
+    15.80047,
+    15.80047,
+    15.80047,
+    15.80047,
+    15.80047,
+    15.80047,
+    17.31991,
+    16.41447,
+    16.41447,
+    16.41447,
+    17.49925,
+    17.25668,
+    17.25668,
+    17.25668,
+    17.25668,
+    16.35455,
+    15.49958,
+    15.49958,
+    15.49958,
+    15.49958,
+    15.49958,
+    15.49958,
+    15.49958,
+    15.49958,
+    15.08007,
+    15.08007,
+    15.08007,
+    15.08007,
+    15.08007,
+    14.72077,
+    14.72077,
+    14.72077,
+    14.72077,
+    15.31147,
+    15.31147,
+    15.31147,
+    15.31147,
+    15.31147,
+    15.31147,
+    15.15264,
+    15.15264,
+    15.15264,
+    16.33805,
+    16.33805,
+    16.62452,
+    16.62452,
+    16.62452
+   ],
+   "buy_hold": [
+    1.02077,
+    1.07559,
+    0.98756,
+    0.86528,
+    1.01913,
+    1.32882,
+    1.62713,
+    1.59923,
+    2.26447,
+    3.62918,
+    3.33649,
+    3.77585,
+    2.45759,
+    2.36068,
+    2.04366,
+    2.42263,
+    2.26202,
+    2.10021,
+    1.54876,
+    1.91646,
+    2.12111,
+    2.03294,
+    1.71009,
+    1.78576,
+    1.48975,
+    1.52771,
+    1.74323,
+    1.87259,
+    1.51156,
+    1.55274,
+    1.50078,
+    1.50652,
+    1.52822,
+    1.5952,
+    1.52505,
+    1.50857,
+    1.04278,
+    0.82336,
+    0.8803,
+    0.86416,
+    0.81856,
+    0.83586,
+    0.85568,
+    0.92393,
+    0.90473,
+    0.94019,
+    0.97268,
+    1.18386,
+    1.2491,
+    1.48727,
+    1.78058,
+    1.82955,
+    2.18562,
+    2.6519,
+    2.67839,
+    2.29771,
+    2.79715,
+    2.37922,
+    2.43695,
+    2.41747,
+    1.91174,
+    1.95788,
+    1.74161,
+    2.20338,
+    1.91324,
+    1.73435,
+    1.65967,
+    1.69857,
+    1.84878,
+    2.05099,
+    2.17834,
+    2.32719,
+    2.00015,
+    1.26507,
+    1.55276,
+    1.71136,
+    1.61415,
+    2.04878,
+    2.20141,
+    2.20698,
+    2.23423,
+    2.18969,
+    2.17343,
+    2.15699,
+    2.76927,
+    2.76945,
+    2.65711,
+    2.39855,
+    2.43411,
+    2.50286,
+    2.66579,
+    3.17646,
+    3.7839,
+    4.52461,
+    4.49212,
+    5.61901,
+    7.55098,
+    8.26409,
+    7.49188,
+    10.93201,
+    11.64861,
+    11.87345,
+    13.6343,
+    13.80976,
+    14.71676,
+    12.87188,
+    13.07998,
+    8.2721,
+    8.33354,
+    8.2899,
+    7.84529,
+    7.61519,
+    8.70944,
+    10.2068,
+    11.45655,
+    11.85703,
+    11.26844,
+    9.94959,
+    13.45607,
+    14.56871,
+    14.42471,
+    13.61805,
+    13.26319,
+    11.29479,
+    11.55165,
+    9.84813,
+    8.22987,
+    9.55722,
+    9.83823,
+    10.34929,
+    9.02022,
+    11.04062,
+    10.03266,
+    9.26977,
+    8.66123,
+    7.00076,
+    7.40911,
+    5.98854,
+    5.04313,
+    5.11839,
+    5.31326,
+    5.49171,
+    5.64755,
+    4.66226,
+    5.08001,
+    4.41339,
+    4.69555,
+    4.50567,
+    4.83389,
+    3.78737,
+    3.86217,
+    4.0227,
+    3.90393,
+    3.95059,
+    4.95923,
+    5.56179,
+    5.13027,
+    5.43996,
+    5.08006,
+    6.59929,
+    6.57549,
+    7.03577,
+    6.85922,
+    6.20902,
+    6.15423,
+    6.31146,
+    6.29651,
+    7.21736,
+    7.10775,
+    6.8793,
+    6.9145,
+    6.08697,
+    6.03911,
+    6.25573,
+    6.32704,
+    6.28387,
+    7.98887,
+    8.29073,
+    8.74811,
+    9.55297,
+    9.92097,
+    9.88307,
+    10.97829,
+    9.43553,
+    10.06458,
+    12.21731,
+    14.54595,
+    16.18311,
+    16.72902,
+    16.20165,
+    15.51099,
+    14.98695,
+    15.70234,
+    15.88204,
+    15.59787,
+    14.41876,
+    13.40305,
+    15.92874,
+    14.24341,
+    14.00532,
+    14.26265,
+    13.32823,
+    14.91499,
+    14.90809,
+    16.0456,
+    16.25445,
+    20.6379,
+    21.90976,
+    22.80814,
+    22.53329,
+    23.04845,
+    24.83525,
+    24.77168,
+    22.5496,
+    20.95986,
+    19.25329,
+    19.67405,
+    19.71381,
+    19.83623,
+    22.33418,
+    24.09151,
+    25.72429,
+    24.76889,
+    24.2421,
+    25.60797,
+    27.87038,
+    27.89697,
+    28.56496,
+    27.08872,
+    26.1915,
+    27.59219,
+    27.40587,
+    26.21728,
+    26.97619,
+    24.00878,
+    19.76058,
+    21.81671,
+    20.41151,
+    20.53344,
+    21.54372,
+    20.93764,
+    16.59786,
+    15.58097,
+    16.68702,
+    17.42336,
+    15.76302,
+    17.14033,
+    18.21641,
+    18.74716,
+    18.1586,
+    16.45401,
+    15.47047,
+    14.08642,
+    14.99899,
+    15.24315,
+    15.03592,
+    15.06495,
+    18.24641,
+    18.13425,
+    19.71616,
+    19.0164,
+    19.59413,
+    18.80815
+   ]
+  }
+ },
+ "seconds": 46.6
+}

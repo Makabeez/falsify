@@ -1,0 +1,146 @@
+{
+ "id": "c015",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Buy and hold BTC when close is above its 15-period moving average and sell when the moving average is above close.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 130.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2017-12-01",
+   "period_end": "2018-05-15",
+   "other": null
+  },
+  "assumptions": [
+   "Timeframe interpreted as 1d from '15-days moving average' and daily closing price.",
+   "Asset BTC/USD mapped to BTCUSDT spot for testing.",
+   "Moving average interpreted as simple moving average (sma) with period 15.",
+   "Entry holds while close is above SMA; modeled as entry when close gt sma(15).",
+   "Exit modeled as sma(15) gt close on bar close.",
+   "No stop, target, or holding limit stated; exit is opposite cross only."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "BTC/USD closing price",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "15-days moving average",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "buying and hodling",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "buying and hodling when the closing price is above a moving average",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "As soon as the moving average is above the closing price, it's time to sell",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "would have generated 130% return on investment",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 6.2,
+   "tokens": 3285,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 1.6,
+   "tokens": 1610
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 7.8,
+ "run": "minimal_r3"
+}

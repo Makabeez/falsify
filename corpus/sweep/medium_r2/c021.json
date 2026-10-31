@@ -1,0 +1,94 @@
+{
+ "id": "c021",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Long ETH/USDT on 4-hour closes: enter on a bullish close above the green Ichimoku leading line while it is above the red line, exit on a bearish close below the green line.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "The strategy requires Ichimoku leading lines for all entry and exit triggers, which the schema cannot express.",
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2017-01-01",
+   "period_end": "2021-06-02",
+   "other": "you would make more profit with this strategy than holding the coin"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: Ichimoku Senkou Span A (green lead line) and Senkou Span B (red lead line), including calculation settings and forward displacement, are not in the available indicator list and cannot be encoded, and they are the core entry and exit trigger.",
+   "Direction inferred as long from bullish entry on green close above line and bearish exit below line; no short rules stated.",
+   "Asset interpreted as ETHUSDT spot from 'ETH/USDT'.",
+   "Timeframe interpreted as 4h from 'four hour chart'.",
+   "Claimed test period start interpreted as 2017-01-01 from 'beginning of 2017' and end as posting date 2021-06-02 from 'until today'.",
+   "Green candle interpreted as close greater than open, red candle as close less than open, but not encodable without the Ichimoku level."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "crypto pair ETH/USDT",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "four hour chart",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "beginning of 2017",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "until today",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "you would make more profit with this strategy than holding the coin",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 12.3,
+   "tokens": 5481,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.1,
+   "tokens": 4194
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 23.4,
+ "run": "medium_r2"
+}

@@ -1,0 +1,163 @@
+{
+ "id": "c033",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "A daily Bitcoin strategy that enters long when 5-period RSI exceeds 70 and claims to outperform buy-and-hold since 2015.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 70.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 70.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2015-01-01",
+   "period_end": null,
+   "other": "Outperforms Buy & Hold"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: claim states entry RSI(5) > 70 but states no exit; exit when RSI(5) falls below 70 assumed as closest testable core to allow a test.",
+   "Mapped Bitcoin to BTCUSDT spot; no other asset stated.",
+   "Direction chosen as long because outperformance versus buy-and-hold implies long exposure; claim never states short.",
+   "Entry uses 5-period RSI above 70 on daily bar closes as stated.",
+   "Backtest window 2015-Now recorded in claimed only; engine tests all available history starting flat, one position at a time."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "on Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "Works on the daily (1D) timeframe",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "RSI(5) > 70",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Outperforms Buy & Hold",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "2015 - Now",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 18.2,
+   "tokens": 6812,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 15.2,
+   "tokens": 5108
+  },
+  {
+   "step": "audit repair",
+   "seconds": 12.5,
+   "tokens": 6151,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 18.0,
+   "tokens": 5811
+  }
+ ],
+ "audit_majors": [
+  "exit[0]: Claim states only entry RSI(5) > 70 and never states an exit. Spec invents exit RSI(5) < 70. Exit controls holding period and therefore total returns, profit factor, drawdown and outperformance vs buy-and-hold, so could flip verdict."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 63.9,
+ "run": "high_r2"
+}

@@ -1,0 +1,124 @@
+{
+ "id": "c003",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "4h RSI(14) below 28 triggers a base order with five scaled averaging orders and 3% average-entry take profit with no stop.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Averaging / DCA ladder with size scaling and average-entry target is the heart of the strategy and cannot be expressed.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 28.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 70.97,
+   "total_return_pct": 3.08,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2024-01-01",
+   "period_end": "2026-06-29",
+   "other": "Net Profit: +3,078.29 USDT (+3.08%); Profit Factor: 4.028"
+  },
+  "assumptions": [
+   "Direction assumed long as DCA dip-buy ladder.",
+   "Timeframe 4h from page chart.",
+   "Asset BTCUSDT from page context.",
+   "NOT EXPRESSIBLE: Five averaging orders at fixed deviations (-2%, -5%, -9.5%, -16%, -25%) with 1.8x size scaling per rung, average-entry Take Profit 3% above average entry, and no-stop structural risk cap; single-entry core cannot replicate ladder average price, scaling, or profit.",
+   "Claim period and performance recorded in claimed only, not as rule filter."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "when 4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "when 4h RSI(14)",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "Net Profit: +3,078.29 USDT (+3.08%)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Percent Profitable: 70.97% (44 / 62)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Profit Factor: 4.028",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.8,
+   "tokens": 3036,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.1,
+   "tokens": 1729
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 6.9,
+ "run": "minimal_r3"
+}

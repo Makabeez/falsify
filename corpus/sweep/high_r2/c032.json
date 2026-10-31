@@ -1,0 +1,125 @@
+{
+ "id": "c032",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "A Bitcoin strategy buys when Trend Score and Relative Trend Score exceed 7 at a 10-day closing high and exits when Trend Score falls below 5.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No mechanical rule can be recovered because entry and exit depend on proprietary Trend Score and Relative Trend Score values with no defined calculation.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 10,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 70.0,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2011-01-01",
+   "period_end": null,
+   "other": "average gain of 1436.28% per win, while losses averaged -18.78%"
+  },
+  "assumptions": [
+   "Assets mapped Bitcoin to BTCUSDT spot; no other asset named.",
+   "Timeframe 1d chosen from page chart timeframe; claim text states no timeframe.",
+   "Direction long inferred from buy signals; shorts never mentioned.",
+   "NOT EXPRESSIBLE: Bitcoin Trend Score (>7 entry, <5 exit) and Bitcoin Relative Trend Score (>7 entry) are proprietary undefined scores with no equivalent indicator; they are omitted and the remaining 10-day-high breakout alone is not the claimed system.",
+   "Entry 10-day high encoded as close gt highest_high(10) per breakout rule; no mechanical exit recoverable because the only stated exit uses the proprietary Trend Score.",
+   "Claimed period start 2011-01-01 interprets 'Since 2011' as calendar-year start."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "buy signals",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Bitcoin closed at a 10-day high",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "Since 2011",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "70% success rate",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "average gain of 1436.28% per win, while losses averaged -18.78%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 17.9,
+   "tokens": 7622,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 9.0,
+   "tokens": 3519
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 26.9,
+ "run": "high_r2"
+}

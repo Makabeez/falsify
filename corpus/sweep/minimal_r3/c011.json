@@ -1,0 +1,124 @@
+{
+ "id": "c011",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Buying Bitcoin when price falls below its 200-week moving average is presented as a buying opportunity.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "sma",
+     "period": 1400,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 3650,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "Investing $10,000 during the March 2020 dip would have resulted in a 1.8 BTC / $105,000 portfolio today"
+  },
+  "assumptions": [
+   "200-week moving average on 1d bars compiled as 1400-bar SMA (200*7); claim does not state MA type, SMA used as default",
+   "Claim names no trade timeframe; 1d from page chart used",
+   "NOT EXPRESSIBLE: claim states no exit and implies indefinite buy-and-hold (e.g. March 2020 buy held to 'today'); schema requires an exit so a very long max_hold_bars is used as a hold proxy",
+   "NOT EXPRESSIBLE: one-off March 2020 / June 2022 dip illustration is not part of the repeatable rule; engine tests over all history"
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "When Bitcoin's price falls",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "potential buying opportunity",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "price falls below its 200-week moving average",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 6.4,
+   "tokens": 5847,
+   "quote_repairs": 1
+  },
+  {
+   "step": "audit",
+   "seconds": 2.5,
+   "tokens": 1705
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.1,
+   "tokens": 3302,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.4,
+   "tokens": 1602
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 14.4,
+ "run": "minimal_r3"
+}

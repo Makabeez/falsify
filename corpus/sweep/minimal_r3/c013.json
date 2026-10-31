@@ -1,0 +1,143 @@
+{
+ "id": "c013",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Daily dollar-cost averaging into Bitcoin outperforms waiting to buy only on dips greater than 5% from the recent high.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Rule requires a $1-per-day DCA accumulation ladder with overlapping positions and no single-trade exit, which cannot be reduced to a one-position entry/exit rule.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "highest_high",
+     "period": 365,
+     "value": null,
+     "multiplier": 0.95,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "most recent high lookback",
+    "target": "entry[0].right.period",
+    "candidates": [
+     90.0,
+     180.0,
+     365.0,
+     730.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2013-05-01",
+   "period_end": "2021-05-23",
+   "other": "$1/Day - >5% Dips (Rule 2) | $2943 | 4.639"
+  },
+  "assumptions": [
+   "Most recent high interpreted as previous 365-bar highest high; claim gives no lookback.",
+   "Dip greater than 5% encoded as close more than 5% below that high (multiplier 0.95).",
+   "Timeframe 1d taken from page chart context, not claimant words.",
+   "NOT EXPRESSIBLE: $1-per-day DCA ladder / portfolio accumulation with multiple overlapping positions and cash sizing; engine tests one position at a time.",
+   "NOT EXPRESSIBLE: no exit / holding period is stated; dip-buy portfolio is buy-and-hold to 2021-05-23."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Don't Buy Until There's a Dip Greater Than 5% from the Most Recent High Price",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "$1/Day \u2013 >5% Dips (Rule 2) | $2943 | 4.639",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "every day from May 1, 2013 until May 23, 2021",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 6.8,
+   "tokens": 3199,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 4.1,
+   "tokens": 2208
+  },
+  {
+   "step": "audit repair",
+   "seconds": 2.5,
+   "tokens": 3340,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 6.3,
+   "tokens": 2614
+  }
+ ],
+ "audit_majors": [
+  "testable: Mechanical core is testable: buy BTC when price is >5% below most recent high on 1d. $1-sizing / overlapping DCA ladder and buy-and-hold to 2021-05-23 are position-size / test-window issues which per scope do not make a claim untestable, so testable=false with reason of overlapping positions/no single exit does not hold."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 19.7,
+ "run": "minimal_r3"
+}

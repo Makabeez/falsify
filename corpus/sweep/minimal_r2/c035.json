@@ -1,0 +1,82 @@
+{
+ "id": "c035",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "RSI and MACD divergences predict profitable moves with over 85% probability for bullish and over 90% for bearish cases.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "bullish/bearish RSI and MACD divergence requires pivot comparison not expressible in schema",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 85.0,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "Instances of Bearish Divergences (Red Arrows) 17 instances, probability of profitability > 90%"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: RSI and MACD bullish/bearish divergence pattern requiring pivot high/low comparison cannot be expressed with available operands.",
+   "Claim covers both bullish and bearish divergences; compiled as long only because schema allows one direction.",
+   "Timeframe not stated; daily chosen as most natural reading for TradingView BTC idea.",
+   "Performance cited as >85% for bullish and >90% for bearish; claimed win rate uses lower 85% value."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "BTC",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "probability of profitability > 85%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.1,
+   "tokens": 2707,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.8,
+   "tokens": 1453
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 7.0,
+ "run": "minimal_r2"
+}

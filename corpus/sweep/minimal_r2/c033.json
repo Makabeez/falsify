@@ -1,0 +1,148 @@
+{
+ "id": "c033",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Long Bitcoin daily when 5-period RSI is above 70.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 70.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 70.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2015-01-01",
+   "period_end": null,
+   "other": "outperforms buy & hold on profit factor, drawdown, and total returns"
+  },
+  "assumptions": [
+   "Entry is long when daily RSI(5) > 70 as stated.",
+   "Claim states no exit; exit assumed as RSI(5) falling back below 70, the most common round-trip reading for this setup.",
+   "NOT EXPRESSIBLE: full backtest comparisons such as profit factor, drawdown and outperformance vs buy & hold are test outputs, not rule elements."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "Bitcoin Momentum Strategy",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "RSI(5) > 70",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "daily (1D) timeframe",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "2015 - Now",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Outperforms Buy & Hold on Bitcoin",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.3,
+   "tokens": 2861,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.5,
+   "tokens": 1925
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 7.9,
+ "run": "minimal_r2"
+}

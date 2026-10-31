@@ -1,0 +1,86 @@
+{
+ "id": "c021",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Ichimoku lead-line strategy on ETH/USDT 4h entering long on a green close above the green lead line while it is above the red lead line and exiting on a red close below the green lead line.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "The entry and exit both require Ichimoku lead lines which are not among the available indicators and are the heart of the strategy.",
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2017-01-01",
+   "period_end": null,
+   "other": "you would make more profit with this strategy than holding the coin"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: Ichimoku green and red lead lines (Senkou Span A/B) are not in the available indicator set, so the lead-line filter and closes relative to the green lead line cannot be encoded.",
+   "Direction interpreted as long from green-candle entry and red-candle exit description.",
+   "Period start interpreted as 2017-01-01 from 'beginning of 2017'."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "crypto pair ETH/USDT",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "four hour chart",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "beginning of 2017 until today",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "you would make more profit with this strategy than holding the coin",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 10.9,
+   "tokens": 4770,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 12.5,
+   "tokens": 4160
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 23.3,
+ "run": "medium_r3"
+}

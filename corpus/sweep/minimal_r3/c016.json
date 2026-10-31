@@ -1,0 +1,116 @@
+{
+ "id": "c016",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "A 4h RSI(14) dip-buy ladder enters when RSI drops below 28, averages down five times, and takes profit 3% above average entry with no stop loss.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "The strategy heart is a five-rung averaging ladder with size scaling and profit target on average entry, which the schema cannot express.",
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 28.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 68.82,
+   "total_return_pct": 5.79,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2024-01-01",
+   "period_end": "2026-06-28",
+   "other": "Profit Factor: 5.019"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: Five averaging/DCA ladder orders at -2%, -5%, -9.5%, -16%, -25% with 1.8x size scaling and 3% take-profit above the ladder average entry price cannot be expressed; single-entry backtest would use a different exit level."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.5,
+   "tokens": 3051,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 4.8,
+   "tokens": 2437
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.0,
+   "tokens": 3381,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.7,
+   "tokens": 1668
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 14.9,
+ "run": "minimal_r3"
+}

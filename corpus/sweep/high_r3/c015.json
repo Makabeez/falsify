@@ -1,0 +1,155 @@
+{
+ "id": "c015",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "A 15-day simple moving average rule buys bitcoin when close is above the average and sells when the average is above close, claimed to return 130%.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "sma",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 130.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2017-12-01",
+   "period_end": "2018-05-15",
+   "other": null
+  },
+  "assumptions": [
+   "Asset BTC/USD mapped to Binance spot BTCUSDT with no conversion.",
+   "Timeframe is 1d: '15-days' and '15-periods' mean 15 daily bars of closing price.",
+   "Indicator is simple moving average (sma) with length 15 as stated.",
+   "Entry compiled as state close above 15-day SMA and exit as close below 15-day SMA for long-only hold-while-above logic.",
+   "No stop, target, trailing stop or max hold was stated, so the moving-average breakdown is the only exit."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "BTC/USD closing price",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "15-days moving average",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "buying and hodling",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "buying and hodling when the closing price is above a moving average.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "As soon as the moving average is above the closing price, it's time to sell and wait for the next buying signal.",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "would have generated 130% return on investment",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "between December 1st, 2017 and May 15th, 2018",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "between December 1st, 2017 and May 15th, 2018",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 19.1,
+   "tokens": 7709,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 5.1,
+   "tokens": 2913
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 24.3,
+ "run": "high_r3"
+}

@@ -1,0 +1,123 @@
+{
+ "id": "c020",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Ether enters long when its 50-day SMA crosses above its 200-day SMA and exits 180 days later.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 180,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": 59.2,
+   "period_start": null,
+   "period_end": null,
+   "other": "the largest and only loss following a Golden Cross signal is less than one percent"
+  },
+  "assumptions": [
+   "Asset Ether / ETH mapped to ETHUSDT spot.",
+   "Timeframe 1d inferred from 50-day, 200-day and 180-day horizons.",
+   "Direction inferred as long: buy at Golden Cross and Sell 180 days later.",
+   "Exit is time-only; no stop-loss, target or trailing stop was stated."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Ether's 50-day sma crosses above its 200-day sma",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "its 50-day simple moving average will cross above its 200-day simple moving average on a closing basis",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Ether's 50-day sma crosses above its 200-day sma",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "Sell 180 days later",
+    "assumed": false
+   },
+   {
+    "field": "claimed.avg_return_per_trade_pct",
+    "quote": "The average trade of +59.2% in just 180 days",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "the largest and only loss following a Golden Cross signal is less than one percent",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 11.9,
+   "tokens": 5417,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 6.3,
+   "tokens": 2689
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 18.2,
+ "run": "medium_r3"
+}

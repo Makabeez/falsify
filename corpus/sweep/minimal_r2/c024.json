@@ -1,0 +1,189 @@
+{
+ "id": "c024",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Enter when 5-period EMA crosses 50-period EMA with 5-period RSI crossing the 50 line on candle close.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "USDCAD",
+   "EURUSD",
+   "GBPUSD",
+   "EURJPY"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 50.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "RSI period is 5 from 'set my RSI to 5'.",
+   "EMA lengths 5 and 50 from '5EMA and also use a 50EMA'.",
+   "Entry evaluated on bar closes from 'wait for the candle of that day to close'.",
+   "Exit not stated: schema requires an exit, so opposite EMA cross used as most common reading for MA-cross setup.",
+   "NOT EXPRESSIBLE: claim describes both long and short crosses with no up/down specified, schema allows only one direction (long/short), compiled long side only; short mirror omitted.",
+   "NOT EXPRESSIBLE: claim states strategy used on both 'daily and 4 hour charts', schema allows a single timeframe, compiled as 1d only; 4h signals omitted."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "5ema crosses your 50ema",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "RSI cross the 50 line",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "USD/CAD, EUR/USD, GBP/USD, and also EUR/JPY",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "on the daily and 4 hour charts",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "exit[0]",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.7,
+   "tokens": 3021,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 4.9,
+   "tokens": 2528
+  },
+  {
+   "step": "audit repair",
+   "seconds": 4.8,
+   "tokens": 3943,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.9,
+   "tokens": 2333
+  }
+ ],
+ "audit_majors": [
+  "direction: Claim says '5ema crosses your 50ema and RSI cross the 50 line' with no long/short restriction; spec tests long crosses_above only, omitting short mirror.",
+  "timeframe: Claim states use 'on the daily and 4 hour charts'; spec tests 1d only and omits 4h signals.",
+  "exit[0]: Claim states no exit; spec invents exit on opposite EMA cross (5 EMA crosses_below 50 EMA)."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 18.4,
+ "run": "minimal_r2"
+}

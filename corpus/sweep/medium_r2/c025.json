@@ -1,0 +1,89 @@
+{
+ "id": "c025",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Long H1 MACD-cross entries filtered by D1 MACD uptrend with no stated exit.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Multi-timeframe D1 MACD filter is the heart of the strategy and cannot be expressed in the single-timeframe schema, and no exit rule is stated.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1h",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2018-12-01",
+   "period_end": null,
+   "other": "Annual return 6.6% (from 4.6%); max drawdown -12.4% (from -23.9%); Sharpe 0.80 (from 0.33)"
+  },
+  "assumptions": [
+   "Asset BTCUSDT assumed from page context; claim text names no asset.",
+   "Timeframe 1h is the entry timeframe; D1 is used only as a trend filter.",
+   "MACD lengths not stated; standard 12, 26, 9 would apply but no concrete rule is retained because the spec is untestable.",
+   "NOT EXPRESSIBLE: D1 MACD line-above-signal trend filter and multi-timeframe alignment cannot be expressed in the single-timeframe schema; this filter is the heart of the claimed improvement so no faithful single-timeframe core remains.",
+   "NOT EXPRESSIBLE: No exit rule is stated, so the claimed annual return, drawdown and Sharpe cannot be reproduced without inventing an exit."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "execute long entries only when the H1 MACD crosses upward.",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "On the Hourly (H1) timeframe",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 17.8,
+   "tokens": 6733,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.6,
+   "tokens": 4987
+  },
+  {
+   "step": "audit repair",
+   "seconds": 10.1,
+   "tokens": 5705,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 9.0,
+   "tokens": 3698
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 48.5,
+ "run": "medium_r2"
+}

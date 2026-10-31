@@ -1,0 +1,124 @@
+{
+ "id": "c032",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "A Bitcoin long strategy buys at a 10-day high when two proprietary trend scores exceed 7 and exits when the trend score falls below 5.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Strategy heart requires proprietary Bitcoin Trend Score and Relative Trend Score that cannot be expressed with available indicators.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 10,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 70.0,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2011-01-01",
+   "period_end": null,
+   "other": "ten buy signals; average gain of 1436.28% per win, while losses averaged -18.78%"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: Bitcoin Trend Score and Bitcoin Relative Trend Score proprietary scores left out; entry requires both >7 and exit requires Trend Score below 5, which cannot be built from available indicators.",
+   "Asset BTCUSDT interpreted from 'Bitcoin'.",
+   "Timeframe 1d taken from page chart; claim states no timeframe.",
+   "Direction long interpreted from buy signals.",
+   "'Closed at a 10-day high' compiled as close gt highest_high(10) with no offset."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "buy signals",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Bitcoin closed at a 10-day high",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "70% success rate",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "achieving an average gain of 1436.28% per win, while losses averaged -18.78%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "Since 2011",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 13.5,
+   "tokens": 5608,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 7.8,
+   "tokens": 3440
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 21.3,
+ "run": "medium_r2"
+}

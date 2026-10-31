@@ -1,0 +1,291 @@
+{
+ "id": "c028",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Buy Bitcoin on a new 20-day high confirmed by a close beyond the prior marker after at least three sessions, with stop below the trigger and exit within a few bars.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "high",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "high",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "le",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "high",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    },
+    "op": "le",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    }
+   },
+   {
+    "left": {
+     "kind": "high",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    },
+    "op": "le",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 4,
+  "free_parameters": [
+   {
+    "name": "holding period in bars",
+    "target": "max_hold_bars",
+    "candidates": [
+     2.0,
+     3.0,
+     4.0,
+     5.0,
+     6.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Timeframe 1d comes from page chart context, not claimant wording.",
+   "Only the new 20-day high branch is encoded as a long; new 20-day low branch is omitted from this single-direction spec.",
+   "NOT EXPRESSIBLE: OR between a new 20-day high trigger and a new 20-day low trigger cannot be expressed because all entry conditions must hold on the same bar; only the high-breakout branch is tested.",
+   "NOT EXPRESSIBLE: Next-day limit entry at the fixed previous 20-day high/low watermark cannot be expressed; approximated as a bar-close breakout signal filling at the next bar open.",
+   "NOT EXPRESSIBLE: Fixed intraday stop below the latest high/low that triggered the signal cannot be expressed because rules are evaluated on bar closes and fixed trigger prices cannot be held; approximated by a close-based exit below the 20-day high level plus a time exit.",
+   "Holding range 2-6 intervals encoded as max_hold_bars 4, the midpoint."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "OHLCV historical data for Bitcoin (BTC) from Binance exchange.",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "Buy entry is placed on the next day at the previous 20 day high/low watermark",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "makes a new 20day high or low",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "The close of the new high/low must be greater than (beyond) the previous high/low price marker.",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "previous high/low marker must have been at least 3 trading sessions prior",
+    "assumed": false
+   },
+   {
+    "field": "entry[3]",
+    "quote": "previous high/low marker must have been at least 3 trading sessions prior",
+    "assumed": false
+   },
+   {
+    "field": "entry[4]",
+    "quote": "previous high/low marker must have been at least 3 trading sessions prior",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "Stop entries for failed trades are placed below the latest high/low that triggered the signal",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "Profits/exits should be taken within 2-6 candlestick intervals",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 35.4,
+   "tokens": 11984,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 25.7,
+   "tokens": 8656
+  },
+  {
+   "step": "audit repair",
+   "seconds": 30.0,
+   "tokens": 10645,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 29.0,
+   "tokens": 9029
+  }
+ ],
+ "audit_majors": [
+  "entry: Claim requires 'a new 20day high or low' as trigger; spec encodes only the new 20-day high branch and omits the new 20-day low branch. Leaving out half of the claimed signals changes what is being tested."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 120.0,
+ "run": "high_r2"
+}

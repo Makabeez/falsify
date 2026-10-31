@@ -1,0 +1,77 @@
+{
+ "id": "c030",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "The claim encourages buying Bitcoin during bloody pullbacks, noting 20% pullbacks commonly rebound to new highs.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No mechanical entry trigger, exit, or timeframe is stated; general encouragement to buy fear without definable rules.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Asset is Bitcoin mapped to BTCUSDT spot; timeframe not stated so 1d chosen as natural for discussion of 20% pullbacks.",
+   "Direction inferred as long from encouragement to buy.",
+   "'20% pullbacks' is described as a historical observation, not stated as a mechanical entry trigger with lookback, entry level, or exit.",
+   "No entry condition, exit condition, stop, target, or holding period is defined; 'Buy the blood' and 'Stack SATs' are general encouragement, not mechanical rules."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "Buy the blood.",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 12.6,
+   "tokens": 5026,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 8.3,
+   "tokens": 2827
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 21.0,
+ "run": "medium_r3"
+}

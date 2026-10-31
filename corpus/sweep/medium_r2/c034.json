@@ -1,0 +1,79 @@
+{
+ "id": "c034",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "System trades price against its slowest moving average with confirmation across ten timeframes.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No MA lengths, entry trigger, trade direction, or exits are defined and the core 10-timeframe alignment is not expressible as a single-timeframe rule.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "No asset was named; assumed BTCUSDT as placeholder test universe.",
+   "No timeframe was named; assumed 1d as placeholder single timeframe.",
+   "No moving-average type or length was stated for 'lowest Moving average' / 'slowest tracking average'.",
+   "No entry trigger, cross direction, or long/short direction was stated; direction set to long as placeholder.",
+   "No exit, stop, target, or holding period was stated.",
+   "NOT EXPRESSIBLE: confirmation/alignment across 10 different time frames, described as the core of the system, which requires multi-timeframe conditions."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 8.4,
+   "tokens": 4161,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 7.3,
+   "tokens": 2386
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 15.7,
+ "run": "medium_r2"
+}

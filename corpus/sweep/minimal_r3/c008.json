@@ -1,0 +1,145 @@
+{
+ "id": "c008",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Buy when the daily close crosses above the 200-day moving average and sell when it falls back below it.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "most recent trade that started after the crash of March 2020 returned 388%"
+  },
+  "assumptions": [
+   "Asset is BTC from context page; mapped to BTCUSDT spot.",
+   "Timeframe is daily close from claim and 1d chart; using 1d bars.",
+   "Crossing above/below encoded as crosses_above / crosses_below on bar close.",
+   "No stop, target, or max hold stated; exit is signal-only reversal.",
+   "388% refers to single most recent trade, not whole-period total, so recorded in claimed.other."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "Buy when the daily close is crossing above the 200 days moving average.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "Liquidate the position when the daily close falls back down below the 200 DMA.",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.other",
+    "quote": "The most recent trade that started after the crash of March 2020 returned 388%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 3.3,
+   "tokens": 2690,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 1.3,
+   "tokens": 1564
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 4.6,
+ "run": "minimal_r3"
+}

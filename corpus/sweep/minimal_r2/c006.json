@@ -1,0 +1,185 @@
+{
+ "id": "c006",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "A long entry on BTC daily when the 200-period SMA is above the 300-period SMA and the prior RSI(14) is below 35 and rising, held for 20 bars.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 300,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 35.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "lt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 20,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "SMA inputs assumed to be close price.",
+   "RSI length not stated, used usual default 14.",
+   "Oversold threshold uses rsi_us=35 as stated.",
+   "Exit uses holding_period=20 as fixed holding time.",
+   "No stop or target stated, exit is time-based only."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "current short-term SMA is above the current long-term SMA",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "previous RSI is below the oversold level",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "previous RSI is below the oversold level and below the current RSI",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "daily values of BTCUSD",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "daily values of BTCUSD",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "A bullish trade is generated",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "holding_period = this is the number of periods to hold before liquidating",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 3.9,
+   "tokens": 2805,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.6,
+   "tokens": 2068
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.1,
+   "tokens": 3663,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 1.8,
+   "tokens": 1848
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 11.4,
+ "run": "minimal_r2"
+}

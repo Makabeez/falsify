@@ -1,0 +1,123 @@
+{
+ "id": "c020",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Ether buys when its 50-day SMA crosses above its 200-day SMA on a close and sells 180 days later.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 180,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": 59.2,
+   "period_start": null,
+   "period_end": null,
+   "other": "largest and only loss following a Golden Cross signal is less than one percent"
+  },
+  "assumptions": [
+   "Asset interpreted as ETHUSDT spot for Ether.",
+   "Timeframe 1d taken from page chart timeframe.",
+   "Direction assumed long: golden-cross buy held 180 days.",
+   "Exit is time-only 180 bars; no stop or target stated."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "50-day simple moving average will cross above its 200-day simple moving average on a closing basis",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "Sell 180 days later",
+    "assumed": false
+   },
+   {
+    "field": "claimed.avg_return_per_trade_pct",
+    "quote": "average trade of +59.2% in just 180 days",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "largest and only loss following a Golden Cross signal is less than one percent",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 3.7,
+   "tokens": 2729,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 1.0,
+   "tokens": 1316
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 4.8,
+ "run": "minimal_r3"
+}

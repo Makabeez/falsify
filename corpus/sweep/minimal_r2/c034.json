@@ -1,0 +1,77 @@
+{
+ "id": "c034",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "A multi-timeframe system trading price against its slowest moving average, where more aligned timeframes means higher success.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No mechanical rule can be recovered: moving-average lengths, alignment definition, entry trigger, direction, and exits are never stated.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "No asset or timeframe is named; defaulted for schema completeness only.",
+   "NOT EXPRESSIBLE: multi-timeframe alignment across 10 timeframes; schema supports single timeframe only.",
+   "NOT EXPRESSIBLE: 'lowest Moving average against Price' and 'slowest tracking average' give no indicator lengths, no cross/position rule, and no long/short direction.",
+   "No entry trigger, exit, stop, or target is stated, so no mechanical rule can be recovered."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 3.6,
+   "tokens": 2587,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 1.9,
+   "tokens": 1204
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 5.6,
+ "run": "minimal_r2"
+}

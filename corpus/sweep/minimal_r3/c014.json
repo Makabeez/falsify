@@ -1,0 +1,156 @@
+{
+ "id": "c014",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Short Bitcoin on Saturday and buy back around the next Wednesday if price is rising, on daily bars.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "short",
+  "entry": [
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 4.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 5.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 4,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Saturday mapped to day_of_week 5, encoded as gt 4.5 and lt 5.5.",
+   "Wednesday buy-back approximated by max_hold_bars 4 from Saturday close to Wednesday close.",
+   "NOT EXPRESSIBLE: claim requires buy-back on Wednesday only IF price is rising (Wednesday AND rising on same bar), but exit array is OR across conditions so an AND of weekday plus momentum cannot be expressed; momentum filter left out and Wednesday time exit kept as closest testable core.",
+   "Direction short because strategy sells then buys back."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "set your chart time period to 1 day",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "sells on Saturday",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "sells on Saturday",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "buys back the next Wednesday",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 8.7,
+   "tokens": 3601,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.0,
+   "tokens": 2110
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.8,
+   "tokens": 3588,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.0,
+   "tokens": 1820
+  }
+ ],
+ "audit_majors": [
+  "exit: Claim requires buy-back on Wednesday only 'if the price is kinda going up' - a conditional exit. Spec exits unconditionally on Wednesday via max_hold_bars 4 and leaves momentum filter out. Leaving it out changes what is tested."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 18.6,
+ "run": "minimal_r3"
+}

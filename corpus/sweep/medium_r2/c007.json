@@ -1,0 +1,184 @@
+{
+ "id": "c007",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buy on a 15-day high breakout when ADX(14) is below 25 and exit on a 15-day low breakdown, reportedly earning 90% CAGR on daily BTC since 2015.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "adx",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 25.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "lowest_low",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2015-01-01",
+   "period_end": null,
+   "other": "Compound Annual Growth Rate (CAGR) of 90%"
+  },
+  "assumptions": [
+   "Buying interpreted as long direction.",
+   "Price breaks above interpreted as close gt highest_high on bar close.",
+   "Price drops below interpreted as close lt lowest_low on bar close.",
+   "15-day high interpreted as highest_high(15) excluding current bar.",
+   "15-day low interpreted as lowest_low(15) excluding current bar.",
+   "ADX filter only allow trades interpreted as entry condition ADX(14) lt 25.",
+   "BTC/USD mapped to Binance spot BTCUSDT.",
+   "Daily data mapped to 1d timeframe.",
+   "Backtest period from 2015 mapped to claimed.period_start 2015-01-01."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "We used a 15-day high for entry",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "only allow trades when the ADX(14) was below 25",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "15-day low for exit",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "BTC/USD",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "daily BTC/USD data",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "Buying when the price breaks above the highest high",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Compound Annual Growth Rate (CAGR) of 90%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "from 2015",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 14.5,
+   "tokens": 5766,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 7.6,
+   "tokens": 3357
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 22.1,
+ "run": "medium_r2"
+}

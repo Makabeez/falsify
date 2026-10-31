@@ -1,0 +1,239 @@
+{
+ "id": "c023",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Long spot bot that enters when price is above the 200 EMA and 4-hour RSI is between 55 and 70, exiting on RSI above 70 with an ATR take-profit.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 55.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 70.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "ema",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 70.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": 1.0,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "RSI length",
+    "target": "entry[0].left.period",
+    "candidates": [
+     7.0,
+     14.0,
+     21.0
+    ]
+   },
+   {
+    "name": "ATR take-profit multiplier",
+    "target": "take_profit_atr_mult",
+    "candidates": [
+     1.0,
+     1.5,
+     2.0,
+     3.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Spot interpreted as long-only direction.",
+   "Asset BTC interpreted as BTCUSDT; claim notes it can work with other currencies but BTC is the stated market.",
+   "Timeframe 4h taken from '4H RSI'.",
+   "RSI length not stated, assumed standard 14 for entry filters and RSI exit; all RSI conditions use the same length.",
+   "Price action above the 200 EMA interpreted as close above 200-period EMA on the same timeframe on the signal bar close.",
+   "Take-profit stated as an ATR interpreted as 1 x ATR; ATR length not stated so assumed 14 at the signal bar.",
+   "NOT EXPRESSIBLE: alternative take-profit by fixed percent or by SAR (SAR indicator not available); compiled ATR version only.",
+   "No fixed stop-loss per claim; exit is RSI above 70 interpreted as RSI(14) > 70 on bar close, plus the ATR take-profit."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "In BTC",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "4H RSI",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "designed for Spot",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "RSI is above 55%",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "below 70%",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "price action above the 200 EMA",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "could be an RSI above 70%",
+    "assumed": false
+   },
+   {
+    "field": "take_profit_atr_mult",
+    "quote": "The TP is an ATR",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 18.6,
+   "tokens": 7498,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 14.4,
+   "tokens": 5669
+  },
+  {
+   "step": "audit repair",
+   "seconds": 9.2,
+   "tokens": 5650,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 7.8,
+   "tokens": 4065
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 50.0,
+ "run": "medium_r2"
+}

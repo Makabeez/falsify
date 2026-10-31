@@ -1,0 +1,288 @@
+{
+ "id": "c001",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "A Bitcoin daily long signal requiring RSI at its 50-day low then rising for three bars while below 37.5 and below RSI 160 bars ago plus 5.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    },
+    "op": "le",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": "min",
+     "window": 50,
+     "offset": 3
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "gt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    },
+    "op": "gt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 5.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 160
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 37.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 365,
+  "free_parameters": [
+   {
+    "name": "RSI length",
+    "target": "entry[1].left.period",
+    "candidates": [
+     7.0,
+     14.0,
+     21.0,
+     28.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": 71.4,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "Average winning trade: +105.8%"
+  },
+  "assumptions": [
+   "Assets mapped to BTCUSDT from 'Bitcoin'; no exchange stated, assumed spot USDT universe.",
+   "Timeframe 1d from '50 days' / '160 days' wording; days taken as daily bars.",
+   "Direction assumed long because claim reports average winning trade of +105.8% with no mention of shorts.",
+   "RSI length not stated, used standard 14 for every RSI operand; all RSI periods assumed identical and swept together.",
+   "'At 50-day low and rising for 3 bars' cannot hold on same bar, so encoded as low 3 bars ago: rsi[3] at 50-bar low plus rsi > rsi[1] > rsi[2] > rsi[3] to current bar.",
+   "'Lower than the 160 days RSI with 5 added' encoded as current RSI < RSI 160 bars ago +5 RSI points.",
+   "'RSI is below 37.5' encoded as current-bar RSI <37.5.",
+   "No exit stated; assumed exit is max_hold_bars 365 with no stop/target to make the rule testable; performance window is not part of the rule."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "50 days lowest",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "RSI is at the 50 days lowest",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "is rising for 3 bars",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "is rising for 3 bars",
+    "assumed": false
+   },
+   {
+    "field": "entry[3]",
+    "quote": "is rising for 3 bars",
+    "assumed": false
+   },
+   {
+    "field": "entry[4]",
+    "quote": "is lower than the 160 days RSI with 5 (as RSI value) added",
+    "assumed": false
+   },
+   {
+    "field": "entry[5]",
+    "quote": "RSI is below 37.5",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Total Winners * 100 / Total Trades = 5 * 100 / 7 = 71.4% Winrate",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Average winning trade: +105.8%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 29.6,
+   "tokens": 10339,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 14.9,
+   "tokens": 6064
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 44.5,
+ "run": "high_r3"
+}

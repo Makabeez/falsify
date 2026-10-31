@@ -1,0 +1,77 @@
+{
+ "id": "c034",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "The claim asserts that price relative to a slow moving average becomes more reliable when aligned across ten timeframes.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No entry trigger, moving-average lengths, exits, assets, or timeframes are specified and the core ten-timeframe alignment cannot be expressed as a single-timeframe rule.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "No asset is named so BTCUSDT is used only as a placeholder; no mechanical rule can be recovered regardless.",
+   "No timeframe is named so 1d is used only as a placeholder.",
+   "Direction, moving-average type and length, entry trigger, and exit are not stated.",
+   "NOT EXPRESSIBLE: alignment and confirmation across 10 different timeframes requires multi-timeframe conditions which the schema cannot express, and this alignment is the heart of the claimed system."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 7.8,
+   "tokens": 4167,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 6.7,
+   "tokens": 2940
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 14.5,
+ "run": "high_r3"
+}

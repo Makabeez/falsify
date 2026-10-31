@@ -1,0 +1,162 @@
+{
+ "id": "c033",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "A daily Bitcoin strategy buys when 5-period RSI exceeds 70 and claims to outperform buy-and-hold since 2015.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 70.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 70.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2015-01-01",
+   "period_end": null,
+   "other": "Outperforms Buy & Hold on Bitcoin"
+  },
+  "assumptions": [
+   "Asset 'Bitcoin' interpreted as BTCUSDT spot.",
+   "Direction interpreted as long-only momentum because the claim compares to buy & hold; no short entry is stated.",
+   "NOT EXPRESSIBLE: Claim states only entry RSI(5) > 70 on daily; no exit, stop, target or holding period is given, so exit RSI(5) crossing below 70 is assumed as closest testable core to define holding.",
+   "Claimed backtest period '2015 - Now' recorded as 2015-01-01 with no end date; the test window is not part of the rule and the engine tests all available history."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "Works on the daily (1D) timeframe",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "RSI(5) > 70",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "2015 - Now",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Outperforms Buy & Hold on Bitcoin",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 12.3,
+   "tokens": 5297,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 12.2,
+   "tokens": 4129
+  },
+  {
+   "step": "audit repair",
+   "seconds": 9.9,
+   "tokens": 5365,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.3,
+   "tokens": 3913
+  }
+ ],
+ "audit_majors": [
+  "exit[0]: Claim states only entry RSI(5) > 70 on daily; no exit, stop, target or holding period is given. Spec invents exit RSI(5) crosses_below 70 to define holding, which determines returns vs buy-and-hold."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 44.8,
+ "run": "medium_r3"
+}

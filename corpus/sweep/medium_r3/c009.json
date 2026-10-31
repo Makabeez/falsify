@@ -1,0 +1,151 @@
+{
+ "id": "c009",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "A 50-day and 55-day moving-average crossover strategy on Bitcoin generated about 7,830% profit over the past five years.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "sma",
+     "period": 55,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 55,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 7830.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2014-10-29",
+   "period_end": "2019-10-29",
+   "other": "up closer to 8,000%"
+  },
+  "assumptions": [
+   "Interpreted '50-day and 55-day pair' as 50-period SMA versus 55-period SMA on closes; MA type not stated so used SMA as the usual default.",
+   "Interpreted strategy as long-only spot crossover: enter long when 50-day MA crosses above 55-day MA.",
+   "No exit stated; used the most common reading for an MA-pair strategy: exit on the opposite cross (50 crosses below 55).",
+   "Timeframe 1d from '50-day' / '55-day' and daily bars.",
+   "Asset BTCUSDT from 'trading Bitcoin'.",
+   "Past five years relative to 2019-10-29 post date interpreted as 2014-10-29 to 2019-10-29 for claimed period."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "50-day and 55-day pair",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "assets",
+    "quote": "trading Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "50-day",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "profit of about 7,830%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "over the past five years",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 10.7,
+   "tokens": 5057,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 9.4,
+   "tokens": 3707
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 20.2,
+ "run": "medium_r3"
+}

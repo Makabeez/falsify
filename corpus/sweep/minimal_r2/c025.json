@@ -1,0 +1,149 @@
+{
+ "id": "c025",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Take hourly MACD cross-up long entries only when daily MACD shows an uptrend while ignoring shorts.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Requires daily MACD trend filter on hourly entries, which is a multi-timeframe condition the schema cannot express.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "macd_line",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "macd_signal",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "MACD fast length",
+    "target": "entry[0].left.period",
+    "candidates": [
+     8.0,
+     12.0,
+     19.0,
+     21.0
+    ]
+   },
+   {
+    "name": "MACD slow length",
+    "target": "entry[0].left.param",
+    "candidates": [
+     21.0,
+     26.0,
+     35.0,
+     50.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2018-12-01",
+   "period_end": null,
+   "other": "Annual return rises to 6.6% (from 4.6%), max drawdown improves from -23.9% to -12.4%, Sharpe increases from 0.33 to 0.80"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: D1 MACD trend filter (D1 MACD line above signal) required for every H1 entry is a multi-timeframe condition the schema cannot express.",
+   "The D1 filter is the heart of the claimed filtered system, so H1 crosses alone cannot represent it.",
+   "No exit is stated in the claim."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "execute long entries only when the H1 MACD crosses upward",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "execute long entries only",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "On the Hourly (H1) timeframe",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Annual return rises to 6.6% (from 4.6%)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "The analysis begins in December 2018",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.2,
+   "tokens": 2986,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.5,
+   "tokens": 2226
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.1,
+   "tokens": 3615,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.0,
+   "tokens": 1708
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 12.9,
+ "run": "minimal_r2"
+}

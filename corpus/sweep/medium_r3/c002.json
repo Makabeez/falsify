@@ -1,0 +1,160 @@
+{
+ "id": "c002",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Enter when 8-day EMA crosses 21-day EMA and exit if price crosses the 21-day EMA, monitoring for a maximum of 6 days.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 8,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 21,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 6,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "produced much more profit than loss; 6 positions were taken in 10 months (304 days)"
+  },
+  "assumptions": [
+   "Direction chosen as long (8-day EMA crossing above 21-day EMA) as representative; claim states only 'The 8 day and 21 day EMAs cross' with no long/buy/above qualifier and symmetric stop language.",
+   "NOT EXPRESSIBLE: claim describes bidirectional/symmetric crosses in both directions ('other side of the 21 day EMA', 'If price crosses the 21 day EMA'); schema allows only one direction (long OR short) and entry conditions are ANDed, so both crosses_above and crosses_below cannot be encoded together; spec compiles the long side only as closest testable core.",
+   "Timeframe chosen as 1d from 'day' EMAs and 1d chart page; asset chosen as BTCUSDT from page about BTC.",
+   "Entry compiled as EMA(8) crosses_above EMA(21) on bar close, filled next open per engine convention.",
+   "Exit compiled as close crosses_below EMA(21) on bar close; intrabar cross not expressible.",
+   "max_hold_bars 6 from 'maximum of 6 days' on daily bars.",
+   "NOT EXPRESSIBLE: stop-loss just the other side of the 21-day EMA and adjusted daily cannot be encoded as fixed-percent/ATR stop or EMA-based trailing stop; approximated as indicator-cross exit."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "The 8 day and 21 day EMAs cross.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "If price crosses the 21 day EMA , your setup has failed.",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "then monitor for a maximum of 6 days.",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 14.1,
+   "tokens": 5628,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 16.2,
+   "tokens": 5286
+  },
+  {
+   "step": "audit repair",
+   "seconds": 7.7,
+   "tokens": 4751,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.8,
+   "tokens": 4465
+  }
+ ],
+ "audit_majors": [
+  "direction: Claim says only 'The 8 day and 21 day EMAs cross' with symmetric language 'just the other side of the 21 day EMA' and 'If price crosses the 21 day EMA, your setup has failed', implying both bullish and bearish crosses are traded. Spec encodes long-only (direction long, entry crosses_above, exit crosses_below) and omits the short side, testing about half the claimed 6-position system."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 48.9,
+ "run": "medium_r3"
+}

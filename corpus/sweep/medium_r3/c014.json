@@ -1,0 +1,186 @@
+{
+ "id": "c014",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buy bitcoin on Wednesday when price momentum is positive after selling on Saturday to avoid Sunday weakness on daily bars.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 1.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 2.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "pct_change",
+     "period": 7,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 3,
+  "free_parameters": [
+   {
+    "name": "going up lookback in bars",
+    "target": "entry[2].left.period",
+    "candidates": [
+     3.0,
+     5.0,
+     7.0,
+     14.0,
+     21.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Asset is BTCUSDT because claim says Bitcoin with no exchange or quote currency.",
+   "Interpreted as long-only rotation: flat over the weekend, long from Wednesday to Saturday, because sells on Saturday and buys back Wednesday describes selling owned spot rather than opening a short.",
+   "Wednesday equality needs two comparisons: day_of_week gt 1.5 AND day_of_week lt 2.5 for day_of_week 2 equals Wednesday.",
+   "Phrase kinda going up has no number or lookback, encoded as 7-bar pct_change greater than 0 as concrete weekly momentum on daily bars.",
+   "Saturday exit cannot use two exit conditions because exit items are OR-ed, so Saturday sell is implemented as max_hold_bars 3: Wednesday signal fills Thursday open, then Thursday 1, Friday 2, Saturday 3 exits Saturday close."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "set your chart time period to 1 day",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "buys back the next Wednesday",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "buys back the next Wednesday",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "if the price is kinda going up",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "sells on Saturday",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 25.6,
+   "tokens": 8076,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 12.8,
+   "tokens": 4668
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 38.4,
+ "run": "medium_r3"
+}

@@ -1,0 +1,142 @@
+{
+ "id": "c009",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Trading Bitcoin with a 50-day and 55-day moving-average pair generated about 7,830% profit over the past five years.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "sma",
+     "period": 55,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "sma",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 55,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 7830.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2014-10-29",
+   "period_end": "2019-10-29",
+   "other": "up closer to 8,000%"
+  },
+  "assumptions": [
+   "Asset is BTCUSDT: claim says trading Bitcoin and page context is BTC; no exchange symbol stated.",
+   "Timeframe is 1d from page chart context; 50-day and 55-day lengths imply daily bars.",
+   "Direction is long-only; claim describes profit from trading Bitcoin with no mention of shorts.",
+   "Moving-average type assumed to be SMA; claim says only moving-average with no SMA/EMA/WMA qualifier.",
+   "Pair interpreted as standard crossover system: enter long when 50-day crosses above 55-day, exit when 50-day crosses below 55-day; claim states only the pair.",
+   "No stop-loss, target, trailing stop or max hold stated, so exit is the opposite crossover only.",
+   "Claimed 5-year window mapped to 2014-10-29 to 2019-10-29 using posted date 2019-10-29; exact start day is ambiguous."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "exit[0]",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 24.4,
+   "tokens": 7972,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 13.1,
+   "tokens": 4885
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 37.5,
+ "run": "high_r3"
+}

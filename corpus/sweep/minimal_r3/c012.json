@@ -1,0 +1,206 @@
+{
+ "id": "c012",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Buy BTC on the last day of the month when price is above the 200-day SMA and sell when below.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "days_left_in_month",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "days_left_in_month",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": "has been profitable so far"
+  },
+  "assumptions": [
+   "Asset BTC-USD mapped to BTCUSDT spot symbol.",
+   "Timeframe 1d chosen as most natural reading for 200-day SMA and last-day-of-month rule.",
+   "Entry and exit evaluated only on last day of month (days_left_in_month < 0.5).",
+   "Close used for 'price' comparison to 200-day SMA.",
+   "Exit uses same monthly check: sell on last day of month when close below 200-day SMA; holding through intra-month dips.",
+   "Claim states past profitability without numbers, so no numeric claimed performance recorded."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "price of BTC-USD",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "buying when the price is above",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "on the last day of the month",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "buying when the price is above the 200-day simple moving average (SMA)",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "on the last day of the month",
+    "assumed": false
+   },
+   {
+    "field": "exit[1]",
+    "quote": "selling when it is below",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "has been profitable so far",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 3.9,
+   "tokens": 2787,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 1.3,
+   "tokens": 1896
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 5.2,
+ "run": "minimal_r3"
+}

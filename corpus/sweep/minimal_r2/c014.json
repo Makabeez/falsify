@@ -1,0 +1,197 @@
+{
+ "id": "c014",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Short Bitcoin on Saturday and buy back the next Wednesday if price is going up.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "short",
+  "entry": [
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 4.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 5.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 4,
+  "free_parameters": [
+   {
+    "name": "uptrend SMA length",
+    "target": "exit[0].right.period",
+    "candidates": [
+     10.0,
+     20.0,
+     50.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Direction is short because 'sells on Saturday, and buys back the next Wednesday' is a sell-then-buy sequence.",
+   "Wednesday timing is encoded as max_hold_bars=4 (Saturday signal -> Wednesday) because exit conditions are OR-ed and cannot require day_of_week gt 1.5 AND day_of_week lt 2.5 on the same bar.",
+   "'kinda going up' interpreted as close above 20-day SMA with free-parameter sweep; concrete value required by schema.",
+   "NOT EXPRESSIBLE: claimant's exit is a conjunction (Wednesday AND price going up) but exit conditions are OR-ed, so timing (max_hold_bars) and trend filter (exit condition) are tested as either-or rather than both-on-Wednesday."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "sells on Saturday, and buys back",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "sells on Saturday",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "sells on Saturday",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "if the price is kinda going up",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": "set your chart time period to 1 day",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 12.1,
+   "tokens": 4195,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.4,
+   "tokens": 2003
+  },
+  {
+   "step": "audit repair",
+   "seconds": 5.5,
+   "tokens": 3809,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.4,
+   "tokens": 2021
+  }
+ ],
+ "audit_majors": [
+  "exit: Claim requires buy-back on Wednesday AND price going up. Spec encodes timing as max_hold_bars=4 OR trend-filter exit[0], so it exits early on any day price is up or on Wednesday regardless of trend. OR-ing instead of AND-ing changes what is tested."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 23.4,
+ "run": "minimal_r2"
+}

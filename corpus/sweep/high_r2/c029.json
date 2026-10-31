@@ -1,0 +1,220 @@
+{
+ "id": "c029",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Buy S&P 500 when 2-period RSI is below 5 and close is above the 200-day SMA, exiting when close is back above the 5-day SMA or below the 200-day SMA.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "SPX"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 2,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 5.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 5,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 18.1,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2016-10-01",
+   "period_end": "2026-10-01",
+   "other": "+255.4% for buying and holding SPX500/USD over the same days"
+  },
+  "assumptions": [
+   "Mapped S&P 500 (SPX500/USD) to asset ticker SPX; engine will report lack of bundled data.",
+   "Interpreted 'daily candles' as timeframe 1d with rules evaluated on bar closes.",
+   "Period 'October 2016 to October 2026' recorded as 2016-10-01 to 2026-10-01 for claimed fields only; test window is engine default.",
+   "No stop, target, trailing stop or max hold stated; exits are only the two SMA close conditions.",
+   "RSI(2) and SMAs use standard close-based calculation."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "RSI(2) below 5",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "the close above the 200-day simple moving average (SMA)",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "the close is back above the 5-day SMA",
+    "assumed": false
+   },
+   {
+    "field": "exit[1]",
+    "quote": "below the 200-day SMA",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "S&P 500 (SPX500/USD)",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "daily candles",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "Long entry:",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "+18.1%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "October 2016 to October 2026",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "October 2016 to October 2026",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "+255.4% for buying and holding SPX500/USD over the same days",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 16.3,
+   "tokens": 7437,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.8,
+   "tokens": 2712
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 20.1,
+ "run": "high_r2"
+}

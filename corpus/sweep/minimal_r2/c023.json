@@ -1,0 +1,225 @@
+{
+ "id": "c023",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Spot bot buys when 4H RSI is between 55 and 70 with price above the 200 EMA, exits on RSI above 70 with an ATR-based take profit and no stop loss.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 55.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 70.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "ema",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 70.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": 2.0,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "RSI period",
+    "target": "entry[0].left.period",
+    "candidates": [
+     7.0,
+     14.0,
+     21.0
+    ]
+   },
+   {
+    "name": "ATR take-profit multiplier",
+    "target": "take_profit_atr_mult",
+    "candidates": [
+     1.0,
+     1.5,
+     2.0,
+     3.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "RSI period not stated, used standard 14.",
+   "Spot implies long-only direction.",
+   "TP stated as ATR without multiplier, used 2x ATR(14) at signal bar.",
+   "NOT EXPRESSIBLE: alternative TP by % or by SAR left out; ATR TP retained as stated primary.",
+   "Exit uses RSI above 70% as stated possible exit; no fixed stop loss per claim."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "In BTC",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "designed for Spot",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "RSI is above 55%",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "and below 70%.",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "price action above the 200 EMA",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "it could be an RSI above 70%.",
+    "assumed": false
+   },
+   {
+    "field": "take_profit_atr_mult",
+    "quote": "The TP is an ATR",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 5.1,
+   "tokens": 3066,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.7,
+   "tokens": 2589
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 8.8,
+ "run": "minimal_r2"
+}

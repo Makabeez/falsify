@@ -1,0 +1,125 @@
+{
+ "id": "c032",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buy bitcoin when trend scores are above 7 and price closes at a 10-day high, exiting when the trend score falls below 5.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Entry and exit depend on proprietary Bitcoin Trend Score and Relative Trend Score that cannot be expressed with available indicators.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 10,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 70.0,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2011-01-01",
+   "period_end": null,
+   "other": "has generated ten buy signals, achieving an average gain of 1436.28% per win, while losses averaged -18.78%"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: Bitcoin Trend Score and Bitcoin Relative Trend Score are proprietary scores with no equivalent indicator; entry requirements 'Bitcoin Trend Score > 7' and 'Bitcoin Relative Trend Score > 7' and exit 'Bitcoin Trend Score falls below 5' were left out.",
+   "Timeframe not stated in claim; 1d chosen as most natural reading for daily closes and a 10-day high.",
+   "Asset Bitcoin interpreted as BTCUSDT spot.",
+   "Direction long inferred from buy signals.",
+   "'Bitcoin closed at a 10-day high' interpreted as close above the previous 10-bar high: close gt highest_high(10).",
+   "Entry requires all three triggers on the same bar; only the expressible 10-day-high leg can be compiled."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "buy signals",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Bitcoin closed at a 10-day high",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "70% success rate",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "Since 2011",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "achieving an average gain of 1436.28% per win, while losses averaged -18.78%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 12.4,
+   "tokens": 5229,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.6,
+   "tokens": 4335
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 24.1,
+ "run": "medium_r3"
+}

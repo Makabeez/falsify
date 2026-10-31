@@ -1,0 +1,86 @@
+{
+ "id": "c021",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "A 4-hour ETH/USDT strategy using Ichimoku lead-line position and candle closes above or below the green lead line claims to beat buy-and-hold since early 2017.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Core entry and exit depend on Ichimoku lead lines, which the schema cannot express.",
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2017-01-01",
+   "period_end": null,
+   "other": "more profit with this strategy than holding the coin"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: Ichimoku Senkou Span A/B lead lines are not in the indicator set, so the core entry/exit trigger cannot be expressed; no substitute indicator was used.",
+   "Direction assumed long because the claim compares profit to holding the coin.",
+   "Timeframe taken as 4h from the chart context."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "crypto pair ETH/USDT",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "four hour chart",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "beginning of 2017 until today",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "you would make more profit with this strategy than holding the coin",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 3.5,
+   "tokens": 2700,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 1.9,
+   "tokens": 1301
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 5.4,
+ "run": "minimal_r3"
+}

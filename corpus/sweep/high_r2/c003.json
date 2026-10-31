@@ -1,0 +1,139 @@
+{
+ "id": "c003",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "A 4h RSI(14) base entry below 28 with five averaging orders and 3% take-profit above average entry is claimed to return about 3% from January 2024 to June 2026.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "The core of the strategy is a six-rung DCA averaging ladder with 1.8x size scaling that the schema cannot express as a single-entry rule.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 28.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": 3.0,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 70.97,
+   "total_return_pct": 3.08,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2024-01-01",
+   "period_end": "2026-06-29",
+   "other": "Profit Factor: 4.028"
+  },
+  "assumptions": [
+   "Asset not named in claim text; BTCUSDT chosen as most natural reading because the page is about BTC on a 4h chart.",
+   "Direction inferred as long from averaging down at negative deviations and take-profit above average entry; claim never says long or short.",
+   "Entry 'drops below 28' compiled as RSI(14) crosses_below 28 on bar close; alternative reading of holding below (RSI < 28) is possible.",
+   "Take-profit compiled as take_profit_pct 3 as closest single-entry approximation to 3% above average entry price.",
+   "NOT EXPRESSIBLE: five averaging/DCA orders at -2%, -5%, -9.5%, -16%, -25% with 1.8x size scaling per rung and averaging of entry price for the 3% target, with no stop loss because ladder allocation is the risk cap."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": "4h",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "take_profit_pct",
+    "quote": "Take Profit: 3% above average entry.",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "January 1, 2024",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "June 29, 2026",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "Net Profit: +3,078.29 USDT (+3.08%)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Percent Profitable: 70.97% (44 / 62)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Profit Factor: 4.028",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 21.1,
+   "tokens": 8175,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 14.3,
+   "tokens": 5379
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 35.5,
+ "run": "high_r2"
+}

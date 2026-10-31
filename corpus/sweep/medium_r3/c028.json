@@ -1,0 +1,234 @@
+{
+ "id": "c028",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buy Bitcoin after a 20-day high close beyond the prior marker with at least three bars since the prior marker, exiting within 2-6 bars.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "le",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    },
+    "op": "le",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    },
+    "op": "le",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 4
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 4,
+  "free_parameters": [
+   {
+    "name": "exit holding period within 2-6 bars",
+    "target": "max_hold_bars",
+    "candidates": [
+     2.0,
+     3.0,
+     4.0,
+     5.0,
+     6.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Assets mapped from Bitcoin (BTC) on Binance to BTCUSDT spot.",
+   "Timeframe 1d taken from page chart, not stated in claim text.",
+   "Breakout is close beyond prior 20-bar watermark, encoded as close offset 0 gt highest_high(20) offset 1.",
+   "Gap of at least 3 sessions encoded as no breakout on each of the 3 prior bars versus their own prior watermarks.",
+   "NOT EXPRESSIBLE: claim triggers on both new 20-day highs and new 20-day lows but schema permits only one direction; compiled long-side high-breakout core and omitted low side.",
+   "NOT EXPRESSIBLE: per-trade structural stop below the latest high/low that triggered the signal cannot be expressed as fixed percent or ATR multiple; no stop used, exit is by time only.",
+   "NOT EXPRESSIBLE: intrabar stop-entry at the watermark level on the next day; compiled as close-breakout entry with fill at next open per engine rules.",
+   "Exit window 2-6 encoded as max_hold_bars 4 with 2-6 swept; no indicator exit given."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "The close of the new high/low must be greater than (beyond) the previous high/low price marker.",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "the previous high/low marker must have been at least 3 trading sessions prior",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "the previous high/low marker must have been at least 3 trading sessions prior",
+    "assumed": false
+   },
+   {
+    "field": "entry[3]",
+    "quote": "the previous high/low marker must have been at least 3 trading sessions prior",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "Profits/exits should be taken within 2-6 candlestick intervals",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "OHLCV historical data for Bitcoin (BTC) from Binance exchange.",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "Buy entry is placed on the next day at the previous 20 day high/low watermark",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 21.4,
+   "tokens": 7872,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 22.2,
+   "tokens": 6720
+  },
+  {
+   "step": "audit repair",
+   "seconds": 20.7,
+   "tokens": 9238,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 17.6,
+   "tokens": 6207
+  }
+ ],
+ "audit_majors": [
+  "entry: Claim triggers on both new 20-day highs and new 20-day lows for buys; spec encodes only high-breakout closes (close gt highest_high) and omits all low-side triggers.",
+  "stop_loss_pct: Claim requires stops for failed trades placed below the latest high/low that triggered the signal; spec uses null stops and time-only exit, omitting the structural stop.",
+  "entry[0]: Claim requires buy entry on the next day at the previous 20-day watermark level; spec triggers on close beyond watermark with fill at next open, different entry level/condition."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 81.9,
+ "run": "medium_r3"
+}

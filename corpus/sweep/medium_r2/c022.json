@@ -1,0 +1,218 @@
+{
+ "id": "c022",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "A long bot enters when the 20 EMA crosses above the 50 EMA while RSI is below 70, using 2:1 reward-to-risk with a trailing stop and exiting on the reverse EMA cross.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "1h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 70.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": 1.0,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": 2.0,
+  "trailing_stop_pct": 1.0,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "RSI length",
+    "target": "entry[1].left.period",
+    "candidates": [
+     7.0,
+     14.0,
+     21.0
+    ]
+   },
+   {
+    "name": "initial stop distance for 2R",
+    "target": "stop_loss_pct",
+    "candidates": [
+     0.5,
+     1.0,
+     1.5,
+     2.0
+    ]
+   },
+   {
+    "name": "Move SL trailing distance",
+    "target": "trailing_stop_pct",
+    "candidates": [
+     0.5,
+     1.0,
+     1.5,
+     2.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Timeframe chosen as 1h from '1H and 15m' because 15m is not testable; 1h also matches the page chart.",
+   "Assets limited to ETHUSDT as the only concrete named asset; 'other currencies' names no symbols.",
+   "Direction assumed long from bullish 20 EMA crossing above 50 EMA; claim never states direction.",
+   "RSI period assumed 14 (usual default); claim gives only threshold 70.",
+   "'RSI is below 70' compiled as rsi < 70 as written, though labeled oversold.",
+   "Claim states 2R without an initial stop distance; assumed 1% fixed stop to define R.",
+   "'Move SL as protection' interpreted as a trailing stop of 1% from the best close since entry.",
+   "Reverse EMA crossover compiled as the exit signal on bar close."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "crossing of the 20 EMA above the 50 EMA",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "RSI is below 70",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "reverse crossover of the EMAs",
+    "assumed": false
+   },
+   {
+    "field": "stop_loss_pct",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "take_profit_r",
+    "quote": "RR is 2:1",
+    "assumed": false
+   },
+   {
+    "field": "trailing_stop_pct",
+    "quote": "Move SL as protection",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "with ETH and other currencies",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "I tested it on 1H and 15m",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 16.6,
+   "tokens": 6732,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 8.3,
+   "tokens": 4036
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 24.9,
+ "run": "medium_r2"
+}

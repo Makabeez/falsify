@@ -1,0 +1,100 @@
+{
+ "id": "c021",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Long ETH/USDT on the 4-hour chart when a green candle closes above the green Ichimoku lead line while it is above the red lead line, exiting when a red candle closes below the green lead line.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "Ichimoku lead lines required for entry and exit are not in the available indicator set and cannot be encoded.",
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2017-01-01",
+   "period_end": "2021-06-02",
+   "other": "you would make more profit with this strategy than holding the coin"
+  },
+  "assumptions": [
+   "Timeframe is 4h from 'four hour chart' and asset ETHUSDT from 'ETH/USDT'.",
+   "Direction assumed long-only: entry on green candle close above green lead line and exit on red candle close below it; no short entry is stated.",
+   "Claimed period 'beginning of 2017 until today' interpreted as 2017-01-01 to 2021-06-02 posting date.",
+   "NOT EXPRESSIBLE: Ichimoku Senkou Span A (green lead line) and Senkou Span B (red lead line) including their bullish alignment are not in the available indicator set, so the entry and exit conditions cannot be encoded and no substitute indicator was used."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "crypto pair ETH/USDT",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "four hour chart",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "beginning of 2017 until today",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "you would make more profit with this strategy than holding the coin",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 13.1,
+   "tokens": 5757,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 14.0,
+   "tokens": 5174
+  },
+  {
+   "step": "audit repair",
+   "seconds": 17.8,
+   "tokens": 7862,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.4,
+   "tokens": 4757
+  }
+ ],
+ "audit_majors": [
+  "testable: Spec sets testable=false for missing Ichimoku lines, but claim gives a mechanical core that could be tested: green Ichimoku lead line above red lead line with green candle close above green lead line for entry and red candle close below green lead line for exit, computable from OHLC with standard Ichimoku defaults."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 55.4,
+ "run": "high_r3"
+}

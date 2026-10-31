@@ -294,9 +294,23 @@ def cmd_sweep(args) -> int:
     from . import sweep
     if args.action == "run":
         efforts = [e.strip() for e in args.efforts.split(",") if e.strip()]
-        sweep.run(efforts, ids=args.ids.split(",") if args.ids else None, workers=args.workers, model=args.model)
+        sweep.run(efforts, ids=args.ids.split(",") if args.ids else None, workers=args.workers, model=args.model,
+                  runs=args.runs)
         return 0
     md = sweep.to_markdown(sweep.evaluate())
+    print(md)
+    if args.out:
+        Path(args.out).write_text(md, encoding="utf-8")
+        print(f"wrote {args.out}")
+    return 0
+
+
+def cmd_modality(args) -> int:
+    from . import modality
+    if args.action == "run":
+        modality.run(ids=args.ids.split(",") if args.ids else None, model=args.model)
+        return 0
+    md = modality.report()
     print(md)
     if args.out:
         Path(args.out).write_text(md, encoding="utf-8")
@@ -383,10 +397,18 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("action", choices=["run", "report"])
     p.add_argument("--efforts", default="low,medium,high", help="comma-separated: minimal,low,medium,high,xhigh,max")
     p.add_argument("--ids", help="comma-separated claim ids (default: all)")
+    p.add_argument("--runs", type=int, default=1, help="repeat each effort this many times to measure noise")
     p.add_argument("--workers", type=int, default=4)
     p.add_argument("--model", help="override the Muse Spark model id")
     p.add_argument("--out", help="report: write markdown, e.g. docs/effort_sweep.md")
     p.set_defaults(fn=cmd_sweep)
+
+    p = sub.add_parser("modality", help="same claim as text and as a screenshot: same rules, same verdict?")
+    p.add_argument("action", choices=["run", "report"])
+    p.add_argument("--ids", help="comma-separated claim ids (default: every corpus/raw/c*.png)")
+    p.add_argument("--model", help="override the Muse Spark model id")
+    p.add_argument("--out", help="report: write markdown, e.g. docs/modality.md")
+    p.set_defaults(fn=cmd_modality)
 
     p = sub.add_parser("calibrate", help="measure false-positive rate and power on the bundled data")
     p.add_argument("--reps", type=int, default=300, help="coin-flip strategies per setup")

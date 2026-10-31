@@ -53,71 +53,108 @@ def run_one(rec: dict, effort: str, model: str | None = None) -> dict:
     return out
 
 
+def _run_dir(effort: str, k: int) -> str:
+    return effort if k == 1 else f"{effort}_r{k}"
+
+
 def run(efforts: list[str], ids: list[str] | None = None, workers: int = 4, model: str | None = None,
-        out_dir: Path = OUT, claims: Path = CLAIMS) -> None:
+        runs: int = 1, out_dir: Path = OUT, claims: Path = CLAIMS) -> None:
+    """`runs` repeats each effort (folders medium, medium_r2, ...) so run-to-run noise can be measured."""
     recs = [r for r in load(claims) if not ids or r["id"] in ids]
     todo = []
     for e in efforts:
-        (out_dir / e).mkdir(parents=True, exist_ok=True)
-        for r in recs:
-            f = out_dir / e / f"{r['id']}.json"
-            if not f.exists() or "error" in json.loads(f.read_text(encoding="utf-8")):
-                todo.append((r, e))
-    print(f"sweep    {len(recs)} claims x {len(efforts)} efforts, {len(todo)} to run, {workers} workers")
+        for k in range(1, runs + 1):
+            d = out_dir / _run_dir(e, k)
+            d.mkdir(parents=True, exist_ok=True)
+            for r in recs:
+                f = d / f"{r['id']}.json"
+                if not f.exists() or "error" in json.loads(f.read_text(encoding="utf-8")):
+                    todo.append((r, e, d.name))
+    print(f"sweep    {len(recs)} claims x {len(efforts)} efforts x {runs} runs, {len(todo)} to run, {workers} workers")
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        futs = {pool.submit(run_one, r, e, model): (r["id"], e) for r, e in todo}
+        futs = {pool.submit(run_one, r, e, model): (r["id"], d) for r, e, d in todo}
         for fut in as_completed(futs):
             res = fut.result()
-            (out_dir / res["effort"] / f"{res['id']}.json").write_text(json.dumps(res, indent=1, default=str),
-                                                                     encoding="utf-8")
+            d = futs[fut][1]
+            res["run"] = d
+            (out_dir / d / f"{res['id']}.json").write_text(json.dumps(res, indent=1, default=str), encoding="utf-8")
             tag = res.get("verdict") or ("ERROR " + res["error"][:80])
-            print(f"  {res['effort']:<8} {res['id']}  {tag}  ({res['seconds']}s)")
+            print(f"  {d:<11} {res['id']}  {tag}  ({res['seconds']}s)")
+
+
+_ORDER = {e: i for i, e in enumerate(("minimal", "low", "medium", "high", "xhigh", "max"))}
+
+
+def _score_dir(d: Path, ref: dict) -> dict:
+    results = [json.loads(f.read_text(encoding="utf-8")) for f in sorted(d.glob("c*.json"))]
+    ok = [r for r in results if "error" not in r and r["id"] in ref]
+    scores = [score_claim(r["id"], ref[r["id"]], r["spec"], r["verdict"]) for r in ok]
+    routing = [s.fields["routing"] for s in scores]
+    elems = [v for s in scores for k, v in s.fields.items() if k != "routing"]
+    full = [s for s in scores if len(s.fields) > 1]
+    tok = [sum(c.get("tokens", 0) for c in r["cost"]) for r in ok]
+    secs = [r["seconds"] for r in ok]
+    return {
+        "run": d.name, "claims": len(results), "errors": len(results) - len(ok),
+        "routing": (sum(routing), len(routing)), "rule_elements": (sum(elems), len(elems)),
+        "fully_right": (sum(all(s.fields.values()) for s in full), len(full)),
+        "escalated": sum(bool(r["audit_majors"] or r["grounding_problems"]) for r in ok),
+        "repaired": sum(r["audit_repair"] for r in ok),
+        "tokens_mean": round(sum(tok) / len(tok)) if tok else 0,
+        "seconds_mean": round(sum(secs) / len(secs), 1) if secs else 0,
+        "differs": {s.id: [k for k, v in s.fields.items() if not v] for s in scores if not all(s.fields.values())},
+        "routed": {r["id"]: r["verdict"] for r in ok},
+    }
 
 
 def evaluate(out_dir: Path = OUT, gt_path: Path = GT_PATH) -> list[dict]:
+    """One row per effort; each row carries its runs. Folders effort, effort_r2, ... are runs of one effort."""
     ref = load_reference(gt_path)
+    groups: dict[str, list[dict]] = {}
+    for d in sorted((p for p in out_dir.iterdir() if p.is_dir()), key=lambda p: p.name):
+        groups.setdefault(d.name.split("_r")[0], []).append(_score_dir(d, ref))
     rows = []
-    order = {e: i for i, e in enumerate(("minimal", "low", "medium", "high", "xhigh", "max"))}
-    for d in sorted((p for p in out_dir.iterdir() if p.is_dir()), key=lambda p: order.get(p.name, 99)):
-        results = [json.loads(f.read_text(encoding="utf-8")) for f in sorted(d.glob("c*.json"))]
-        ok = [r for r in results if "error" not in r and r["id"] in ref]
-        scores = [score_claim(r["id"], ref[r["id"]], r["spec"], r["verdict"]) for r in ok]
-        routing = [s.fields["routing"] for s in scores]
-        elems = [v for s in scores for k, v in s.fields.items() if k != "routing"]
-        full = [s for s in scores if len(s.fields) > 1]
-        tok = [sum(c.get("tokens", 0) for c in r["cost"]) for r in ok]
-        secs = [r["seconds"] for r in ok]
-        rows.append({
-            "effort": d.name, "claims": len(results), "errors": len(results) - len(ok),
-            "routing": (sum(routing), len(routing)), "rule_elements": (sum(elems), len(elems)),
-            "fully_right": (sum(all(s.fields.values()) for s in full), len(full)),
-            "escalated": sum(bool(r["audit_majors"] or r["grounding_problems"]) for r in ok),
-            "repaired": sum(r["audit_repair"] for r in ok),
-            "tokens_mean": round(sum(tok) / len(tok)) if tok else 0,
-            "seconds_mean": round(sum(secs) / len(secs), 1) if secs else 0,
-            "differs": {s.id: [k for k, v in s.fields.items() if not v] for s in scores if not all(s.fields.values())},
-        })
+    for effort in sorted(groups, key=lambda e: _ORDER.get(e, 99)):
+        runs = groups[effort]
+        ids = set.intersection(*(set(r["routed"]) for r in runs)) if runs else set()
+        stable = sum(len({r["routed"][i] for r in runs}) == 1 for i in ids)
+        rows.append({"effort": effort, "runs": runs, "routing_stable": (stable, len(ids))})
     return rows
 
 
-def to_markdown(rows: list[dict]) -> str:
-    def frac(t):
-        return f"{t[0]}/{t[1]} ({t[0] / t[1] * 100:.0f}%)" if t[1] else "n/a"
+def _pct(t):
+    return t[0] / t[1] * 100 if t[1] else 0.0
 
+
+def _span(vals, fmt="{:.0f}"):
+    lo, hi = min(vals), max(vals)
+    mean = sum(vals) / len(vals)
+    return fmt.format(mean) if len(vals) == 1 or lo == hi else f"{fmt.format(mean)} ({fmt.format(lo)}–{fmt.format(hi)})"
+
+
+def to_markdown(rows: list[dict]) -> str:
     lines = ["# The dial: reasoning effort vs. accuracy on Falsify's own task", "",
-             "Generated by `falsify sweep report`. Each row runs the whole model side of the pipeline (compile, quote "
-             "check, fires check, audit, one repair) on the corpus at one Muse Spark reasoning effort, then scores the "
-             "compiled rules against the trader-reviewed reference in `corpus/ground_truth.yaml`. The grader is "
-             "deterministic Python, not a model.", "",
-             "| Effort | Testable or not | Rule elements right | Claims fully right | Sent to a human | Audit repairs "
-             "| Mean tokens / claim | Mean seconds / claim | Errors |",
+             "Generated by `falsify sweep report`. Each run sends the whole corpus through the model side of the "
+             "pipeline (compile, quote check, fires check, audit, one repair) at one Muse Spark reasoning effort, then "
+             "scores the compiled rules against the trader-reviewed reference in `corpus/ground_truth.yaml`. The "
+             "grader is deterministic Python, not a model. Where an effort was run more than once, cells show the "
+             "mean and, in brackets, the lowest and highest run: the spread is the run-to-run noise, and a "
+             "difference between efforts smaller than it is not a difference.", "",
+             "| Effort | Runs | Testable or not | Rule elements right | Claims fully right | Sent to a human "
+             "| Mean tokens / claim | Mean seconds / claim | Same routing every run |",
              "|---|---|---|---|---|---|---|---|---|"]
-    for r in rows:
-        n = r["claims"] - r["errors"]
-        lines.append(f"| {r['effort']} | {frac(r['routing'])} | {frac(r['rule_elements'])} | {frac(r['fully_right'])} | "
-                     f"{r['escalated']}/{n} | {r['repaired']}/{n} | {r['tokens_mean']:,} | {r['seconds_mean']} | {r['errors']} |")
-    lines += ["", "## Where each effort differs from the trader", ""]
-    for r in rows:
-        bits = [f"{cid} ({', '.join(v)})" for cid, v in r["differs"].items()]
-        lines.append(f"- **{r['effort']}**: " + ("; ".join(bits) if bits else "none"))
+    for row in rows:
+        rs = row["runs"]
+        st = row["routing_stable"]
+        lines.append(
+            f"| {row['effort']} | {len(rs)} | {_span([_pct(r['routing']) for r in rs])}% "
+            f"| {_span([_pct(r['rule_elements']) for r in rs])}% | {_span([_pct(r['fully_right']) for r in rs])}% "
+            f"| {_span([r['escalated'] for r in rs])} of {rs[0]['claims']} "
+            f"| {_span([r['tokens_mean'] for r in rs], '{:,.0f}')} | {_span([r['seconds_mean'] for r in rs])} "
+            f"| {st[0]}/{st[1] if len(rs) > 1 else '-'} |".replace(f"{st[0]}/-", "-"))
+    lines += ["", "## Where each run differs from the trader", ""]
+    for row in rows:
+        for r in row["runs"]:
+            bits = [f"{cid} ({', '.join(v)})" for cid, v in r["differs"].items()]
+            lines.append(f"- **{r['run']}**: " + ("; ".join(bits) if bits else "none"))
     return "\n".join(lines) + "\n"

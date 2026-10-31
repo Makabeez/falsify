@@ -1,0 +1,148 @@
+{
+ "id": "c025",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Take only long H1 MACD upward crosses when D1 MACD line is above its signal line, ignoring shorts.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "requires D1 MACD trend filter to gate H1 entries, a multi-timeframe condition the schema cannot express and the heart of the strategy",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "macd_line",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "macd_signal",
+     "period": 12,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 26.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "MACD fast length",
+    "target": "entry[0].left.period",
+    "candidates": [
+     8.0,
+     12.0,
+     21.0
+    ]
+   },
+   {
+    "name": "MACD slow length",
+    "target": "entry[0].left.param",
+    "candidates": [
+     20.0,
+     26.0,
+     35.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2018-12-01",
+   "period_end": null,
+   "other": "Annual return 6.6% (from 4.6%), max drawdown -12.4% (from -23.9%), Sharpe 0.80 (from 0.33)"
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: D1 MACD line above signal trend filter is a multi-timeframe condition the schema cannot express; H1-only core would test different strategy.",
+   "Asset BTCUSDT chosen from page about BTC; no explicit symbol in claim text.",
+   "Timeframe 1h chosen from H1 entries and page chart timeframe.",
+   "MACD uses usual default 12,26,9; claim gives no settings."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "execute long entries only when the H1 MACD crosses upward",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "execute long entries only when the H1 MACD crosses upward",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "The analysis begins in December 2018",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Annual return rises to 6.6% (from 4.6%)",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 5.3,
+   "tokens": 3144,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.4,
+   "tokens": 2186
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.2,
+   "tokens": 3725,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 1.9,
+   "tokens": 1840
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 13.8,
+ "run": "minimal_r3"
+}

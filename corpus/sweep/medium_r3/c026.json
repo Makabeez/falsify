@@ -1,0 +1,173 @@
+{
+ "id": "c026",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Long-side Turtle system buys 20-day highs and exits 10-day lows with ATR stops, applied to crypto including Bitcoin and Ethereum.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT",
+   "ETHUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "lowest_low",
+     "period": 10,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": 2.0,
+  "stop_atr_period": 20,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2007-01-01",
+   "period_end": "2025-12-31",
+   "other": "Total profit across all 43 markets: $1,147,318"
+  },
+  "assumptions": [
+   "Timeframe is 1d: 20-day and 10-day language implies daily bars, consistent with chart timeframe 1d.",
+   "Assets limited to BTCUSDT and ETHUSDT as the named crypto subset of the 43-market universe; full 43-market list not stated.",
+   "Exit phrase interpreted as close below the lowest low of the prior 10 bars, the standard Turtle long-side 10-day exit.",
+   "ATR stop fixed at 2 x ATR(20) as the standard pure Turtle values; claim states ATR stops with no multiple or length and no optimization is implied.",
+   "No fixed target, trailing stop or time exit stated, so exits are the 10-day low condition plus ATR stop only.",
+   "NOT EXPRESSIBLE: portfolio-level aggregation, compounding and position sizing across 43 markets; engine tests per-asset one position at a time."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Including: Bitcoin & Ethereum",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "pure long-side Turtle code",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Buy when price breaks above the highest high of the last 20 days.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "Exit when price reverses direction for 10 days.",
+    "assumed": false
+   },
+   {
+    "field": "stop_atr_mult",
+    "quote": "ATR stops",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Total profit across all 43 markets: $1,147,318",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "18 years of data (2007-2025)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "18 years of data (2007-2025)",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 20.7,
+   "tokens": 11772,
+   "quote_repairs": 1
+  },
+  {
+   "step": "audit",
+   "seconds": 17.8,
+   "tokens": 6049
+  },
+  {
+   "step": "audit repair",
+   "seconds": 14.8,
+   "tokens": 10939,
+   "quote_repairs": 1
+  },
+  {
+   "step": "audit",
+   "seconds": 20.2,
+   "tokens": 6652
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 73.5,
+ "run": "medium_r3"
+}

@@ -1,0 +1,152 @@
+{
+ "id": "c003",
+ "effort": "medium",
+ "spec": {
+  "claim_summary": "Buy when 4h RSI(14) drops below 28 with five averaging-down orders and take profit 3% above average entry with no stop-loss.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "The core profit mechanism requires a five-rung averaging ladder with 1.8x scaling and exit on averaged entry, which cannot be tested as a single-entry rule.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 28.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": 3.0,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 70.97,
+   "total_return_pct": 3.08,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2024-01-01",
+   "period_end": "2026-06-29",
+   "other": "Net Profit: +3,078.29 USDT; Profit Factor: 4.028"
+  },
+  "assumptions": [
+   "Asset not named in claim text; BTCUSDT chosen as most natural reading from page about BTC.",
+   "Direction inferred as long from buying on RSI drop with averaging down and take-profit above entry.",
+   "'drops below 28' compiled as RSI(14) crosses_below 28.",
+   "NOT EXPRESSIBLE: Five averaging orders at -2%, -5%, -9.5%, -16%, -25% with 1.8x size scaling per rung omitted; schema allows only single all-in entry with one position at a time.",
+   "NOT EXPRESSIBLE: Take Profit 3% above average entry requires averaged price after the ladder; value shown is closest core only and does not equal target from single base entry.",
+   "NOT EXPRESSIBLE: No stop-loss with ladder allocation as structural risk cap and position sizing/compounding omitted.",
+   "Test Period cited in claimed is not a rule filter; engine tests over all available history."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "when 4h RSI(14) drops below 28",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "4h RSI(14)",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "take_profit_pct",
+    "quote": "Take Profit: 3% above average entry.",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "Test Period: January 1, 2024 \u2014 June 29, 2026 (~30 months).",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "Test Period: January 1, 2024 \u2014 June 29, 2026 (~30 months).",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "Net Profit: +3,078.29 USDT (+3.08%)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Percent Profitable: 70.97% (44 / 62)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Profit Factor: 4.028",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 16.3,
+   "tokens": 6861,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.0,
+   "tokens": 4362
+  },
+  {
+   "step": "audit repair",
+   "seconds": 8.5,
+   "tokens": 5477,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 9.7,
+   "tokens": 4032
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 45.6,
+ "run": "medium_r3"
+}

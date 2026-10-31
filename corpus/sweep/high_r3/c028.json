@@ -1,0 +1,216 @@
+{
+ "id": "c028",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Buy Bitcoin on a daily close above the prior 20-day high when the previous marker was at least three sessions earlier, with a stop below the signal extreme and exit within a few bars.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "le",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    },
+    "op": "le",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 2
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": 2.0,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 4,
+  "free_parameters": [
+   {
+    "name": "holding period within 2-6 intervals",
+    "target": "max_hold_bars",
+    "candidates": [
+     2.0,
+     3.0,
+     4.0,
+     5.0,
+     6.0
+    ]
+   },
+   {
+    "name": "stop distance below signal extreme",
+    "target": "stop_atr_mult",
+    "candidates": [
+     1.0,
+     1.5,
+     2.0,
+     3.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Timeframe 1d chosen from daily language like next day and trading sessions; claim does not state 1d explicitly.",
+   "BTCUSDT mapped from Bitcoin (BTC) on Binance reference.",
+   "Direction interpreted as long from Buy entry; new 20-day low side not traded separately because entry is AND-only and direction is single-sided.",
+   "Gap of at least 3 sessions encoded as no 20-day-high close breakout on the prior 2 bars.",
+   "Next-bar open fill used to approximate next-day entry at the watermark.",
+   "NOT EXPRESSIBLE: exact limit entry at the previous 20-day high/low watermark and exact stop price below the signal extreme; stop approximated with an ATR multiple.",
+   "Time exit 4 bars chosen as middle of stated 2-6 interval range."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "OHLCV historical data for Bitcoin (BTC) from Binance exchange.",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "Buy entry is placed on the next day at the previous 20 day high/low watermark",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "The close of the new high/low must be greater than (beyond) the previous high/low price marker.",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "The market makes a new 20day high or low and the previous high/low marker must have been at least 3 trading sessions prior.",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "The market makes a new 20day high or low and the previous high/low marker must have been at least 3 trading sessions prior.",
+    "assumed": false
+   },
+   {
+    "field": "stop_atr_mult",
+    "quote": "Stop entries for failed trades are placed below the latest high/low that triggered the signal",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": "Profits/exits should be taken within 2-6 candlestick intervals",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 29.2,
+   "tokens": 10220,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 13.2,
+   "tokens": 5368
+  },
+  {
+   "step": "audit repair",
+   "seconds": 18.2,
+   "tokens": 7889,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 27.0,
+   "tokens": 8819
+  }
+ ],
+ "audit_majors": [
+  "entry: Claim requires buys on both new 20-day high AND new 20-day low triggers ('new 20day high or low', 'high/low watermark'). Spec implements only highest_high breakout (close > 20-day high) and omits the symmetric low-side buy condition (close beyond prior 20-day low). Assumption drops low side but choice contradicts explicit claim language."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 87.6,
+ "run": "high_r3"
+}

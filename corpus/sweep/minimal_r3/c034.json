@@ -1,0 +1,78 @@
+{
+ "id": "c034",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "A system trades price against its slowest moving average with confluence across 10 timeframes where more aligned timeframes means higher success.",
+  "source_type": "text",
+  "testable": false,
+  "untestable_reason": "No mechanical rule can be recovered because moving-average length, trigger, and exits are undefined and the core 10-timeframe alignment needs multi-timeframe data.",
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "No asset stated; assumed BTCUSDT as default.",
+   "No timeframe stated; assumed 1d for single-timeframe core.",
+   "No direction stated; assumed long.",
+   "NOT EXPRESSIBLE: 10-timeframe alignment/confluence scoring is multi-timeframe and cannot be expressed.",
+   "No moving-average length, price reference, cross direction, or exit stated so no mechanical rule can be recovered; the omitted multi-timeframe alignment is the heart of the strategy."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.1,
+   "tokens": 2654,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 1.8,
+   "tokens": 1286
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 5.9,
+ "run": "minimal_r3"
+}

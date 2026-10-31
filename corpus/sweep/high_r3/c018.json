@@ -1,0 +1,169 @@
+{
+ "id": "c018",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Daily strategy buys when price crosses above the 80-day +1-sigma band and sells when price crosses below the middle band.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "NIKKEI225_COMPONENTS"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "bb_upper",
+     "period": 80,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 1.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 80,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 33.45,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2000-01-04",
+   "period_end": "2024-12-30",
+   "other": null
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: Claim trades each of the 225 Nikkei 225 components individually as separate positions; ClaimSpec and engine test a single price series one position at a time, so portfolio breadth across 225 separate stocks cannot be reproduced - assets uses a basket placeholder, not the index price series, and will report lack of data.",
+   "Timeframe 1d from daily-charts statement.",
+   "Price means close because rules are evaluated on bar closes; next-day open fill is the engine default.",
+   "Upper +1-sigma line is Bollinger upper with period 80 and 1.0 sigma width.",
+   "Middle band is the 80-period SMA forming the Bollinger middle.",
+   "Direction is long from buy then sell wording.",
+   "No stop, target, trailing stop or max hold stated; exit is middle-band cross only.",
+   "Test Period cited is recorded in claimed, not as test window; engine tests all available history."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "All components of the Nikkei 225",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "Only daily charts are used.",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "Buy at the next day\u2019s open using a market order",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Price crosses above the +1\u03c3 line from below",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "If the price crosses below the middle band, sell at the next day\u2019s open using a market order",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Win Rate: 33.45%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "Test Period: January 4, 2000 \u2013 December 30, 2024",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "Test Period: January 4, 2000 \u2013 December 30, 2024",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 16.8,
+   "tokens": 6845,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 9.9,
+   "tokens": 4143
+  },
+  {
+   "step": "audit repair",
+   "seconds": 17.5,
+   "tokens": 8025,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.0,
+   "tokens": 4698
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 55.3,
+ "run": "high_r3"
+}

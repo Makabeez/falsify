@@ -1,0 +1,172 @@
+{
+ "id": "c028",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Buy Bitcoin on a new 20-day high close beyond the prior marker, exiting within 2-6 bars.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "highest_high",
+     "period": 3,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "le",
+    "right": {
+     "kind": "highest_high",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 3
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": 4,
+  "free_parameters": [
+   {
+    "name": "holding period in bars",
+    "target": "max_hold_bars",
+    "candidates": [
+     2.0,
+     3.0,
+     4.0,
+     5.0,
+     6.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Timeframe 1d taken from page chart.",
+   "Long-side compiled as testable core; short-side on new 20-day low is omitted because direction allows only one side.",
+   "NOT EXPRESSIBLE: stop below the latest triggering high/low marker is a variable price-level stop, not a fixed % or ATR multiple; no stop encoded.",
+   "NOT EXPRESSIBLE: previous marker at least 3 sessions prior approximated by requiring recent 3-bar high does not exceed the 20-bar high from 3 bars ago; exact marker identity not tracked.",
+   "Entry fill at next bar open per engine approximates next-day entry at watermark.",
+   "Exit of 2-6 candlestick intervals compiled as fixed max_hold_bars with sweep over 2-6.",
+   "highest_high(N) already excludes the current bar, so close gt highest_high(20) at offset 0 compares close beyond prior 20 bars without double-lagging."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin (BTC) from Binance exchange",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "Buy entry is placed on the next day",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "The close of the new high/low must be greater than (beyond) the previous high/low price marker.",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "previous high/low marker must have been at least 3 trading sessions prior",
+    "assumed": false
+   },
+   {
+    "field": "max_hold_bars",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.6,
+   "tokens": 2895,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 6.7,
+   "tokens": 2742
+  },
+  {
+   "step": "audit repair",
+   "seconds": 6.0,
+   "tokens": 4014,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 4.3,
+   "tokens": 2418
+  }
+ ],
+ "audit_majors": [
+  "direction: Claim describes both new 20-day high and new 20-day low signals; spec encodes long-side only and omits short-side on new 20-day low.",
+  "stop_loss_pct: Claim requires stop below latest triggering high/low marker; spec encodes no stop. Leaving out a loss-cutting stop changes what is being tested."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 21.7,
+ "run": "minimal_r2"
+}

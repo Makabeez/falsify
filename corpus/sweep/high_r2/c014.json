@@ -1,0 +1,213 @@
+{
+ "id": "c014",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Sell on Saturday and buy back on Wednesday when price is rising to avoid weak Sundays on a daily Bitcoin chart.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 1.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 2.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "day_of_week",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 4.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "trend filter MA length",
+    "target": "entry[2].right.period",
+    "candidates": [
+     10.0,
+     20.0,
+     50.0,
+     100.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Asset 'Bitcoin' mapped to BTCUSDT in the bundled universe.",
+   "Timeframe 1d from the chart period phrase.",
+   "Direction modeled as long: Wednesday buy to enter and Saturday sell to exit represents the described sell Saturday then buy-back Wednesday cycle for a spot holder.",
+   "'kinda going up' interpreted as close above 20-day SMA; 20 used as usual short-trend default.",
+   "Wednesday entry encoded as day_of_week gt 1.5 AND lt 2.5, both must hold on the same bar.",
+   "Saturday exit encoded as day_of_week crosses_above 4.5 as a single condition to fire only on Saturday because exit conditions are ORed; for a Wednesday entry it first triggers on Saturday.",
+   "Entry and exit evaluated on daily bar closes with fills at the next bar open per engine."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "set your chart time period to 1 day",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "sells on Saturday, and buys back the next Wednesday",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "buys back the next Wednesday",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "buys back the next Wednesday",
+    "assumed": false
+   },
+   {
+    "field": "entry[2]",
+    "quote": "if the price is kinda going up",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "sells on Saturday",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 39.7,
+   "tokens": 11982,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 13.6,
+   "tokens": 5304
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 53.3,
+ "run": "high_r2"
+}

@@ -1,0 +1,2049 @@
+{
+ "id": "c010",
+ "image": "c010.png",
+ "spec": {
+  "claim_summary": "Supertrend flip entries on BTC 4-hour in both directions with ATR stop, half-position profit at 0.75R with breakeven move, and exit on opposite flip.",
+  "source_type": "image",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "4h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "supertrend",
+     "period": 10,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 3.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "supertrend",
+     "period": 10,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 3.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": 3.0,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "supertrend ATR length",
+    "target": "entry[0].right.period",
+    "candidates": [
+     7.0,
+     10.0,
+     14.0,
+     20.0
+    ]
+   },
+   {
+    "name": "supertrend multiplier",
+    "target": "entry[0].right.param",
+    "candidates": [
+     2.0,
+     2.5,
+     3.0,
+     4.0
+    ]
+   },
+   {
+    "name": "ATR stop multiplier",
+    "target": "stop_atr_mult",
+    "candidates": [
+     1.5,
+     2.0,
+     3.0,
+     4.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2020-01-02",
+   "period_end": "2023-01-05",
+   "other": null
+  },
+  "assumptions": [
+   "Asset BTCUSD mapped to spot symbol BTCUSDT and 4H timeframe mapped to 4h.",
+   "Supertrend ATR length and multiplier not stated so defaults 10 and 3.0 used for entry and exit.",
+   "ATR stop length and multiplier not stated so 14-period ATR with 3x multiplier used.",
+   "NOT EXPRESSIBLE: claim defines symmetric short entries and exits; schema direction allows only long or short so spec encodes long side and omits short side.",
+   "NOT EXPRESSIBLE: partial close of half position at 0.75R and moving stop to breakeven cannot be expressed; spec holds full position with initial ATR stop to opposite Supertrend flip with no R-multiple target.",
+   "NOT EXPRESSIBLE: RSI filter in title has no rules or settings stated and is omitted; Supertrend flip compiled as testable core.",
+   "Entries and exits evaluated on bar closes with next-bar open fill; Supertrend flip approximated as close crossing Supertrend."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "This strategy was designed for BTCUSD in 4H timeframe",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "This strategy was designed for BTCUSD in 4H timeframe",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "you enter into a long position.",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Once Supertrend changes from a downtrend to a uptrend, you enter into a long position.",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "Once Supertrend changes from a uptrend to a downtrend, you close the other half of the initial long position.",
+    "assumed": false
+   },
+   {
+    "field": "stop_atr_mult",
+    "quote": "The stop loss will be defined by the atr stop loss",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "Backtesting context: 2020-01-02 to 2023-01-05 (The strategy has also worked in previous years)",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "Backtesting context: 2020-01-02 to 2023-01-05 (The strategy has also worked in previous years)",
+    "assumed": false
+   }
+  ]
+ },
+ "audit": {
+  "faithful": false,
+  "issues": [
+   {
+    "field": "direction",
+    "problem": "Claim defines symmetric long and short: 'you enter into a short position' on uptrend to downtrend flip with opposite-flip exit. Spec encodes direction=long only and omits short side.",
+    "severity": "major"
+   },
+   {
+    "field": "take_profit_r",
+    "problem": "Claim requires first profit at 0.75 risk/reward where half position will be closed and stop moved to break even. Spec holds full position to opposite flip with no R-multiple target, omitting partial exit and breakeven.",
+    "severity": "major"
+   }
+  ]
+ },
+ "transcript": {
+  "visible_text": "SuperTrend Strategy with Rsi filter for BTCUSD 4H\nTradingView\nJan 6, 2023\nHello guys!, If you are a swing trader and you are looking for a simple trend strategy, you should check this one.\nBased in the supertrend indicator, this strategy will help you to catch big movements in BTCUSD 4H and avoid losses as much as possible in consolidated situations of the market\nThis strategy was designed for BTCUSD in 4H timeframe\nBacktesting context: 2020-01-02 to 2023-01-05 (The strategy has also worked in previous years)\nTrade conditions:\nRules are actually simple, the most important thing is the risk and position management of this strategy\nFor long:\nOnce Supertrend changes from a downtrend to a uptrend, you enter into a long position. The stop loss will be defined by the atr stop loss\nThe first profit will be of 0.75 risk/reward ratio where half position will be closed. When this happens, you move the stop loss to break even.\nNow, just will be there two situations:\nOnce Supertrend changes from a uptrend to a downtrend, you close the other half of the initial long position.\nIf price goes againts the position, the position will be closed due to breakeven.\nFor short:\nOnce Supertrend changes from a uptrend to a downtrend, you enter into a short position. The stop loss will be defined by the atr stop loss\nThe first profit will be of 0.75 risk/reward ratio where half position will be closed. When this happens, you move the stop loss to break even.\nLike in the long position, just will be there two situations:\nOnce Supertrend changes from a downtrend to a uptrend, you close the other half of the initial short position.\nIf price goes againts the position, the position will be closed due to breakeven.",
+  "speech": "",
+  "chart": "The chart shows BTCUSD on a 4-hour timeframe as candlesticks with green and red shaded boxes marking long and short strategy positions. A price scale is on the right and a date scale from late July to early October is on the bottom."
+ },
+ "grounding": {
+  "rule_elements": 6,
+  "quoted": 6,
+  "assumed": 0,
+  "quoted_fields": [
+   "entry[0]",
+   "exit[0]",
+   "stop_atr_mult",
+   "assets",
+   "timeframe",
+   "direction"
+  ],
+  "assumed_fields": [],
+  "problems": []
+ },
+ "cost": [
+  {
+   "step": "transcribe",
+   "seconds": 7.9,
+   "tokens": 6856
+  },
+  {
+   "step": "compile",
+   "seconds": 22.0,
+   "tokens": 11476,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.5,
+   "tokens": 8617
+  },
+  {
+   "step": "audit repair",
+   "seconds": 15.4,
+   "tokens": 11788,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 13.8,
+   "tokens": 9036
+  }
+ ],
+ "report": {
+  "verdict": "INCONCLUSIVE",
+  "headline": "Tested an approximation of the claim. Makes money (+1.90% per trade after costs, 225 trades) but can't be told from luck: random timing did as well 7% of the time.",
+  "reasons": [
+   "makes money after costs (+1.90% per trade), but random timing did as well 7% of the time (p = 0.067); needs p < 0.05 to count as an edge"
+  ],
+  "warnings": [
+   "needs a human check: the automatic checks still disagree with the compiled rules after the repair rounds, so treat the verdict as provisional",
+   "left out: claim defines symmetric short entries and exits; schema direction allows only long or short so spec encodes long side and omits short side.",
+   "left out: partial close of half position at 0.75R and moving stop to breakeven cannot be expressed; spec holds full position with initial ATR stop to opposite Supertrend flip with no R-multiple target.",
+   "left out: RSI filter in title has no rules or settings stated and is omitted; Supertrend flip compiled as testable core.",
+   "audit: direction: Claim defines symmetric long and short: 'you enter into a short position' on uptrend to downtrend flip with opposite-flip exit. Spec encodes direction=long only and omits short side.",
+   "audit: take_profit_r: Claim requires first profit at 0.75 risk/reward where half position will be closed and stop moved to break even. Spec holds full position to opposite flip with no R-multiple target, omitting partial exit and breakeven."
+  ],
+  "asset": "BTCUSDT",
+  "timeframe": "4h",
+  "primary": {
+   "trades": 225,
+   "win_rate_pct": 38.22222222222222,
+   "avg_net_pct": 1.9028022634721486,
+   "total_net_pct": 1848.5718469064327,
+   "total_gross_pct": 3243.763527455859,
+   "max_drawdown_pct": -40.83740036375845,
+   "avg_bars": 43.275555555555556,
+   "open_at_end": 0,
+   "buy_hold_pct": 1780.815115875236,
+   "window": [
+    "2017-08-17",
+    "2026-10-26"
+   ],
+   "exposure_pct": 48.36818836620138
+  },
+  "null_test": {
+   "p_value": 0.06696651674162919,
+   "strategy_mean_log_pct": 1.3198585826853677,
+   "null_median_log_pct": 0.3807679410170478,
+   "null_p95_log_pct": 1.4167046258312985,
+   "beat_by_random_pct": 6.65,
+   "sims": 2000,
+   "hist": {
+    "edges": [
+     -2.0468,
+     -1.9212,
+     -1.7955,
+     -1.6699,
+     -1.5443,
+     -1.4187,
+     -1.293,
+     -1.1674,
+     -1.0418,
+     -0.9162,
+     -0.7906,
+     -0.6649,
+     -0.5393,
+     -0.4137,
+     -0.2881,
+     -0.1625,
+     -0.0368,
+     0.0888,
+     0.2144,
+     0.34,
+     0.4657,
+     0.5913,
+     0.7169,
+     0.8425,
+     0.9681,
+     1.0938,
+     1.2194,
+     1.345,
+     1.4706,
+     1.5962,
+     1.7219,
+     1.8475,
+     1.9731,
+     2.0987,
+     2.2244,
+     2.35,
+     2.4756,
+     2.6012,
+     2.7268,
+     2.8525,
+     2.9781
+    ],
+    "counts": [
+     0,
+     1,
+     0,
+     1,
+     3,
+     6,
+     4,
+     6,
+     14,
+     23,
+     34,
+     52,
+     69,
+     78,
+     95,
+     137,
+     139,
+     137,
+     155,
+     148,
+     153,
+     121,
+     148,
+     132,
+     97,
+     66,
+     57,
+     36,
+     34,
+     22,
+     8,
+     7,
+     4,
+     5,
+     2,
+     5,
+     0,
+     0,
+     1,
+     0
+    ],
+    "strategy": 1.3199
+   }
+  },
+  "out_of_sample": {
+   "available": true,
+   "boundary": "2023-01-06",
+   "boundary_source": "post date",
+   "claim_window": [
+    "2020-01-02",
+    "2023-01-05"
+   ],
+   "in_window": {
+    "trades": 73,
+    "win_rate_pct": 38.35616438356164,
+    "avg_net_pct": 3.1076544063856204,
+    "total_net_pct": 396.7087202647464,
+    "total_gross_pct": 491.8207858551417,
+    "max_drawdown_pct": -40.83740036375845,
+    "avg_bars": 46.26027397260274,
+    "open_at_end": 0
+   },
+   "after_window": {
+    "trades": 97,
+    "win_rate_pct": 38.144329896907216,
+    "avg_net_pct": 0.7604587947026115,
+    "total_net_pct": 57.80919959625892,
+    "total_gross_pct": 99.17559399634833,
+    "max_drawdown_pct": -39.26172002861198,
+    "avg_bars": 39.391752577319586,
+    "open_at_end": 0
+   },
+   "counts": true
+  },
+  "halves": {
+   "split": "2022-03-24",
+   "first": {
+    "trades": 107,
+    "win_rate_pct": 41.1214953271028,
+    "avg_net_pct": 3.3254874967172374,
+    "total_net_pct": 1232.50143959883,
+    "total_gross_pct": 1622.6401427716062,
+    "max_drawdown_pct": -40.83740036375845,
+    "avg_bars": 48.3177570093458,
+    "open_at_end": 0
+   },
+   "second": {
+    "trades": 118,
+    "win_rate_pct": 35.59322033898305,
+    "avg_net_pct": 0.612740229936348,
+    "total_net_pct": 46.234126958473134,
+    "total_gross_pct": 94.10690860111856,
+    "max_drawdown_pct": -39.26172002861195,
+    "avg_bars": 38.70338983050848,
+    "open_at_end": 0
+   },
+   "consistent": true
+  },
+  "cross_asset": {
+   "assets": [
+    {
+     "asset": "ETHUSDT",
+     "trades": 226,
+     "total_net_pct": 1023.7153771514702,
+     "avg_net_pct": 1.9255112317795111
+    },
+    {
+     "asset": "SOLUSDT",
+     "trades": 155,
+     "total_net_pct": 1192.6458185712154,
+     "avg_net_pct": 3.845284885312034
+    },
+    {
+     "asset": "BNBUSDT",
+     "trades": 218,
+     "total_net_pct": 2785.403417739834,
+     "avg_net_pct": 3.523492269083486
+    },
+    {
+     "asset": "XRPUSDT",
+     "trades": 189,
+     "total_net_pct": 311.8317462409867,
+     "avg_net_pct": 2.709895962155598
+    },
+    {
+     "asset": "DOGEUSDT",
+     "trades": 147,
+     "total_net_pct": 604.8563643042754,
+     "avg_net_pct": 2.834711644713517
+    },
+    {
+     "asset": "ADAUSDT",
+     "trades": 205,
+     "total_net_pct": 13.19035648046356,
+     "avg_net_pct": 1.3658482400078336
+    },
+    {
+     "asset": "AVAXUSDT",
+     "trades": 140,
+     "total_net_pct": 1259.774804901958,
+     "avg_net_pct": 9.320944698706429
+    },
+    {
+     "asset": "LINKUSDT",
+     "trades": 196,
+     "total_net_pct": 3.1415867741938275,
+     "avg_net_pct": 1.60424586726325
+    },
+    {
+     "asset": "LTCUSDT",
+     "trades": 202,
+     "total_net_pct": -5.858907600923979,
+     "avg_net_pct": 0.5433108420782575
+    },
+    {
+     "asset": "DOTUSDT",
+     "trades": 145,
+     "total_net_pct": -18.799897698937997,
+     "avg_net_pct": 0.7621339218618852
+    },
+    {
+     "asset": "TRXUSDT",
+     "trades": 232,
+     "total_net_pct": 56.168025939402625,
+     "avg_net_pct": 0.66102742413922
+    }
+   ],
+   "tested": 11,
+   "positive": 11,
+   "positive_share_pct": 100.0
+  },
+  "sweep": {
+   "readings": 64,
+   "truncated": false,
+   "positive_share_pct": 100.0,
+   "best": {
+    "params": {
+     "supertrend ATR length": 10.0,
+     "supertrend multiplier": 4.0,
+     "ATR stop multiplier": 1.5
+    },
+    "trades": 143,
+    "avg_net_pct": 2.3804508076717528,
+    "total_net_pct": 1258.3962153608018,
+    "p_value": 0.005988023952095809
+   },
+   "best_p_bonferroni": 0.38323353293413176,
+   "results": [
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 334,
+     "avg_net_pct": 1.1284402664305389,
+     "total_net_pct": 1039.1202074574335,
+     "p_value": 0.09580838323353294
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 320,
+     "avg_net_pct": 1.2629946869834916,
+     "total_net_pct": 1151.1842502495297,
+     "p_value": 0.10778443113772455
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 287,
+     "avg_net_pct": 1.6172857939614014,
+     "total_net_pct": 1951.1532040998948,
+     "p_value": 0.10978043912175649
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 265,
+     "avg_net_pct": 1.9565273923693522,
+     "total_net_pct": 3432.0804417146546,
+     "p_value": 0.09181636726546906
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 267,
+     "avg_net_pct": 1.5711625890736665,
+     "total_net_pct": 1811.5184920789015,
+     "p_value": 0.03992015968063872
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 262,
+     "avg_net_pct": 1.6460157125043162,
+     "total_net_pct": 1860.7429846255347,
+     "p_value": 0.07385229540918163
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 257,
+     "avg_net_pct": 1.7130103029424544,
+     "total_net_pct": 1853.691703835738,
+     "p_value": 0.08982035928143713
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 248,
+     "avg_net_pct": 1.7184443072925506,
+     "total_net_pct": 1513.7591517217554,
+     "p_value": 0.12974051896207583
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 226,
+     "avg_net_pct": 1.1897545337106383,
+     "total_net_pct": 472.1331617135675,
+     "p_value": 0.1317365269461078
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 226,
+     "avg_net_pct": 1.3941120549134485,
+     "total_net_pct": 717.7268691631843,
+     "p_value": 0.11776447105788423
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 225,
+     "avg_net_pct": 1.3492741834190904,
+     "total_net_pct": 576.0077499108996,
+     "p_value": 0.2055888223552894
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 225,
+     "avg_net_pct": 1.6174819123498232,
+     "total_net_pct": 1021.6453907058385,
+     "p_value": 0.13572854291417166
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 152,
+     "avg_net_pct": 2.301264717406416,
+     "total_net_pct": 1436.782734223057,
+     "p_value": 0.00998003992015968
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 152,
+     "avg_net_pct": 2.3502919801883837,
+     "total_net_pct": 1442.6625348067228,
+     "p_value": 0.015968063872255488
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 152,
+     "avg_net_pct": 2.1525045775891294,
+     "total_net_pct": 976.0597378064198,
+     "p_value": 0.05189620758483034
+    },
+    {
+     "params": {
+      "supertrend ATR length": 7.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 152,
+     "avg_net_pct": 2.554783276174528,
+     "total_net_pct": 1723.8696018701153,
+     "p_value": 0.033932135728542916
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 331,
+     "avg_net_pct": 1.184527979384375,
+     "total_net_pct": 1172.0724625001678,
+     "p_value": 0.07584830339321358
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 320,
+     "avg_net_pct": 1.2309826210630561,
+     "total_net_pct": 991.2516383444026,
+     "p_value": 0.14770459081836326
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 286,
+     "avg_net_pct": 1.6169327038266412,
+     "total_net_pct": 1814.6208465429875,
+     "p_value": 0.12375249500998003
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 264,
+     "avg_net_pct": 1.9562852189140112,
+     "total_net_pct": 3186.017091526464,
+     "p_value": 0.11177644710578842
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 272,
+     "avg_net_pct": 1.391630485660425,
+     "total_net_pct": 1202.5074001751818,
+     "p_value": 0.05189620758483034
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 267,
+     "avg_net_pct": 1.644625279435605,
+     "total_net_pct": 1962.3808381637905,
+     "p_value": 0.06387225548902195
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 260,
+     "avg_net_pct": 1.5746408670309706,
+     "total_net_pct": 1249.840550686434,
+     "p_value": 0.13972055888223553
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 247,
+     "avg_net_pct": 1.7746028543965924,
+     "total_net_pct": 1650.0976689266586,
+     "p_value": 0.12974051896207583
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 225,
+     "avg_net_pct": 1.2681718940835278,
+     "total_net_pct": 555.492848698072,
+     "p_value": 0.11177644710578842
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 225,
+     "avg_net_pct": 1.6571291124876448,
+     "total_net_pct": 1146.260599484511,
+     "p_value": 0.07984031936127745
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 225,
+     "avg_net_pct": 1.9028022634721486,
+     "total_net_pct": 1848.5718469064327,
+     "p_value": 0.0658682634730539
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 225,
+     "avg_net_pct": 1.810014616965496,
+     "total_net_pct": 1425.208757274922,
+     "p_value": 0.0998003992015968
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 143,
+     "avg_net_pct": 2.3804508076717528,
+     "total_net_pct": 1258.3962153608018,
+     "p_value": 0.005988023952095809
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 143,
+     "avg_net_pct": 2.4057508433994306,
+     "total_net_pct": 1204.4913043128156,
+     "p_value": 0.01996007984031936
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 143,
+     "avg_net_pct": 2.2382888966718397,
+     "total_net_pct": 866.8517009041498,
+     "p_value": 0.05788423153692615
+    },
+    {
+     "params": {
+      "supertrend ATR length": 10.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 143,
+     "avg_net_pct": 2.729609220825388,
+     "total_net_pct": 1715.215928000476,
+     "p_value": 0.017964071856287425
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 330,
+     "avg_net_pct": 1.1135423618560825,
+     "total_net_pct": 895.6181736202476,
+     "p_value": 0.1157684630738523
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 319,
+     "avg_net_pct": 1.2786748654911773,
+     "total_net_pct": 1140.1032531295136,
+     "p_value": 0.1437125748502994
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 286,
+     "avg_net_pct": 1.599368392840592,
+     "total_net_pct": 1719.7838794967624,
+     "p_value": 0.1317365269461078
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 264,
+     "avg_net_pct": 1.9507017747002517,
+     "total_net_pct": 3140.7728624267315,
+     "p_value": 0.10778443113772455
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 272,
+     "avg_net_pct": 1.353392720667785,
+     "total_net_pct": 1095.0505925208934,
+     "p_value": 0.0658682634730539
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 268,
+     "avg_net_pct": 1.5046917408105538,
+     "total_net_pct": 1379.8239621633709,
+     "p_value": 0.08582834331337326
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 260,
+     "avg_net_pct": 1.4856106055978302,
+     "total_net_pct": 997.1258971741327,
+     "p_value": 0.18562874251497005
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 247,
+     "avg_net_pct": 1.8033862291636407,
+     "total_net_pct": 1801.0084795639937,
+     "p_value": 0.1157684630738523
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 220,
+     "avg_net_pct": 1.2119836877409038,
+     "total_net_pct": 448.23372087248464,
+     "p_value": 0.1437125748502994
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 220,
+     "avg_net_pct": 1.3080143742528818,
+     "total_net_pct": 504.5207338121683,
+     "p_value": 0.18562874251497005
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 220,
+     "avg_net_pct": 1.4900692169103318,
+     "total_net_pct": 717.6398983090106,
+     "p_value": 0.18962075848303392
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 220,
+     "avg_net_pct": 1.7761088960478042,
+     "total_net_pct": 1289.9829182515732,
+     "p_value": 0.12375249500998003
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 145,
+     "avg_net_pct": 2.4439694035711086,
+     "total_net_pct": 1383.1605708884547,
+     "p_value": 0.011976047904191617
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 145,
+     "avg_net_pct": 2.2388008884674937,
+     "total_net_pct": 962.5695483868503,
+     "p_value": 0.029940119760479042
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 145,
+     "avg_net_pct": 2.2041244504672575,
+     "total_net_pct": 854.4993397265162,
+     "p_value": 0.059880239520958084
+    },
+    {
+     "params": {
+      "supertrend ATR length": 14.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 145,
+     "avg_net_pct": 2.698133350184212,
+     "total_net_pct": 1716.8834161110997,
+     "p_value": 0.017964071856287425
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 330,
+     "avg_net_pct": 1.0234150885986322,
+     "total_net_pct": 620.9542089380707,
+     "p_value": 0.18163672654690619
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 312,
+     "avg_net_pct": 1.4732520323636091,
+     "total_net_pct": 1888.9301901344047,
+     "p_value": 0.10179640718562874
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 281,
+     "avg_net_pct": 1.9068506381599781,
+     "total_net_pct": 3865.6562260589462,
+     "p_value": 0.0718562874251497
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 2.0,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 263,
+     "avg_net_pct": 2.071280204770421,
+     "total_net_pct": 4017.5190852782835,
+     "p_value": 0.06986027944111776
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 274,
+     "avg_net_pct": 1.3948351450369592,
+     "total_net_pct": 1243.30234239999,
+     "p_value": 0.06986027944111776
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 272,
+     "avg_net_pct": 1.3569536045550994,
+     "total_net_pct": 926.7540132996601,
+     "p_value": 0.1277445109780439
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 261,
+     "avg_net_pct": 1.4191583884972792,
+     "total_net_pct": 795.0956876984332,
+     "p_value": 0.1996007984031936
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 2.5,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 249,
+     "avg_net_pct": 1.7756071202358152,
+     "total_net_pct": 1720.0193064774894,
+     "p_value": 0.1217564870259481
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 219,
+     "avg_net_pct": 1.700570258393263,
+     "total_net_pct": 1293.7821227578436,
+     "p_value": 0.03992015968063872
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 219,
+     "avg_net_pct": 1.804550370858335,
+     "total_net_pct": 1469.2788906300893,
+     "p_value": 0.0499001996007984
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 218,
+     "avg_net_pct": 1.7017046181632345,
+     "total_net_pct": 989.8287115908472,
+     "p_value": 0.11177644710578842
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 3.0,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 215,
+     "avg_net_pct": 1.9575122082742924,
+     "total_net_pct": 1624.4712408737894,
+     "p_value": 0.10578842315369262
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 1.5
+     },
+     "trades": 142,
+     "avg_net_pct": 1.9001402871834696,
+     "total_net_pct": 571.5425803962577,
+     "p_value": 0.0499001996007984
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 2.0
+     },
+     "trades": 142,
+     "avg_net_pct": 2.0814597204704093,
+     "total_net_pct": 723.9023062266801,
+     "p_value": 0.05588822355289421
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 3.0
+     },
+     "trades": 142,
+     "avg_net_pct": 1.9825662618042208,
+     "total_net_pct": 575.3617426687183,
+     "p_value": 0.10379241516966067
+    },
+    {
+     "params": {
+      "supertrend ATR length": 20.0,
+      "supertrend multiplier": 4.0,
+      "ATR stop multiplier": 4.0
+     },
+     "trades": 142,
+     "avg_net_pct": 2.3694492071747777,
+     "total_net_pct": 987.0522502690184,
+     "p_value": 0.06786427145708583
+    }
+   ]
+  },
+  "claimed_vs_measured": [],
+  "costs": {
+   "fee_bps_per_side": 10.0,
+   "slippage_bps_per_side": 2.0
+  },
+  "grounding": {
+   "rule_elements": 6,
+   "quoted": 6,
+   "assumed": 0,
+   "quoted_fields": [
+    "entry[0]",
+    "exit[0]",
+    "stop_atr_mult",
+    "assets",
+    "timeframe",
+    "direction"
+   ],
+   "assumed_fields": [],
+   "problems": []
+  },
+  "fidelity": {
+   "level": "approximation",
+   "gaps": [
+    "NOT EXPRESSIBLE: claim defines symmetric short entries and exits; schema direction allows only long or short so spec encodes long side and omits short side.",
+    "NOT EXPRESSIBLE: partial close of half position at 0.75R and moving stop to breakeven cannot be expressed; spec holds full position with initial ATR stop to opposite Supertrend flip with no R-multiple target.",
+    "NOT EXPRESSIBLE: RSI filter in title has no rules or settings stated and is omitted; Supertrend flip compiled as testable core."
+   ],
+   "audit_majors": [
+    "direction: Claim defines symmetric long and short: 'you enter into a short position' on uptrend to downtrend flip with opposite-flip exit. Spec encodes direction=long only and omits short side.",
+    "take_profit_r: Claim requires first profit at 0.75 risk/reward where half position will be closed and stop moved to break even. Spec holds full position to opposite flip with no R-multiple target, omitting partial exit and breakeven."
+   ]
+  },
+  "review": {
+   "needs_human": true,
+   "reasons": [
+    "audit still disagrees: direction: Claim defines symmetric long and short: 'you enter into a short position' on uptrend to downtrend flip with opposite-flip exit. Spec encodes direction=long only and omits short side.",
+    "audit still disagrees: take_profit_r: Claim requires first profit at 0.75 risk/reward where half position will be closed and stop moved to break even. Spec holds full position to opposite flip with no R-multiple target, omitting partial exit and breakeven."
+   ]
+  },
+  "series": {
+   "t": [
+    "2017-08-17",
+    "2017-08-30",
+    "2017-09-11",
+    "2017-09-24",
+    "2017-10-07",
+    "2017-10-20",
+    "2017-11-02",
+    "2017-11-15",
+    "2017-11-27",
+    "2017-12-10",
+    "2017-12-23",
+    "2018-01-05",
+    "2018-01-18",
+    "2018-01-31",
+    "2018-02-14",
+    "2018-02-26",
+    "2018-03-11",
+    "2018-03-24",
+    "2018-04-06",
+    "2018-04-19",
+    "2018-05-02",
+    "2018-05-14",
+    "2018-05-27",
+    "2018-06-09",
+    "2018-06-22",
+    "2018-07-05",
+    "2018-07-18",
+    "2018-07-31",
+    "2018-08-13",
+    "2018-08-26",
+    "2018-09-07",
+    "2018-09-20",
+    "2018-10-03",
+    "2018-10-16",
+    "2018-10-29",
+    "2018-11-11",
+    "2018-11-24",
+    "2018-12-06",
+    "2018-12-19",
+    "2019-01-01",
+    "2019-01-14",
+    "2019-01-27",
+    "2019-02-09",
+    "2019-02-21",
+    "2019-03-06",
+    "2019-03-19",
+    "2019-04-01",
+    "2019-04-14",
+    "2019-04-27",
+    "2019-05-10",
+    "2019-05-23",
+    "2019-06-05",
+    "2019-06-17",
+    "2019-06-30",
+    "2019-07-13",
+    "2019-07-26",
+    "2019-08-08",
+    "2019-08-21",
+    "2019-09-03",
+    "2019-09-15",
+    "2019-09-28",
+    "2019-10-11",
+    "2019-10-24",
+    "2019-11-06",
+    "2019-11-19",
+    "2019-12-01",
+    "2019-12-14",
+    "2019-12-27",
+    "2020-01-09",
+    "2020-01-22",
+    "2020-02-04",
+    "2020-02-16",
+    "2020-02-29",
+    "2020-03-13",
+    "2020-03-26",
+    "2020-04-08",
+    "2020-04-21",
+    "2020-05-04",
+    "2020-05-16",
+    "2020-05-29",
+    "2020-06-11",
+    "2020-06-24",
+    "2020-07-07",
+    "2020-07-20",
+    "2020-08-01",
+    "2020-08-14",
+    "2020-08-27",
+    "2020-09-09",
+    "2020-09-22",
+    "2020-10-05",
+    "2020-10-17",
+    "2020-10-30",
+    "2020-11-12",
+    "2020-11-25",
+    "2020-12-08",
+    "2020-12-21",
+    "2021-01-02",
+    "2021-01-15",
+    "2021-01-28",
+    "2021-02-10",
+    "2021-02-23",
+    "2021-03-08",
+    "2021-03-20",
+    "2021-04-02",
+    "2021-04-15",
+    "2021-04-28",
+    "2021-05-11",
+    "2021-05-24",
+    "2021-06-05",
+    "2021-06-18",
+    "2021-07-01",
+    "2021-07-14",
+    "2021-07-27",
+    "2021-08-09",
+    "2021-08-21",
+    "2021-09-03",
+    "2021-09-16",
+    "2021-09-29",
+    "2021-10-12",
+    "2021-10-25",
+    "2021-11-06",
+    "2021-11-19",
+    "2021-12-02",
+    "2021-12-15",
+    "2021-12-28",
+    "2022-01-10",
+    "2022-01-22",
+    "2022-02-04",
+    "2022-02-17",
+    "2022-03-02",
+    "2022-03-15",
+    "2022-03-28",
+    "2022-04-09",
+    "2022-04-22",
+    "2022-05-05",
+    "2022-05-18",
+    "2022-05-31",
+    "2022-06-13",
+    "2022-06-25",
+    "2022-07-08",
+    "2022-07-21",
+    "2022-08-03",
+    "2022-08-16",
+    "2022-08-29",
+    "2022-09-10",
+    "2022-09-23",
+    "2022-10-06",
+    "2022-10-19",
+    "2022-11-01",
+    "2022-11-14",
+    "2022-11-26",
+    "2022-12-09",
+    "2022-12-22",
+    "2023-01-04",
+    "2023-01-17",
+    "2023-01-30",
+    "2023-02-11",
+    "2023-02-24",
+    "2023-03-09",
+    "2023-03-22",
+    "2023-04-04",
+    "2023-04-17",
+    "2023-04-29",
+    "2023-05-12",
+    "2023-05-25",
+    "2023-06-07",
+    "2023-06-20",
+    "2023-07-03",
+    "2023-07-15",
+    "2023-07-28",
+    "2023-08-10",
+    "2023-08-23",
+    "2023-09-05",
+    "2023-09-18",
+    "2023-09-30",
+    "2023-10-13",
+    "2023-10-26",
+    "2023-11-08",
+    "2023-11-21",
+    "2023-12-04",
+    "2023-12-16",
+    "2023-12-29",
+    "2024-01-11",
+    "2024-01-24",
+    "2024-02-06",
+    "2024-02-19",
+    "2024-03-02",
+    "2024-03-15",
+    "2024-03-28",
+    "2024-04-10",
+    "2024-04-23",
+    "2024-05-06",
+    "2024-05-18",
+    "2024-05-31",
+    "2024-06-13",
+    "2024-06-26",
+    "2024-07-09",
+    "2024-07-22",
+    "2024-08-03",
+    "2024-08-16",
+    "2024-08-29",
+    "2024-09-11",
+    "2024-09-24",
+    "2024-10-07",
+    "2024-10-19",
+    "2024-11-01",
+    "2024-11-14",
+    "2024-11-27",
+    "2024-12-10",
+    "2024-12-23",
+    "2025-01-04",
+    "2025-01-17",
+    "2025-01-30",
+    "2025-02-12",
+    "2025-02-25",
+    "2025-03-10",
+    "2025-03-22",
+    "2025-04-04",
+    "2025-04-17",
+    "2025-04-30",
+    "2025-05-13",
+    "2025-05-26",
+    "2025-06-07",
+    "2025-06-20",
+    "2025-07-03",
+    "2025-07-16",
+    "2025-07-29",
+    "2025-08-11",
+    "2025-08-23",
+    "2025-09-05",
+    "2025-09-18",
+    "2025-10-01",
+    "2025-10-14",
+    "2025-10-27",
+    "2025-11-08",
+    "2025-11-21",
+    "2025-12-04",
+    "2025-12-17",
+    "2025-12-30",
+    "2026-01-12",
+    "2026-01-24",
+    "2026-02-06",
+    "2026-02-19",
+    "2026-03-04",
+    "2026-03-17",
+    "2026-03-30",
+    "2026-04-11",
+    "2026-04-24",
+    "2026-05-07",
+    "2026-05-20",
+    "2026-06-02",
+    "2026-06-15",
+    "2026-06-27",
+    "2026-07-10",
+    "2026-07-23",
+    "2026-08-05",
+    "2026-08-18",
+    "2026-08-31",
+    "2026-09-12",
+    "2026-09-25",
+    "2026-10-08",
+    "2026-10-21",
+    "2026-10-26"
+   ],
+   "rule": [
+    1.0,
+    1.0,
+    0.93492,
+    0.857,
+    0.90023,
+    1.05638,
+    1.00733,
+    1.15301,
+    1.15301,
+    1.65739,
+    1.67435,
+    1.67435,
+    1.45112,
+    1.45112,
+    1.45112,
+    1.84145,
+    1.89527,
+    1.66058,
+    1.43418,
+    1.34551,
+    1.56698,
+    1.51178,
+    1.51178,
+    1.51178,
+    1.37904,
+    1.37904,
+    1.37566,
+    1.37566,
+    1.60567,
+    1.60567,
+    1.70213,
+    1.62186,
+    1.54348,
+    1.5052,
+    1.42057,
+    1.40494,
+    1.40494,
+    1.22859,
+    1.22859,
+    1.32857,
+    1.30416,
+    1.25217,
+    1.25217,
+    1.25217,
+    1.34601,
+    1.34601,
+    1.37333,
+    1.69877,
+    1.68517,
+    1.68517,
+    2.26921,
+    2.29688,
+    2.29688,
+    3.32932,
+    3.25491,
+    2.92105,
+    2.92105,
+    2.9674,
+    2.9674,
+    2.95562,
+    2.8356,
+    2.6228,
+    2.49068,
+    2.49068,
+    2.71425,
+    2.71425,
+    2.59658,
+    2.58184,
+    2.48589,
+    2.73908,
+    2.73908,
+    3.00556,
+    2.83629,
+    2.71953,
+    2.71953,
+    2.66972,
+    2.76219,
+    2.76219,
+    3.15596,
+    3.00732,
+    2.94509,
+    2.94509,
+    2.86699,
+    2.814,
+    2.814,
+    3.21168,
+    3.14957,
+    3.04881,
+    3.024,
+    2.9706,
+    2.9706,
+    3.54946,
+    3.54946,
+    3.54946,
+    4.55396,
+    4.48055,
+    4.48055,
+    8.22903,
+    7.02676,
+    7.02676,
+    11.06422,
+    11.06422,
+    12.49654,
+    12.49654,
+    12.52618,
+    12.5733,
+    11.83068,
+    11.83068,
+    9.1573,
+    9.13524,
+    8.14416,
+    7.56157,
+    7.56157,
+    9.2477,
+    10.13323,
+    9.89223,
+    9.34633,
+    8.92831,
+    8.92831,
+    12.36813,
+    12.36813,
+    12.77184,
+    12.77184,
+    11.97681,
+    11.97681,
+    12.03617,
+    11.38072,
+    11.38072,
+    11.85353,
+    11.85353,
+    11.87417,
+    11.87417,
+    13.32501,
+    13.2275,
+    11.95548,
+    11.95548,
+    11.95548,
+    11.29165,
+    11.29165,
+    10.80309,
+    10.88501,
+    11.10675,
+    10.56182,
+    10.27078,
+    10.27078,
+    10.69822,
+    10.0592,
+    9.73238,
+    9.28232,
+    9.74283,
+    9.74283,
+    9.39379,
+    9.1602,
+    9.1602,
+    9.1602,
+    9.1602,
+    11.88268,
+    12.42114,
+    12.42114,
+    12.42114,
+    15.02237,
+    15.02237,
+    14.42132,
+    13.77883,
+    13.36915,
+    13.32762,
+    12.75086,
+    12.75086,
+    14.30989,
+    14.30989,
+    13.91975,
+    13.7652,
+    13.49026,
+    13.11861,
+    13.12838,
+    13.12838,
+    13.12838,
+    13.12838,
+    15.81061,
+    15.35857,
+    17.00825,
+    16.14755,
+    15.28548,
+    15.28548,
+    15.28548,
+    15.28548,
+    15.28548,
+    22.71671,
+    22.71671,
+    22.15736,
+    21.06828,
+    20.21253,
+    20.0014,
+    20.7391,
+    19.95826,
+    19.95826,
+    19.30614,
+    19.30614,
+    21.21628,
+    20.67832,
+    21.24054,
+    21.24054,
+    21.48365,
+    22.37306,
+    21.63122,
+    22.22138,
+    22.22138,
+    28.22711,
+    26.87855,
+    27.2636,
+    25.82101,
+    26.08379,
+    27.32777,
+    24.66804,
+    23.84078,
+    21.31755,
+    21.31755,
+    20.47476,
+    20.47476,
+    20.47476,
+    23.32817,
+    23.32817,
+    25.41065,
+    24.70062,
+    24.78674,
+    26.63995,
+    26.63995,
+    26.63995,
+    26.97244,
+    25.96889,
+    25.96889,
+    26.79974,
+    29.04332,
+    27.81343,
+    27.81343,
+    26.73807,
+    25.45416,
+    24.88246,
+    23.34474,
+    23.66512,
+    23.66477,
+    22.82715,
+    20.89952,
+    19.76241,
+    19.34785,
+    18.55852,
+    18.55852,
+    19.1452,
+    18.91985,
+    18.96625,
+    18.36113,
+    18.36113,
+    18.27274,
+    18.27274,
+    18.09799,
+    17.64041,
+    17.64611,
+    17.64611,
+    20.21609,
+    20.23814,
+    19.86794,
+    19.86794,
+    19.48572
+   ],
+   "buy_hold": [
+    1.02077,
+    1.07559,
+    0.98756,
+    0.86528,
+    1.01913,
+    1.32882,
+    1.62713,
+    1.59923,
+    2.26447,
+    3.62918,
+    3.33649,
+    3.77585,
+    2.45759,
+    2.36068,
+    2.04366,
+    2.42263,
+    2.26202,
+    2.10021,
+    1.54876,
+    1.91646,
+    2.12111,
+    2.03294,
+    1.71009,
+    1.78576,
+    1.48975,
+    1.52771,
+    1.74323,
+    1.87259,
+    1.51156,
+    1.55274,
+    1.50078,
+    1.50652,
+    1.52822,
+    1.5952,
+    1.52505,
+    1.50857,
+    1.04278,
+    0.82336,
+    0.8803,
+    0.86416,
+    0.81856,
+    0.83586,
+    0.85568,
+    0.92393,
+    0.90473,
+    0.94019,
+    0.97268,
+    1.18386,
+    1.2491,
+    1.48727,
+    1.78058,
+    1.82955,
+    2.18562,
+    2.6519,
+    2.67839,
+    2.29771,
+    2.79715,
+    2.37922,
+    2.43695,
+    2.41747,
+    1.91174,
+    1.95788,
+    1.74161,
+    2.20338,
+    1.91324,
+    1.73435,
+    1.65967,
+    1.69857,
+    1.84878,
+    2.05099,
+    2.17834,
+    2.32719,
+    2.00015,
+    1.26507,
+    1.55276,
+    1.71136,
+    1.61415,
+    2.04878,
+    2.20141,
+    2.20698,
+    2.23423,
+    2.18969,
+    2.17343,
+    2.15699,
+    2.76927,
+    2.76945,
+    2.65711,
+    2.39855,
+    2.43411,
+    2.50286,
+    2.66579,
+    3.17646,
+    3.7839,
+    4.52461,
+    4.49212,
+    5.61901,
+    7.55098,
+    8.26409,
+    7.49188,
+    10.93201,
+    11.64861,
+    11.87345,
+    13.6343,
+    13.80976,
+    14.71676,
+    12.87188,
+    13.07998,
+    8.2721,
+    8.33354,
+    8.2899,
+    7.84529,
+    7.61519,
+    8.70944,
+    10.2068,
+    11.45655,
+    11.85703,
+    11.26844,
+    9.94959,
+    13.45607,
+    14.56871,
+    14.42471,
+    13.61805,
+    13.26319,
+    11.29479,
+    11.55165,
+    9.84813,
+    8.22987,
+    9.55722,
+    9.83823,
+    10.34929,
+    9.02022,
+    11.04062,
+    10.03266,
+    9.26977,
+    8.66123,
+    7.00076,
+    7.40911,
+    5.98854,
+    5.04313,
+    5.11839,
+    5.31326,
+    5.49171,
+    5.64755,
+    4.66226,
+    5.08001,
+    4.41339,
+    4.69555,
+    4.50567,
+    4.83389,
+    3.78737,
+    3.86217,
+    4.0227,
+    3.90393,
+    3.95059,
+    4.95923,
+    5.56179,
+    5.13027,
+    5.43996,
+    5.08006,
+    6.59929,
+    6.57549,
+    7.03577,
+    6.85922,
+    6.20902,
+    6.15423,
+    6.31146,
+    6.29651,
+    7.21736,
+    7.10775,
+    6.8793,
+    6.9145,
+    6.08697,
+    6.03911,
+    6.25573,
+    6.32704,
+    6.28387,
+    7.98887,
+    8.29073,
+    8.74811,
+    9.55297,
+    9.92097,
+    9.88307,
+    10.97829,
+    9.43553,
+    10.06458,
+    12.21731,
+    14.54595,
+    16.18311,
+    16.72902,
+    16.20165,
+    15.51099,
+    14.98695,
+    15.70234,
+    15.88204,
+    15.59787,
+    14.41876,
+    13.40305,
+    15.92874,
+    14.24341,
+    14.00532,
+    14.26265,
+    13.32823,
+    14.91499,
+    14.90809,
+    16.0456,
+    16.25445,
+    20.6379,
+    21.90976,
+    22.80814,
+    22.53329,
+    23.04845,
+    24.83525,
+    24.77168,
+    22.5496,
+    20.95986,
+    19.25329,
+    19.67405,
+    19.71381,
+    19.83623,
+    22.33418,
+    24.09151,
+    25.72429,
+    24.76889,
+    24.2421,
+    25.60797,
+    27.87038,
+    27.89697,
+    28.56496,
+    27.08872,
+    26.1915,
+    27.59219,
+    27.40587,
+    26.21728,
+    26.97619,
+    24.00878,
+    19.76058,
+    21.81671,
+    20.41151,
+    20.53344,
+    21.54372,
+    20.93764,
+    16.59786,
+    15.58097,
+    16.68702,
+    17.42336,
+    15.76302,
+    17.14033,
+    18.21641,
+    18.74716,
+    18.1586,
+    16.45401,
+    15.47047,
+    14.08642,
+    14.99899,
+    15.24315,
+    15.03592,
+    15.06495,
+    18.24641,
+    18.13425,
+    19.71616,
+    19.0164,
+    19.59413,
+    18.80815
+   ]
+  }
+ },
+ "seconds": 85.1
+}

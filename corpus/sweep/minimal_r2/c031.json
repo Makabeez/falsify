@@ -1,0 +1,149 @@
+{
+ "id": "c031",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Buying Solana on WMA7 crossing up over WMA25 and selling on WMA7 crossing down under WMA25 repeatedly would have made 85 times money in 36 trades over 4 years.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "SOLUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "wma",
+     "period": 7,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "wma",
+     "period": 25,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "wma",
+     "period": 7,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "wma",
+     "period": 25,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 8500.0,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2020-08-14",
+   "period_end": "2024-08-14",
+   "other": "36 risk-free deals spread over 4 years"
+  },
+  "assumptions": [
+   "Timeframe not stated, using 1d as most natural reading for multi-year WMA cross system.",
+   "Reinvesting all proceeds is the engine default compounding behavior.",
+   "One position at a time over all history.",
+   "48x buy-and-hold comparison not compiled, only the WMA cross active strategy is compiled."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Solana",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "entry[0]",
+    "quote": "when WMA7 crossed up over WMA25",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "sold everything each time WMA7 crossed down over WMA25",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "you would have made 85 times your money",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "36 risk-free deals spread over 4 years",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.8,
+   "tokens": 2822,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.2,
+   "tokens": 1930
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 8.0,
+ "run": "minimal_r2"
+}

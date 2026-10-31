@@ -1,0 +1,170 @@
+{
+ "id": "c018",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Buy Nikkei 225 components on a daily close crossing above the 80-day plus-1-sigma upper band and sell on a close crossing below the 80-day middle band.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "NIKKEI225"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "bb_upper",
+     "period": 80,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 1.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 80,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 33.45,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2000-01-04",
+   "period_end": "2024-12-30",
+   "other": null
+  },
+  "assumptions": [
+   "NOT EXPRESSIBLE: claim tests all Nikkei 225 components individually; the schema tests one symbol history at a time, so NIKKEI225 is used as the closest single-symbol proxy and the per-stock universe result cannot be replicated.",
+   "Timeframe 1d from daily-only charts.",
+   "Upper +1-sigma line interpreted as Bollinger upper band with period 80 and 1.0 standard deviations.",
+   "Middle band interpreted as 80-period simple moving average, the standard Bollinger middle band.",
+   "Entry and exit are evaluated on bar closes with fills at the next bar open, matching buy/sell at the next day's open per engine convention.",
+   "No stop-loss, take-profit, trailing stop or max hold was stated, so exit relies solely on the middle-band cross.",
+   "Test Period cited is stored in claimed.period_start/end only; the engine tests all available history."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "timeframe",
+    "quote": "Only daily charts are used.",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "Buy at the next day\u2019s open using a market order",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Price crosses above the +1\u03c3 line from below",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "If the price crosses below the middle band, sell at the next day\u2019s open using a market order",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Win Rate: 33.45%",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_start",
+    "quote": "Test Period: January 4, 2000 \u2013 December 30, 2024",
+    "assumed": false
+   },
+   {
+    "field": "claimed.period_end",
+    "quote": "Test Period: January 4, 2000 \u2013 December 30, 2024",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 16.2,
+   "tokens": 7055,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.9,
+   "tokens": 4191
+  },
+  {
+   "step": "audit repair",
+   "seconds": 14.2,
+   "tokens": 7010,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.1,
+   "tokens": 4465
+  }
+ ],
+ "audit_majors": [
+  "assets: Claim targets all Nikkei 225 components tested individually; spec tests single symbol NIKKEI225 index as proxy. Index history is not the per-stock component universe and can change the verdict."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 51.4,
+ "run": "high_r2"
+}

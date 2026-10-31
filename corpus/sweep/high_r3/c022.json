@@ -1,0 +1,217 @@
+{
+ "id": "c022",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Long ETH when the 20 EMA crosses above the 50 EMA while RSI is below 70, with 2:1 reward-to-risk, a trailing stop, and exit on reverse EMA crossover.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "ETHUSDT"
+  ],
+  "timeframe": "1h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "rsi",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 70.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "ema",
+     "period": 50,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": 2.0,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": 2.0,
+  "trailing_stop_pct": 1.0,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "RSI length",
+    "target": "entry[1].left.period",
+    "candidates": [
+     7.0,
+     14.0,
+     21.0
+    ]
+   },
+   {
+    "name": "initial stop for 2R",
+    "target": "stop_loss_pct",
+    "candidates": [
+     1.0,
+     2.0,
+     3.0
+    ]
+   },
+   {
+    "name": "Move SL trail distance",
+    "target": "trailing_stop_pct",
+    "candidates": [
+     0.5,
+     1.0,
+     1.5,
+     2.0
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Mapped ETH to Binance spot ETHUSDT and tested only ETHUSDT; 'other currencies' names no specific symbols.",
+   "Chose 1h timeframe from '1H and 15m' because the engine only allows 1h/4h/1d; 15m cannot be encoded.",
+   "Interpreted 'crossing ... above' as long direction; no short side stated.",
+   "RSI period not stated, used standard 14; compiled threshold below 70 as written even though labeled oversold.",
+   "Interpreted 'reverse crossover of the EMAs' as 20 EMA crosses below 50 EMA exit for longs.",
+   "RR 2:1 encoded as take_profit_r 2; no initial stop distance stated so assumed 2% fixed stop to define R.",
+   "Interpreted 'Move SL as protection' as trailing stop from best close, assumed 1% since no distance stated.",
+   "NOT EXPRESSIBLE: exact Move SL mechanics such as when the stop moves or move-to-breakeven were not specified, approximated as fixed trailing-stop distance."
+  ],
+  "evidence": [
+   {
+    "field": "entry[0]",
+    "quote": "crossing of the 20 EMA above the 50 EMA",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "RSI is below 70",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "reverse crossover of the EMAs as more protection",
+    "assumed": false
+   },
+   {
+    "field": "stop_loss_pct",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "take_profit_r",
+    "quote": "RR is 2:1",
+    "assumed": false
+   },
+   {
+    "field": "trailing_stop_pct",
+    "quote": "has a Move SL as protection",
+    "assumed": false
+   },
+   {
+    "field": "assets",
+    "quote": "with ETH and other currencies",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "I tested it on 1H and 15m",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "crossing of the 20 EMA above the 50 EMA",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 25.4,
+   "tokens": 9767,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 11.3,
+   "tokens": 4715
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 36.7,
+ "run": "high_r3"
+}

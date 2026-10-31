@@ -29,3 +29,4 @@ The excerpts are short quotations used for analysis and commentary, and each one
 ## Caveat on "verbatim"
 
 Pages were read through a web-fetch tool that returns the passages it quotes from the page, so an excerpt is the text as that tool returned it. Spot-check any record against its `url` before citing it. Falsify's quote check runs against the stored excerpt, so a record whose excerpt drifted from the page would show up as a mismatch only when compared with the original.
+- `source_offline` records the date a source page was found removed. c033's TradingView script was gone on 31 Oct 2026; its excerpt was captured on 27 Oct, while the page was live. Claims disappear; the test of what was said should not.

@@ -1,0 +1,157 @@
+{
+ "id": "c018",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Buy Nikkei 225 stocks on daily close crossing above the 80-day +1 sigma band and exit on close crossing below the 80-day middle band.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "NIKKEI225"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "bb_upper",
+     "period": 80,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": 1.0,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "crosses_below",
+    "right": {
+     "kind": "sma",
+     "period": 80,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": 33.45,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2000-01-04",
+   "period_end": "2024-12-30",
+   "other": null
+  },
+  "assumptions": [
+   "Middle band interpreted as 80-period SMA (Bollinger middle).",
+   "Bollinger Bands calculated on close with period 80 and 1.0 std-dev.",
+   "Entry and exit evaluated on bar close with fill at next bar open per engine convention.",
+   "NOT EXPRESSIBLE: Claim requires testing a basket of all 225 individual Nikkei 225 component stocks; schema assets can only name symbols, so single NIKKEI225 proxy is used as closest testable core and index results are not the same as component-basket results."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "All components of the Nikkei 225",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "Only daily charts are used",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "Buy at the next day\u2019s open using a market order",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "Price crosses above the +1\u03c3 line from below",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "If the price crosses below the middle band, sell at the next day\u2019s open using a market order",
+    "assumed": false
+   },
+   {
+    "field": "claimed.win_rate_pct",
+    "quote": "Win Rate: 33.45%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "UNTESTABLE",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.9,
+   "tokens": 2924,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.1,
+   "tokens": 1932
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.8,
+   "tokens": 3519,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.0,
+   "tokens": 1924
+  }
+ ],
+ "audit_majors": [
+  "assets: Claim requires a basket of all 225 individual Nikkei 225 component stocks; spec tests single NIKKEI225 symbol as proxy. Index-level results are not the same as component-basket results and could change the verdict."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 14.8,
+ "run": "minimal_r3"
+}

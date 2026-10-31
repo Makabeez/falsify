@@ -1,0 +1,214 @@
+{
+ "id": "c012",
+ "effort": "high",
+ "spec": {
+  "claim_summary": "Buy BTC at month-end when price is above the 200-day SMA and sell at month-end when price is below it.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "days_left_in_month",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "sma",
+     "period": 200,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   },
+   {
+    "left": {
+     "kind": "days_left_in_month",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 0.5,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "BTC-USD mapped to BTCUSDT spot symbol.",
+   "Timeframe 1d chosen as most natural reading for a 200-day SMA and month-end rule; claim states no timeframe.",
+   "Price means close price; rules are evaluated on bar closes.",
+   "Direction is long-only: selling means exit to cash, not opening a short position.",
+   "Both buy and sell decisions are evaluated only on the last calendar day of the month together with the 200-day SMA position on that same bar.",
+   "NOT EXPRESSIBLE: exact sell requires last-day-of-month AND close below 200-day SMA on the SAME bar, but exit conditions are OR-ed (ANY true exits); encoding both as separate exit conditions over-triggers, exiting on any daily close below the SMA or any month-end regardless of price, which is broader than claimed but is the closest testable core including both filters."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "price of BTC-USD",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "buying when the price is above the 200-day simple moving average (SMA)",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "on the last day of the month",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "buying when the price is above the 200-day simple moving average (SMA)",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "selling when it is below",
+    "assumed": false
+   },
+   {
+    "field": "exit[1]",
+    "quote": "on the last day of the month",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 74.1,
+   "tokens": 6464,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 12.2,
+   "tokens": 5132
+  },
+  {
+   "step": "audit repair",
+   "seconds": 37.3,
+   "tokens": 11522,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 10.6,
+   "tokens": 4306
+  }
+ ],
+ "audit_majors": [
+  "exit: Claim requires sell only when BOTH last-day-of-month AND close below 200-day SMA on the same bar. Spec encodes them as two separate OR-ed exit conditions, so engine exits on any daily close below SMA or any month-end regardless of price, which over-triggers vs claim."
+ ],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 134.2,
+ "run": "high_r3"
+}

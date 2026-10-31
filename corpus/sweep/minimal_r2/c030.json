@@ -1,0 +1,171 @@
+{
+ "id": "c030",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "The claim says to buy Bitcoin after a pullback of 20% or more because it commonly rebounds to new highs.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "highest_high",
+     "period": 250,
+     "value": null,
+     "multiplier": 0.8,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 250,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [
+   {
+    "name": "prior high lookback in bars",
+    "target": "entry[0].right.period",
+    "candidates": [
+     100.0,
+     200.0,
+     250.0,
+     365.0
+    ]
+   },
+   {
+    "name": "pullback depth multiplier on prior high",
+    "target": "entry[0].right.multiplier",
+    "candidates": [
+     0.75,
+     0.8,
+     0.85
+    ]
+   }
+  ],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": null,
+   "period_end": null,
+   "other": null
+  },
+  "assumptions": [
+   "Entry interprets 'pullbacks upwards of 20%' as close 20% or more below the prior high.",
+   "Prior-high lookback is not stated; 250 daily bars (~1 year) used as concrete value.",
+   "Exit interprets 'rebound to new heights' as close back above the same prior high.",
+   "Timeframe not stated; daily chosen as most natural for Bitcoin pullback discussion.",
+   "NOT EXPRESSIBLE: discretionary 'blood / scared markets' sentiment timing beyond the 20% pullback rule."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "Bitcoin",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": null,
+    "assumed": true
+   },
+   {
+    "field": "direction",
+    "quote": "Buy the blood",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "pullbacks upwards of 20%",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "rebound to new heights",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.5,
+   "tokens": 2785,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 1.2,
+   "tokens": 1082
+  },
+  {
+   "step": "audit repair",
+   "seconds": 3.7,
+   "tokens": 3020,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 3.5,
+   "tokens": 2021
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 13.0,
+ "run": "minimal_r2"
+}

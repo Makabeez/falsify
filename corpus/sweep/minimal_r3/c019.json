@@ -1,0 +1,156 @@
+{
+ "id": "c019",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Long BTCUSDT on 1H when price crosses above the 20 EMA and next close exceeds prior high, with 2xATR stop and 1.8R target.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1h",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    },
+    "op": "crosses_above",
+    "right": {
+     "kind": "ema",
+     "period": 20,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "high",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   }
+  ],
+  "exit": [],
+  "stop_loss_pct": null,
+  "stop_atr_mult": 2.0,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": 1.8,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": 494.47,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2021-03-15",
+   "period_end": "2023-03-15",
+   "other": "sample size of almost 300 trades since January 2021"
+  },
+  "assumptions": [
+   "Timeframe is 1H from claim text and page chart.",
+   "Asset BTC/USDT on Bybit mapped to BTCUSDT spot symbol.",
+   "Entry cross of close above 20 EMA occurred on prior bar and confirmation close above prior high on signal bar, to allow both conditions on same bar.",
+   "Stop uses ATR(14) at signal bar.",
+   "Target 1.8*(entry-SL) compiled as take_profit_r 1.8.",
+   "No indicator exit stated so exit is stop/target only.",
+   "Claim period for 494.47% taken as 2 years before post date 2023-03-15."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "BTC/USDT chart",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "20 EMA on the 1H chart",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "you long",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "price moves above the 20 EMA",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "If the next candle closed above the previous candle's high",
+    "assumed": false
+   },
+   {
+    "field": "stop_atr_mult",
+    "quote": "SL will be at the current price - (2 * ATR indicator)",
+    "assumed": false
+   },
+   {
+    "field": "take_profit_r",
+    "quote": "TP will be at the current price + 1.8 * (current price - SL price )",
+    "assumed": false
+   },
+   {
+    "field": "claimed.total_return_pct",
+    "quote": "made 494.47% in the last 2 years",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 6.5,
+   "tokens": 3345,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.6,
+   "tokens": 2017
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": false,
+ "seconds": 9.1,
+ "run": "minimal_r3"
+}

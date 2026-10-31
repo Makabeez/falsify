@@ -1,0 +1,186 @@
+{
+ "id": "c007",
+ "effort": "minimal",
+ "spec": {
+  "claim_summary": "Buy on a 15-day high breakout and exit on a 15-day low breakdown, only when ADX(14) is below 25.",
+  "source_type": "text",
+  "testable": true,
+  "untestable_reason": null,
+  "assets": [
+   "BTCUSDT"
+  ],
+  "timeframe": "1d",
+  "direction": "long",
+  "entry": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "gt",
+    "right": {
+     "kind": "highest_high",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   },
+   {
+    "left": {
+     "kind": "adx",
+     "period": 14,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "const",
+     "period": null,
+     "value": 25.0,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    }
+   }
+  ],
+  "exit": [
+   {
+    "left": {
+     "kind": "close",
+     "period": null,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 0
+    },
+    "op": "lt",
+    "right": {
+     "kind": "lowest_low",
+     "period": 15,
+     "value": null,
+     "multiplier": 1.0,
+     "add": 0.0,
+     "param": null,
+     "window_fn": null,
+     "window": null,
+     "offset": 1
+    }
+   }
+  ],
+  "stop_loss_pct": null,
+  "stop_atr_mult": null,
+  "stop_atr_period": 14,
+  "take_profit_pct": null,
+  "take_profit_atr_mult": null,
+  "take_profit_r": null,
+  "trailing_stop_pct": null,
+  "trailing_stop_atr_mult": null,
+  "max_hold_bars": null,
+  "free_parameters": [],
+  "claimed": {
+   "win_rate_pct": null,
+   "total_return_pct": null,
+   "avg_return_per_trade_pct": null,
+   "period_start": "2015-01-01",
+   "period_end": null,
+   "other": "Compound Annual Growth Rate (CAGR) of 90%"
+  },
+  "assumptions": [
+   "Timeframe is daily because entry/exit use 'days' and backtest is on daily data.",
+   "Entry 'price breaks above' compiled as close gt highest_high(15) with offset 1 to use prior N-day high.",
+   "Exit 'drops below' compiled as close lt lowest_low(15) with offset 1 to use prior M-day low.",
+   "ADX filter applied as entry condition requiring ADX(14) below 25 on same entry bar.",
+   "Period start 2015-01-01 inferred from 'from 2015'."
+  ],
+  "evidence": [
+   {
+    "field": "assets",
+    "quote": "daily BTC/USD data",
+    "assumed": false
+   },
+   {
+    "field": "timeframe",
+    "quote": "last N days",
+    "assumed": false
+   },
+   {
+    "field": "direction",
+    "quote": "Buying when the price breaks above",
+    "assumed": false
+   },
+   {
+    "field": "entry[0]",
+    "quote": "breaks above the highest high of the last N days",
+    "assumed": false
+   },
+   {
+    "field": "entry[1]",
+    "quote": "only allow trades when the ADX(14) was below 25",
+    "assumed": false
+   },
+   {
+    "field": "exit[0]",
+    "quote": "Exiting when the price drops below the lowest low of the last M days",
+    "assumed": false
+   },
+   {
+    "field": "claimed.other",
+    "quote": "Compound Annual Growth Rate (CAGR) of 90%",
+    "assumed": false
+   }
+  ]
+ },
+ "verdict": "TESTED",
+ "cost": [
+  {
+   "step": "compile",
+   "seconds": 4.2,
+   "tokens": 2960,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 4.1,
+   "tokens": 2371
+  },
+  {
+   "step": "audit repair",
+   "seconds": 2.5,
+   "tokens": 3416,
+   "quote_repairs": 0
+  },
+  {
+   "step": "audit",
+   "seconds": 2.1,
+   "tokens": 1927
+  }
+ ],
+ "audit_majors": [],
+ "grounding_problems": [],
+ "audit_repair": true,
+ "seconds": 12.9,
+ "run": "minimal_r2"
+}
