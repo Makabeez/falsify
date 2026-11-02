@@ -339,6 +339,15 @@ def corpus_list() -> JSONResponse:
     return JSONResponse({"items": items, "corpus_corrected": bh})
 
 
+def _claim_records() -> dict:
+    """corpus/claims.jsonl by id: fields added after a claim was run (e.g. source_offline) live only there."""
+    if "_records" not in _corpus_cache:
+        p = CORPUS / "claims.jsonl"
+        _corpus_cache["_records"] = {} if not p.exists() else {
+            r["id"]: r for r in (json.loads(x) for x in p.read_text(encoding="utf-8").splitlines() if x.strip())}
+    return _corpus_cache["_records"]
+
+
 @app.get("/api/corpus/{cid}")
 def corpus_item(cid: str) -> JSONResponse:
     if not re.fullmatch(r"c\d{3}", cid):
@@ -356,7 +365,7 @@ def corpus_item(cid: str) -> JSONResponse:
         _corpus_cache[cid] = {
             "key": cid,
             "source": {"kind": "text", "text": rec["excerpt"], "note": None, "posted": rec.get("posted"),
-                       "url": rec["url"], "origin": rec["source"], "offline": rec.get("source_offline"),
+                       "url": rec["url"], "origin": rec["source"], "offline": rec.get("source_offline") or _claim_records().get(cid, {}).get("source_offline"),
                        "transcript": None, "media": None},
             "spec": spec.model_dump(mode="json"), "audit": d.get("audit"),
             "trace": {k: (d.get("trace") or {}).get(k) for k in ("model", "grounding", "audit_repair", "audit_repair_failed", "audit_repair_rejected", "audits", "cost")},

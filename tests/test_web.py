@@ -26,6 +26,7 @@ def test_pages_and_corpus(client):
     assert len(items) >= 30 and {"verdict", "summary", "url"} <= set(items[0])
     r = client.get("/api/corpus/c033").json()["result"]
     assert r["report"]["series"]["t"] and r["report"]["null_test"]["hist"]["counts"]
+    assert r["source"]["offline"] == "2026-10-31"  # recorded in claims.jsonl after the run, still shown
     assert client.get("/api/corpus/../../etc").status_code == 404
     assert client.get("/api/result/not-a-key").status_code == 404
 
